@@ -382,6 +382,8 @@ PODS:
     - RCTTypeSafety
     - React-Core
     - ReactCommon/turbomodule/core
+  - react-native-webview (13.2.2):
+    - React-Core
   - React-NativeModulesApple (0.72.0):
     - hermes-engine
     - React-callinvoker
@@ -550,6 +552,7 @@ DEPENDENCIES:
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-date-picker (from `../node_modules/react-native-date-picker`)
   - react-native-safe-area-context (from `../node_modules/react-native-safe-area-context`)
+  - react-native-webview (from `../node_modules/react-native-webview`)
   - React-NativeModulesApple (from `../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios`)
   - React-perflogger (from `../node_modules/react-native/ReactCommon/reactperflogger`)
   - React-RCTActionSheet (from `../node_modules/react-native/Libraries/ActionSheetIOS`)
@@ -636,6 +639,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-date-picker"
   react-native-safe-area-context:
     :path: "../node_modules/react-native-safe-area-context"
+  react-native-webview:
+    :path: "../node_modules/react-native-webview"
   React-NativeModulesApple:
     :path: "../node_modules/react-native/ReactCommon/react/nativemodule/core/platform/ios"
   React-perflogger:
@@ -713,6 +718,7 @@ SPEC CHECKSUMS:
   React-logger: 454ffb01980778a43b0153ee98721d0275b56616
   react-native-date-picker: 04e866ba4e7857f83abd504ad42e787f0f02ae00
   react-native-safe-area-context: 36cc67648134e89465663b8172336a19eeda493d
+  react-native-webview: b8ec89966713985111a14d6e4bf98d8b54bced0d
   React-NativeModulesApple: 038cd625999ff352fc13d11fd335ea7509794599
   React-perflogger: 684a11499a0589cc42135d6d5cc04d0e4e0e261a
   React-RCTActionSheet: 00b0a4c382a13b834124fa3f541a7d8d1d56efb9
