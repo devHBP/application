@@ -42,13 +42,13 @@ const Signup = ({navigation}) => {
     axios.post('http://localhost:8080/signup', clientData)
     .then(response => {
       // console.log('client data', clientData)
-       console.log('response.data', response.data)
+       //console.log('response.data', response.data)
       
      
       const userId = response.data.id
       const user = { userId:userId ,firstname, lastname, email, password}; // Récupérez les données d'inscription du formulaire
        
-      console.log('user avec id', user)
+      //console.log('user avec id', user)
       dispatch(registerUser(user)); // Dispatchez l'action pour mettre à jour l'utilisateur dans le store
       //  console.log('user dans signup', user)
       
@@ -60,9 +60,9 @@ const Signup = ({navigation}) => {
       });
     })
     .catch(function (error) {
-    console.log('erreur signup',error);
+    //console.log('erreur signup',error);
     if (error.response && error.response.status === 400) {
-      console.log(error.response.data.error);
+      //console.log(error.response.data.error);
       Toast.show({
         type: 'error',
         text1: `Erreur d'inscription`,
