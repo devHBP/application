@@ -5,9 +5,9 @@ import { defaultStyle, colors, fonts } from '../styles/styles'
 // import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const App = ({navigation}) => {
-    // const navigationToSignUp = () => {
-    //     navigation.navigate('signup')
-    // }
+    const navigationToSignUp = () => {
+        navigation.navigate('signup')
+    }
     const navigationToLogin = () => {
         navigation.navigate('login')
     }
@@ -31,7 +31,7 @@ const App = ({navigation}) => {
             <Button
                 style={style.btn} 
                 textColor={'white'} 
-                // onPress={navigationToSignUp}
+                onPress={navigationToSignUp}
                 >
             S'INSCRIRE
             </Button>
