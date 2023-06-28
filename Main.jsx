@@ -7,19 +7,31 @@ import Login from './Screens/Login'
 import Signup from './Screens/Signup'
 import Home from './Screens/Home'
 import Panier from './Screens/Panier'
+import SuccessPage from './Screens/SuccessPage'
 
 const Main = () => {
 
     const Stack = createNativeStackNavigator();
 
+    const linking = {
+      prefixes: ['clickandcollect://'],
+      config: {
+        screens: {
+          success: 'success',
+          // echec: 'echec',
+        },
+      },
+    };
+
       return (
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
             <Stack.Navigator initialRouteName='app' screenOptions={{headerShown:false}}>
                 <Stack.Screen name='app' component={App}/>
                 <Stack.Screen name='login' component={Login}/>
                 <Stack.Screen name='signup' component={Signup}/>
                 <Stack.Screen name='home' component={Home}/>
                 <Stack.Screen name='panier' component={Panier}/>
+                <Stack.Screen name='success' component={SuccessPage}/>
             </Stack.Navigator>
 
             <Toast  position="bottom"/>
