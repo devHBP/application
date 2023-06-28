@@ -1,10 +1,15 @@
 import React from 'react'
 import Main from './Main'
+import { Provider } from 'react-redux'
+import store from './store'
 
 
 const App = () => {
   return (
-            <Main />
+    <Provider store={store}>
+        <Main />
+    </Provider>
+            
   )
 }
 
