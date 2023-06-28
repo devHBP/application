@@ -8,6 +8,8 @@ import Signup from './Screens/Signup'
 import Home from './Screens/Home'
 import Panier from './Screens/Panier'
 import SuccessPage from './Screens/SuccessPage'
+import ChoixPaiement from './Screens/ChoixPaiement'
+import OrderConfirmation from './Screens/OrderConfirmation'
 
 const Main = () => {
 
@@ -31,6 +33,8 @@ const Main = () => {
                 <Stack.Screen name='signup' component={Signup}/>
                 <Stack.Screen name='home' component={Home}/>
                 <Stack.Screen name='panier' component={Panier}/>
+                <Stack.Screen name='choixpaiement' component={ChoixPaiement}/>
+                <Stack.Screen name='orderconfirm' component={OrderConfirmation}/>
                 <Stack.Screen name='success' component={SuccessPage}/>
             </Stack.Navigator>
 
