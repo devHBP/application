@@ -21,3 +21,8 @@ export const colors = {
     color2: "#E9521B", // orange
     color3: "#F5F5F5", //gris clair
 };
+
+export const fonts = {
+    font1: 'Postino', 
+   
+};

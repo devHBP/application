@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { Button} from 'react-native-paper'
 import { defaultStyle, colors, fonts } from '../styles/styles'
+// import Icon from 'react-native-vector-icons/MaterialIcons'
 
 const App = ({navigation}) => {
     // const navigationToSignUp = () => {
@@ -12,6 +13,7 @@ const App = ({navigation}) => {
     }
   return (
     <View style={{...defaultStyle, backgroundColor:colors.color1}}>
+        {/* <Icon name="add" size={30} color="#fff" /> */}
     
       <View style={style.container}>
      
@@ -62,7 +64,7 @@ const style = StyleSheet.create({
         marginHorizontal:40
       },
     title:{
-        // fontFamily: fonts.font1,
+        fontFamily: fonts.font1,
         textAlign:'center',
         fontSize:26,
         color: colors.color3
