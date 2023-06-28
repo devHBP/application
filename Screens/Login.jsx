@@ -2,10 +2,10 @@ import { View, Text, StyleSheet, TouchableOpacity} from 'react-native'
 import React, {useState} from 'react'
 import { defaultStyle, inputStyling, colors } from '../styles/styles'
 import { Button, TextInput } from 'react-native-paper'
-// import { useDispatch, useSelector} from 'react-redux'
-// import { loginUser, updateSelectedStore } from '../reducers/authSlice';
+ import { useDispatch, useSelector} from 'react-redux'
+ import { loginUser, updateSelectedStore } from '../reducers/authSlice';
 // import AsyncStorage from '@react-native-async-storage/async-storage';
-// import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import axios from 'axios'
@@ -20,68 +20,68 @@ const inputOptions = {
 
 const Login = ({navigation}) => {
 
-    // const dispatch = useDispatch()
-    // const selectedStoreRedux = useSelector(state => state.auth.selectedStore);
+     const dispatch = useDispatch()
+     const selectedStoreRedux = useSelector(state => state.auth.selectedStore);
     // console.log('1- selected store in login', selectedStoreRedux)
    
 
      const [email, setEmail] = useState("")
      const [password, setPassword] = useState("")
 
-    // const submitHandler = async () => {
+    const submitHandler = async () => {
 
-    //     const clientData = {
-    //         email,
-    //         password
-    //     }
+        const clientData = {
+            email,
+            password
+        }
 
-        // try{
-        //     //appel axios pour se loger
-        //     const res = await axios.post('http://localhost:8080/login', clientData)
-        //     const user = res.data.user
+        try{
+            //appel axios pour se loger
+            const res = await axios.post('http://localhost:8080/login', clientData)
+            const user = res.data.user
 
-        //     // //stockage du token dans asyncstorage
-        //     // const token = res.data.token;
-        //     // console.log('token', token)
-        //     // await AsyncStorage.setItem('userToken', token);
+            // //stockage du token dans asyncstorage
+            // const token = res.data.token;
+            // console.log('token', token)
+            // await AsyncStorage.setItem('userToken', token);
 
-        //     const selectedStoreId = user.storeId;
-        //     // const selectedStoreId = selectedStoreRedux.id_magasin;
+            const selectedStoreId = user.storeId;
+            // const selectedStoreId = selectedStoreRedux.id_magasin;
 
-        //     //  console.log('2- selected store id', selectedStoreId)
+            //  console.log('2- selected store id', selectedStoreId)
 
-        //     axios.get(`http://localhost:8080/getOneStore/${selectedStoreId}`)
-        //         .then(storeResponse => {
-        //             const selectedStore = storeResponse.data; // Récupérez les détails du magasin choisi
-        //             // console.log('3- store selectionné' ,selectedStore)
-        //             // Dispatchez l'action pour mettre à jour le magasin choisi dans le store
-        //              dispatch(updateSelectedStore(selectedStore));
-        //              dispatch(loginUser(user))
+            axios.get(`http://localhost:8080/getOneStore/${selectedStoreId}`)
+                .then(storeResponse => {
+                    const selectedStore = storeResponse.data; // Récupérez les détails du magasin choisi
+                    // console.log('3- store selectionné' ,selectedStore)
+                    // Dispatchez l'action pour mettre à jour le magasin choisi dans le store
+                     dispatch(updateSelectedStore(selectedStore));
+                     dispatch(loginUser(user))
         
-                //     navigation.navigate('home')
-                //     //champs de connexion vide (une fois connecté)
-                //     //setEmail('');
-                //     //setPassword('');
-                //     return Toast.show({
-                //         type: 'success',
-                //         text1: `Connexion réussie`,
-                //         text2: `Bienvenue ${user.firstname} ${user.lastname} ` 
-                //       });
-                // })
-                // .catch(error => {
-                //     // console.error('Erreur lors de la récupération des informations du magasin:', error);
-                // });
+                    navigation.navigate('home')
+                    //champs de connexion vide (une fois connecté)
+                    //setEmail('');
+                    //setPassword('');
+                    return Toast.show({
+                        type: 'success',
+                        text1: `Connexion réussie`,
+                        text2: `Bienvenue ${user.firstname} ${user.lastname} ` 
+                      });
+                })
+                .catch(error => {
+                    // console.error('Erreur lors de la récupération des informations du magasin:', error);
+                });
   
            
-    //     }catch (error){
-    //         console.log(error)
-    //         return Toast.show({
-    //             type: 'error',
-    //             text1: `Echec de connexion`,
-    //             text2: `Rentrez correctement votre email et mot de passe` 
-    //           });
-    //     }
-    // }
+        }catch (error){
+            console.log(error)
+            return Toast.show({
+                type: 'error',
+                text1: `Echec de connexion`,
+                text2: `Rentrez correctement votre email et mot de passe` 
+              });
+        }
+    }
     const handleBack = () => {
         navigation.navigate('app');
       };
@@ -125,7 +125,7 @@ const Login = ({navigation}) => {
                 textColor={'white'} 
                 //inactif si email ou password vide
                 disabled={email === "" || password === ""}
-                // onPress={submitHandler}
+                 onPress={submitHandler}
                 >
                 SE CONNECTER
             </Button>
