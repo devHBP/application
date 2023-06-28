@@ -8,7 +8,7 @@ import { Button, TextInput } from 'react-native-paper'
 // import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-// import axios from 'axios'
+import axios from 'axios'
 
 //options des input
 const inputOptions = {
