@@ -3,16 +3,17 @@ import React from 'react'
 import { defaultStyle} from '../styles/styles'
 import { Button } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux';
-import { clearCart} from '../reducers/cartSlice';
+import { clearCart, clearDate, clearTime} from '../reducers/cartSlice';
 
 const SuccessPage = ({navigation}) => {
 
     const dispatch = useDispatch();
 
     const cart = useSelector(state => state.cart.cart); 
-    console.log('panier', cart)
+    //console.log('panier', cart)
     if (cart.length > 0){
       dispatch(clearCart())
+      dispatch(clearTime())
       console.log('panier', cart)
     }
     

@@ -65,8 +65,14 @@ const cartSlice = createSlice({
     addDate: (state, action) => {
         state.date = action.payload;
       },
+      clearDate: (state) => {
+        state.date = null; 
+      },
     addTime: (state, action) => {
         state.time = action.payload;
+      },
+    clearTime: (state) => {
+        state.time = null; 
       },
     resetDateTime: (state) => {
         state.date = null;
@@ -78,5 +84,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart, updateCart, clearCart, addDate,addTime,resetDateTime, addPaiement } = cartSlice.actions;
+export const { addToCart, removeFromCart, updateCart, clearCart, addDate, clearDate,addTime,resetDateTime,clearTime, addPaiement } = cartSlice.actions;
 export default cartSlice.reducer;

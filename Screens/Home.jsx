@@ -29,7 +29,7 @@ const Home =  ({navigation}) => {
   //console.log('user role', user)
   //// const { firstname, lastname, adresse } = user;
   const cart = useSelector((state) => state.cart.cart);
-  console.log('cart home', cart)
+  //console.log('cart home', cart)
   const selectedStore = useSelector((state) => state.auth.selectedStore);
   //const selectedDateString = useSelector((state) => state.cart.date); //chaine de caractère
   //const selectedDate = new Date(selectedDateString); //objet Date
@@ -157,7 +157,7 @@ const Home =  ({navigation}) => {
         {
           user && <Text>Bonjour {user.firstname} {user.lastname} </Text>
         }
-         <Text>Point choisi: {selectedStore.nom_magasin}</Text>
+         {/* <Text>Point choisi: {selectedStore.nom_magasin}</Text> */}
 
         
           <Picker
