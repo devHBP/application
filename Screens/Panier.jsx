@@ -1,13 +1,14 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity,ScrollView, TextInput } from 'react-native'
 import React, { useState} from 'react'
 import { defaultStyle} from '../styles/styles'
 import { Button } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios'
-import { removeFromCart, updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
+import { updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
+import { logoutUser} from '../reducers/authSlice';
 import CartItem from '../components/CardItems';
-//import AsyncStorage from '@react-native-async-storage/async-storage'
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Panier = ({navigation}) => {
 
@@ -39,28 +40,47 @@ const Panier = ({navigation}) => {
 
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0)
 
-  const handleConfirm = () => {
-    console.log('******')
-    console.log('Contenu du panier :', cart);
-    console.log('user', user)
-    console.log('magasin', store)
-    console.log('******')
-    navigation.navigate('choixpaiement');
+  const handleLogout = () => {
+    dispatch(logoutUser()); 
+    navigation.navigate('app')
+  }
+
+  const handleConfirm = async () => {
+
+    const token = await AsyncStorage.getItem('userToken');
+
+    axios.get('http://localhost:8080/verifyToken', {
+      headers: {
+          'x-access-token': token
+      }
+    })
+    .then(response => {
+      if (response.data.auth) {
+          // console.log('******')
+          // console.log('Contenu du panier :', cart);
+          // console.log('user', user)
+          // console.log('magasin', store)
+          // console.log('******')
+          navigation.navigate('choixpaiement');
+      } else {
+          // Token is not valid, show error...
+          handleLogout()
+      }
+    })
+    .catch(error => {
+      handleLogout()
+      // console.log('token invalide catch')
+        // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
+    });
   }
 
  //Promotion
   const handleApplyDiscount = async () => {
-    // test validité 1h token
-    // const token = await AsyncStorage.getItem('userToken');
-    // axios.get(`http://localhost:8080/promocodes/${promoCode}`, {
-    //   headers: {
-    //     'x-access-token': token
-    //   }
-    // })
+
     axios.get(`http://localhost:8080/promocodes/${promoCode}`)
     .then(response => {
       const data = response.data;
-      console.log('data', data)
+      //console.log('data', data)
       if (data && data.active) {
         const percentage = data.percentage;
 

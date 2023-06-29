@@ -11,6 +11,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import DatePicker from 'react-native-date-picker'
 import { Badge } from 'react-native-paper';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 
 const Home =  ({navigation}) => {
@@ -146,7 +147,35 @@ const Home =  ({navigation}) => {
     currentDate.setHours(23, 59, 0, 0); // Set current date to today at 23:59
     return selectedDate >= currentDate;
   };
- 
+
+  const handleNavigateToCart = async () => {
+    const token = await AsyncStorage.getItem('userToken');
+    //console.log('token', token)
+     // Send request to verify token
+     axios.get('http://localhost:8080/verifyToken', {
+      headers: {
+          'x-access-token': token
+      }
+    })
+    .then(response => {
+      if (response.data.auth) {
+          // Token is valid, continue with discount application...
+          // console.log('token valide')
+          navigation.navigate('panier')
+      } else {
+          // Token is not valid, show error...
+          // console.log('token invalide')
+          handleLogout()
+      }
+  })
+  .catch(error => {
+    handleLogout()
+    console.log('token invalide catch')
+      // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
+  });
+  
+};
+
 
   return (
     <>
@@ -283,7 +312,7 @@ const Home =  ({navigation}) => {
         <Badge visible={cart.length > 0} size={18} style={style.badge}>
           {totalQuantity}
         </Badge>
-        <Icon name="shopping-cart" size={30} color="#000" onPress={() => navigation.navigate('panier')} style={style.container}/>
+        <Icon name="shopping-cart" size={30} color="#000" onPress={handleNavigateToCart} style={style.container}/>
         <Icon name="logout" size={30} color="#000" onPress={() => handleLogout()} />
       </View>
     </View>

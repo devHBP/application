@@ -4,7 +4,7 @@ import { defaultStyle, inputStyling, colors } from '../styles/styles'
 import { Button, TextInput } from 'react-native-paper'
  import { useDispatch, useSelector} from 'react-redux'
  import { loginUser, updateSelectedStore } from '../reducers/authSlice';
-// import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -41,9 +41,9 @@ const Login = ({navigation}) => {
             const user = res.data.user
 
             // //stockage du token dans asyncstorage
-            // const token = res.data.token;
-            // console.log('token', token)
-            // await AsyncStorage.setItem('userToken', token);
+            const token = res.data.token;
+            console.log('token login', token)
+            await AsyncStorage.setItem('userToken', token);
 
             const selectedStoreId = user.storeId;
             // const selectedStoreId = selectedStoreRedux.id_magasin;

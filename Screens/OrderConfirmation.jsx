@@ -7,6 +7,7 @@ import { logoutUser} from '../reducers/authSlice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { WebView } from 'react-native-webview';
+import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const OrderConfirmation = ({navigation}) => {
 
@@ -70,28 +71,52 @@ useEffect(() => {
 
 //ENVOI DE LA COMMANDE VERS LE SERVER
   const submitHandler = async () => {
-    console.log('******')
-    console.log('Envoi de la commande au serveur - test')
-    console.log('Contenu du panier :', cartItems);
-    console.log('Nom:', user.lastname);
-    console.log('Prénom', user.firstname)
-    console.log('Magasin sélectionné :', selectedStore);
-    console.log('Prix total :', totalPrice);
-    console.log('Nb de produits:', totalQuantity);
-    console.log('Jour sélectionné', selectedDateString);
-    //console.log('Heure de retrait', selectedTime)
-    console.log('type de paiement', paiement)
-    console.log('******')
 
-    setOrderInfo({
-      cartItems,
-      user,
-      selectedStore,
-      totalPrice,
-      totalQuantity,
-      selectedDateString,
-      paiement
-    });
+    const token = await AsyncStorage.getItem('userToken');
+    console.log('token valider', token)
+
+    axios.get('http://localhost:8080/verifyToken', {
+      headers: {
+          'x-access-token': token
+      }
+    })
+    .then(response => {
+      if (response.data.auth) {
+          // Token is valid, continue with discount application...
+          console.log('token valide')
+          console.log('******')
+          console.log('Envoi de la commande au serveur - test')
+          console.log('Contenu du panier :', cartItems);
+          console.log('Nom:', user.lastname);
+          console.log('Prénom', user.firstname)
+          console.log('Magasin sélectionné :', selectedStore);
+          console.log('Prix total :', totalPrice);
+          console.log('Nb de produits:', totalQuantity);
+          console.log('Jour sélectionné', selectedDateString);
+          //console.log('Heure de retrait', selectedTime)
+          console.log('type de paiement', paiement)
+          console.log('******')
+      
+          setOrderInfo({
+            cartItems,
+            user,
+            selectedStore,
+            totalPrice,
+            totalQuantity,
+            selectedDateString,
+            paiement
+          });
+      } else {
+          // Token is not valid, show error...
+          console.log('token invalide')
+          handleLogout()
+      }
+  })
+  .catch(error => {
+    handleLogout()
+    console.log('token invalide catch')
+      // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
+  });
 
     
   }
