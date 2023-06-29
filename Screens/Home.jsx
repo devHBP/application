@@ -162,15 +162,16 @@ const Home =  ({navigation}) => {
           // Token is valid, continue with discount application...
           // console.log('token valide')
           navigation.navigate('panier')
-      } else {
-          // Token is not valid, show error...
-          // console.log('token invalide')
-          handleLogout()
-      }
+      } 
   })
   .catch(error => {
     handleLogout()
-    console.log('token invalide catch')
+    //console.log('token invalide catch')
+    return Toast.show({
+      type: 'error',
+      text1: 'Session expirée',
+      text2: 'Veuillez vous reconnecter'
+    });
       // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
   });
   

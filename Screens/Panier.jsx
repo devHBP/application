@@ -9,6 +9,7 @@ import { updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/ca
 import { logoutUser} from '../reducers/authSlice';
 import CartItem from '../components/CardItems';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 const Panier = ({navigation}) => {
 
@@ -69,6 +70,11 @@ const Panier = ({navigation}) => {
     })
     .catch(error => {
       handleLogout()
+      return Toast.show({
+        type: 'error',
+        text1: 'Session expirée',
+        text2: 'Veuillez vous reconnecter'
+      });
       // console.log('token invalide catch')
         // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
     });

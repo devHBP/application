@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 const OrderConfirmation = ({navigation}) => {
 
@@ -108,13 +109,19 @@ useEffect(() => {
           });
       } else {
           // Token is not valid, show error...
-          console.log('token invalide')
+          //console.log('token invalide')
           handleLogout()
       }
   })
   .catch(error => {
+    //console.log('token invalide catch')
     handleLogout()
-    console.log('token invalide catch')
+    return Toast.show({
+      type: 'error',
+      text1: 'Session expirée',
+      text2: 'Veuillez vous reconnecter'
+    });
+    
       // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
   });
 
