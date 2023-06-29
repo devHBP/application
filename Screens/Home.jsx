@@ -1,7 +1,7 @@
-import {Alert,  View, Text, Pressable, ScrollView , StyleSheet, TouchableOpacity } from 'react-native'
+import {View, Text, Pressable, ScrollView , StyleSheet, TouchableOpacity } from 'react-native'
 import  Picker  from 'react-native-picker-select';
 import { defaultStyle} from '../styles/styles'
-import React, {useState, useEffect, useCallback } from 'react'
+import React, {useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { logoutUser, updateSelectedStore, updateUser} from '../reducers/authSlice';
 import { addDate, addTime, resetDateTime} from '../reducers/cartSlice';
@@ -182,7 +182,7 @@ const Home =  ({navigation}) => {
     <>
     <View style={{...defaultStyle, alignItems:'center', flex:1, paddingHorizontal:5, paddingVertical:20}}>
    
-      <View style={{flexDirection:'row', width: "100%", justifyContent:"space-around"}}>
+      <View style={style.bandeau}>
       <View>
         {
           user && <Text>Bonjour {user.firstname} {user.lastname} </Text>
@@ -309,7 +309,7 @@ const Home =  ({navigation}) => {
         )} 
     
       </View>
-      <View style={{flexDirection:'row', gap: 10}}>
+      <View style={style.logos}>
         <Badge visible={cart.length > 0} size={18} style={style.badge}>
           {totalQuantity}
         </Badge>
@@ -320,11 +320,10 @@ const Home =  ({navigation}) => {
       
 
       {/* categories */}
-      <View style={{flexDirection: "row", flexWrap:"wrap", justifyContent:'center', marginVertical: 20}}>
+      <View style={style.categories}>
           {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}> */}
           {
             categories.map((item, index) => (
-              //* pressable = button on ios */
               <Pressable title="button" 
                 style={{
                   borderRadius:50,
@@ -339,10 +338,8 @@ const Home =  ({navigation}) => {
                   backgroundColor: item.categorie === selectedCategory ? 'lightblue' : 'white'
                 }} 
                 key={index}
-                // onPress={() => categoryButtonHandler(item.categorie)}
                 onPress={() => categoryButtonHandler(item)}
               >
-                {/* <Text style={{fontSize:12, }}>{item.categorie}</Text> */}
                 <Text style={{fontSize:12, }}>{item}</Text>
               </Pressable>
             ))
@@ -353,7 +350,7 @@ const Home =  ({navigation}) => {
           {/* card products */}
         
           <ScrollView vertical showsVerticalScrollIndicator={false}>
-           <View style={{ flexDirection: 'row', flexWrap: 'wrap', width:"100%"}}>
+           <View style={style.cardScrollview}>
             
           {products
               .filter((item) =>
@@ -386,14 +383,34 @@ const style = StyleSheet.create({
     position: 'relative',
     marginRight: 10,
   },
+  bandeau:{
+    flexDirection:'row', 
+    width: "100%", 
+    justifyContent:"space-around", 
+  },
   badge: {
     position: 'absolute',
     top: -8,
     right: 40,
   },
+  logos:{
+    flexDirection:'row', 
+    gap: 10, 
+  },
   picker:{
     color:'red',
     fontWeight:'bold'
+  },
+  categories:{
+    flexDirection: "row", 
+    flexWrap:"wrap", 
+    justifyContent:'center', 
+    marginVertical: 20,
+  },
+  cardScrollview:{
+    flexDirection: 'row', 
+    flexWrap: 'wrap', 
+    width:"100%", 
   }
 });
 
@@ -408,12 +425,5 @@ export default Home
   //     categorie:"Sandwich",
   //     source:{ uri : require('../assets/sandwich.png')}
   //   },
-  //   {
-  //     id_produit: "2",
-  //     nom:"Salade cesar",
-  //     categorie:"Salade",
-  //     prix: 6,
-  //     source:{ uri : require('../assets/salade.png')}
-  //   }
   // ]
  
