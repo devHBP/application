@@ -5,9 +5,9 @@ import { Button } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios'
-//import AsyncStorage from '@react-native-async-storage/async-storage';
-import { removeFromCart, updateCart } from '../reducers/cartSlice';
+import { removeFromCart, updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
 import CartItem from '../components/CardItems';
+//import AsyncStorage from '@react-native-async-storage/async-storage'
 
 const Panier = ({navigation}) => {
 
@@ -27,21 +27,14 @@ const Panier = ({navigation}) => {
   };
  
   const incrementhandler = (index) => {
-    console.log('plus')
-    const updatedCart = [...cart]
-    updatedCart[index].qty += 1
-    // Dispatchez l'action pour mettre à jour le panier
-    dispatch(updateCart(updatedCart))
+    const product = cart[index];
+    product.qty = 1; 
+    dispatch(addToCart(product));
   }
   const decrementhandler = (index) => {
-    // console.log('moins');
-    const updatedCart = [...cart];
-    if (updatedCart[index].qty > 1) {
-      updatedCart[index].qty -= 1;
-      dispatch(updateCart(updatedCart));
-    } else {
-      dispatch(removeFromCart(updatedCart[index].productId));
-    }
+    const product = cart[index];
+    product.qty = 1; 
+    dispatch(decrementOrRemoveFromCart(product));
   }
 
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0)

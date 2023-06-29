@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
 import React, { useState} from 'react'
 import { Button } from 'react-native-paper'
-import { updateCart } from '../reducers/cartSlice';
+import { updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 
 
@@ -15,7 +15,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock  }) => {
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
-    //console.log('cart', cart)
+    console.log('cart', cart)
     const product = cart.find((item) => item.productId === id);
     //console.log('product', product)
 
@@ -28,30 +28,13 @@ const ProductCard = ({libelle, id, image, prix, qty, stock  }) => {
 
 
     const incrementhandler = () => {
-        const updatedCart = [...cart];
-        const existingProductIndex = updatedCart.findIndex((item) => item.productId === id);
-    
-        if (existingProductIndex !== -1) {
-          updatedCart[existingProductIndex].qty += 1;
-        } else {
-          updatedCart.push({ productId:id, libelle, image, prix_unitaire:prix, qty: 1 });
-        }
-    
-        dispatch(updateCart(updatedCart));
+        
+        dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 }));
       };
    
     const decrementhandler = () => {
-        const updatedCart = [...cart];
-        const existingProductIndex = updatedCart.findIndex((item) => item.productId === id);
-    
-        if (existingProductIndex !== -1) {
-          if (updatedCart[existingProductIndex].qty > 1) {
-            updatedCart[existingProductIndex].qty -= 1;
-          } else {
-            updatedCart.splice(existingProductIndex, 1);
-          }
-        }
-        dispatch(updateCart(updatedCart));
+
+        dispatch(decrementOrRemoveFromCart({ productId: id, qty: 1 }));
       };
     
   return (
