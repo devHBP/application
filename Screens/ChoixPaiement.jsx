@@ -18,7 +18,7 @@ const ChoixPaiement = ({navigation}) => {
     const submitHandlerPaiement = (value) => {
         setPaiement(value);
         dispatch(addPaiement(value))
-        console.log('choix paiement:', choixpaiement)
+        //console.log('choix paiement:', choixpaiement)
         //console.log('paiement', value);
         navigation.navigate('orderconfirm');
     }

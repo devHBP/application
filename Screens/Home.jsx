@@ -70,7 +70,7 @@ const Home =  ({navigation}) => {
 
   //total d'articles dans le panier pour le badge
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
-  // console.log(totalQuantity);
+  //console.log(totalQuantity);
  
 
   const [ selectedCategory, setSelectedCategory] = useState(null)

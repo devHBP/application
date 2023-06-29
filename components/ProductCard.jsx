@@ -15,7 +15,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock  }) => {
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
-    console.log('cart', cart)
+    //console.log('cart', cart)
     const product = cart.find((item) => item.productId === id);
     //console.log('product', product)
 

@@ -35,7 +35,6 @@ const totalQuantity = cartItems.reduce((total, item) => total + item.qty, 0)
 const [orderInfo, setOrderInfo] = useState(null);
 const [checkoutSession, setCheckoutSession] = useState(null);
 const [sessionId, setSessionId] = useState(null);
-const [paymentStatus, setPaymentStatus] = useState(null);
 
 const handleLogout = () => {
   dispatch(logoutUser(selectedStore));
@@ -62,12 +61,12 @@ useEffect(() => {
   }
 }, [orderInfo, paiement]);
 
-useEffect(() => {
-  if (checkoutSession) {
-    checkPaymentStatus();
-  }
-}, [checkoutSession]);
 
+useEffect(() => {
+  if(paiement === 'online' && sessionId){
+    checkPaymentStatus()
+  }
+}, [paiement, sessionId]); 
 
 //ENVOI DE LA COMMANDE VERS LE SERVER
   const submitHandler = async () => {
@@ -93,48 +92,44 @@ useEffect(() => {
       selectedDateString,
       paiement
     });
+
     
   }
 
-  useEffect(() => {
-    let id = null;
-  
-    if (sessionId) {
-      // Vérifiez l'état du paiement toutes les 2 secondes
-      id = setInterval(() => {
-        checkPaymentStatus();
-      }, 2000);
-    }
-  
-    // Nettoyez l'intervalle lorsque le composant est démonté ou lorsque l'ID de session change
-    return () => {
-      if (id) {
-        clearInterval(id);
-      }
-    };
-  }, [sessionId]);
+
 
 // Vérifier l'état du paiement
 const checkPaymentStatus = async () => {
+  const interval = setInterval(async () => {
   try {
     const response = await axios.get(`http://localhost:8080/paiementStatus?sessionId=${sessionId}`);
     //console.log('response front', response)
-     const { status } = response.data;
+     const { status, transactionId, method } = response.data;
+     console.log('response data', response.data)
+     // retour : response data {"status": "paid", "transactionId": "pi_3NOFjcGnFAjiWNhK0KP6l8Nl"}
      //rajouter idPayment
+
    
-  //   if (status === 'paid') {
-  //     setSessionId(null); // Cela déclenchera le nettoyage de l'intervalle dans le hook useEffect
-  //     console.log('stop interval')
-  //     navigation.navigate('success')
-  //     //mettre à jour commande avec idpayment
-  //   }
+    if (status === 'paid') {
+      
+      clearInterval(interval);
+      const paymentData = {
+        method,
+        status,
+        transactionId
+      };
+  
+      const updateResponse = await axios.post('http://localhost:8080/createPaiement', paymentData);
+      console.log('Response from updatePayment:', updateResponse.data);
+      
+      navigation.navigate('success')
+    }
     
-  //   setPaymentStatus(status);
-  //   // console.log('Payment ID:', paymentId);
   } catch (error) {
     console.error('Erreur lors de la vérification de l\'état du paiement :', error);
     // navigation.navigate('echec')
   }
+}, 5000)
 };
 
 
