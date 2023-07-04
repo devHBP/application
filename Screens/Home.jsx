@@ -12,6 +12,7 @@ import DatePicker from 'react-native-date-picker'
 import { Badge } from 'react-native-paper';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage'
+import FooterProfile from '../components/FooterProfile';
 
 
 const Home =  ({navigation}) => {
@@ -252,7 +253,7 @@ const Home =  ({navigation}) => {
                   setDate(date);
                   dispatch(addDate(formatDate(date.toISOString())));
                   //converti en chaine de caractères
-                 console.log('date commande',formatDate(date) )
+                 //console.log('date commande',formatDate(date) )
                   //console.log('dateR', dateR)
                   //console.log('selection date store redux:', selectedDateString)
                   //console.log('selection date chaine de caractère:', selectedDateString)
@@ -375,6 +376,7 @@ const Home =  ({navigation}) => {
           </ScrollView>
          
     </View>
+    <FooterProfile />
     </>
   )
 }

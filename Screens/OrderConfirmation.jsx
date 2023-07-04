@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { defaultStyle} from '../styles/styles'
 import { Button} from 'react-native-paper'
 import { logoutUser} from '../reducers/authSlice';
+import { setNumeroCommande, setProductIds } from '../reducers/orderSlice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { WebView } from 'react-native-webview';
@@ -19,10 +20,17 @@ const OrderConfirmation = ({navigation}) => {
   const user = useSelector(state => state.auth.user);
   //console.log('user', user)
   const selectedStore = useSelector(state => state.auth.selectedStore);
+  //console.log('selecstore', selectedStore)
   const cartItems = useSelector(state => state.cart.cart); 
+  const cartProductId = cartItems.map((item) => item.productId);
+  //console.log('productsIdsCart', cartProductId)
   const selectedDateString = useSelector((state) => state.cart.date)
-  //const selectedTime = useSelector((state) => state.cart.time)
+  const selectedTime = useSelector((state) => state.cart.time)
   const paiement = useSelector((state) => state.cart.paiement)
+  const numero_commande = useSelector((state) => state.order.numero_commande)
+  //console.log('orderNumber', numero_commande )
+  const productIds = useSelector((state) => state.order.productIds)
+  //console.log('productsIds', productIds )
   //console.log('date store', selectedDateString)
   //console.log('time store', selectedTime)
   //console.log('paiement store', paiement)
@@ -74,7 +82,7 @@ useEffect(() => {
   const submitHandler = async () => {
 
     const token = await AsyncStorage.getItem('userToken');
-    console.log('token valider', token)
+    //console.log('token valider', token)
 
     axios.get('http://localhost:8080/verifyToken', {
       headers: {
@@ -84,37 +92,75 @@ useEffect(() => {
     .then(response => {
       if (response.data.auth) {
           // Token is valid, continue with discount application...
-          console.log('token valide')
-          console.log('******')
-          console.log('Envoi de la commande au serveur - test')
-          console.log('Contenu du panier :', cartItems);
-          console.log('Nom:', user.lastname);
-          console.log('Prénom', user.firstname)
-          console.log('Magasin sélectionné :', selectedStore);
-          console.log('Prix total :', totalPrice);
-          console.log('Nb de produits:', totalQuantity);
-          console.log('Jour sélectionné', selectedDateString);
-          //console.log('Heure de retrait', selectedTime)
-          console.log('type de paiement', paiement)
-          console.log('******')
-      
-          setOrderInfo({
-            cartItems,
-            user,
-            selectedStore,
-            totalPrice,
-            totalQuantity,
-            selectedDateString,
-            paiement
-          });
+          // console.log('token valide')
+          // console.log('******')
+          // console.log('Envoi de la commande au serveur - test')
+          // console.log('Contenu du panier :', cartItems);
+          // console.log('productsId', cartProductId)
+          // console.log('Nom:', user.lastname);
+          // console.log('Prénom', user.firstname)
+          // console.log('Magasin sélectionné :', selectedStore);
+          // console.log('Prix total :', totalPrice);
+          // console.log('Nb de produits:', totalQuantity);
+          // console.log('Jour sélectionné', selectedDateString);
+          // console.log('Heure de retrait', selectedTime)
+          // console.log('type de paiement', paiement)
+          // console.log('******')
+
+          dispatch(setProductIds(cartProductId));
+
+          const orderData = {
+            firstname_client: user.firstname,
+            lastname_client: user.lastname,
+            prix_total: totalPrice,
+            date: selectedDateString,
+            //delivery,
+            heure: selectedTime,
+            userId: user.userId,
+            storeId: selectedStore.storeId,
+            slotId: null,
+            promotionId: null,
+            paymentMethod: paiement,
+            //transforme mon array de productsIds en chaine de caractères
+            productIdsString: cartProductId.join(",")
+          };
+          //console.log('orderdata', orderData)
+
+          const createOrder = async () => {
+            try {
+              const response =  await axios.post('http://localhost:8080/createorder', orderData);
+              const numero_commande = response.data.numero_commande
+              //console.log('numero_commande', response.data.numero_commande)
+              dispatch(setNumeroCommande(numero_commande));
+
+              setOrderInfo({
+                cartItems,
+                user,
+                selectedStore,
+                totalPrice,
+                totalQuantity,
+                selectedDateString,
+                paiement
+              });
+
+              console.log('response createOrder', response.data)
+              return response.data;
+            } catch (error) {
+              console.error(error);
+              throw new Error('Erreur lors de la création de la commande');
+            }
+        
+          }
+         createOrder()
+          
       } else {
           // Token is not valid, show error...
-          //console.log('token invalide')
-          handleLogout()
+          console.log('erreur ici', error)
+          //handleLogout()
       }
   })
   .catch(error => {
-    //console.log('token invalide catch')
+    console.log('erreur', error)
     handleLogout()
     return Toast.show({
       type: 'error',
@@ -137,7 +183,7 @@ const checkPaymentStatus = async () => {
     const response = await axios.get(`http://localhost:8080/paiementStatus?sessionId=${sessionId}`);
     //console.log('response front', response)
      const { status, transactionId, method } = response.data;
-     console.log('response data', response.data)
+     console.log('response PaiementStatus', response.data)
      // retour : response data {"status": "paid", "transactionId": "pi_3NOFjcGnFAjiWNhK0KP6l8Nl"}
      //rajouter idPayment
 
@@ -152,7 +198,15 @@ const checkPaymentStatus = async () => {
       };
   
       const updateResponse = await axios.post('http://localhost:8080/createPaiement', paymentData);
-      console.log('Response from updatePayment:', updateResponse.data);
+      console.log('Response createPaiement:', updateResponse.data);
+      //console.log('paymentId', updateResponse.data.paymentId)
+      const paymentId = updateResponse.data.paymentId
+
+      const updateData = { numero_commande, status, paymentId}
+      //console.log('updData', updateData)
+
+      const response = await axios.post('http://localhost:8080/updateOrder', updateData);
+      console.log('response updateOrder', response.data)
       
       navigation.navigate('success')
     }

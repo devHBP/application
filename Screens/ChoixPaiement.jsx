@@ -11,7 +11,7 @@ const ChoixPaiement = ({navigation}) => {
     const dispatch = useDispatch()
   
     const choixpaiement = useSelector((state) => state.cart.paiement)
-    console.log('choix paiement:', choixpaiement)
+    //console.log('choix paiement:', choixpaiement)
 
     const [paiement, setPaiement] = useState('')
 

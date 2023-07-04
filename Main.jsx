@@ -12,6 +12,7 @@ import ChoixPaiement from './Screens/ChoixPaiement'
 import OrderConfirmation from './Screens/OrderConfirmation'
 import Stores from './Screens/Stores'
 
+
 const Main = () => {
 
     const Stack = createNativeStackNavigator();
@@ -41,8 +42,7 @@ const Main = () => {
             </Stack.Navigator>
 
             <Toast  position="bottom"/>
-        </NavigationContainer>
-        
+        </NavigationContainer>        
       )
     }
 export default Main

@@ -42,7 +42,7 @@ const Login = ({navigation}) => {
 
             // //stockage du token dans asyncstorage
             const token = res.data.token;
-            console.log('token login', token)
+            //console.log('token login', token)
             await AsyncStorage.setItem('userToken', token);
 
             const selectedStoreId = user.storeId;
