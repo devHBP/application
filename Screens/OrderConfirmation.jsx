@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { defaultStyle} from '../styles/styles'
 import { Button} from 'react-native-paper'
 import { logoutUser} from '../reducers/authSlice';
-import { setNumeroCommande, setProductIds } from '../reducers/orderSlice';
+import { setNumeroCommande, setProducts } from '../reducers/orderSlice';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios';
 import { WebView } from 'react-native-webview';
@@ -22,14 +22,16 @@ const OrderConfirmation = ({navigation}) => {
   const selectedStore = useSelector(state => state.auth.selectedStore);
   //console.log('selecstore', selectedStore)
   const cartItems = useSelector(state => state.cart.cart); 
-  const cartProductId = cartItems.map((item) => item.productId);
+  //const cartProductId = cartItems.map((item) => item.productId);
+  const products = useSelector((state) => state.order.products);
+  console.log('products', products)
   //console.log('productsIdsCart', cartProductId)
   const selectedDateString = useSelector((state) => state.cart.date)
   const selectedTime = useSelector((state) => state.cart.time)
   const paiement = useSelector((state) => state.cart.paiement)
   const numero_commande = useSelector((state) => state.order.numero_commande)
   //console.log('orderNumber', numero_commande )
-  const productIds = useSelector((state) => state.order.productIds)
+  //const productIds = useSelector((state) => state.order.productIds)
   //console.log('productsIds', productIds )
   //console.log('date store', selectedDateString)
   //console.log('time store', selectedTime)
@@ -107,7 +109,7 @@ useEffect(() => {
           // console.log('type de paiement', paiement)
           // console.log('******')
 
-          dispatch(setProductIds(cartProductId));
+          dispatch(setProducts(cartItems));
 
           const orderData = {
             firstname_client: user.firstname,
@@ -122,7 +124,8 @@ useEffect(() => {
             promotionId: null,
             paymentMethod: paiement,
             //transforme mon array de productsIds en chaine de caractères
-            productIdsString: cartProductId.join(",")
+            //productIdsString: cartProductId.join(",")
+            products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty })) 
           };
           //console.log('orderdata', orderData)
 

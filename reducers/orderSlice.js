@@ -5,6 +5,7 @@ const orderSlice = createSlice({
   initialState: {
     numero_commande: '',
     productIds: [],
+    products: [],
   },
   reducers: {
     setNumeroCommande: (state, action) => {
@@ -13,8 +14,11 @@ const orderSlice = createSlice({
     setProductIds: (state, action) => {
       state.productIds = action.payload;
     },
+    setProducts: (state, action) => { // Ajoutez ceci
+      state.products = action.payload;
+    },
   },
 });
 
-export const { setNumeroCommande, setProductIds } = orderSlice.actions;
+export const { setNumeroCommande, setProductIds, setProducts } = orderSlice.actions;
 export default orderSlice.reducer;
