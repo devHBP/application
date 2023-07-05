@@ -412,7 +412,8 @@ const style = StyleSheet.create({
   cardScrollview:{
     flexDirection: 'row', 
     flexWrap: 'wrap', 
-    width:"100%", 
+    width:"100%",
+    paddingBottom:40 
   }
 });
 

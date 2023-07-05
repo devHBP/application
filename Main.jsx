@@ -11,6 +11,7 @@ import SuccessPage from './Screens/SuccessPage'
 import ChoixPaiement from './Screens/ChoixPaiement'
 import OrderConfirmation from './Screens/OrderConfirmation'
 import Stores from './Screens/Stores'
+import Profile from './Screens/Profile'
 
 
 const Main = () => {
@@ -35,6 +36,7 @@ const Main = () => {
                 <Stack.Screen name='signup' component={Signup}/>
                 <Stack.Screen name="stores" component={Stores}/>
                 <Stack.Screen name='home' component={Home}/>
+                <Stack.Screen name='profile' component={Profile}/>
                 <Stack.Screen name='panier' component={Panier}/>
                 <Stack.Screen name='choixpaiement' component={ChoixPaiement}/>
                 <Stack.Screen name='orderconfirm' component={OrderConfirmation}/>

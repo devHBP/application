@@ -1,11 +1,18 @@
 import { View, StyleSheet } from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
+import { useNavigation } from '@react-navigation/native'
 
 const FooterProfile = () => {
+  //on utilise ici useNavigation et non pas navigation car le footer n'est pas dans la pile de screens
+  const navigation = useNavigation()
+
+  const openProfile = () => {
+    navigation.navigate('profile')
+  }
   return (
     <View style={style.profile}>
-      <Icon name="person" size={30} color="#000" style={style.icon} />
+      <Icon name="person" size={30} color="#000" style={style.icon} onPress={openProfile}/>
     </View>
   )
 }
