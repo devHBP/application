@@ -178,6 +178,12 @@ const Home =  ({navigation}) => {
   
 };
 
+//direction vers la page de détails
+const handleProductPress = (product) => {
+  // Navigate to the product detail page and pass the product data
+  navigation.navigate('details', { product });
+};
+
 
   return (
     <>
@@ -361,16 +367,21 @@ const Home =  ({navigation}) => {
               //.filter((item) => (selectedCategory === 'Tous les produits' ? true : item.categorie === selectedCategory))
  
               .map((item, index) => (
-                <ProductCard
-                  libelle={item.libelle}
-                  key={item.productId}
-                  id={item.productId}
-                  index={index}
-                  image={item.image}
-                  prix={item.prix_unitaire}
-                  qty={item.qty}
-                  stock={item.stock}
-                />
+                <View key={item.productId} style={style.productContainer}>
+                <TouchableOpacity key={item.productId} onPress={() => handleProductPress(item)}>
+                    <ProductCard
+                      libelle={item.libelle}
+                      key={item.productId}
+                      id={item.productId}
+                      index={index}
+                      image={item.image}
+                      prix={item.prix_unitaire}
+                      qty={item.qty}
+                      stock={item.stock}
+                  />
+                </TouchableOpacity>
+                </View>
+                
               ))}
               </View> 
           </ScrollView>
@@ -414,7 +425,11 @@ const style = StyleSheet.create({
     flexWrap: 'wrap', 
     width:"100%",
     paddingBottom:40 
-  }
+  },
+  productContainer: {
+    width: '50%', // Adjust the width as per your design requirements
+    padding: 5,
+  },
 });
 
 export default Home

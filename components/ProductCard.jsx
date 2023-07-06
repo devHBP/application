@@ -39,22 +39,23 @@ const ProductCard = ({libelle, id, image, prix, qty, stock  }) => {
     
   return (
     <View style={style.card_container}>
-        
+         <View style={style.image_container}>
         <Image 
             // source={image.uri}
             source={{ uri: `${baseUrl}/${image}` }}
             style={{
-                    width: 160,
+                    width: "100%",
                     height: 135,
                     resizeMode: "cover",
                     borderTopLeftRadius:10,
                     borderTopRightRadius:10,
                     }}
         />
+        </View>
 
             <View style={{
                 width: "100%",
-                height:90,
+                height:80,
                 }}>
             
                 <View
@@ -62,7 +63,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock  }) => {
                     flexDirection: "column",
                     justifyContent: "center",
                     width: "100%",
-                    height:70,
+                    height:100,
                     backgroundColor:'white',
                     gap: 5,
                     }}
@@ -73,7 +74,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock  }) => {
                         fontSize: 16,
                         fontWeight: "300",
                         width: "100%",
-                        textAlign:'center'
+                        textAlign:'center',
                         }}
                     >
                         {libelle}
@@ -122,16 +123,21 @@ const style = StyleSheet.create({
     
     card_container:{
         flexDirection:'column', 
-        width:"46%", 
+        width:"100%", 
         justifyContent:'center', 
         alignItems:'center', 
-        height:220, 
-        gap: 10, 
+        height:220,
         backgroundColor:'white', 
-        padding:20, 
+        //padding:20, 
         marginVertical: 10, 
         marginHorizontal:5,
         borderRadius:10
+        },
+        image_container: {
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          width:"100%"
         },
         qtyText: {
             backgroundColor: 'white',
