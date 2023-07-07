@@ -10,22 +10,12 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const ProductCard = ({libelle, id, image, prix, qty, stock  }) => {
 
-  //console.log('prix product card', prix)
-  //console.log('stock', stock)
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
-    //console.log('cart', cart)
     const product = cart.find((item) => item.productId === id);
-    //console.log('product', product)
-
 
     const baseUrl = 'http://127.0.0.1:8080';
-
-    // const incrementhandler = () => {
-    //     dispatch(addToCart({ id, libelle, image, prix, qty: qty + 1 }));
-    //   };
-
 
     const incrementhandler = () => {
         
@@ -46,7 +36,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock  }) => {
             style={{
                     width: "100%",
                     height: 135,
-                    resizeMode: "cover",
+                     resizeMode: "cover",
                     borderTopLeftRadius:10,
                     borderTopRightRadius:10,
                     }}
@@ -124,8 +114,8 @@ const style = StyleSheet.create({
     card_container:{
         flexDirection:'column', 
         width:"100%", 
-        justifyContent:'center', 
-        alignItems:'center', 
+        //justifyContent:'center', 
+        //alignItems:'center', 
         height:220,
         backgroundColor:'white', 
         //padding:20, 

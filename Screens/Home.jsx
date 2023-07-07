@@ -184,17 +184,21 @@ const handleProductPress = (product) => {
 const handleSearch = (query) => {
   setSearchQuery(query);
 
-  const filtered = products.filter((product) =>
-    product.nom.toLowerCase().includes(query.toLowerCase())
-  );
-  setFilteredProducts(filtered);
+  if (query) {
+    const filtered = products.filter((product) =>
+      product.libelle ? product.libelle.toLowerCase().includes(query.toLowerCase()) : false
+    );
+    setFilteredProducts(filtered);
+  } else {
+    setFilteredProducts(products);
+  }
 };
 
 
 
   return (
     <>
-    <View style={{...defaultStyle, alignItems:'center', flex:1, paddingHorizontal:5, paddingVertical:20}}>
+    <View style={{...defaultStyle, flex:1, paddingHorizontal:5, paddingVertical:20}}>
    
       <View style={style.bandeau}>
       <View>
@@ -376,7 +380,7 @@ const handleSearch = (query) => {
           <ScrollView vertical showsVerticalScrollIndicator={false}>
            <View style={style.cardScrollview}>
             
-          {products
+          {filteredProducts
               .filter((item) =>
              
                 selectedCategory ? item.categorie === selectedCategory : true
@@ -439,9 +443,9 @@ const style = StyleSheet.create({
   },
   cardScrollview:{
     flexDirection: 'row', 
-    flexWrap: 'wrap', 
+    flexWrap: 'wrap',
     width:"100%",
-    paddingBottom:40 
+    paddingBottom:40 ,
   },
   productContainer: {
     width: '50%', // Adjust the width as per your design requirements
