@@ -1,5 +1,5 @@
-import { View, TouchableOpacity, Image, Text, StyleSheet } from 'react-native'
-import React, { useEffect} from 'react'
+import { View, TouchableOpacity, Image, Text, StyleSheet, TextInput } from 'react-native'
+import React, { useEffect, useState} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { defaultStyle} from '../styles/styles'
 import { Button, Badge } from 'react-native-paper'
@@ -11,12 +11,17 @@ const ProductDetails = ({navigation, route}) => {
    
     const { product } = route.params;
     //console.log('product', product)
+    const [qty, setQty] = useState('0');
 
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart.cart);
-    console.log('cart', cart)
     const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
     console.log('qty', totalQuantity)
+
+    const productInCart = useSelector((state) =>
+  state.cart.cart.find((item) => item.productId === product.productId)
+);
+const productQty = productInCart ? productInCart.qty : 0;
 
     const baseUrl = 'http://127.0.0.1:8080';
 
@@ -34,10 +39,17 @@ const ProductDetails = ({navigation, route}) => {
     }
 
     const incrementhandler = () => {
-        console.log('plus')
+        const qtyToIncrement = parseInt(qty);
+        for (let i = 0; i < qtyToIncrement; i++) {
+            const productWithQty = {...product, qty: 1};
+            dispatch(addToCart(productWithQty));
+        }
     }
 
     const decrementhandler = () => {
+        for(let i=0; i<parseInt(qty); i++){
+            dispatch(decrementOrRemoveFromCart(product));
+        }
         console.log('moins')
     }
     
@@ -83,7 +95,13 @@ const ProductDetails = ({navigation, route}) => {
                                 <Icon name="remove" size={30} color="#000" />
                             </TouchableOpacity>
                             {/* <Text style={style.qtyText}>{cart[index].qty}</Text> */}
-                            <Text style={style.qtyText}>{product ? product.qty : 0}</Text>
+                            {/* <Text style={style.qtyText}>{productQty}</Text> */}
+                            <TextInput 
+                                style={style.qtyText}
+                                keyboardType='numeric'
+                                value={qty}
+                                onChangeText={text => setQty(text)}
+                            />
                             <TouchableOpacity
                                 onPress={incrementhandler}
                             >
