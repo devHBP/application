@@ -32,25 +32,30 @@ const productQty = productInCart ? productInCart.qty : 0;
         navigation.navigate('panier')
     };
 
-    const handleAddtoCart = () => {
+    // const handleAddtoCart = () => {
+    //     const productWithQty = {...product, qty: 1};
+    //     dispatch(addToCart(productWithQty));
+    //     console.log(product.productId);
+    // }
+
+    const incrementhandler = () => {
+        // const qtyToIncrement = parseInt(qty);
+        // for (let i = 0; i < qtyToIncrement; i++) {
+        //     const productWithQty = {...product, qty: 1};
+        //     dispatch(addToCart(productWithQty));
+        // }
         const productWithQty = {...product, qty: 1};
         dispatch(addToCart(productWithQty));
         console.log(product.productId);
     }
 
-    const incrementhandler = () => {
-        const qtyToIncrement = parseInt(qty);
-        for (let i = 0; i < qtyToIncrement; i++) {
-            const productWithQty = {...product, qty: 1};
-            dispatch(addToCart(productWithQty));
-        }
-    }
-
     const decrementhandler = () => {
-        for(let i=0; i<parseInt(qty); i++){
-            dispatch(decrementOrRemoveFromCart(product));
-        }
-        console.log('moins')
+        // for(let i=0; i<parseInt(qty); i++){
+        //     dispatch(decrementOrRemoveFromCart(product));
+        // }
+        // console.log('moins')
+        const productWithQty = {...product, qty: 1};
+        dispatch(decrementOrRemoveFromCart(productWithQty ));
     }
     
      
@@ -82,10 +87,10 @@ const productQty = productInCart ? productInCart.qty : 0;
             </View>
 
             <View>
-                <Button 
+                {/* <Button 
                 buttonColor='lightgray' 
                 onPress={handleAddtoCart}
-            >Ajouter au panier</Button>
+            >Ajouter au panier</Button> */}
             </View>
 
             <View style={style.qtyContainer}>
@@ -95,13 +100,13 @@ const productQty = productInCart ? productInCart.qty : 0;
                                 <Icon name="remove" size={30} color="#000" />
                             </TouchableOpacity>
                             {/* <Text style={style.qtyText}>{cart[index].qty}</Text> */}
-                            {/* <Text style={style.qtyText}>{productQty}</Text> */}
-                            <TextInput 
+                            <Text style={style.qtyText}>{productQty}</Text>
+                            {/* <TextInput 
                                 style={style.qtyText}
                                 keyboardType='numeric'
                                 value={qty}
                                 onChangeText={text => setQty(text)}
-                            />
+                            /> */}
                             <TouchableOpacity
                                 onPress={incrementhandler}
                             >
