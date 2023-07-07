@@ -1,19 +1,22 @@
 import { View, TouchableOpacity, Image, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useEffect} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { defaultStyle} from '../styles/styles'
 import { Button, Badge } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux'
+import {  addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
 
 const ProductDetails = ({navigation, route}) => {
 
+   
     const { product } = route.params;
     //console.log('product', product)
 
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart.cart);
+    console.log('cart', cart)
     const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
-  
+    console.log('qty', totalQuantity)
 
     const baseUrl = 'http://127.0.0.1:8080';
 
@@ -25,7 +28,9 @@ const ProductDetails = ({navigation, route}) => {
     };
 
     const handleAddtoCart = () => {
-        console.log(product.productId)
+        const productWithQty = {...product, qty: 1};
+        dispatch(addToCart(productWithQty));
+        console.log(product.productId);
     }
 
     const incrementhandler = () => {
