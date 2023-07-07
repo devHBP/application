@@ -13,34 +13,40 @@ import { Badge } from 'react-native-paper';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import FooterProfile from '../components/FooterProfile';
+import { SearchBar } from 'react-native-elements';
 
 
 const Home =  ({navigation}) => {
 
   const [date, setDate] = useState(null)
   const [openDate, setOpenDate] = useState(false)
-  const dateRedux = useSelector((state) => state.cart.date)
-  //console.log('home date',dateRedux)
   const [time, setTime] = useState()
   const [openTime, setOpenTime] = useState(false)
+  const [stores, setStores] = useState([]);
+  const [role, setRole] = useState('');
+  const [ selectedCategory, setSelectedCategory] = useState(null)
+  const [ products, setProducts] = useState([])
+  const [ categories, setCategories] = useState([])
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredProducts, setFilteredProducts] = useState(products); // Replace 'products' with your actual product data
+  const dateRedux = useSelector((state) => state.cart.date)
   const timeRedux = useSelector((state) => state.cart.time)
-  //console.log('home time',timeRedux)
- 
-  const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  const cart = useSelector((state) => state.cart.cart);
+  const selectedStore = useSelector((state) => state.auth.selectedStore);
+  const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
+
+  const dispatch = useDispatch();
+
+  //console.log('home time',timeRedux)
+   //console.log('home date',dateRedux)
   //console.log('user role', user)
   //// const { firstname, lastname, adresse } = user;
-  const cart = useSelector((state) => state.cart.cart);
   //console.log('cart home', cart)
-  const selectedStore = useSelector((state) => state.auth.selectedStore);
   //const selectedDateString = useSelector((state) => state.cart.date); //chaine de caractère
   //const selectedDate = new Date(selectedDateString); //objet Date
   //console.log('selected store page home:', selectedStore)
-
   // const [selectedDate, setSelectedDate] = useState(null);
-
-  const [stores, setStores] = useState([]);
-  const [role, setRole] = useState('');
   //console.log('role', role)
 
   const allStores = async () => {
@@ -69,15 +75,6 @@ const Home =  ({navigation}) => {
         console.error('Erreur lors de la récupération du rôle de l\'utilisateur:', error);
       });
   }, [])
-
-  //total d'articles dans le panier pour le badge
-  const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
-  //console.log(totalQuantity);
- 
-
-  const [ selectedCategory, setSelectedCategory] = useState(null)
-  const [ products, setProducts] = useState([])
-  const [ categories, setCategories] = useState([])
 
   useEffect(() => {
     // Fonction pour récupérer les données de la base de données
@@ -183,6 +180,16 @@ const handleProductPress = (product) => {
   // Navigate to the product detail page and pass the product data
   navigation.navigate('details', { product });
 };
+
+const handleSearch = (query) => {
+  setSearchQuery(query);
+
+  const filtered = products.filter((product) =>
+    product.nom.toLowerCase().includes(query.toLowerCase())
+  );
+  setFilteredProducts(filtered);
+};
+
 
 
   return (
@@ -317,6 +324,7 @@ const handleProductPress = (product) => {
     
       </View>
       <View style={style.logos}>
+      <Icon name="search" size={30} color="#000"  />
         <Badge visible={cart.length > 0} size={18} style={style.badge}>
           {totalQuantity}
         </Badge>
@@ -353,6 +361,15 @@ const handleProductPress = (product) => {
           }
           {/* </ScrollView> */}
         </View>
+
+        {/* SearchBar */}
+        <SearchBar
+          placeholder="Search products..."
+          onChangeText={handleSearch}
+          value={searchQuery}
+          containerStyle={style.searchBarContainer}
+          inputContainerStyle={style.searchBarInputContainer}
+        />
 
           {/* card products */}
         
@@ -429,6 +446,17 @@ const style = StyleSheet.create({
   productContainer: {
     width: '50%', // Adjust the width as per your design requirements
     padding: 5,
+  },
+  searchBarContainer: {
+    backgroundColor: 'transparent',
+    borderTopWidth: 0,
+    borderBottomWidth: 0,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    width:"100%"
+  },
+  searchBarInputContainer: {
+    backgroundColor: '#e0e0e0',
   },
 });
 
