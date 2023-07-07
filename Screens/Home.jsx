@@ -61,7 +61,8 @@ const Home =  ({navigation}) => {
 
   useEffect(() => {
     allStores();
-  }, []);
+    setFilteredProducts(products)
+  }, [products]);
 
   useEffect(() => {
     // Effectuez une requête GET pour récupérer le rôle de l'utilisateur
@@ -328,7 +329,6 @@ const handleSearch = (query) => {
     
       </View>
       <View style={style.logos}>
-      <Icon name="search" size={30} color="#000"  />
         <Badge visible={cart.length > 0} size={18} style={style.badge}>
           {totalQuantity}
         </Badge>
