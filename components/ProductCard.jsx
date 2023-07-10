@@ -3,6 +3,8 @@ import React, { useState} from 'react'
 import { Button } from 'react-native-paper'
 import { updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
+import axios from 'axios'
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -17,10 +19,49 @@ const ProductCard = ({libelle, id, image, prix, qty, stock  }) => {
 
     const baseUrl = 'http://127.0.0.1:8080';
 
-    const incrementhandler = () => {
+    //verification des stocks - global
+    const checkStock = async () => {
+      try {
+        const stockResponse = await axios.get(`http://localhost:8080/getStockByProduct/${id}`);
+        const stockByProduct = stockResponse.data;
+        //console.log('stock', stockByProduct)
+        return stockByProduct; 
+      } catch (error) {
+        console.error("Une erreur s'est produite lors de la récupération du stock :", error);
+      }
+    }
         
-        dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 }));
-      };
+    // incrementhandler function
+const incrementhandler = async () => {
+  try {
+    const stockAvailable = await checkStock();
+    //console.log('stockAvailable', stockAvailable);
+    //console.log(stockAvailable[0].quantite)
+    
+    // Get the product from the cart
+    const productInCart = cart.find((item) => item.productId === id);
+
+    // Calculate the remaining stock after accounting for the items in the cart
+    const remainingStock = stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
+
+    if (stockAvailable.length > 0 && remainingStock > 0) {
+      // The stock is sufficient, add the product to the cart
+      dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 }));
+      //console.log('Le stock est suffisant pour ajouter la quantité spécifiée.');
+    } else {
+      // The stock is insufficient
+      //console.log(`Le stock est insuffisant pour ajouter la quantité spécifiée.,Quantités max: ${stockAvailable[0].quantite}`);
+      return Toast.show({
+        type: 'error',
+        text1: `Victime de son succès`,
+        text2: `Quantité maximale: ${stockAvailable[0].quantite}` 
+      });
+    }
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
+  }
+};
+
    
     const decrementhandler = () => {
 
