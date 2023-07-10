@@ -2,7 +2,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native
 import React, { useEffect, useState} from 'react'
 import { defaultStyle} from '../styles/styles'
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector} from 'react-redux'
 import { Button } from 'react-native-paper'
 import axios from 'axios'
 
@@ -10,23 +10,35 @@ const Orders = ({navigation}) => {
 
     const user = useSelector((state) => state.auth.user);
     const userId = user.userId
-    //console.log('userId', userId)
     const [orders, setOrders] = useState([]);
     const [expandedOrderIds, setExpandedOrderIds] = useState([]);
+    const [cancelledOrder, setCancelledOrder] = useState(null);
 
     const handleBack = () => {
         navigation.navigate('home');
       };
-    const handleCancel = () => {
-        console.log('cancel')
+    
+    const handleCancel = async (orderId) => {
+        try {
+            const response = await axios.post(`http://127.0.0.1:8080/cancelOrder`, { orderId });
+            setCancelledOrder(orderId); 
+        } catch (error) {
+            console.error('An error occurred while updating the order status:', error);
+        }
     }
+    //mise à jour des commandes si commande annulée
+    useEffect(() => {
+        if (cancelledOrder !== null) {
+          allMyOrders();
+        }
+      }, [cancelledOrder]);
     
       //recupérer toutes les commandes du user
       const allMyOrders = async () => {
         try {
           const response = await axios.get(`http://127.0.0.1:8080/ordersOfUser/${userId}`);
           const orders = response.data;
-          console.log('orders', orders)
+          //console.log('orders', orders)
           const ordersWithDetails = await Promise.all(orders.map(async order => {
             const productResponse = await axios.get(`http://127.0.0.1:8080/getOrderProducts/${order.orderId}`);
             const products = productResponse.data;
@@ -91,7 +103,9 @@ const Orders = ({navigation}) => {
                     <Button 
                         buttonColor='lightgray'
                         style={ style.btn} 
-                        onPress={handleCancel}>
+                        onPress={() => handleCancel(item.orderId)}
+                        disabled={item.status === 'annulee'} 
+                    >
                             Annuler
                     </Button>
                 </View>
@@ -101,27 +115,25 @@ const Orders = ({navigation}) => {
     
   return (
     <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: 'white', margin: 30, paddingHorizontal: 5 }}>
+
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
-        
             <Icon name="arrow-back" size={30} color="#900" onPress={handleBack} />
-        
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>Mes commandes</Text>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>Mes commandes</Text>
         </View>
 
         <View>
-           
             <FlatList
                 data={orders}
                 renderItem={renderItem}
                 keyExtractor={item => item.orderId.toString()}
             />
         </View>
+
     </View>
   )
 }
 
 const style = StyleSheet.create({
-    
     btn:{
         marginVertical:10,
         width:"50%",
