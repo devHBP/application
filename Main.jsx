@@ -14,6 +14,7 @@ import Stores from './Screens/Stores'
 import Profile from './Screens/Profile'
 import ProductCard from './components/ProductCard'
 import ProductDetails from './Screens/ProductDetails'
+import Orders from './Screens/Orders'
 
 
 const Main = () => {
@@ -40,6 +41,7 @@ const Main = () => {
                 <Stack.Screen name='home' component={Home}/>
                 <Stack.Screen name='details' component={ProductDetails}/>
                 <Stack.Screen name='profile' component={Profile}/>
+                <Stack.Screen name='orders' component={Orders}/>
                 <Stack.Screen name='panier' component={Panier}/>
                 <Stack.Screen name='choixpaiement' component={ChoixPaiement}/>
                 <Stack.Screen name='orderconfirm' component={OrderConfirmation}/>

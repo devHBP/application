@@ -1,4 +1,4 @@
-import { View, TouchableOpacity } from 'react-native'
+import { View, Text } from 'react-native'
 import React, { useEffect} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { defaultStyle} from '../styles/styles'
@@ -41,10 +41,13 @@ const Profile =  ({navigation}) => {
     
 
   return (
-    <View style={{...defaultStyle, padding:20}}>
-      <TouchableOpacity onPress={handleBack}>
-           <Icon name="arrow-back" size={30} color="#900" />
-         </TouchableOpacity>
+    <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: 'white', margin: 30, paddingHorizontal: 5 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
+      
+            <Icon name="arrow-back" size={30} color="#900"  onPress={handleBack}/>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>Mon Profil</Text>
+          
+      </View>
     </View>
   )
 }
