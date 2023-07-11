@@ -4,7 +4,7 @@ import { defaultStyle} from '../styles/styles'
 import React, {useState, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { logoutUser, updateSelectedStore, updateUser} from '../reducers/authSlice';
-import { addDate, addTime, resetDateTime} from '../reducers/cartSlice';
+import { addDate, addTime, clearCart, resetDateTime} from '../reducers/cartSlice';
 import ProductCard from '../components/ProductCard'
 import axios from 'axios'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -32,6 +32,7 @@ const Home =  ({navigation}) => {
   const dateRedux = useSelector((state) => state.cart.date)
   const timeRedux = useSelector((state) => state.cart.time)
   const user = useSelector((state) => state.auth.user);
+  console.log('user Home', user)
   const cart = useSelector((state) => state.cart.cart);
   const selectedStore = useSelector((state) => state.auth.selectedStore);
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
@@ -59,7 +60,8 @@ const Home =  ({navigation}) => {
       .then(response => {
         //console.log(response.data.role)
         const role  = response.data.role;
-         setRole(role);
+         setRole(role); 
+         dispatch(updateUser(response.data))
       })
       .catch(error => {
         console.error('Erreur lors de la récupération du rôle de l\'utilisateur:', error);
@@ -107,6 +109,7 @@ const Home =  ({navigation}) => {
     setDate(null)
     setTime(null)
     dispatch(logoutUser(selectedStore)); 
+    dispatch(clearCart())
     navigation.navigate('app')
   }
 
