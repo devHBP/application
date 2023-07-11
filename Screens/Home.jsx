@@ -38,17 +38,6 @@ const Home =  ({navigation}) => {
 
   const dispatch = useDispatch();
 
-  //console.log('home time',timeRedux)
-   //console.log('home date',dateRedux)
-  //console.log('user role', user)
-  //// const { firstname, lastname, adresse } = user;
-  //console.log('cart home', cart)
-  //const selectedDateString = useSelector((state) => state.cart.date); //chaine de caractère
-  //const selectedDate = new Date(selectedDateString); //objet Date
-  //console.log('selected store page home:', selectedStore)
-  // const [selectedDate, setSelectedDate] = useState(null);
-  //console.log('role', role)
-
   const allStores = async () => {
     try {
       const response = await axios.get('http://127.0.0.1:8080/getAllStores');
@@ -99,16 +88,20 @@ const Home =  ({navigation}) => {
   }, []);
 
 
-
+//filtrage par catégorie
   const categoryButtonHandler = (categorie) => {
-    //  console.log(categorie)
-    if ( categorie === 'Tous'){
+
+    if (categorie === 'Tous') {
+      setFilteredProducts(products);
       setSelectedCategory(null)
     } else {
+      const filtered = products.filter((product) => product.categorie === categorie);
+      setFilteredProducts(filtered);
       setSelectedCategory(categorie)
     }
   }
  
+  //deconnexion
   const handleLogout = () => {
     dispatch(resetDateTime())
     setDate(null)
@@ -141,6 +134,7 @@ const Home =  ({navigation}) => {
     return `${hours}h${minutes}`;
   };
 
+  //commande possible jusqu'à la veille au soir
   const isTomorrowOrLater = (selectedDate) => {
     const currentDate = new Date();
     currentDate.setHours(23, 59, 0, 0); // Set current date to today at 23:59
@@ -178,10 +172,10 @@ const Home =  ({navigation}) => {
 
 //direction vers la page de détails
 const handleProductPress = (product) => {
-  // Navigate to the product detail page and pass the product data
   navigation.navigate('details', { product });
 };
 
+//search via searchbar
 const handleSearch = (query) => {
   setSearchQuery(query);
 
@@ -195,6 +189,13 @@ const handleSearch = (query) => {
   }
 };
 
+//classement par catégories
+const groupedAndSortedProducts = filteredProducts.reduce((acc, cur) => {
+  (acc[cur.categorie] = acc[cur.categorie] || []).push(cur);
+  return acc;
+}, {});
+
+const sortedCategories = Object.keys(groupedAndSortedProducts).sort();
 
 
   return (
@@ -270,11 +271,6 @@ const handleSearch = (query) => {
                 if (isTomorrowOrLater(date)) {
                   setDate(date);
                   dispatch(addDate(formatDate(date.toISOString())));
-                  //converti en chaine de caractères
-                 //console.log('date commande',formatDate(date) )
-                  //console.log('dateR', dateR)
-                  //console.log('selection date store redux:', selectedDateString)
-                  //console.log('selection date chaine de caractère:', selectedDateString)
                   return Toast.show({
                     type: 'success',
                     text1: 'Succès',
@@ -326,8 +322,8 @@ const handleSearch = (query) => {
                 }}
               /> 
         )} 
-    
       </View>
+
       <View style={style.logos}>
         <Badge visible={cart.length > 0} size={18} style={style.badge}>
           {totalQuantity}
@@ -335,8 +331,8 @@ const handleSearch = (query) => {
         <Icon name="shopping-cart" size={30} color="#000" onPress={handleNavigateToCart} style={style.container}/>
         <Icon name="logout" size={30} color="#000" onPress={() => handleLogout()} />
       </View>
+
     </View>
-      
 
       {/* categories */}
       <View style={style.categories}>
@@ -344,18 +340,8 @@ const handleSearch = (query) => {
           {
             categories.map((item, index) => (
               <Pressable title="button" 
-                style={{
-                  borderRadius:50,
-                  height:30,
-                  marginVertical:5,
-                  marginHorizontal:10,
-                  paddingHorizontal:10,
-                  justifyContent:'center',
-                  alignItems:'center',
-                  borderColor:'lightgray',
-                  borderWidth:1,
-                  backgroundColor: item.categorie === selectedCategory ? 'lightblue' : 'white'
-                }} 
+                style={{...style.btn_categorie, 
+                backgroundColor: item === selectedCategory ? 'lightgrey' : 'white'} }
                 key={index}
                 onPress={() => categoryButtonHandler(item)}
               >
@@ -377,36 +363,40 @@ const handleSearch = (query) => {
 
           {/* card products */}
         
-          <ScrollView vertical showsVerticalScrollIndicator={false}>
-           <View style={style.cardScrollview}>
+        <ScrollView vertical showsVerticalScrollIndicator={false}>
+          <View style={style.cardScrollview}>
+            {sortedCategories
             
-          {filteredProducts
-              .filter((item) =>
-             
-                selectedCategory ? item.categorie === selectedCategory : true
-              )
-              //.filter((item) => (selectedCategory === 'Tous les produits' ? true : item.categorie === selectedCategory))
- 
-              .map((item, index) => (
-                <View key={item.productId} style={style.productContainer}>
-                <TouchableOpacity key={item.productId} onPress={() => handleProductPress(item)}>
-                    <ProductCard
-                      libelle={item.libelle}
+            .map((category) => (
+              <React.Fragment key={category}>
+                <Text style={style.categoryTitle}>{category}</Text>
+                {groupedAndSortedProducts[category]
+                .sort((a, b) => a.libelle.localeCompare(b.libelle))
+                .map((item, index) => (
+                  <View key={item.productId} style={style.productContainer}>
+                    <TouchableOpacity
                       key={item.productId}
-                      id={item.productId}
-                      index={index}
-                      image={item.image}
-                      prix={item.prix_unitaire}
-                      qty={item.qty}
-                      stock={item.stock}
-                  />
-                </TouchableOpacity>
-                </View>
-                
-              ))}
-              </View> 
-          </ScrollView>
-         
+                      onPress={() => handleProductPress(item)}
+                    >
+                      <ProductCard
+                        libelle={item.libelle}
+                        key={item.productId}
+                        id={item.productId}
+                        index={index}
+                        image={item.image}
+                        prix={item.prix_unitaire}
+                        qty={item.qty}
+                        stock={item.stock}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </React.Fragment>
+            ))}
+          </View>
+
+        </ScrollView>
+
     </View>
     <FooterProfile />
     </>
@@ -441,6 +431,21 @@ const style = StyleSheet.create({
     justifyContent:'center', 
     marginVertical: 20,
   },
+  btn_categorie:{
+    borderRadius:50,
+    height:30,
+    marginVertical:5,
+    marginHorizontal:10,
+    paddingHorizontal:10,
+    justifyContent:'center',
+    alignItems:'center',
+    borderColor:'lightgray',
+    borderWidth:1,  
+  },
+  categoryTitle:{
+    width:"100%",
+    marginVertical:10,
+  },
   cardScrollview:{
     flexDirection: 'row', 
     flexWrap: 'wrap',
@@ -448,7 +453,7 @@ const style = StyleSheet.create({
     paddingBottom:40 ,
   },
   productContainer: {
-    width: '50%', // Adjust the width as per your design requirements
+    width: '50%', 
     padding: 5,
   },
   searchBarContainer: {
