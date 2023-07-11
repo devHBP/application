@@ -6,6 +6,7 @@ const initialState = {
     firstname: '',
     lastname: '',
     adresse: '',
+    role:'',
     // Autres champs utilisateur
   },
   selectedStore: '',
