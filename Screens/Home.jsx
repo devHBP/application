@@ -1,7 +1,7 @@
 import {View, Text, Pressable, ScrollView , StyleSheet, TouchableOpacity } from 'react-native'
 import  Picker  from 'react-native-picker-select';
 import { defaultStyle} from '../styles/styles'
-import React, {useState, useEffect } from 'react'
+import React, {useState, useEffect,  createRef  } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { logoutUser, updateSelectedStore, updateUser} from '../reducers/authSlice';
 import { addDate, addTime, clearCart, resetDateTime} from '../reducers/cartSlice';
@@ -38,6 +38,7 @@ const Home =  ({navigation}) => {
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
 
   const dispatch = useDispatch();
+  const scrollViewRef = createRef();
 
   const allStores = async () => {
     try {
@@ -200,6 +201,12 @@ const groupedAndSortedProducts = filteredProducts.reduce((acc, cur) => {
 
 const sortedCategories = Object.keys(groupedAndSortedProducts).sort();
 
+//scrolltop
+const scrollToTop = () => {
+  if (scrollViewRef.current) {
+    scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+  }
+};
 
   return (
     <>
@@ -366,7 +373,8 @@ const sortedCategories = Object.keys(groupedAndSortedProducts).sort();
 
           {/* card products */}
         
-        <ScrollView vertical showsVerticalScrollIndicator={false}>
+        <ScrollView vertical showsVerticalScrollIndicator={false}  ref={scrollViewRef}
+      >
           <View style={style.cardScrollview}>
             {sortedCategories
             
@@ -396,12 +404,17 @@ const sortedCategories = Object.keys(groupedAndSortedProducts).sort();
                 ))}
               </React.Fragment>
             ))}
-          </View>
-
+          </View >
+          <TouchableOpacity onPress={scrollToTop} >
+          <Icon name="arrow-upward" size={30} style={style.scrollTop}   />
+          </TouchableOpacity>
+         
         </ScrollView>
+       
 
     </View>
     <FooterProfile />
+   
     </>
   )
 }
@@ -470,6 +483,9 @@ const style = StyleSheet.create({
   searchBarInputContainer: {
     backgroundColor: '#e0e0e0',
   },
+  scrollTop:{
+   marginBottom:100, textAlign:'center'
+  }
 });
 
 export default Home
