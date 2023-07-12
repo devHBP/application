@@ -17,6 +17,17 @@ const ProductDetails = ({navigation, route}) => {
     const [qty, setQty] = useState('0');
     const [currentStock, setCurrentStock] = useState(product.stock);
 
+    // Effet de bord pour mettre à jour le stock
+    useEffect(() => {
+    const fetchStock = async () => {
+      const stock = await checkStock(product.productId);
+      console.log('stock details', stock)
+      setCurrentStock(stock[0].quantite);
+    };
+
+    fetchStock();
+  }, [product.productId]);
+
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart.cart);
     const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
@@ -27,17 +38,6 @@ const ProductDetails = ({navigation, route}) => {
     );
     const productQty = productInCart ? productInCart.qty : 0;
 
-    // Effet de bord pour mettre à jour le stock
-    useEffect(() => {
-        const fetchStock = async () => {
-        const stock = await checkStock(product.productId);
-        console.log('stock details', stock)
-        setCurrentStock(stock[0].quantite);
-        };
-
-        fetchStock();
-    }, [product.productId]);
-
     const baseUrl = 'http://127.0.0.1:8080';
 
     const handleBack = () => {
@@ -47,19 +47,46 @@ const ProductDetails = ({navigation, route}) => {
         navigation.navigate('panier')
     };
 
-    const incrementhandler = () => {
-      
+    // const incrementhandler = () => {
+    //     const productWithQty = {...product, qty: 1};
+    //     dispatch(addToCart(productWithQty));
+    //     console.log(product.productId);
+    // }
+
+    const incrementhandler = async () => {
         if (currentStock === 0){
+          return Toast.show({
+            type: 'error',
+            text1: `Victime de son succès`,
+            text2: 'Plus de stock disponible' 
+          });
+        }
+        try {
+          const stockAvailable = await checkStock(product.productId);
+          
+          // Get the product from the cart
+          const productInCart = cart.find((item) => item.productId === product.productId);
+      
+          // Calculate the remaining stock after accounting for the items in the cart
+          const remainingStock = stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
+      
+          if (stockAvailable.length > 0 && remainingStock > 0) {
+            // The stock is sufficient, add the product to the cart
+            const productWithQty = {...product, qty: 1};
+            dispatch(addToCart(productWithQty));
+          } else {
+            // The stock is insufficient
             return Toast.show({
               type: 'error',
               text1: `Victime de son succès`,
-              text2: 'Plus de stock disponible' 
+              text2: `Quantité maximale: ${stockAvailable[0].quantite}` 
             });
           }
-        const productWithQty = {...product, qty: 1};
-        dispatch(addToCart(productWithQty));
-        console.log(product.productId);
-    }
+        } catch (error) {
+          console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
+        }
+      };
+      
 
     const decrementhandler = () => {
         const productWithQty = {...product, qty: 1};

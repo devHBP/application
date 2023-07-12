@@ -10,11 +10,13 @@ import { logoutUser} from '../reducers/authSlice';
 import CartItem from '../components/CardItems';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import { checkStock } from '../CallApi/api';
 
 const Panier = ({navigation}) => {
 
   const dispatch = useDispatch()
   const [promoCode, setPromoCode] = useState('');
+  //const [currentStock, setCurrentStock] = useState(product.stock);
 
   const cart = useSelector((state) => state.cart.cart);
   const user = useSelector((state) => state.auth.user)
@@ -27,9 +29,20 @@ const Panier = ({navigation}) => {
   const handleBack = () => {
     navigation.navigate('home');
   };
+
  
-  const incrementhandler = (index) => {
+  const incrementhandler = async (index) => {
     const product = cart[index];
+
+    const stock = await checkStock(product.productId);
+    if (stock[0].quantite <= product.qty) {
+      return Toast.show({
+        type: 'error',
+        text1: `Victime de son succès`,
+        text2: 'Plus de stock disponible' 
+      });
+    }
+    
     product.qty = 1; 
     dispatch(addToCart(product));
   }

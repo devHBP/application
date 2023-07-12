@@ -24,7 +24,7 @@ const OrderConfirmation = ({navigation}) => {
   const cartItems = useSelector(state => state.cart.cart); 
   //const cartProductId = cartItems.map((item) => item.productId);
   const products = useSelector((state) => state.order.products);
-  console.log('products', products)
+  //console.log('products', products)
   //console.log('productsIdsCart', cartProductId)
   const selectedDateString = useSelector((state) => state.cart.date)
   const selectedTime = useSelector((state) => state.cart.time)
@@ -127,7 +127,7 @@ useEffect(() => {
             //productIdsString: cartProductId.join(",")
             products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty })) 
           };
-          //console.log('orderdata', orderData)
+        //console.log('orderdata', orderData)
 
           const createOrder = async () => {
             try {
