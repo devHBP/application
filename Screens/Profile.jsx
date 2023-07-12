@@ -15,7 +15,7 @@ const inputOptions = {
   style:inputStyling,
   mode:"outlined",
   outlineColor:'white',
-  paddingHorizontal:10
+  paddingHorizontal:10,
 }
 
 const Profile =  ({navigation}) => {
@@ -50,7 +50,8 @@ const Profile =  ({navigation}) => {
     const [adresse, setAdresse] = useState(user.adresse);
     const [telephone, setTelephone] = useState(user.telephone);
     const [email, setEmail] = useState(user.email);
-    const [date_naissance, setDateNaissance] = useState(user.date_naissance);
+    const [codepostal, setCodepostal] = useState(user.codepostal);
+    const [idSun, setIdSun] = useState(user.idSun);
     
     const handleSubmit = () => {
       dispatch(updateUser({
@@ -59,7 +60,8 @@ const Profile =  ({navigation}) => {
         adresse,
         telephone,
         email,
-        date_naissance,
+        codepostal,
+        idSun
       }));
     };
    
@@ -67,18 +69,9 @@ const Profile =  ({navigation}) => {
     <View style={{ ...defaultStyle, backgroundColor: colors.color3, margin: 30, paddingHorizontal: 5 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20, justifyContent:'space-between'}}> 
             <View>
-              <Text style={style.title}>Mon compte</Text>
-              <Text style={style.role}> 
-              {
-                user.role === 'collaborateur' ? 
-                  <Text>Collaborateur</Text> 
-                : 
-                user.role === 'client' ? 
-                  <Text>Client</Text> 
-                : 
-                null
-              }
-             </Text>
+              <Text style={style.title}>Votre compte</Text>
+              <Text style={style.title_section}>#UserId {user.userId}</Text>
+              <Text>Ce code unique pour vous permet de vous identifier sur le réseau SUN</Text>
           </View>
           <TouchableOpacity onPress={handleBack} style={style.back}>
            <Icon name="keyboard-arrow-left" size={20} color="#fff" />
@@ -89,22 +82,34 @@ const Profile =  ({navigation}) => {
       
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Text style={style.label}>Nom</Text>
-        <TextInput {...inputOptions} value={lastname} onChangeText={setLastname} />
-        <Text style={style.label}>Prénom</Text>
-        <TextInput {...inputOptions} value={firstname} onChangeText={setFirstname} />
-        <Text style={style.label}>Email</Text>
-        <TextInput {...inputOptions} value={email} onChangeText={setEmail} />
-        <Text style={style.label}>Date de naissance</Text>
-        <TextInput {...inputOptions} value={date_naissance} onChangeText={setDateNaissance} />
-        <Text style={style.label}>Adresse</Text>
-        <TextInput {...inputOptions} value={adresse} onChangeText={setAdresse} />
-        <Text style={style.label}>Téléphone</Text>
-        <TextInput {...inputOptions} value={telephone} onChangeText={setTelephone} />
+       
+      <Text style={style.title_section}>Votre information personnelle</Text>
+       <View style={{flexDirection:'row',gap:50, marginVertical:10}}>
+          <TextInput {...inputOptions}  onChangeText={setLastname} style={style.short_input} placeholder='Nom'/>
+          <TextInput {...inputOptions}  onChangeText={setFirstname} style={style.short_input} placeholder='Prenom' />
+       </View>
+       <View style={{flexDirection:'row',gap:50}}>
+       <TextInput {...inputOptions}  onChangeText={setTelephone} style={style.short_input} placeholder='N° téléphone'/>
+          <TextInput {...inputOptions}  onChangeText={setCodepostal} style={style.short_input} placeholder='Code postal' />
+       </View>
+       
+       <View style={{flexDirection:'column', marginVertical:10}}>
+          <Text style={style.label}>Votre email</Text>
+          <TextInput {...inputOptions} placeholder='exemple.mail@email.com' onChangeText={setEmail} style={style.long_input}/>
+        </View> 
 
+        <View style={{flexDirection:'column', marginVertical:10}}>
+          <Text style={style.label}>Votre adresse</Text>
+          <TextInput {...inputOptions} placeholder='123 Direction de la rue' onChangeText={setAdresse} style={style.long_input}/>
+        </View>
+
+        <Text style={style.title_section}>Votre information du compte</Text>
+        <Text style={style.label}>Votre restaurant favori</Text>
         <Picker
+          style={pickerSelectStyles}
               placeholder={{
                   label: "Modifier votre magasin"
+                
                 }}
               value={selectedStore.nom_magasin}
               onValueChange={(value) => {
@@ -134,7 +139,26 @@ const Profile =  ({navigation}) => {
                 value: store.nom_magasin,
               }))}
             /> 
+
+        <Text style={style.label}>Vos préférences alimentaires</Text>
+        <TextInput {...inputOptions} placeholder='preferences alimentaires'  style={style.long_input}/>
         
+
+        <Text style={style.label}>Votre compte SUN</Text>
+        <TextInput {...inputOptions} placeholder='#ID SUN' onChangeText={setIdSun} style={style.long_input}/>
+        
+        <Text style={{marginVertical:5}}> Vous êtes un <Text style={style.role}> 
+              {
+                user.role === 'collaborateur' ? 
+                  <Text>Collaborateur</Text> 
+                : 
+                user.role === 'client' ? 
+                  <Text>Client</Text> 
+                : 
+                null
+              }
+             </Text>
+             </Text>
     </ScrollView>
     <View >
     
@@ -152,13 +176,14 @@ const Profile =  ({navigation}) => {
 }
 
 const style = StyleSheet.create({
+
   title:{
     fontSize: 20, 
     fontWeight: 'bold',
-    color:colors.color2 
+    color:colors.color1 
   },
   role:{
-    fontStyle:'italic'
+    color: colors.color2
   },
   back:{
     backgroundColor: colors.color1,
@@ -168,10 +193,14 @@ const style = StyleSheet.create({
     justifyContent:'center',
     alignItems:'center'
   },
+  title_section:{
+    fontWeight:'bold',
+    color:colors.color2,
+    marginVertical:20,
+  }, 
   label:{
-    marginLeft:20,
-    marginTop:10,
-    color:colors.color2
+   fontWeight:'bold',
+    color:colors.color1
   },
   btn: {
     backgroundColor: colors.color2,
@@ -180,6 +209,48 @@ const style = StyleSheet.create({
     borderRadius:6,
     marginHorizontal:40,
     marginTop:40
+  },
+  picker:{
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    paddingRight: 30,
+  },
+  short_input:{
+    width:"40%",
+    fontSize:14
+  },
+  long_input:{
+    width:"97%",
+    fontSize:14
+  }
+
+});
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    borderWidth: 1,
+    borderColor: 'white',
+    borderRadius: 4,
+    marginTop: 10,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    color: 'black',
+    backgroundColor:'white',
+    height:50,
+    width:'97%'
+  },
+  inputAndroid: {
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 5,
+    marginTop: 10,
+    marginBottom: 10,
+    paddingHorizontal: 10,
+    color: 'black',
   },
 });
 

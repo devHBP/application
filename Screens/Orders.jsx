@@ -38,17 +38,17 @@ const Orders = ({navigation}) => {
         try {
           const response = await axios.get(`http://127.0.0.1:8080/ordersOfUser/${userId}`);
           const orders = response.data;
-          //console.log('orders', orders)
+          console.log('orders', orders)
           const ordersWithDetails = await Promise.all(orders.map(async order => {
             const productResponse = await axios.get(`http://127.0.0.1:8080/getOrderProducts/${order.orderId}`);
             const products = productResponse.data;
             return { ...order, products };
           }));
       
-          //console.log('orders with details', ordersWithDetails)
-          //console.log('orders with details', JSON.stringify(ordersWithDetails, null, 2));
+          
+          //setOrders(ordersWithDetails);
+          setOrders(ordersWithDetails.sort((a, b) => new Date(b.orderId) - new Date(a.orderId)));
 
-          setOrders(ordersWithDetails);
           
         } catch (error) {
           console.error("Une erreur s'est produite :", error);
