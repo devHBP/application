@@ -1,5 +1,6 @@
-import { View, StyleSheet } from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import React, { useState, useEffect, useRef} from 'react'
+import { colors} from '../styles/styles'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { useNavigation } from '@react-navigation/native'
 import { Badge } from 'react-native-paper';
@@ -80,10 +81,34 @@ const FooterProfile = () => {
   return (
     <View style={style.profile}>
       {/* <Icon name="home" size={30} color="#000" style={style.icon} onPress={openHome}/> */}
+      {/* <Icon name="list" size={28} color="#000" style={style.icon} onPress={openOrders} /> */}
+      {/* <Icon name="shopping-cart" size={30} color="#000" style={style.icon} onPress={openCart}/> */}
+       {/* <Icon name="person" size={30} color="#000" style={style.icon} onPress={openProfile}/> */}
       <Badge size={16} style={{...style.badge, backgroundColor: badgeColor}}></Badge>
-      <Icon name="list" size={30} color="#000" style={style.icon} onPress={openOrders} />
-      <Icon name="shopping-cart" size={30} color="#000" style={style.icon} onPress={openCart}/>
-      <Icon name="person" size={30} color="#000" style={style.icon} onPress={openProfile}/>
+      <TouchableOpacity onPress={openOrders}>
+        <Image
+          source={require('../assets/commande.png')} // Remplacez 'my-image' par le nom de votre image
+          style={{ width: 25, height: 28 }}
+           // Remplacez ces valeurs par les dimensions souhaitées
+        />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={openCart}>
+      <Image
+         source={require('../assets/panier.png')} // Remplacez 'my-image' par le nom de votre image
+         style={{ width: 25, height: 28 }} // Remplacez ces valeurs par les dimensions souhaitées
+      />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={openProfile}>
+      <Image
+         source={require('../assets/profile.png')} // Remplacez 'my-image' par le nom de votre image
+         style={{ width: 20, height: 27 }} // Remplacez ces valeurs par les dimensions souhaitées
+      />
+      </TouchableOpacity>
+     
+      
+     
     </View>
   )
 }
@@ -94,7 +119,7 @@ const style = StyleSheet.create({
         width:'100%', 
         position:'absolute', 
         bottom:0, 
-        backgroundColor:'lightgray',
+        backgroundColor:colors.color1,
         flex:1,
         flexDirection: 'row',
         justifyContent:'space-around',
@@ -103,7 +128,9 @@ const style = StyleSheet.create({
     badge: {
       position: 'absolute',
       top: 15,
-      left: 70,   },
+      left: 70,  
+      zIndex:99
+     },
     // icon:{
     //     borderWidth: 1,
     //     borderStyle:'solid',
