@@ -5,13 +5,17 @@ import { defaultStyle} from '../styles/styles'
 import { Button, Badge } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux'
 import {  addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
+import { checkStock } from '../CallApi/api.js';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 const ProductDetails = ({navigation, route}) => {
 
    
+   
     const { product } = route.params;
     //console.log('product', product)
     const [qty, setQty] = useState('0');
+    const [currentStock, setCurrentStock] = useState(product.stock);
 
     const dispatch = useDispatch();
     const cart = useSelector((state) => state.cart.cart);
@@ -19,9 +23,20 @@ const ProductDetails = ({navigation, route}) => {
     console.log('qty', totalQuantity)
 
     const productInCart = useSelector((state) =>
-  state.cart.cart.find((item) => item.productId === product.productId)
-);
-const productQty = productInCart ? productInCart.qty : 0;
+    state.cart.cart.find((item) => item.productId === product.productId)
+    );
+    const productQty = productInCart ? productInCart.qty : 0;
+
+    // Effet de bord pour mettre à jour le stock
+    useEffect(() => {
+        const fetchStock = async () => {
+        const stock = await checkStock(product.productId);
+        console.log('stock details', stock)
+        setCurrentStock(stock[0].quantite);
+        };
+
+        fetchStock();
+    }, [product.productId]);
 
     const baseUrl = 'http://127.0.0.1:8080';
 
@@ -32,28 +47,21 @@ const productQty = productInCart ? productInCart.qty : 0;
         navigation.navigate('panier')
     };
 
-    // const handleAddtoCart = () => {
-    //     const productWithQty = {...product, qty: 1};
-    //     dispatch(addToCart(productWithQty));
-    //     console.log(product.productId);
-    // }
-
     const incrementhandler = () => {
-        // const qtyToIncrement = parseInt(qty);
-        // for (let i = 0; i < qtyToIncrement; i++) {
-        //     const productWithQty = {...product, qty: 1};
-        //     dispatch(addToCart(productWithQty));
-        // }
+      
+        if (currentStock === 0){
+            return Toast.show({
+              type: 'error',
+              text1: `Victime de son succès`,
+              text2: 'Plus de stock disponible' 
+            });
+          }
         const productWithQty = {...product, qty: 1};
         dispatch(addToCart(productWithQty));
         console.log(product.productId);
     }
 
     const decrementhandler = () => {
-        // for(let i=0; i<parseInt(qty); i++){
-        //     dispatch(decrementOrRemoveFromCart(product));
-        // }
-        // console.log('moins')
         const productWithQty = {...product, qty: 1};
         dispatch(decrementOrRemoveFromCart(productWithQty ));
     }
@@ -83,7 +91,6 @@ const productQty = productInCart ? productInCart.qty : 0;
                 <Text>{product.libelle}</Text>
                 <Text>{product.prix_unitaire} euros</Text>
                 <Text style={{textAlign:'justify'}}>{product.description}</Text>
-                {/* Render other product details */}
             </View>
 
             <View>
