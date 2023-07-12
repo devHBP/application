@@ -115,7 +115,7 @@ const incrementhandler = async () => {
                       }}
               
           />
-          {currentStock === 5 && (
+          {currentStock === 0 && (
             <View style={style.overlay} />
             )}
    
