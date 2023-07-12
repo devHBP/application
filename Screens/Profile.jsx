@@ -1,14 +1,16 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native'
-import { Button, TextInput } from 'react-native-paper'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image} from 'react-native'
+import { Button, TextInput, Avatar } from 'react-native-paper'
 import React, { useEffect, useState} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector, useDispatch } from 'react-redux'
 import { updateUser , updateSelectedStore,} from '../reducers/authSlice';
-import { defaultStyle, inputStyling, colors } from '../styles/styles'
+import { defaultStyle, inputStyling, colors, fonts } from '../styles/styles'
 import  Picker  from 'react-native-picker-select';
 
 
+
 import axios from 'axios'
+import FooterProfile from '../components/FooterProfile';
 
 //options des input
 const inputOptions = {
@@ -21,6 +23,9 @@ const inputOptions = {
 const Profile =  ({navigation}) => {
 
   const [stores, setStores] = useState([]);
+  const [isEnabled, setIsEnabled] = useState(false);
+  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
   
 
     const handleBack = () => {
@@ -51,7 +56,7 @@ const Profile =  ({navigation}) => {
     const [telephone, setTelephone] = useState(user.telephone);
     const [email, setEmail] = useState(user.email);
     const [codepostal, setCodepostal] = useState(user.codepostal);
-    const [idSun, setIdSun] = useState(user.idSun);
+    //ajouter date de naissance
     
     const handleSubmit = () => {
       dispatch(updateUser({
@@ -61,36 +66,46 @@ const Profile =  ({navigation}) => {
         telephone,
         email,
         codepostal,
-        idSun
       }));
     };
    
   return (
-    <View style={{ ...defaultStyle, backgroundColor: colors.color3, margin: 30, paddingHorizontal: 5 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20, justifyContent:'space-between'}}> 
-            <View>
-              <Text style={style.title}>Votre compte</Text>
-              <Text style={style.title_section}>#UserId {user.userId}</Text>
-              <Text>Ce code unique pour vous permet de vous identifier sur le réseau SUN</Text>
+    <>
+    <View >
+    <ScrollView showsVerticalScrollIndicator={false} style={{  marginHorizontal: 15, marginVertical:30}}>
+      <View style={{  marginBottom: 20}}> 
+            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
+                <Text style={style.title}>Votre compte</Text>
+                <TouchableOpacity onPress={handleBack} style={style.back}>
+                  <Icon name="keyboard-arrow-left" size={30} color="#fff" />
+                </TouchableOpacity>
+            </View>
+            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between',marginVertical:10}}>
+              <Avatar.Image size={60} source={require('../assets/avatar.png')} style={style.avatar}/>
+              <View style={{width:"50%", flexDirection:'column', gap:10}}>
+                <Text style={{color:colors.color2}}>#UserId {user.userId}</Text>
+                <Text style={{fontSize:12}}>Ce code unique pour vous permet de vous identifier sur le réseau SUN</Text>
+              </View>
+             
           </View>
-          <TouchableOpacity onPress={handleBack} style={style.back}>
-           <Icon name="keyboard-arrow-left" size={20} color="#fff" />
-         </TouchableOpacity>
-  
+          
       </View>
 
-      
-
-      <ScrollView showsVerticalScrollIndicator={false}>
        
       <Text style={style.title_section}>Votre information personnelle</Text>
-       <View style={{flexDirection:'row',gap:50, marginVertical:10}}>
+      <View style={style.formulaire}>
+
+       <View style={{flexDirection:'row',justifyContent:'space-between'}}>
           <TextInput {...inputOptions}  onChangeText={setLastname} style={style.short_input} placeholder='Nom'/>
           <TextInput {...inputOptions}  onChangeText={setFirstname} style={style.short_input} placeholder='Prenom' />
        </View>
-       <View style={{flexDirection:'row',gap:50}}>
+       <View style={{flexDirection:'row', justifyContent:'space-between'}}>
        <TextInput {...inputOptions}  onChangeText={setTelephone} style={style.short_input} placeholder='N° téléphone'/>
           <TextInput {...inputOptions}  onChangeText={setCodepostal} style={style.short_input} placeholder='Code postal' />
+       </View>
+       <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+       <TextInput {...inputOptions}  style={style.short_input} placeholder='N° téléphone'/>
+          
        </View>
        
        <View style={{flexDirection:'column', marginVertical:10}}>
@@ -103,7 +118,10 @@ const Profile =  ({navigation}) => {
           <TextInput {...inputOptions} placeholder='123 Direction de la rue' onChangeText={setAdresse} style={style.long_input}/>
         </View>
 
+        </View>
+
         <Text style={style.title_section}>Votre information du compte</Text>
+        <View style={style.formulaire}>
         <Text style={style.label}>Votre restaurant favori</Text>
         <Picker
           style={pickerSelectStyles}
@@ -141,13 +159,14 @@ const Profile =  ({navigation}) => {
             /> 
 
         <Text style={style.label}>Vos préférences alimentaires</Text>
-        <TextInput {...inputOptions} placeholder='preferences alimentaires'  style={style.long_input}/>
+        <View style={{marginVertical:10}}>
+          <TextInput {...inputOptions} placeholder='Ajoutez une allergie alimentaire'  style={style.long_input}/>
+          <TextInput {...inputOptions} placeholder='Ajoutez un choix alimentaire'  style={style.long_input}/>
+        </View>
         
-
-        <Text style={style.label}>Votre compte SUN</Text>
-        <TextInput {...inputOptions} placeholder='#ID SUN' onChangeText={setIdSun} style={style.long_input}/>
         
-        <Text style={{marginVertical:5}}> Vous êtes un <Text style={style.role}> 
+        {/* role du user */}
+        {/* <Text style={{marginVertical:5}}> Vous êtes un <Text style={style.role}> 
               {
                 user.role === 'collaborateur' ? 
                   <Text>Collaborateur</Text> 
@@ -158,29 +177,131 @@ const Profile =  ({navigation}) => {
                 null
               }
              </Text>
-             </Text>
-    </ScrollView>
-    <View >
-    
-      <Button
-                style={style.btn} 
+        </Text> */}
+
+        <Text style={style.label}>Notifications</Text>
+
+        <View>
+          <View style={{marginVertical:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+            <Text>Recevoir les notifications par SMS</Text>
+            <Switch
+              trackColor={{false: colors.color8, true: colors.color9}}
+              thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+              ios_backgroundColor= {colors.color8}
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
+          </View>
+          <View style={{marginVertical:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+            <Text>Recevoir les notifications par Email</Text>
+            <Switch
+              trackColor={{false: colors.color8, true: colors.color9}}
+              thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+              ios_backgroundColor= {colors.color8}
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
+          </View>
+          <View style={{marginVertical:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
+            <Text>Recevoir des notifications Push</Text>
+            <Switch
+              trackColor={{false: colors.color8, true: colors.color9}}
+              thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+              ios_backgroundColor= {colors.color8}
+              onValueChange={toggleSwitch}
+              value={isEnabled}
+            />
+          </View>
+        </View>
+
+        <Text style={style.label}>Gestion des cookies et données personnelles</Text>
+        <View style={{flexDirection:'row'}}>
+        <Button
+                style={style.btn_cookies} 
+                textColor={colors.color1} 
+                
+                >
+                   Cookies
+                  <View style={{width:8, paddingLeft:15}}>
+                  <Image
+                  source={require('../assets/arrow.png')} 
+                  // Remplacez ces valeurs par les dimensions souhaitées
+                />
+                  </View>
+               
+            </Button>
+            <Button
+                style={style.btn_cookies} 
+                textColor={colors.color1} 
+                
+                >
+                   Données personnelles
+                  <View style={{width:8, paddingLeft:15}}>
+                  <Image
+                  source={require('../assets/arrow.png')} 
+                  // Remplacez ces valeurs par les dimensions souhaitées
+                />
+                  </View>
+            </Button>
+        </View>
+
+        <Text style={style.label}>Informations légales</Text>
+        <View style={{flexDirection:'row'}}>
+        <Button
+                style={style.btn_cookies} 
+                textColor={colors.color1} 
+                
+                >
+                   Mentions légales, CGU, CGV
+                  <View style={{width:8, paddingLeft:15}}>
+                  <Image
+                  source={require('../assets/arrow.png')} 
+                  // Remplacez ces valeurs par les dimensions souhaitées
+                />
+                  </View>
+               
+            </Button>
+            
+        </View>
+
+        </View>
+        <View style={style.last_formulaire}>
+             <Button
+                style={style.btn_formulaire} 
                 textColor={'white'} 
                  onPress={handleSubmit}
                 >
                 Enregistrer
             </Button>
+            <Button
+                style={style.btn_formulaire} 
+                textColor={'white'} 
+                 onPress={handleSubmit}
+                >
+                Se deconnecter
+            </Button>
+        </View>
+    </ScrollView>
+    <View >
+    
+      
     </View>
+   
 
     </View>
+     <FooterProfile />
+
+     </>
   )
 }
 
 const style = StyleSheet.create({
 
   title:{
-    fontSize: 20, 
+    fontSize: 26, 
     fontWeight: 'bold',
-    color:colors.color1 
+    color:colors.color1,
+    fontFamily: fonts.font1
   },
   role:{
     color: colors.color2
@@ -191,16 +312,19 @@ const style = StyleSheet.create({
     height:40,
     borderRadius:5,
     justifyContent:'center',
-    alignItems:'center'
+    alignItems:'center',
+    borderRadius:25
   },
   title_section:{
     fontWeight:'bold',
     color:colors.color2,
     marginVertical:20,
+    paddingHorizontal:10
   }, 
   label:{
    fontWeight:'bold',
-    color:colors.color1
+    color:colors.color1,
+    paddingVertical:5
   },
   btn: {
     backgroundColor: colors.color2,
@@ -208,7 +332,27 @@ const style = StyleSheet.create({
     padding: 6,
     borderRadius:6,
     marginHorizontal:40,
-    marginTop:40
+    marginTop:40,
+    marginBottom:40
+  },
+  btn_cookies: {
+    backgroundColor: colors.color4,
+    margin: 5,
+    paddingHorizontal: 2,
+    borderRadius:6,
+    borderColor:colors.color5,
+    borderWidth:1,
+    borderStyle:'solid',
+   
+  },
+  btn_formulaire:{
+    backgroundColor: colors.color4,
+    margin: 30,
+    borderRadius:6,
+    borderColor:colors.color5,
+    borderWidth:1,
+    borderStyle:'solid',
+    marginVertical:10
   },
   picker:{
     fontSize: 16,
@@ -221,12 +365,28 @@ const style = StyleSheet.create({
     paddingRight: 30,
   },
   short_input:{
-    width:"40%",
-    fontSize:14
+    width:"45%",
+    fontSize:14,
+    backgroundColor:colors.color4
   },
   long_input:{
-    width:"97%",
-    fontSize:14
+    width:"100%",
+    fontSize:14,
+    backgroundColor:colors.color4
+  },
+  avatar:{
+    backgroundColor:colors.color1,
+    marginLeft:20
+  },
+  formulaire:{
+    backgroundColor:colors.color6,
+    borderRadius:10,
+    padding:15
+  },
+  last_formulaire:{
+    backgroundColor:colors.color6,
+    borderRadius:10,
+    marginVertical:10
   }
 
 });
@@ -238,8 +398,8 @@ const pickerSelectStyles = StyleSheet.create({
     marginTop: 10,
     marginBottom: 10,
     paddingHorizontal: 10,
-    color: 'black',
-    backgroundColor:'white',
+    color: colors.color5,
+    backgroundColor:colors.color4,
     height:50,
     width:'97%'
   },

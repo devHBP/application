@@ -16,7 +16,7 @@ const FooterProfile = () => {
   useEffect(() => {
     intervalId.current= setInterval(() => { // Utilisez intervalId ici
       allMyOrders();
-    }, 5000); // 5000 ms = 5 s
+    }, 1000); // 5000 ms = 5 s
 
     // Nettoyer l'intervalle lors du démontage du composant
     return () => {
@@ -88,7 +88,7 @@ const FooterProfile = () => {
       <TouchableOpacity onPress={openOrders}>
         <Image
           source={require('../assets/commande.png')} // Remplacez 'my-image' par le nom de votre image
-          style={{ width: 25, height: 28 }}
+          style={{ width: 23, height: 28, resizeMode:'stretch' }}
            // Remplacez ces valeurs par les dimensions souhaitées
         />
       </TouchableOpacity>
@@ -96,14 +96,14 @@ const FooterProfile = () => {
       <TouchableOpacity onPress={openCart}>
       <Image
          source={require('../assets/panier.png')} // Remplacez 'my-image' par le nom de votre image
-         style={{ width: 25, height: 28 }} // Remplacez ces valeurs par les dimensions souhaitées
+         style={{ width: 25, height: 28, resizeMode:'stretch'  }} // Remplacez ces valeurs par les dimensions souhaitées
       />
       </TouchableOpacity>
 
       <TouchableOpacity onPress={openProfile}>
       <Image
          source={require('../assets/profile.png')} // Remplacez 'my-image' par le nom de votre image
-         style={{ width: 20, height: 27 }} // Remplacez ces valeurs par les dimensions souhaitées
+         style={{ width: 20, height: 27, resizeMode:'contain' }} // Remplacez ces valeurs par les dimensions souhaitées
       />
       </TouchableOpacity>
      
