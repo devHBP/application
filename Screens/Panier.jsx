@@ -11,6 +11,7 @@ import CartItem from '../components/CardItems';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { checkStock } from '../CallApi/api';
+import FooterProfile from '../components/FooterProfile';
 
 const Panier = ({navigation}) => {
 
@@ -139,8 +140,8 @@ const Panier = ({navigation}) => {
   
   
   return (
-    
-    <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: 'white', margin: 30, paddingHorizontal: 5 }}>
+    <>
+    <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: 'white', margin: 30, paddingHorizontal: 5, paddingBottom:50 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
          <TouchableOpacity onPress={handleBack}>
            <Icon name="arrow-back" size={30} color="#900" />
@@ -198,6 +199,8 @@ const Panier = ({navigation}) => {
         </View>
         
     </View>
+          <FooterProfile />
+    </>
 
   )
   

@@ -5,6 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector} from 'react-redux'
 import { Button } from 'react-native-paper'
 import axios from 'axios'
+import FooterProfile from '../components/FooterProfile';
 
 const Orders = ({navigation}) => {
 
@@ -38,7 +39,7 @@ const Orders = ({navigation}) => {
         try {
           const response = await axios.get(`http://127.0.0.1:8080/ordersOfUser/${userId}`);
           const orders = response.data;
-          console.log('orders', orders)
+          //console.log('orders', orders)
           const ordersWithDetails = await Promise.all(orders.map(async order => {
             const productResponse = await axios.get(`http://127.0.0.1:8080/getOrderProducts/${order.orderId}`);
             const products = productResponse.data;
@@ -72,6 +73,7 @@ const Orders = ({navigation}) => {
 
       //consctruction du tableau recapitulatif
       const renderItem = ({ item }) => (
+        
         <View style={{ borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
             <TouchableOpacity
                 style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, alignItems:'center', gap:10 }}
@@ -111,9 +113,11 @@ const Orders = ({navigation}) => {
                 </View>
             )}
         </View>
+        
     );
     
   return (
+    <>
     <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: 'white', margin: 30, paddingHorizontal: 5 }}>
 
         <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
@@ -130,6 +134,10 @@ const Orders = ({navigation}) => {
         </View>
 
     </View>
+    <FooterProfile />
+        </>
+    
+    
   )
 }
 

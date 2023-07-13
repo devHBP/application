@@ -32,7 +32,7 @@ const Home =  ({navigation}) => {
   const dateRedux = useSelector((state) => state.cart.date)
   const timeRedux = useSelector((state) => state.cart.time)
   const user = useSelector((state) => state.auth.user);
-  console.log('user Home', user)
+  //console.log('user Home', user)
   const cart = useSelector((state) => state.cart.cart);
   const selectedStore = useSelector((state) => state.auth.selectedStore);
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
@@ -122,8 +122,11 @@ const Home =  ({navigation}) => {
     const year = date.getFullYear().toString();
     //const hours = date.getHours().toString().padStart(2, '0');
     //const minutes = date.getMinutes().toString().padStart(2, '0');
-    //return `${day}-${month}-${year} ${hours}h${minutes}`;
-    return `${day}-${month}-${year}`;
+    //const seconds = date.getSeconds().toString().padStart(2, '0');
+    //return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    
+    return `${year}-${month}-${day}`;
+    //attention ici au format de la date - a bien verifier dans le order_ctrl (moment.js)
 
   };
   // heure non formaté pour l'instant - inutile pour les collaborateurs
@@ -281,6 +284,7 @@ const scrollToTop = () => {
                 if (isTomorrowOrLater(date)) {
                   setDate(date);
                   dispatch(addDate(formatDate(date.toISOString())));
+                  console.log('date', formatDate(date.toISOString()))
                   return Toast.show({
                     type: 'success',
                     text1: 'Succès',
