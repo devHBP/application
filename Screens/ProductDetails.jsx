@@ -7,6 +7,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {  addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
 import { checkStock } from '../CallApi/api.js';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import FooterProfile from '../components/FooterProfile';
 
 const ProductDetails = ({navigation, route}) => {
 
@@ -95,6 +96,7 @@ const ProductDetails = ({navigation, route}) => {
     
      
   return (
+    <>
     <View style={{...defaultStyle, padding:35}}>
         <View style={style.icons}>
        
@@ -151,7 +153,10 @@ const ProductDetails = ({navigation, route}) => {
             
         </View>
 
+
     </View>
+    <FooterProfile/>
+    </>
   )
 }
 

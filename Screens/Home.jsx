@@ -33,9 +33,8 @@ const Home =  ({navigation}) => {
   const timeRedux = useSelector((state) => state.cart.time)
   const user = useSelector((state) => state.auth.user);
   //console.log('user Home', user)
-  const cart = useSelector((state) => state.cart.cart);
+  //const cart = useSelector((state) => state.cart.cart);
   const selectedStore = useSelector((state) => state.auth.selectedStore);
-  const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
 
   const dispatch = useDispatch();
   const scrollViewRef = createRef();
@@ -339,9 +338,6 @@ const scrollToTop = () => {
       </View>
 
       <View style={style.logos}>
-        <Badge visible={cart.length > 0} size={18} style={style.badge}>
-          {totalQuantity}
-        </Badge>
         <Icon name="shopping-cart" size={30} color="#000" onPress={handleNavigateToCart} style={style.container}/>
         <Icon name="logout" size={30} color="#000" onPress={() => handleLogout()} />
       </View>
