@@ -12,7 +12,6 @@ import ChoixPaiement from './Screens/ChoixPaiement'
 import OrderConfirmation from './Screens/OrderConfirmation'
 import Stores from './Screens/Stores'
 import Profile from './Screens/Profile'
-import ProductCard from './components/ProductCard'
 import ProductDetails from './Screens/ProductDetails'
 import Orders from './Screens/Orders'
 
@@ -47,6 +46,7 @@ const Main = () => {
                 <Stack.Screen name='orderconfirm' component={OrderConfirmation}/>
                 <Stack.Screen name='success' component={SuccessPage}/>
             </Stack.Navigator>
+           
 
             <Toast  position="bottom"/>
         </NavigationContainer>        
