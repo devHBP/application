@@ -9,6 +9,8 @@ import  Picker  from 'react-native-picker-select';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import axios from 'axios'
 import FooterProfile from '../components/FooterProfile';
+//call Api
+import { modifyUser } from '../CallApi/api';
 
 //options des input
 const inputOptions = {
@@ -64,8 +66,8 @@ const Profile =  ({navigation}) => {
     const [email, setEmail] = useState(user.email);
     const [codepostal, setCodepostal] = useState(user.codepostal);
     //ajouter date de naissance
-    
-    const handleSubmit = () => {
+
+    const handleSubmit = async  () => {
       dispatch(updateUser({
         firstname,
         lastname,
@@ -74,11 +76,28 @@ const Profile =  ({navigation}) => {
         email,
         codepostal,
       }));
-      return Toast.show({
-        type: 'success',
-        text1: `Modifications enregistrées`,
-        text2: `` 
-      });
+
+      const updatedUser = {
+        firstname,
+        lastname,
+        adresse,
+        telephone,
+        email,
+        codepostal,
+      };
+  
+      try {
+        const newUser = await modifyUser(user.userId, updatedUser);
+        console.log(newUser);
+        return Toast.show({
+          type: 'success',
+          text1: `Modifications enregistrées`,
+          text2: `` 
+        });
+      } catch (error) {
+        console.error("Une erreur s'est produite lors de la mise à jour de l'utilisateur :", error);
+      }
+      
     };
 
     const handleLogout = () => {
@@ -123,6 +142,8 @@ const Profile =  ({navigation}) => {
   const removeSelectedPreference = (preferenceToRemove) => {
     setSelectedPreferences(selectedPreferences.filter((pref) => pref !== preferenceToRemove));
   }
+
+
    
   return (
     <>
@@ -141,9 +162,7 @@ const Profile =  ({navigation}) => {
                 <Text style={{color:colors.color2}}>#UserId {user.userId}</Text>
                 <Text style={{fontSize:12}}>Ce code unique pour vous permet de vous identifier sur le réseau SUN</Text>
               </View>
-             
           </View>
-          
       </View>
 
        
@@ -381,21 +400,25 @@ const Profile =  ({navigation}) => {
         </View>
 
         </View>
-        <View style={style.last_formulaire}>
-             <Button
-                style={style.btn_enregistrer} 
-                textColor={'white'} 
-                 onPress={handleSubmit}
-                >
-                Enregistrer
-            </Button>
-            <Button
-                style={style.btn_deconnexion} 
-                textColor={'white'} 
-                 onPress={handleLogout}
-                >
-                Se deconnecter
-            </Button>
+        <View style={{marginVertical:30}}>
+            <View style={style.last_formulaire}>
+                <Button
+                    style={style.btn_enregistrer} 
+                    textColor={'white'} 
+                    onPress={handleSubmit}
+                    >
+                    Enregistrer mes choix
+                </Button>
+              </View>
+              <View style={style.last_formulaire}>
+                <Button
+                    style={style.btn_deconnexion} 
+                    textColor={'white'} 
+                    onPress={handleLogout}
+                    >
+                    Se deconnecter
+                </Button>
+            </View>
         </View>
     </ScrollView>
     <View >
@@ -462,13 +485,13 @@ const style = StyleSheet.create({
    
   },
   btn_enregistrer:{
-    backgroundColor: colors.color2,
+    backgroundColor: colors.color9,
     borderRadius:6,
-    borderColor:colors.color5,
+    borderColor:colors.color9,
     borderWidth:1,
     borderStyle:'solid',
     marginVertical:10,
-    marginHorizontal:30
+    marginHorizontal:70
   },
   btn_deconnexion:{
     backgroundColor: colors.color8,
@@ -477,7 +500,7 @@ const style = StyleSheet.create({
     borderWidth:1,
     borderStyle:'solid',
     marginVertical:10,
-    marginHorizontal:30
+    marginHorizontal:70
   },
   picker:{
     fontSize: 16,
@@ -511,7 +534,8 @@ const style = StyleSheet.create({
   last_formulaire:{
     backgroundColor:colors.color6,
     borderRadius:10,
-    marginVertical:10,
+    marginVertical:5,
+    paddingVertical:10
   },
   tag:{
     backgroundColor:colors.color3,
