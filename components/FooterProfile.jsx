@@ -31,7 +31,9 @@ const FooterProfile = () => {
     const [orders, setOrders] = useState([]);
     const [badgeColor, setBadgeColor] = useState('white');
 
- 
+  const openHome = () => {
+    navigation.navigate('home')
+  }
   const openOrders = () => {
     navigation.navigate('orders')
   }
@@ -83,6 +85,14 @@ const FooterProfile = () => {
       {/* <Icon name="home" size={30} color="#000" style={style.icon} onPress={openHome}/> */}
       {/* <Icon name="list" size={28} color="#000" style={style.icon} onPress={openOrders} /> */}
       {/* <Icon name="shopping-cart" size={30} color="#000" style={style.icon} onPress={openCart}/> */}
+
+      <TouchableOpacity onPress={openHome}>
+      <Image
+         source={require('../assets/home.png')} // Remplacez 'my-image' par le nom de votre image
+         style={{ width: 28, height: 30, resizeMode:'contain' }} // Remplacez ces valeurs par les dimensions souhaitées
+      />
+      </TouchableOpacity> 
+       
        {/* <Icon name="person" size={30} color="#000" style={style.icon} onPress={openProfile}/> */}
       <Badge size={16} style={{...style.badge, backgroundColor: badgeColor}}></Badge>
       <TouchableOpacity onPress={openOrders}>
@@ -127,8 +137,8 @@ const style = StyleSheet.create({
     },
     badge: {
       position: 'absolute',
-      top: 15,
-      left: 70,  
+      top: 10,
+      left: 150,  
       zIndex:99
      },
     // icon:{
