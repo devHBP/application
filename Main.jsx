@@ -14,6 +14,9 @@ import Stores from './Screens/Stores'
 import Profile from './Screens/Profile'
 import ProductDetails from './Screens/ProductDetails'
 import Orders from './Screens/Orders'
+import Cookies from './Screens/Cookies'
+import Donnees from './Screens/Donnees'
+import Mentions from './Screens/Mentions'
 
 
 const Main = () => {
@@ -45,6 +48,9 @@ const Main = () => {
                 <Stack.Screen name='choixpaiement' component={ChoixPaiement}/>
                 <Stack.Screen name='orderconfirm' component={OrderConfirmation}/>
                 <Stack.Screen name='success' component={SuccessPage}/>
+                <Stack.Screen name='cookies' component={Cookies}/>
+                <Stack.Screen name='donnees' component={Donnees}/>
+                <Stack.Screen name='mentions' component={Mentions}/>
             </Stack.Navigator>
            
 

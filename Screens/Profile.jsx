@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image} from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image, FlatList, SectionList} from 'react-native'
 import { Button, TextInput, Avatar } from 'react-native-paper'
 import React, { useEffect, useState} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -7,9 +7,6 @@ import { updateUser , updateSelectedStore,} from '../reducers/authSlice';
 import { defaultStyle, inputStyling, colors, fonts } from '../styles/styles'
 import  Picker  from 'react-native-picker-select';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-
-
-
 import axios from 'axios'
 import FooterProfile from '../components/FooterProfile';
 
@@ -24,6 +21,10 @@ const inputOptions = {
 const Profile =  ({navigation}) => {
 
   const [stores, setStores] = useState([]);
+  const [selectedAllergies, setSelectedAllergies] = useState([]);
+  const [selectedPreferences, setSelectedPreferences] = useState([]);
+  const [currentSelection, setCurrentSelection] = useState(null);
+
   const [isEnabledSMS, setIsEnabledSMS] = useState(false);
   const toggleSwitchSMS = () => setIsEnabledSMS(previousState => !previousState);
 
@@ -33,8 +34,6 @@ const Profile =  ({navigation}) => {
   const [isEnabledPush, setIsEnabledPush] = useState(false);
   const toggleSwitchPush = () => setIsEnabledPush(previousState => !previousState);
 
-
-  
 
     const handleBack = () => {
         navigation.navigate('home');
@@ -85,6 +84,45 @@ const Profile =  ({navigation}) => {
     const handleLogout = () => {
       navigation.navigate('app')
     }
+    const handleCookies = () => {
+      console.log('page cookies')
+      navigation.navigate('cookies')
+    }
+    const handleDonnees = () => {
+      console.log('page données')
+      navigation.navigate('donnees')
+    }
+    const handleMentions = () => {
+      console.log('page mentions')
+      navigation.navigate('mentions')
+    }
+
+  const allergies = [
+    { nom_allergie: 'Noix' },
+    { nom_allergie: 'Arachides' },
+    { nom_allergie: 'Lait' },
+    { nom_allergie: 'Gluten' },
+    { nom_allergie: 'Oeufs' },
+    // Ajoutez autant d'allergies que nécessaire
+  ];
+  const preferences = [
+    { nom_preference: 'Vegan' },
+    { nom_preference: 'Vegetarien' },
+    { nom_preference: 'Halal' },
+  ];
+
+  const sortedAllergies = [...allergies].slice(0).sort((a, b) => a.nom_allergie.localeCompare(b.nom_allergie));
+  //sortedAllergies.unshift({ nom_allergie: 'Ajoutez une allergie alimentaire' });
+  const removeSelectedAllergy = (allergyToRemove) => {
+    setSelectedAllergies(selectedAllergies.filter((allergy) => allergy !== allergyToRemove));
+  }
+
+  //const [selectedPreferences, setSelectedPreferences] = useState([]);
+  const sortedPreferences = [...preferences].slice(0).sort((a, b) => a.nom_preference.localeCompare(b.nom_preference));
+  //sortedAllergies.unshift({ nom_allergie: 'Ajoutez une allergie alimentaire' });
+  const removeSelectedPreference = (preferenceToRemove) => {
+    setSelectedPreferences(selectedPreferences.filter((pref) => pref !== preferenceToRemove));
+  }
    
   return (
     <>
@@ -177,10 +215,79 @@ const Profile =  ({navigation}) => {
 
         <Text style={style.label}>Vos préférences alimentaires</Text>
         <View style={{marginVertical:10}}>
-          <TextInput {...inputOptions} placeholder='Ajoutez une allergie alimentaire'  style={style.long_input}/>
-          <TextInput {...inputOptions} placeholder='Ajoutez un choix alimentaire'  style={style.long_input}/>
+            <View>
+              <Picker
+                style={pickerSelectStyles}
+                selectedValue={currentSelection}
+                placeholder={{
+                  label: "Ajoutez une allergie alimentaire"
+                
+                }}
+                onValueChange={(value) => {
+                  if (value) {
+                    const selected = allergies.find((allergy) => allergy.nom_allergie === value);
+                    if (selected && !selectedAllergies.includes(selected.nom_allergie)) {
+                      setSelectedAllergies([...selectedAllergies, selected.nom_allergie]);
+                    } else {
+                      console.log('Allergie déjà sélectionnée ou pas d\'allergie sélectionnée encore');
+                    }
+                  }
+                  setCurrentSelection(null); // Remettre à zéro la sélection actuelle
+                }}
+                items={sortedAllergies.map((allergy) => ({
+                  label: allergy.nom_allergie,
+                  value: allergy.nom_allergie,
+                }))}
+              />
+              {/* affichage du tag */}
+              <View style={{flexDirection:'row', flexWrap:'wrap'}}>
+                {selectedAllergies.map((allergy, index) => (
+                  <View style={style.tag }>
+                    <Icon name="remove-circle" size={15} color="#000" onPress={() => removeSelectedAllergy(allergy)}/>
+                    <Text key={index}>  {allergy} </Text>
+                  </View>
+                ))}
+              </View>
         </View>
-        
+
+        {/* picker preference alimentaires */}
+        <View style={{marginVertical:10}}>
+            <View>
+              <Picker
+                style={pickerSelectStyles}
+                selectedValue={currentSelection}
+                placeholder={{
+                  label: "Ajoutez un choix alimentaire"
+                
+                }}
+                onValueChange={(value) => {
+                  if (value) {
+                    const selected = preferences.find((pref) => pref.nom_preference === value);
+                    if (selected && !selectedPreferences.includes(selected.nom_preference)) {
+                      setSelectedPreferences([...selectedPreferences, selected.nom_preference]);
+                    } else {
+                      console.log('Préférence déjà sélectionnée ou pas de preference sélectionnée encore');
+                    }
+                  }
+                  setCurrentSelection(null); // Remettre à zéro la sélection actuelle
+                }}
+                items={sortedPreferences.map((pref) => ({
+                  label: pref.nom_preference,
+                  value: pref.nom_preference,
+                }))}
+              />
+              {/* affichage du tag */}
+              <View style={{flexDirection:'row', flexWrap:'wrap'}}>
+                {selectedPreferences.map((pref, index) => (
+                  <View style={style.tag }>
+                    <Icon name="remove-circle" size={15} color="#000" onPress={() => removeSelectedPreference(pref)}/>
+                    <Text key={index}>  {pref} </Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+        </View>
+      </View>
         
         {/* role du user */}
         {/* <Text style={{marginVertical:5}}> Vous êtes un <Text style={style.role}> 
@@ -238,51 +345,39 @@ const Profile =  ({navigation}) => {
         <Button
                 style={style.btn_cookies} 
                 textColor={colors.color1} 
-                
+                onPress={handleCookies}
                 >
                    Cookies
                   <View style={{width:8, paddingLeft:15}}>
-                  <Image
-                  source={require('../assets/arrow.png')} 
-                  // Remplacez ces valeurs par les dimensions souhaitées
-                />
+                    <Image source={require('../assets/arrow.png')} />
                   </View>
                
             </Button>
             <Button
                 style={style.btn_cookies} 
                 textColor={colors.color1} 
-                
+                onPress={handleDonnees}
                 >
                    Données personnelles
                   <View style={{width:8, paddingLeft:15}}>
-                  <Image
-                  source={require('../assets/arrow.png')} 
-                  // Remplacez ces valeurs par les dimensions souhaitées
-                />
+                    <Image source={require('../assets/arrow.png')} />
                   </View>
             </Button>
         </View>
         </View>
         
-
         <Text style={style.label}>Informations légales</Text>
         <View style={{flexDirection:'row'}}>
-        <Button
+            <Button
                 style={style.btn_cookies} 
                 textColor={colors.color1} 
-                
+                onPress={handleMentions}
                 >
                    Mentions légales, CGU, CGV
                   <View style={{width:8, paddingLeft:15}}>
-                  <Image
-                  source={require('../assets/arrow.png')} 
-                  // Remplacez ces valeurs par les dimensions souhaitées
-                />
+                    <Image source={require('../assets/arrow.png')} />
                   </View>
-               
-            </Button>
-            
+            </Button> 
         </View>
 
         </View>
@@ -417,6 +512,16 @@ const style = StyleSheet.create({
     backgroundColor:colors.color6,
     borderRadius:10,
     marginVertical:10,
+  },
+  tag:{
+    backgroundColor:colors.color3,
+    marginVertical:5,
+    marginRight:5,
+    paddingHorizontal:10,
+    paddingVertical:5,
+    flexDirection:'row',
+    alignItems:'center',
+    borderRadius:5
   }
 
 });
@@ -431,7 +536,7 @@ const pickerSelectStyles = StyleSheet.create({
     color: colors.color5,
     backgroundColor:colors.color4,
     height:50,
-    width:'97%'
+    width:'100%'
   },
   inputAndroid: {
     borderWidth: 1,
