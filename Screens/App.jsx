@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from 'react-native'
+import { View, Text, StyleSheet, Image } from 'react-native'
 import React from 'react'
 import { Button} from 'react-native-paper'
 import { defaultStyle, colors, fonts } from '../styles/styles'
@@ -12,13 +12,21 @@ const App = ({navigation}) => {
         navigation.navigate('login')
     }
   return (
-    <View style={{...defaultStyle, backgroundColor:colors.color1}}>
-        {/* <Icon name="add" size={30} color="#fff" /> */}
+    <View style={{...defaultStyle, backgroundColor:colors.color1,}}>
+   
     
       <View style={style.container}>
      
         <Text style={style.title}>Le pain du jour</Text>
         <Text style={style.title2}>Click'n'Collect</Text>
+
+        <View style={{ flexDirection:'row', justifyContent:'center', marginVertical:40}}>
+            <Image
+            source={require('../assets/logo_pdj.png')} // Remplacez 'my-image' par le nom de votre image
+            style={{ width: 150, height: 150, resizeMode:'contain' }} // Remplacez ces valeurs par les dimensions souhaitées
+        />
+        </View>
+        
        
 
         <View style={style.container_slogan}>
@@ -54,7 +62,8 @@ const style = StyleSheet.create({
         padding:20,
         justifyContent:'center',
         //reajustement margin pour laisser de la place au footer
-        marginBottom:70
+       // marginBottom:70,
+        
     },
     btn: {
         backgroundColor: colors.color2,
