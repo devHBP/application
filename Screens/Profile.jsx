@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { updateUser , updateSelectedStore,} from '../reducers/authSlice';
 import { defaultStyle, inputStyling, colors, fonts } from '../styles/styles'
 import  Picker  from 'react-native-picker-select';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 
 
@@ -23,8 +24,15 @@ const inputOptions = {
 const Profile =  ({navigation}) => {
 
   const [stores, setStores] = useState([]);
-  const [isEnabled, setIsEnabled] = useState(false);
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const [isEnabledSMS, setIsEnabledSMS] = useState(false);
+  const toggleSwitchSMS = () => setIsEnabledSMS(previousState => !previousState);
+
+  const [isEnabledEmail, setIsEnabledEmail] = useState(false);
+  const toggleSwitchEmail = () => setIsEnabledEmail(previousState => !previousState);
+
+  const [isEnabledPush, setIsEnabledPush] = useState(false);
+  const toggleSwitchPush = () => setIsEnabledPush(previousState => !previousState);
+
 
   
 
@@ -67,12 +75,21 @@ const Profile =  ({navigation}) => {
         email,
         codepostal,
       }));
+      return Toast.show({
+        type: 'success',
+        text1: `Modifications enregistrées`,
+        text2: `` 
+      });
     };
+
+    const handleLogout = () => {
+      navigation.navigate('app')
+    }
    
   return (
     <>
     <View >
-    <ScrollView showsVerticalScrollIndicator={false} style={{  marginHorizontal: 15, marginVertical:30}}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{  marginHorizontal: 15,marginTop:30,  marginBottom:80}}>
       <View style={{  marginBottom: 20}}> 
             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
                 <Text style={style.title}>Votre compte</Text>
@@ -104,7 +121,7 @@ const Profile =  ({navigation}) => {
           <TextInput {...inputOptions}  onChangeText={setCodepostal} style={style.short_input} placeholder='Code postal' />
        </View>
        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-       <TextInput {...inputOptions}  style={style.short_input} placeholder='N° téléphone'/>
+       <TextInput {...inputOptions}  style={style.short_input} placeholder='Date de naissance'/>
           
        </View>
        
@@ -181,39 +198,41 @@ const Profile =  ({navigation}) => {
 
         <Text style={style.label}>Notifications</Text>
 
-        <View>
+        <View style={{marginVertical:10}}>
           <View style={{marginVertical:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
             <Text>Recevoir les notifications par SMS</Text>
             <Switch
               trackColor={{false: colors.color8, true: colors.color9}}
-              thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+              thumbColor={isEnabledSMS ? '#f4f3f4' : '#f4f3f4'}
               ios_backgroundColor= {colors.color8}
-              onValueChange={toggleSwitch}
-              value={isEnabled}
+              onValueChange={toggleSwitchSMS}
+              value={isEnabledSMS}
+              //disabled={true}
             />
           </View>
           <View style={{marginVertical:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
             <Text>Recevoir les notifications par Email</Text>
             <Switch
               trackColor={{false: colors.color8, true: colors.color9}}
-              thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+              thumbColor={isEnabledEmail ? '#f4f3f4' : '#f4f3f4'}
               ios_backgroundColor= {colors.color8}
-              onValueChange={toggleSwitch}
-              value={isEnabled}
+              onValueChange={toggleSwitchEmail}
+              value={isEnabledEmail}
             />
           </View>
           <View style={{marginVertical:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
             <Text>Recevoir des notifications Push</Text>
             <Switch
               trackColor={{false: colors.color8, true: colors.color9}}
-              thumbColor={isEnabled ? '#f4f3f4' : '#f4f3f4'}
+              thumbColor={isEnabledPush ? '#f4f3f4' : '#f4f3f4'}
               ios_backgroundColor= {colors.color8}
-              onValueChange={toggleSwitch}
-              value={isEnabled}
+              onValueChange={toggleSwitchPush}
+              value={isEnabledPush}
             />
           </View>
         </View>
 
+        <View style={{marginVertical:10}}>
         <Text style={style.label}>Gestion des cookies et données personnelles</Text>
         <View style={{flexDirection:'row'}}>
         <Button
@@ -244,6 +263,8 @@ const Profile =  ({navigation}) => {
                   </View>
             </Button>
         </View>
+        </View>
+        
 
         <Text style={style.label}>Informations légales</Text>
         <View style={{flexDirection:'row'}}>
@@ -267,16 +288,16 @@ const Profile =  ({navigation}) => {
         </View>
         <View style={style.last_formulaire}>
              <Button
-                style={style.btn_formulaire} 
+                style={style.btn_enregistrer} 
                 textColor={'white'} 
                  onPress={handleSubmit}
                 >
                 Enregistrer
             </Button>
             <Button
-                style={style.btn_formulaire} 
+                style={style.btn_deconnexion} 
                 textColor={'white'} 
-                 onPress={handleSubmit}
+                 onPress={handleLogout}
                 >
                 Se deconnecter
             </Button>
@@ -345,14 +366,23 @@ const style = StyleSheet.create({
     borderStyle:'solid',
    
   },
-  btn_formulaire:{
-    backgroundColor: colors.color4,
-    margin: 30,
+  btn_enregistrer:{
+    backgroundColor: colors.color2,
     borderRadius:6,
     borderColor:colors.color5,
     borderWidth:1,
     borderStyle:'solid',
-    marginVertical:10
+    marginVertical:10,
+    marginHorizontal:30
+  },
+  btn_deconnexion:{
+    backgroundColor: colors.color8,
+    borderRadius:6,
+    borderColor:colors.color5,
+    borderWidth:1,
+    borderStyle:'solid',
+    marginVertical:10,
+    marginHorizontal:30
   },
   picker:{
     fontSize: 16,
@@ -365,7 +395,7 @@ const style = StyleSheet.create({
     paddingRight: 30,
   },
   short_input:{
-    width:"45%",
+    width:"48%",
     fontSize:14,
     backgroundColor:colors.color4
   },
@@ -386,7 +416,7 @@ const style = StyleSheet.create({
   last_formulaire:{
     backgroundColor:colors.color6,
     borderRadius:10,
-    marginVertical:10
+    marginVertical:10,
   }
 
 });

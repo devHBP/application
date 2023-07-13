@@ -17,9 +17,15 @@ export const inputStyling = StyleSheet.create({
   });
 
 export const colors = {
-    color1: "#273545", //fond pain du jour
-    color2: "#E9521B", // orange
-    color3: "#F5F5F5", //gris clair
+    color1: "#273545", //bleu pain du jour
+    color2: "#E9520E", // orange
+    color3: "#D9D9D9", //gris clair
+    color4: "#ECECEC", //blanc cassé
+    color5: "#636C77", //bleu grisé
+    color6:"#FFFFFF", //blanc
+    color7:"#000000", //noir
+    color8:"#BF2D2D", //rouge
+    color9:"#34AA55", //vert
 };
 
 export const fonts = {
