@@ -1,6 +1,6 @@
-import {View, Text, Pressable, ScrollView , StyleSheet, TouchableOpacity } from 'react-native'
+import {View, Text, Pressable, ScrollView , StyleSheet, TouchableOpacity, Image } from 'react-native'
 import  Picker  from 'react-native-picker-select';
-import { defaultStyle} from '../styles/styles'
+import { defaultStyle, fonts, colors} from '../styles/styles'
 import React, {useState, useEffect,  createRef  } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { logoutUser, updateSelectedStore, updateUser} from '../reducers/authSlice';
@@ -14,6 +14,7 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import FooterProfile from '../components/FooterProfile';
 import { SearchBar } from 'react-native-elements';
+import { color } from 'react-native-elements/dist/helpers';
 
 
 const Home =  ({navigation}) => {
@@ -29,11 +30,13 @@ const Home =  ({navigation}) => {
   const [ categories, setCategories] = useState([])
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products); // Replace 'products' with your actual product data
+  const [ visible, setVisible] = useState(false)
   const dateRedux = useSelector((state) => state.cart.date)
   const timeRedux = useSelector((state) => state.cart.time)
   const user = useSelector((state) => state.auth.user);
   //console.log('user Home', user)
-  //const cart = useSelector((state) => state.cart.cart);
+  const cart = useSelector((state) => state.cart.cart);
+  const totalPrice = (cart.reduce((total, item) => total + item.qty * item.prix_unitaire, 0)).toFixed(2);
   const selectedStore = useSelector((state) => state.auth.selectedStore);
 
   const dispatch = useDispatch();
@@ -147,34 +150,6 @@ const Home =  ({navigation}) => {
     return selectedDate >= currentDate;
   };
 
-  const handleNavigateToCart = async () => {
-    const token = await AsyncStorage.getItem('userToken');
-    //console.log('token', token)
-     // Send request to verify token
-     axios.get('http://localhost:8080/verifyToken', {
-      headers: {
-          'x-access-token': token
-      }
-    })
-    .then(response => {
-      if (response.data.auth) {
-          // Token is valid, continue with discount application...
-          // console.log('token valide')
-          navigation.navigate('panier')
-      } 
-  })
-  .catch(error => {
-    handleLogout()
-    //console.log('token invalide catch')
-    return Toast.show({
-      type: 'error',
-      text1: 'Session expirée',
-      text2: 'Veuillez vous reconnecter'
-    });
-      // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
-  });
-  
-};
 
 //direction vers la page de détails
 const handleProductPress = (product) => {
@@ -210,19 +185,47 @@ const scrollToTop = () => {
   }
 };
 
+//contenu visible
+const toggleVisibility = () => {
+  setVisible(!visible)
+}
+
   return (
     <>
-    <View style={{...defaultStyle, flex:1, paddingHorizontal:5, paddingVertical:20}}>
+    <ScrollView style={{...defaultStyle, flex:1, paddingHorizontal:5, paddingVertical:20}} ref={scrollViewRef}>
    
-      <View style={style.bandeau}>
-      <View>
+    <View >
+        <View style={style.logos}>
+          <Icon name="logout" size={30} color="#000" onPress={() => handleLogout()} />
+        </View>
+
+    <View style={style.bandeau}>
+        
+        <View>
         {
-          user && <Text>Bonjour {user.firstname} {user.lastname} </Text>
+          user && 
+          <View style={{padding:25, flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+            <View>
+            <Text style={{fontFamily:fonts.font1, fontSize:28}}>Bonjour </Text>
+              <Text style={{fontSize:20}}>{user.firstname}</Text>
+              {/* <Text>{user.firstname} {user.lastname} </Text> */}
+            </View>
+              
+               {/* SearchBar */}
+        <SearchBar
+        placeholder="Une petite faim ?"
+        onChangeText={handleSearch}
+        value={searchQuery}
+        containerStyle={style.searchBarContainer}
+        inputContainerStyle={style.searchBarInputContainer}
+        inputStyle={{fontSize:14, }}
+        placeholderTextColor={colors.color2}
+      />
+          </View>
+         
         }
          {/* <Text>Point choisi: {selectedStore.nom_magasin}</Text> */}
-
-        
-          <Picker
+          {/* <Picker
               placeholder={{
                   label: "Choisissez un magasin"
                 }}
@@ -253,8 +256,126 @@ const scrollToTop = () => {
                 label: store.nom_magasin,
                 value: store.nom_magasin,
               }))}
-            /> 
+            />  */}
 
+       {/* // Selection Jour  */}
+         {/* <TouchableOpacity onPress={() => setOpenDate(true)} >
+       //ne pas utiliser la ligne suivante
+          <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text> 
+            <Text>
+            {date ? (
+                isTomorrowOrLater(date) ? (
+                <Text style={style.picker}>{formatDate(date)}</Text>
+                ) : (
+                "Il est trop tard pour commander pour  demain"
+                )
+            ) : (
+                "Choisissez votre jour"
+            )}
+            </Text>
+        </TouchableOpacity> 
+        
+               <DatePicker
+                modal
+                open={openDate}
+                date={date ? new Date(date) : new Date()}
+                mode="date"
+                onConfirm={(date) => {
+                  setOpenDate(false)
+
+                //test date
+                if (isTomorrowOrLater(date)) {
+                  setDate(date);
+                  dispatch(addDate(formatDate(date.toISOString())));
+                  console.log('date', formatDate(date.toISOString()))
+                  return Toast.show({
+                    type: 'success',
+                    text1: 'Succès',
+                    text2: `Commande prévue pour ${formatDate(date)}`
+                  });
+                } else {
+                  setDate(null)
+                  dispatch(addDate(null))
+                  console.log('La date sélectionnée doit être supérieure ou égale à demain');
+                  return Toast.show({
+                    type: 'error',
+                    text1: 'Erreur, Vous arrivez trop tard pour demain',
+                    text2: 'Veuillez selectionner une nouvelle date'
+                  });
+                } 
+                }}
+                onCancel={() => {
+                  setOpenDate(false)
+                }}
+                minimumDate={new Date()}
+                
+              />  */}
+
+       
+      </View>
+
+       
+      </View>
+
+      
+      {/* test bandeau header */}
+      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', borderRadius:10, padding:5}}>
+          <View style={{flex:1, flexDirection:'row', gap:5, alignItems:'center', }}>
+              <Image
+                  source={require('../assets/store.png')} 
+                  style={{ width: 24, height: 25, resizeMode:'contain' }}
+                />
+            <View>   
+              <Picker
+                  placeholder={{
+                      label: "Choisissez un magasin"
+                    }}
+                  value={selectedStore.nom_magasin}
+                  onValueChange={(value) => {
+                    const selected = stores.find((store) => store.nom_magasin === value);
+                    console.log('selectecstore', selected)
+
+                    if (selected) {
+                      dispatch(updateSelectedStore(selected));
+                    // dispatch(updateUser({ ...user, id_magasin: selected.id_magasin }));
+                    dispatch(updateUser({ ...user, storeId: selected.storeId }));
+
+                    axios.put(`http://127.0.0.1:8080/updateOneUser/${user.userId}`, {storeId: selected.storeId})
+                    .then(response => {
+                      // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
+                      // console.log(response.data)
+                    })
+                    .catch(error => {
+                      console.error('Erreur lors de la mise à jour du choix du magasin dans la base de données - erreur ici:', error);
+                    });
+                  }
+                else {
+                  console.log('pas de magasin selectionné encore')
+                }}
+                }
+                  items={stores.map((store) => ({
+                    label: store.nom_magasin,
+                    value: store.nom_magasin,
+                  }))}
+               
+                /> 
+                {
+                  <View style={{flexDirection:'row'}}>
+                  
+                    <View >
+                      <Text style={{fontSize:12}}>
+                        {selectedStore.adresse_magasin}   
+                      </Text>
+                      <Text  style={{fontSize:12}}>{selectedStore.cp_magasin} {selectedStore.ville_magasin}</Text>
+                    </View>
+                    
+                  </View>  
+                }
+
+          </View>
+          </View>
+          <View style={{flex:1}}>
+          
        {/* // Selection Jour  */}
          <TouchableOpacity onPress={() => setOpenDate(true)} >
          {/* <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text>  */}
@@ -306,8 +427,7 @@ const scrollToTop = () => {
                 minimumDate={new Date()}
                 
               /> 
-
-        {/* Selection Heure */}
+               {/* Selection Heure */}
         {/* non visible pour les collaborateurs car heure = tournée du camion */}
         
          {role !== 'collaborateur' && (
@@ -335,45 +455,56 @@ const scrollToTop = () => {
                 }}
               /> 
         )} 
-      </View>
 
-      <View style={style.logos}>
-        <Icon name="shopping-cart" size={30} color="#000" onPress={handleNavigateToCart} style={style.container}/>
-        <Icon name="logout" size={30} color="#000" onPress={() => handleLogout()} />
-      </View>
+          </View>
+          <View style={{backgroundColor:'lightgrey', borderRadius:25, justifyContent:'center'}}> 
+              <TouchableOpacity  onPress={toggleVisibility} activeOpacity={1}>
+                  <Icon name="keyboard-arrow-down" size={28} color="#FFF"  />
+              </TouchableOpacity>
+          </View>
+        </View>
+        {
+          visible && (
+            <View style={{ width:"100%", height:'auto', backgroundColor:'white', flexDirection:'column', paddingHorizontal:25, borderBottomLeftRadius:10, borderBottomRightRadius:10, paddingVertical:10}}> 
+              <Text style={{fontWeight:'bold'}}>Vos articles:</Text>
+            {cart.map((item, index) => (
+                <View key={index} style={{paddingLeft:20}}>
+                    <Text> {item.qty} x {item.libelle}</Text>
+                </View>
+            ))}
+            <Text style={{fontWeight:'bold', paddingVertical:10}}>Votre total: {totalPrice}€</Text>
 
-    </View>
+            </View>
+          )
+        }
+      
+      </View>
 
       {/* categories */}
       <View style={style.categories}>
-          {/* <ScrollView horizontal showsHorizontalScrollIndicator={false}> */}
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {
             categories.map((item, index) => (
               <Pressable title="button" 
                 style={{...style.btn_categorie, 
-                backgroundColor: item === selectedCategory ? 'lightgrey' : 'white'} }
+                backgroundColor: item === selectedCategory ? colors.color2 : 'white', 
+               
+              }}
                 key={index}
                 onPress={() => categoryButtonHandler(item)}
               >
-                <Text style={{fontSize:12, }}>{item}</Text>
+                <Text style={{fontSize:16,
+                  color: item ===selectedCategory ? 'white' : 'black'
+                  }}>{item}</Text>
               </Pressable>
             ))
           }
-          {/* </ScrollView> */}
+          </ScrollView>
         </View>
-
-        {/* SearchBar */}
-        <SearchBar
-          placeholder="Search products..."
-          onChangeText={handleSearch}
-          value={searchQuery}
-          containerStyle={style.searchBarContainer}
-          inputContainerStyle={style.searchBarInputContainer}
-        />
 
           {/* card products */}
         
-        <ScrollView vertical showsVerticalScrollIndicator={false}  ref={scrollViewRef}
+        <ScrollView vertical showsVerticalScrollIndicator={false}  
       >
           <View style={style.cardScrollview}>
             {sortedCategories
@@ -381,6 +512,8 @@ const scrollToTop = () => {
             .map((category) => (
               <React.Fragment key={category}>
                 <Text style={style.categoryTitle}>{category}</Text>
+
+                <ScrollView horizontal>
                 {groupedAndSortedProducts[category]
                 .sort((a, b) => a.libelle.localeCompare(b.libelle))
                 .map((item, index) => (
@@ -402,17 +535,20 @@ const scrollToTop = () => {
                     </TouchableOpacity>
                   </View>
                 ))}
+                </ScrollView>
+               
               </React.Fragment>
             ))}
           </View >
+
           <TouchableOpacity onPress={scrollToTop} >
-          <Icon name="arrow-upward" size={30} style={style.scrollTop}   />
+             <Icon name="arrow-upward" size={30} style={style.scrollTop}   />
           </TouchableOpacity>
          
         </ScrollView>
        
 
-    </View>
+    </ScrollView>
     <FooterProfile />
    
     </>
@@ -426,7 +562,7 @@ const style = StyleSheet.create({
   bandeau:{
     flexDirection:'row', 
     width: "100%", 
-    justifyContent:"space-around", 
+    justifyContent:"space-between", 
   },
   badge: {
     position: 'absolute',
@@ -439,7 +575,7 @@ const style = StyleSheet.create({
   },
   picker:{
     color:'red',
-    fontWeight:'bold'
+    fontWeight:'bold',
   },
   categories:{
     flexDirection: "row", 
@@ -448,40 +584,44 @@ const style = StyleSheet.create({
     marginVertical: 20,
   },
   btn_categorie:{
-    borderRadius:50,
-    height:30,
+    borderRadius:6,
+    height:40,
     marginVertical:5,
     marginHorizontal:10,
-    paddingHorizontal:10,
+    padding:10,
     justifyContent:'center',
     alignItems:'center',
-    borderColor:'lightgray',
+    borderColor:'white',
     borderWidth:1,  
   },
   categoryTitle:{
     width:"100%",
     marginVertical:10,
+    marginLeft:20,
+    fontWeight:'bold',
+    color:colors.color1
   },
   cardScrollview:{
     flexDirection: 'row', 
     flexWrap: 'wrap',
-    width:"100%",
+    // width:"100%",
     paddingBottom:40 ,
   },
   productContainer: {
-    width: '50%', 
+    width: '80%', 
     padding: 5,
   },
   searchBarContainer: {
     backgroundColor: 'transparent',
     borderTopWidth: 0,
     borderBottomWidth: 0,
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    width:"100%"
+    width:"60%",
   },
   searchBarInputContainer: {
     backgroundColor: '#e0e0e0',
+    borderRadius:25,
+    width:"90%",
+   
   },
   scrollTop:{
    marginBottom:100, textAlign:'center'
