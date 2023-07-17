@@ -79,12 +79,17 @@ const FooterProfile = () => {
 
   //recupérer toutes les commandes du user
   const allMyOrders = async () => {
+    if (!userId) {
+      return;
+    }
     try {
       const response = await axios.get(`http://127.0.0.1:8080/ordersOfUser/${userId}`);
       const orders = response.data;
       //console.log('orders', orders)
 
-       // Triez les commandes par orderId en ordre décroissant
+
+      if(orders && orders.length > 0){
+           // Triez les commandes par orderId en ordre décroissant
     const sortedOrders = orders.sort((a, b) => b.orderId - a.orderId);
 
     // Prenez la première commande (la plus récente)
@@ -113,10 +118,13 @@ const FooterProfile = () => {
             setBadgeColor('purple');
             setIsBadgeVisible(true)
         }
-      
+      }
+      else {
+        setIsBadgeVisible(false);
+      }
       
     } catch (error) {
-      console.error("Une erreur s'est produite :", error);
+      console.error("Une erreur s'est produite, order :", error);
     }
   };
 

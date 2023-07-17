@@ -69,7 +69,7 @@ const Login = ({navigation}) => {
                       });
                 })
                 .catch(error => {
-                    // console.error('Erreur lors de la récupération des informations du magasin:', error);
+                     console.error('Erreur lors de la récupération des informations du magasin:', error);
                 });
   
            
