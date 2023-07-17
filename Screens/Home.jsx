@@ -205,7 +205,7 @@ const toggleVisibility = () => {
               value={searchQuery}
               containerStyle={style.searchBarContainer}
               inputContainerStyle={style.searchBarInputContainer}
-              inputStyle={{fontSize:14, }}
+              inputStyle={{fontSize:16, }}
               placeholderTextColor={colors.color2}
             />
           </View>
