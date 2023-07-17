@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image, FlatList, SectionList} from 'react-native'
-import { Button, TextInput, Avatar } from 'react-native-paper'
+import { Button, TextInput, Avatar,  } from 'react-native-paper'
 import React, { useEffect, useState} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector, useDispatch } from 'react-redux'
@@ -23,8 +23,8 @@ const inputOptions = {
 const Profile =  ({navigation}) => {
 
   const [stores, setStores] = useState([]);
-  const [selectedAllergies, setSelectedAllergies] = useState([]);
-  const [selectedPreferences, setSelectedPreferences] = useState([]);
+  
+  
   const [currentSelection, setCurrentSelection] = useState(null);
 
   const [isEnabledSMS, setIsEnabledSMS] = useState(false);
@@ -65,8 +65,12 @@ const Profile =  ({navigation}) => {
     const [telephone, setTelephone] = useState(user.telephone);
     const [email, setEmail] = useState(user.email);
     const [codepostal, setCodepostal] = useState(user.codepostal);
+    const [gender, setGender] = useState(user.gender);
+    const [selectedAllergies, setSelectedAllergies] = useState([]);
+    const [selectedPreferences, setSelectedPreferences] = useState([]);
     //ajouter date de naissance
 
+    //ajouter le genre
     const handleSubmit = async  () => {
       dispatch(updateUser({
         firstname,
@@ -75,7 +79,11 @@ const Profile =  ({navigation}) => {
         telephone,
         email,
         codepostal,
+        gender,
+        allergies:selectedAllergies,
+        preferences_alimentaires:selectedPreferences,
       }));
+      console.log(user)
 
       const updatedUser = {
         firstname,
@@ -84,11 +92,15 @@ const Profile =  ({navigation}) => {
         telephone,
         email,
         codepostal,
+        gender,
+        allergies:selectedAllergies,
+        preferences_alimentaires:selectedPreferences,
       };
   
       try {
         const newUser = await modifyUser(user.userId, updatedUser);
-        console.log(newUser);
+        console.log('new user', newUser);
+        console.log('updateuser', updatedUser)
         return Toast.show({
           type: 'success',
           text1: `Modifications enregistrées`,
@@ -133,14 +145,16 @@ const Profile =  ({navigation}) => {
   const sortedAllergies = [...allergies].slice(0).sort((a, b) => a.nom_allergie.localeCompare(b.nom_allergie));
   //sortedAllergies.unshift({ nom_allergie: 'Ajoutez une allergie alimentaire' });
   const removeSelectedAllergy = (allergyToRemove) => {
-    setSelectedAllergies(selectedAllergies.filter((allergy) => allergy !== allergyToRemove));
+    const updatedAllergies  = setSelectedAllergies(selectedAllergies.filter((allergy) => allergy !== allergyToRemove));
+    dispatch(updateUser({ allergies: updatedAllergies }));
   }
 
   //const [selectedPreferences, setSelectedPreferences] = useState([]);
   const sortedPreferences = [...preferences].slice(0).sort((a, b) => a.nom_preference.localeCompare(b.nom_preference));
   //sortedAllergies.unshift({ nom_allergie: 'Ajoutez une allergie alimentaire' });
   const removeSelectedPreference = (preferenceToRemove) => {
-    setSelectedPreferences(selectedPreferences.filter((pref) => pref !== preferenceToRemove));
+    const updatedPreferences = setSelectedPreferences(selectedPreferences.filter((pref) => pref !== preferenceToRemove));
+    dispatch(updateUser({ preferences_alimentaires: updatedPreferences }));
   }
 
 
@@ -168,6 +182,42 @@ const Profile =  ({navigation}) => {
        
       <Text style={style.title_section}>Votre information personnelle</Text>
       <View style={style.formulaire}>
+      <View>
+     
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap:5, marginVertical:10 }}>
+      <Text>Vous êtes :</Text>
+      <TouchableOpacity 
+          style={style.radioButtonOut}
+          onPress={() => { setGender('femme'); }}>
+          {
+            gender === 'femme' &&
+            <View style={style.radioButtonIn} />
+          }
+        </TouchableOpacity>
+        <Text>Mme.</Text>
+        <TouchableOpacity 
+          style={style.radioButtonOut}
+          onPress={() => { setGender('homme'); }}>
+          {
+            gender === 'homme' &&
+            <View style={style.radioButtonIn} />
+          }
+        </TouchableOpacity>
+        <Text style={{ marginRight: 10 }}>M.</Text>
+
+        <TouchableOpacity 
+          style={style.radioButtonOut}
+          onPress={() => { setGender('nbinaire'); }}>
+          {
+            gender === 'nbinaire' &&
+            <View style={style.radioButtonIn} />
+          }
+        </TouchableOpacity>
+        <Text>Non-binaire</Text>
+        
+        
+      </View>
+    </View>
 
        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
           <TextInput {...inputOptions}  onChangeText={setLastname} style={style.short_input} placeholder='Nom'/>
@@ -238,6 +288,7 @@ const Profile =  ({navigation}) => {
               <Picker
                 style={pickerSelectStyles}
                 selectedValue={currentSelection}
+                
                 placeholder={{
                   label: "Ajoutez une allergie alimentaire"
                 
@@ -253,7 +304,7 @@ const Profile =  ({navigation}) => {
                   }
                   setCurrentSelection(null); // Remettre à zéro la sélection actuelle
                 }}
-                items={sortedAllergies.map((allergy) => ({
+                items={sortedAllergies.map((allergy, index) => ({
                   label: allergy.nom_allergie,
                   value: allergy.nom_allergie,
                 }))}
@@ -261,9 +312,9 @@ const Profile =  ({navigation}) => {
               {/* affichage du tag */}
               <View style={{flexDirection:'row', flexWrap:'wrap'}}>
                 {selectedAllergies.map((allergy, index) => (
-                  <View style={style.tag }>
+                  <View style={style.tag }key={index}>
                     <Icon name="remove-circle" size={15} color="#000" onPress={() => removeSelectedAllergy(allergy)}/>
-                    <Text key={index}>  {allergy} </Text>
+                    <Text>   {allergy} </Text>
                   </View>
                 ))}
               </View>
@@ -546,6 +597,22 @@ const style = StyleSheet.create({
     flexDirection:'row',
     alignItems:'center',
     borderRadius:5
+  },
+  radioButtonOut:{
+    height: 15,
+    width: 15,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor:colors.color3,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor:colors.color3
+  },
+  radioButtonIn:{
+    height: 10,
+    width: 10,
+    borderRadius: 6,
+    backgroundColor: colors.color1,
   }
 
 });

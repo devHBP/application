@@ -7,6 +7,9 @@ const initialState = {
     lastname: '',
     adresse: '',
     role:'',
+    gender:'',
+    allergies:[],
+    preferences_alimentaires:[]
     // Autres champs utilisateur
   },
   selectedStore: '',
