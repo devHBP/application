@@ -41,7 +41,7 @@ const Signup = ({navigation}) => {
     //appel axios post pour s'enregister
     axios.post('http://localhost:8080/signup', clientData)
     .then(response => {
-      // console.log('client data', clientData)
+      console.log('client data', clientData)
        //console.log('response.data', response.data)
       
      

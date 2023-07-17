@@ -1,9 +1,10 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image, FlatList, SectionList} from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image,} from 'react-native'
 import { Button, TextInput, Avatar,  } from 'react-native-paper'
 import React, { useEffect, useState} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector, useDispatch } from 'react-redux'
 import { updateUser , updateSelectedStore,} from '../reducers/authSlice';
+import { addDate, addTime, clearCart, resetDateTime} from '../reducers/cartSlice';
 import { defaultStyle, inputStyling, colors, fonts } from '../styles/styles'
 import  Picker  from 'react-native-picker-select';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
@@ -23,8 +24,22 @@ const inputOptions = {
 const Profile =  ({navigation}) => {
 
   const [stores, setStores] = useState([]);
-  
-  
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.auth.user);
+  const userId = user.userId
+  const selectedStore = useSelector((state) => state.auth.selectedStore);
+   //console.log('store', userStore)
+     // Initialisation des états locaux pour les champs du formulaire
+     const [firstname, setFirstname] = useState('');
+     const [lastname, setLastname] = useState('');
+     const [adresse, setAdresse] = useState('');
+     const [telephone, setTelephone] = useState('');
+     const [email, setEmail] = useState('');
+     const [cp, setCodepostal] = useState('');
+     const [genre, setGenre] = useState(user.genre);
+     const [selectedAllergies, setSelectedAllergies] = useState([]);
+     const [selectedPreferences, setSelectedPreferences] = useState([]);
+     //ajouter date de naissance
   const [currentSelection, setCurrentSelection] = useState(null);
 
   const [isEnabledSMS, setIsEnabledSMS] = useState(false);
@@ -49,26 +64,30 @@ const Profile =  ({navigation}) => {
         console.error("Une erreur s'est produite :", error);
       }
     };
+    const getUserInfo = async(user) => {
+      try {
+        const response = await axios.get(`http://127.0.0.1:8080/getOne/${user.userId}`); // Remplacez par la bonne URL de l'API
+        const userData = response.data;
+        //console.log('userData', userData)
+         setFirstname(userData.firstname);
+         setLastname(userData.lastname);
+         setEmail(userData.email);
+         setTelephone(userData.telephone);
+         setCodepostal(userData.cp !== null ? userData.cp : "");
+         setAdresse(userData.adresse);
+         setSelectedAllergies(userData.allergies ? userData.allergies.split(",") : []);
+         setSelectedPreferences(userData.preferences_alimentaires ? userData.preferences_alimentaires.split(",") : []);
+
+      } catch (error) {
+        console.error('Erreur lors de la récupération des informations utilisateur :', error);
+      }
+    }
     useEffect(() => {
       allStores();
-    }, []);
+      getUserInfo(user)
+    }, [user]);
 
-    const dispatch = useDispatch();
-    const user = useSelector((state) => state.auth.user);
-    const userId = user.userId
-    const selectedStore = useSelector((state) => state.auth.selectedStore);
-    //console.log('store', userStore)
-     // Initialisation des états locaux pour les champs du formulaire
-    const [firstname, setFirstname] = useState(user.firstname);
-    const [lastname, setLastname] = useState(user.lastname);
-    const [adresse, setAdresse] = useState(user.adresse);
-    const [telephone, setTelephone] = useState(user.telephone);
-    const [email, setEmail] = useState(user.email);
-    const [codepostal, setCodepostal] = useState(user.codepostal);
-    const [genre, setGenre] = useState(user.genre);
-    const [selectedAllergies, setSelectedAllergies] = useState([]);
-    const [selectedPreferences, setSelectedPreferences] = useState([]);
-    //ajouter date de naissance
+  
 
     //ajouter le genre
     const handleSubmit = async  () => {
@@ -78,7 +97,7 @@ const Profile =  ({navigation}) => {
         adresse,
         telephone,
         email,
-        codepostal,
+        cp,
         genre,
         allergies:selectedAllergies,
         preferences_alimentaires:selectedPreferences,
@@ -91,7 +110,7 @@ const Profile =  ({navigation}) => {
         adresse,
         telephone,
         email,
-        codepostal,
+        cp: cp || cp === 0 ? cp : null,
         genre,
         allergies:selectedAllergies.join(","),
         preferences_alimentaires:selectedPreferences.join(","),
@@ -113,6 +132,12 @@ const Profile =  ({navigation}) => {
     };
 
     const handleLogout = () => {
+      //code de la page Home
+      // dispatch(resetDateTime())
+      // setDate(null)
+      // setTime(null)
+      // dispatch(logoutUser(selectedStore)); 
+      dispatch(clearCart())
       navigation.navigate('app')
     }
     const handleCookies = () => {
@@ -145,16 +170,19 @@ const Profile =  ({navigation}) => {
   const sortedAllergies = [...allergies].slice(0).sort((a, b) => a.nom_allergie.localeCompare(b.nom_allergie));
   //sortedAllergies.unshift({ nom_allergie: 'Ajoutez une allergie alimentaire' });
   const removeSelectedAllergy = (allergyToRemove) => {
-    const updatedAllergies  = setSelectedAllergies(selectedAllergies.filter((allergy) => allergy !== allergyToRemove));
-    dispatch(updateUser({ allergies: updatedAllergies }));
+    const updatedAllergies  = selectedAllergies.filter((allergy) => allergy !== allergyToRemove);
+    setSelectedAllergies(updatedAllergies);
+    // dispatch(updateUser({ allergies: updatedAllergies.join(",") }));
+
   }
 
   //const [selectedPreferences, setSelectedPreferences] = useState([]);
   const sortedPreferences = [...preferences].slice(0).sort((a, b) => a.nom_preference.localeCompare(b.nom_preference));
   //sortedAllergies.unshift({ nom_allergie: 'Ajoutez une allergie alimentaire' });
   const removeSelectedPreference = (preferenceToRemove) => {
-    const updatedPreferences = setSelectedPreferences(selectedPreferences.filter((pref) => pref !== preferenceToRemove));
-    dispatch(updateUser({ preferences_alimentaires: updatedPreferences }));
+    const updatedPreferences = selectedPreferences.filter((pref) => pref !== preferenceToRemove)
+    setSelectedPreferences(updatedPreferences)
+    //dispatch(updateUser({ preferences_alimentaires: updatedPreferences.join(",") }));
   }
 
 
@@ -220,12 +248,13 @@ const Profile =  ({navigation}) => {
     </View>
 
        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-          <TextInput {...inputOptions}  onChangeText={setLastname} style={style.short_input} placeholder='Nom'/>
-          <TextInput {...inputOptions}  onChangeText={setFirstname} style={style.short_input} placeholder='Prenom' />
-       </View>
+          <TextInput {...inputOptions} value={lastname}  onChangeText={setLastname} style={style.short_input} placeholder='Nom'/>
+          <TextInput {...inputOptions} value={firstname} onChangeText={setFirstname} style={style.short_input}  placeholder="Prénom" /> 
+        </View>
        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-       <TextInput {...inputOptions}  onChangeText={setTelephone} style={style.short_input} placeholder='N° téléphone'/>
-          <TextInput {...inputOptions}  onChangeText={setCodepostal} style={style.short_input} placeholder='Code postal' />
+          <TextInput {...inputOptions}  onChangeText={setTelephone} value={telephone}  style={style.short_input} placeholder='N° téléphone'/>
+          <TextInput {...inputOptions}  onChangeText={(value) => setCodepostal(value ? parseInt(value) : '')}   value={cp !== null ? cp.toString() : ''}
+ style={style.short_input} placeholder='Code postal' />
        </View>
        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
        <TextInput {...inputOptions}  style={style.short_input} placeholder='Date de naissance'/>
@@ -234,12 +263,12 @@ const Profile =  ({navigation}) => {
        
        <View style={{flexDirection:'column', marginVertical:10}}>
           <Text style={style.label}>Votre email</Text>
-          <TextInput {...inputOptions} placeholder='exemple.mail@email.com' onChangeText={setEmail} style={style.long_input}/>
+          <TextInput {...inputOptions} placeholder='exemple.mail@email.com' onChangeText={setEmail} value={email}  style={style.long_input}/>
         </View> 
 
         <View style={{flexDirection:'column', marginVertical:10}}>
           <Text style={style.label}>Votre adresse</Text>
-          <TextInput {...inputOptions} placeholder='123 Direction de la rue' onChangeText={setAdresse} style={style.long_input}/>
+          <TextInput {...inputOptions} placeholder='123 Direction de la rue' onChangeText={setAdresse} value={adresse} style={style.long_input}/>
         </View>
 
         </View>
@@ -296,7 +325,7 @@ const Profile =  ({navigation}) => {
                 onValueChange={(value) => {
                   if (value) {
                     const selected = allergies.find((allergy) => allergy.nom_allergie === value);
-                    if (selected && !selectedAllergies.includes(selected.nom_allergie)) {
+                    if (selected && !(selectedAllergies?.includes(selected.nom_allergie))) {
                       setSelectedAllergies([...selectedAllergies, selected.nom_allergie]);
                     } else {
                       console.log('Allergie déjà sélectionnée ou pas d\'allergie sélectionnée encore');
@@ -310,14 +339,16 @@ const Profile =  ({navigation}) => {
                 }))}
               />
               {/* affichage du tag */}
+           
               <View style={{flexDirection:'row', flexWrap:'wrap'}}>
-                {selectedAllergies.map((allergy, index) => (
+              {selectedAllergies && selectedAllergies.length > 0 && selectedAllergies.map((allergy, index) => (
                   <View style={style.tag }key={index}>
                     <Icon name="remove-circle" size={15} color="#000" onPress={() => removeSelectedAllergy(allergy)}/>
                     <Text>   {allergy} </Text>
                   </View>
                 ))}
               </View>
+             
         </View>
 
         {/* picker preference alimentaires */}
@@ -333,7 +364,7 @@ const Profile =  ({navigation}) => {
                 onValueChange={(value) => {
                   if (value) {
                     const selected = preferences.find((pref) => pref.nom_preference === value);
-                    if (selected && !selectedPreferences.includes(selected.nom_preference)) {
+                    if (selected && !selectedPreferences?.includes(selected.nom_preference)) {
                       setSelectedPreferences([...selectedPreferences, selected.nom_preference]);
                     } else {
                       console.log('Préférence déjà sélectionnée ou pas de preference sélectionnée encore');
@@ -347,14 +378,17 @@ const Profile =  ({navigation}) => {
                 }))}
               />
               {/* affichage du tag */}
+            
+
               <View style={{flexDirection:'row', flexWrap:'wrap'}}>
-                {selectedPreferences.map((pref, index) => (
-                  <View style={style.tag }>
+                {selectedPreferences&& selectedPreferences.length > 0 && selectedPreferences.map((pref, index) => (
+                  <View style={style.tag} key={index}>
                     <Icon name="remove-circle" size={15} color="#000" onPress={() => removeSelectedPreference(pref)}/>
-                    <Text key={index}>  {pref} </Text>
+                    <Text>  {pref} </Text>
                   </View>
                 ))}
               </View>
+               
             </View>
         </View>
       </View>

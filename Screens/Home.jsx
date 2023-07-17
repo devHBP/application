@@ -1,4 +1,4 @@
-import {View, Text, Pressable, ScrollView , StyleSheet, TouchableOpacity, Image } from 'react-native'
+import {View, Text, Pressable, ScrollView , StyleSheet, TouchableOpacity, Image, SectionList } from 'react-native'
 import  Picker  from 'react-native-picker-select';
 import { defaultStyle, fonts, colors} from '../styles/styles'
 import React, {useState, useEffect,  createRef  } from 'react'
@@ -48,7 +48,7 @@ const Home =  ({navigation}) => {
       // console.log('all stores', response.data)
       setStores(response.data);
     } catch (error) {
-      console.error("Une erreur s'est produite :", error);
+      console.error("Une erreur s'est produite, erreur stores :", error);
     }
   };
 
@@ -86,7 +86,7 @@ const Home =  ({navigation}) => {
       setCategories([...new Set(updatedProducts.map((product) => product.categorie)), 'Tous']);
       //setCategories(updatedProducts.map((product) => product.categorie));
       } catch (error) {
-        console.error('Une erreur s\'est produite :', error);
+        console.error('Une erreur s\'est produite, error products :', error);
       }
     };
     fetchData(); // Appel de la fonction fetchData lors du montage du composant
@@ -106,16 +106,6 @@ const Home =  ({navigation}) => {
     }
   }
  
-  //deconnexion
-  const handleLogout = () => {
-    dispatch(resetDateTime())
-    setDate(null)
-    setTime(null)
-    dispatch(logoutUser(selectedStore)); 
-    dispatch(clearCart())
-    navigation.navigate('app')
-  }
-
   //date formatée ou pas ? 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -192,134 +182,39 @@ const toggleVisibility = () => {
 
   return (
     <>
-    <ScrollView style={{...defaultStyle, flex:1, paddingHorizontal:5, paddingVertical:20}} ref={scrollViewRef}>
+    <ScrollView style={{...defaultStyle, flex:1, paddingVertical:20}} ref={scrollViewRef}>
    
     <View >
-        <View style={style.logos}>
-          <Icon name="logout" size={30} color="#000" onPress={() => handleLogout()} />
-        </View>
 
     <View style={style.bandeau}>
-        
-        <View>
+      
+        <View style={{flexDirection:'row'}}>
         {
           user && 
-          <View style={{padding:25, flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+          <View style={{padding:30, flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10}}>
             <View>
-            <Text style={{fontFamily:fonts.font1, fontSize:28}}>Bonjour </Text>
+              <Text style={{fontFamily:fonts.font1, fontSize:28}}>Bonjour </Text>
               <Text style={{fontSize:20}}>{user.firstname}</Text>
               {/* <Text>{user.firstname} {user.lastname} </Text> */}
             </View>
               
                {/* SearchBar */}
-        <SearchBar
-        placeholder="Une petite faim ?"
-        onChangeText={handleSearch}
-        value={searchQuery}
-        containerStyle={style.searchBarContainer}
-        inputContainerStyle={style.searchBarInputContainer}
-        inputStyle={{fontSize:14, }}
-        placeholderTextColor={colors.color2}
-      />
+              <SearchBar
+              placeholder="Une petite faim ?"
+              onChangeText={handleSearch}
+              value={searchQuery}
+              containerStyle={style.searchBarContainer}
+              inputContainerStyle={style.searchBarInputContainer}
+              inputStyle={{fontSize:14, }}
+              placeholderTextColor={colors.color2}
+            />
           </View>
-         
         }
-         {/* <Text>Point choisi: {selectedStore.nom_magasin}</Text> */}
-          {/* <Picker
-              placeholder={{
-                  label: "Choisissez un magasin"
-                }}
-              value={selectedStore.nom_magasin}
-              onValueChange={(value) => {
-                const selected = stores.find((store) => store.nom_magasin === value);
-                //console.log('user', user)
+        </View>  
+    </View>
 
-                if (selected) {
-                  dispatch(updateSelectedStore(selected));
-                // dispatch(updateUser({ ...user, id_magasin: selected.id_magasin }));
-                dispatch(updateUser({ ...user, storeId: selected.storeId }));
-
-                axios.put(`http://127.0.0.1:8080/updateOneUser/${user.userId}`, {storeId: selected.storeId})
-                .then(response => {
-                  // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
-                  // console.log(response.data)
-                })
-                .catch(error => {
-                  console.error('Erreur lors de la mise à jour du choix du magasin dans la base de données - erreur ici:', error);
-                });
-              }
-            else {
-              console.log('pas de magasin selectionné encore')
-            }}
-            }
-              items={stores.map((store) => ({
-                label: store.nom_magasin,
-                value: store.nom_magasin,
-              }))}
-            />  */}
-
-       {/* // Selection Jour  */}
-         {/* <TouchableOpacity onPress={() => setOpenDate(true)} >
-       //ne pas utiliser la ligne suivante
-          <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text> 
-            <Text>
-            {date ? (
-                isTomorrowOrLater(date) ? (
-                <Text style={style.picker}>{formatDate(date)}</Text>
-                ) : (
-                "Il est trop tard pour commander pour  demain"
-                )
-            ) : (
-                "Choisissez votre jour"
-            )}
-            </Text>
-        </TouchableOpacity> 
-        
-               <DatePicker
-                modal
-                open={openDate}
-                date={date ? new Date(date) : new Date()}
-                mode="date"
-                onConfirm={(date) => {
-                  setOpenDate(false)
-
-                //test date
-                if (isTomorrowOrLater(date)) {
-                  setDate(date);
-                  dispatch(addDate(formatDate(date.toISOString())));
-                  console.log('date', formatDate(date.toISOString()))
-                  return Toast.show({
-                    type: 'success',
-                    text1: 'Succès',
-                    text2: `Commande prévue pour ${formatDate(date)}`
-                  });
-                } else {
-                  setDate(null)
-                  dispatch(addDate(null))
-                  console.log('La date sélectionnée doit être supérieure ou égale à demain');
-                  return Toast.show({
-                    type: 'error',
-                    text1: 'Erreur, Vous arrivez trop tard pour demain',
-                    text2: 'Veuillez selectionner une nouvelle date'
-                  });
-                } 
-                }}
-                onCancel={() => {
-                  setOpenDate(false)
-                }}
-                minimumDate={new Date()}
-                
-              />  */}
-
-       
-      </View>
-
-       
-      </View>
-
-      
       {/* test bandeau header */}
-      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', borderRadius:10, padding:5}}>
+      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', padding:10}}>
           <View style={{flex:1, flexDirection:'row', gap:5, alignItems:'center', }}>
               <Image
                   source={require('../assets/store.png')} 
@@ -333,7 +228,6 @@ const toggleVisibility = () => {
                   value={selectedStore.nom_magasin}
                   onValueChange={(value) => {
                     const selected = stores.find((store) => store.nom_magasin === value);
-                    console.log('selectecstore', selected)
 
                     if (selected) {
                       dispatch(updateSelectedStore(selected));
@@ -346,7 +240,7 @@ const toggleVisibility = () => {
                       // console.log(response.data)
                     })
                     .catch(error => {
-                      console.error('Erreur lors de la mise à jour du choix du magasin dans la base de données - erreur ici:', error);
+                      console.error('Erreur lors de la mise à jour du choix du magasin dans la base de données (ici) - erreur ici:', error);
                     });
                   }
                 else {
@@ -504,8 +398,7 @@ const toggleVisibility = () => {
 
           {/* card products */}
         
-        <ScrollView vertical showsVerticalScrollIndicator={false}  
-      >
+      
           <View style={style.cardScrollview}>
             {sortedCategories
             
@@ -513,7 +406,7 @@ const toggleVisibility = () => {
               <React.Fragment key={category}>
                 <Text style={style.categoryTitle}>{category}</Text>
 
-                <ScrollView horizontal>
+               
                 {groupedAndSortedProducts[category]
                 .sort((a, b) => a.libelle.localeCompare(b.libelle))
                 .map((item, index) => (
@@ -535,7 +428,7 @@ const toggleVisibility = () => {
                     </TouchableOpacity>
                   </View>
                 ))}
-                </ScrollView>
+              
                
               </React.Fragment>
             ))}
@@ -544,9 +437,6 @@ const toggleVisibility = () => {
           <TouchableOpacity onPress={scrollToTop} >
              <Icon name="arrow-upward" size={30} style={style.scrollTop}   />
           </TouchableOpacity>
-         
-        </ScrollView>
-       
 
     </ScrollView>
     <FooterProfile />
@@ -608,7 +498,7 @@ const style = StyleSheet.create({
     paddingBottom:40 ,
   },
   productContainer: {
-    width: '80%', 
+    width: '50%', 
     padding: 5,
   },
   searchBarContainer: {
@@ -616,11 +506,15 @@ const style = StyleSheet.create({
     borderTopWidth: 0,
     borderBottomWidth: 0,
     width:"60%",
+    paddingHorizontal:0,
+    marginHorizontal:0
   },
   searchBarInputContainer: {
     backgroundColor: '#e0e0e0',
     borderRadius:25,
     width:"90%",
+    padding:0,
+    margin:0
    
   },
   scrollTop:{
