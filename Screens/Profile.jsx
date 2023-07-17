@@ -65,7 +65,7 @@ const Profile =  ({navigation}) => {
     const [telephone, setTelephone] = useState(user.telephone);
     const [email, setEmail] = useState(user.email);
     const [codepostal, setCodepostal] = useState(user.codepostal);
-    const [gender, setGender] = useState(user.gender);
+    const [genre, setGenre] = useState(user.genre);
     const [selectedAllergies, setSelectedAllergies] = useState([]);
     const [selectedPreferences, setSelectedPreferences] = useState([]);
     //ajouter date de naissance
@@ -79,7 +79,7 @@ const Profile =  ({navigation}) => {
         telephone,
         email,
         codepostal,
-        gender,
+        genre,
         allergies:selectedAllergies,
         preferences_alimentaires:selectedPreferences,
       }));
@@ -92,9 +92,9 @@ const Profile =  ({navigation}) => {
         telephone,
         email,
         codepostal,
-        gender,
-        allergies:selectedAllergies,
-        preferences_alimentaires:selectedPreferences,
+        genre,
+        allergies:selectedAllergies.join(","),
+        preferences_alimentaires:selectedPreferences.join(","),
       };
   
       try {
@@ -188,18 +188,18 @@ const Profile =  ({navigation}) => {
       <Text>Vous êtes :</Text>
       <TouchableOpacity 
           style={style.radioButtonOut}
-          onPress={() => { setGender('femme'); }}>
+          onPress={() => { setGenre('femme'); }}>
           {
-            gender === 'femme' &&
+            genre === 'femme' &&
             <View style={style.radioButtonIn} />
           }
         </TouchableOpacity>
         <Text>Mme.</Text>
         <TouchableOpacity 
           style={style.radioButtonOut}
-          onPress={() => { setGender('homme'); }}>
+          onPress={() => { setGenre('homme'); }}>
           {
-            gender === 'homme' &&
+            genre === 'homme' &&
             <View style={style.radioButtonIn} />
           }
         </TouchableOpacity>
@@ -207,9 +207,9 @@ const Profile =  ({navigation}) => {
 
         <TouchableOpacity 
           style={style.radioButtonOut}
-          onPress={() => { setGender('nbinaire'); }}>
+          onPress={() => { setGenre('nbinaire'); }}>
           {
-            gender === 'nbinaire' &&
+            genre === 'nbinaire' &&
             <View style={style.radioButtonIn} />
           }
         </TouchableOpacity>
