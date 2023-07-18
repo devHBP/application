@@ -19,6 +19,8 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) =
 
   // Déclaration de l'état du stock
   const [currentStock, setCurrentStock] = useState(stock);
+  const [modalIsOpen, setIsOpen] = useState(false);
+
 
   // Effet de bord pour mettre à jour le stock
   useEffect(() => {
@@ -50,7 +52,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) =
     //     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
     //   }
     // }
-        
+    
     // incrementhandler function
 const incrementhandler = async () => {
   if (currentStock === 0){
@@ -75,16 +77,28 @@ const incrementhandler = async () => {
     if (stockAvailable.length > 0 && remainingStock > 0) {
       // The stock is sufficient, add the product to the cart
       dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre}));
-      //console.log('Le stock est suffisant pour ajouter la quantité spécifiée.');
 
-      // Si le produit a l'offre "offre31" et que sa quantité dans le panier est un multiple de 3, imprimer un log
-      if (offre === 'offre31' && ((productInCart ? productInCart.qty : 0) + 1) % 3 === 0) {
-        console.log('Une offre "offre31" a été appliquée.');
+      if (offre && offre.startsWith('offre31')) {
+        // Get a version of the cart that includes the new product
+        const updatedCart = [...cart, { productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre}];
+    
+        // Filter products that have the same offer as the currently added product
+        const sameOfferProducts = updatedCart.filter((item) => item.offre === offre);
+    
+        // Calculate the total quantity for this specific offer
+        const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
+      
+        if (totalQuantity > 0 && totalQuantity % 3 === 0) {
+          console.log(`4e produit (${libelle}) offert pour l'offre ${offre}`);
+          //MODALE 4E produit
 
-        //ici on ajoute directement le 4e produit
-        //dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: 0, qty: 1 })); // Ici, prix_unitaire est fixé à 0 pour indiquer un produit gratuit
+          
 
-      }
+
+        }
+      
+    }
+    
     } else {
       // The stock is insufficient
       //console.log(`Le stock est insuffisant pour ajouter la quantité spécifiée.,Quantités max: ${stockAvailable[0].quantite}`);
@@ -98,6 +112,7 @@ const incrementhandler = async () => {
     console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
   }
 };
+
 
    
     const decrementhandler = () => {
