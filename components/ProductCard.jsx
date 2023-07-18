@@ -5,6 +5,7 @@ import { updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/ca
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import { defaultStyle, fonts, colors} from '../styles/styles'
 
 //call API
 import { checkStock } from '../CallApi/api.js';
@@ -14,7 +15,7 @@ import { checkStock } from '../CallApi/api.js';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
-const ProductCard = ({libelle, id, image, prix, qty, stock  }) => {
+const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) => {
 
   // Déclaration de l'état du stock
   const [currentStock, setCurrentStock] = useState(stock);
@@ -73,8 +74,17 @@ const incrementhandler = async () => {
 
     if (stockAvailable.length > 0 && remainingStock > 0) {
       // The stock is sufficient, add the product to the cart
-      dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 }));
+      dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre}));
       //console.log('Le stock est suffisant pour ajouter la quantité spécifiée.');
+
+      // Si le produit a l'offre "offre31" et que sa quantité dans le panier est un multiple de 3, imprimer un log
+      if (offre === 'offre31' && ((productInCart ? productInCart.qty : 0) + 1) % 3 === 0) {
+        console.log('Une offre "offre31" a été appliquée.');
+
+        //ici on ajoute directement le 4e produit
+        //dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: 0, qty: 1 })); // Ici, prix_unitaire est fixé à 0 pour indiquer un produit gratuit
+
+      }
     } else {
       // The stock is insufficient
       //console.log(`Le stock est insuffisant pour ajouter la quantité spécifiée.,Quantités max: ${stockAvailable[0].quantite}`);
@@ -108,41 +118,69 @@ const incrementhandler = async () => {
               source={{ uri: `${baseUrl}/${image}` }}
               style={{
                       width: "100%",
-                      height: 135,
+                      height: 140,
                       resizeMode: "cover",
-                      borderTopLeftRadius:10,
-                      borderTopRightRadius:10,
+                      // borderTopLeftRadius:10,
+                      // borderTopRightRadius:10,
                       }}
               
           />
           {currentStock === 0 && (
             <View style={style.overlay} />
             )}
+           {
+            offre && offre.startsWith('offre31') && (
+              <Image
+                source={require('../assets/offre31.png')}
+                style={{ width: 40, resizeMode:'contain', position:'absolute',top:-5, right:5}}
+              />
+            )
+          }
+
+          <View style={style.qtyContainer}>
+              <TouchableOpacity
+                  onPress={decrementhandler}
+                  style={style.decrement}
+              >
+                  <Icon name="remove" size={16} color="#000" />
+             </TouchableOpacity>
+            {/* <Text style={style.qtyText}>{cart[index].qty}</Text> */}
+             <TouchableOpacity
+                  style={style.qtyText}
+              >
+                 <Text >{product ? product.qty : 0}</Text>
+              </TouchableOpacity>
+                           
+              <TouchableOpacity
+                  onPress={incrementhandler}
+                  style={style.increment}
+              >
+                  <Icon name="add" size={16}  color="white" />
+              </TouchableOpacity>
+
+          </View>
    
-          
-          
-    
         </View>
 
             <View style={{
-                width: "100%",
-                height:80,
+                flexDirection:'row',
+                justifyContent:'space-around',
                 }}>
             
                 <View
                     style={{
                     flexDirection: "column",
                     justifyContent: "center",
-                    width: "100%",
-                    height:100,
+                    //width: "100%",
+                    height:40,
                     backgroundColor:'white',
-                    gap: 5,
+                    paddingVertical:5
                     }}
                 >
                     <Text
                         numberOfLines={1}
                         style={{
-                        fontSize: 16,
+                        fontSize: 14,
                         fontWeight: "300",
                         width: "100%",
                         textAlign:'center',
@@ -153,7 +191,7 @@ const incrementhandler = async () => {
                     <Text
                             numberOfLines={1}
                             style={{
-                            fontSize: 16,
+                            fontSize: 14,
                             fontWeight: "300",
                             width: "100%",
                             textAlign:'center'
@@ -166,30 +204,44 @@ const incrementhandler = async () => {
                           stock===0 ?  'stock indispo':'stock ok'             
                         }
                       </Text> */}
-                      <View style={style.qtyContainer}>
-                             <TouchableOpacity
-                                onPress={decrementhandler}
-                            >
-                                <Icon name="remove" size={30} color="#000" />
-                            </TouchableOpacity>
-                            {/* <Text style={style.qtyText}>{cart[index].qty}</Text> */}
-                            <Text style={style.qtyText}>{product ? product.qty : 0}</Text>
-                            <TouchableOpacity
-                                onPress={incrementhandler}
-                            >
-                                <Icon name="add" size={30} color="#000" />
-                            </TouchableOpacity>
-
-                        </View>
-            
-                     
+                      
+                </View>
+                <View style={{
+                    flexDirection: "column",
+                    justifyContent: "center",
+                    height:40,
+                    backgroundColor:'white',
+                    
+                    paddingVertical:5
+                    }}>
+                <Text
+                        numberOfLines={1}
+                        style={{
+                        fontSize: 16,
+                        fontWeight: "bold",
+                        width: "100%",
+                        textAlign:'center',
+                        color:colors.color2
+                        }}
+                    >
+                        SUN
+                    </Text>
+                    <Text
+                            numberOfLines={1}
+                            style={{
+                            fontSize: 14,
+                            fontWeight: "300",
+                            width: "100%",
+                            textAlign:'center'
+                            }}
+                        >
+                            {prixSUN}€
+                      </Text>
                 </View>
                        
             </View>
             
-    </View>
-    
-    
+    </View>   
   )
 }
 const style = StyleSheet.create({
@@ -199,11 +251,12 @@ const style = StyleSheet.create({
         width:"100%", 
         //justifyContent:'center', 
         //alignItems:'center', 
-        height:220,
+        height:180,
         backgroundColor:'white', 
         marginVertical: 10, 
         marginHorizontal:5,
-        borderRadius:10
+        borderBottomLeftRadius:10,
+        borderBottomRightRadius:10,
         },
         image_container: {
           flex: 1,
@@ -211,24 +264,16 @@ const style = StyleSheet.create({
           justifyContent: 'center',
           width:"100%"
         },
-        qtyText: {
-            backgroundColor: 'white',
-            height: 25,
-            width: 25,
-            textAlign: "center",
-            borderWidth: 1,
-            borderRadius: 5,
-            borderColor: 'black',
-            fontSize:18
-          },
-          qtyContainer: {
+        qtyContainer: {
+          position: 'absolute',
+          bottom: 10,
+          right: 10,
             flexDirection:'row',
-            alignItems: "center",
-            width: "80%",
+            width: "50%",
             justifyContent: "space-between",
             alignSelf: "center",
           },
-          overlay: {
+        overlay: {
             position: 'absolute',
             top: 0,
             right: 0,
@@ -238,6 +283,34 @@ const style = StyleSheet.create({
             opacity: 0.5,
             borderRadius:5
           },
+        increment:{
+          backgroundColor:colors.color2,
+          color:"white",
+          width:25,
+          height:25,
+          justifyContent:'center',
+          alignItems:'center', 
+          borderRadius:5
+        },
+        decrement:{
+          backgroundColor:colors.color3,
+          color:colors.color1,
+          width:25,
+          height:25,
+          justifyContent:'center',
+          alignItems:'center', 
+          borderRadius:5
+        },
+        qtyText:{
+            backgroundColor:colors.color3,
+            color:colors.color1,
+            width:25,
+            height:25,
+            justifyContent:'center',
+            alignItems:'center', 
+            borderRadius:5
+        }
+        
 })
 
 export default ProductCard

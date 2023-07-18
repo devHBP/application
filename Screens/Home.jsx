@@ -36,6 +36,7 @@ const Home =  ({navigation}) => {
   const user = useSelector((state) => state.auth.user);
   //console.log('user Home', user)
   const cart = useSelector((state) => state.cart.cart);
+  console.log('cart',cart)
   const totalPrice = (cart.reduce((total, item) => total + item.qty * item.prix_unitaire, 0)).toFixed(2);
   const selectedStore = useSelector((state) => state.auth.selectedStore);
 
@@ -182,7 +183,7 @@ const toggleVisibility = () => {
 
   return (
     <>
-    <ScrollView style={{...defaultStyle, flex:1, paddingVertical:20}} ref={scrollViewRef}>
+    <ScrollView vertical={true} style={{ flex:1, paddingVertical:20}} ref={scrollViewRef}>
    
     <View >
 
@@ -376,7 +377,7 @@ const toggleVisibility = () => {
 
       {/* categories */}
       <View style={style.categories}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} >
           {
             categories.map((item, index) => (
               <Pressable title="button" 
@@ -399,14 +400,15 @@ const toggleVisibility = () => {
           {/* card products */}
         
       
-          <View style={style.cardScrollview}>
+          {/* <View style={style.cardScrollview}> */}
+          
             {sortedCategories
             
             .map((category) => (
               <React.Fragment key={category}>
                 <Text style={style.categoryTitle}>{category}</Text>
 
-               
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
                 {groupedAndSortedProducts[category]
                 .sort((a, b) => a.libelle.localeCompare(b.libelle))
                 .map((item, index) => (
@@ -414,6 +416,7 @@ const toggleVisibility = () => {
                     <TouchableOpacity
                       key={item.productId}
                       onPress={() => handleProductPress(item)}
+                      activeOpacity={1}
                     >
                       <ProductCard
                         libelle={item.libelle}
@@ -422,17 +425,19 @@ const toggleVisibility = () => {
                         index={index}
                         image={item.image}
                         prix={item.prix_unitaire}
+                        prixSUN={item.prix_remise_collaborateur}
                         qty={item.qty}
                         stock={item.stock}
+                        offre={item.offre}
                       />
                     </TouchableOpacity>
                   </View>
                 ))}
               
-               
+              </ScrollView>
               </React.Fragment>
             ))}
-          </View >
+          {/* </View > */}
 
           <TouchableOpacity onPress={scrollToTop} >
              <Icon name="arrow-upward" size={30} style={style.scrollTop}   />
@@ -445,10 +450,10 @@ const toggleVisibility = () => {
   )
 }
 const style = StyleSheet.create({
-  container: {
-    position: 'relative',
-    marginRight: 10,
-  },
+  // container: {
+  //   //position: 'relative',
+  //   //marginRight: 10,
+  // },
   bandeau:{
     flexDirection:'row', 
     width: "100%", 
@@ -492,13 +497,13 @@ const style = StyleSheet.create({
     color:colors.color1
   },
   cardScrollview:{
-    flexDirection: 'row', 
-    flexWrap: 'wrap',
-    // width:"100%",
-    paddingBottom:40 ,
+    // flexDirection: 'row', 
+    // flexWrap: 'wrap',
+    //  width:"100%",
+    // paddingBottom:40 ,
   },
   productContainer: {
-    width: '50%', 
+    width: 200, 
     padding: 5,
   },
   searchBarContainer: {
