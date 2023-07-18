@@ -36,7 +36,7 @@ const Home =  ({navigation}) => {
   const user = useSelector((state) => state.auth.user);
   //console.log('user Home', user)
   const cart = useSelector((state) => state.cart.cart);
-  console.log('cart',cart)
+  //console.log('cart',cart)
   const totalPrice = (cart.reduce((total, item) => total + item.qty * item.prix_unitaire, 0)).toFixed(2);
   const selectedStore = useSelector((state) => state.auth.selectedStore);
 
@@ -252,7 +252,7 @@ const toggleVisibility = () => {
                     label: store.nom_magasin,
                     value: store.nom_magasin,
                   }))}
-               
+                 
                 /> 
                 {
                   <View style={{flexDirection:'row'}}>
@@ -403,14 +403,15 @@ const toggleVisibility = () => {
           {/* <View style={style.cardScrollview}> */}
           
             {sortedCategories
-            
+            //ne plus afficher par catégorie - mais par choix
             .map((category) => (
               <React.Fragment key={category}>
                 <Text style={style.categoryTitle}>{category}</Text>
 
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
                 {groupedAndSortedProducts[category]
-                .sort((a, b) => a.libelle.localeCompare(b.libelle))
+                //ajouter un ordre de catégorie peut etre ?
+                //.sort((a, b) => a.libelle.localeCompare(b.libelle))
                 .map((item, index) => (
                   <View key={item.productId} style={style.productContainer}>
                     <TouchableOpacity

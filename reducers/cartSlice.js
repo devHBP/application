@@ -41,17 +41,26 @@ const cartSlice = createSlice({
     // },
     addToCart: (state, action) => {
         const product = action.payload;
+        console.log('product', product)
+        if (product.gratuit) {
+          product.prix_unitaire = 0;
+        }
         const existingProductIndex = state.cart.findIndex(
           (item) => item.productId === product.productId
         );
         if (existingProductIndex !== -1) {
           // Le produit existe déjà dans le panier, mettez à jour sa quantité
           state.cart[existingProductIndex].qty += 1;
+          if (state.cart[existingProductIndex].qty === 3 && product.gratuit) {
+            // Le 4ème produit est gratuit, mettez à jour son prix unitaire
+            state.cart[existingProductIndex].prix_unitaire = 0;
+          }
         } else {
           // Le produit n'existe pas encore dans le panier, ajoutez-le avec une quantité de 1
           state.cart.push(product);
         }
       },
+      
       decrementOrRemoveFromCart: (state, action) => {
         const product = action.payload;
         const existingProductIndex = state.cart.findIndex(

@@ -20,6 +20,7 @@ const Panier = ({navigation}) => {
   //const [currentStock, setCurrentStock] = useState(product.stock);
 
   const cart = useSelector((state) => state.cart.cart);
+  console.log('cart panier', cart )
   const user = useSelector((state) => state.auth.user)
   const store = useSelector((state) => state.auth.selectedStore)
   //console.log('cart', cart)

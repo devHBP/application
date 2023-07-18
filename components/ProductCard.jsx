@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, TouchableHighlight } from 'react-native'
 import React, { useState, useEffect} from 'react'
 import { Button } from 'react-native-paper'
 import { updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
@@ -19,7 +19,8 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) =
 
   // Déclaration de l'état du stock
   const [currentStock, setCurrentStock] = useState(stock);
-  const [modalIsOpen, setIsOpen] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
 
 
   // Effet de bord pour mettre à jour le stock
@@ -30,7 +31,8 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) =
     };
 
     fetchStock();
-  }, [id]);
+    
+  }, [id,]);
 
 
 
@@ -89,12 +91,11 @@ const incrementhandler = async () => {
         const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
       
         if (totalQuantity > 0 && totalQuantity % 3 === 0) {
-          console.log(`4e produit (${libelle}) offert pour l'offre ${offre}`);
+         
           //MODALE 4E produit
 
-          
-
-
+          setModalVisible(true);
+        
         }
       
     }
@@ -255,7 +256,45 @@ const incrementhandler = async () => {
                 </View>
                        
             </View>
-            
+
+  
+
+        <Modal
+            animationType="slide"
+            transparent={true}
+            visible={modalVisible}
+            onRequestClose={() => {
+              setModalVisible(!modalVisible);
+            }}
+          >
+            <View style={style.modalContainer}>
+              <View style={style.modalContent}>
+                <Text>Vous bénéficier de l'offre 3+1</Text>
+                <Text style={{textAlign:'center'}}>Vous pouvez ajouter le 4e produit gratuitement</Text>
+                <View style={{flexDirection: 'row'}}>
+                  <Button
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                      dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: 10, qty: 1 , offre: offre, gratuit: offre ? true : false})); // Ajoute le produit gratuit et incremente le panier
+                      console.log('total',( product.prix_unitaire * product.qty ).toFixed(2) )
+                    }}
+                  >
+                    <Text>Confirmer</Text>
+                  </Button>
+                            
+                  <Button
+                    onPress={() => {
+                      setModalVisible(!modalVisible);
+                    }}
+                  >
+                    <Text>Refuser</Text>
+                  </Button>
+                </View>
+                
+              </View>
+            </View>
+          </Modal>
+
     </View>   
   )
 }
@@ -324,7 +363,22 @@ const style = StyleSheet.create({
             justifyContent:'center',
             alignItems:'center', 
             borderRadius:5
-        }
+        },
+        modalContainer: {
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center',
+          //backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        },
+        modalContent: {
+          backgroundColor: 'lightgrey',
+          padding: 20,
+          borderRadius: 10,
+          width: '80%',
+          height: 180,
+          justifyContent: 'center',
+          alignItems: 'center',
+        },
         
 })
 
