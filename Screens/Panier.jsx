@@ -32,7 +32,7 @@ const Panier = ({navigation}) => {
     const prix = item.prix || item.prix_unitaire; // Utilisez la propriété "prix" si elle existe, sinon utilisez "prix_unitaire"
     return total + item.qty * prix;
   }, 0)).toFixed(2));
-  console.log('pricetotal', typeof totalPrice)
+  console.log('pricetotal', totalPrice)
 
   const handleBack = () => {
     navigation.navigate('home');
@@ -165,12 +165,13 @@ const Panier = ({navigation}) => {
             if (item.type === 'formule'){
               
               const formule = item
-              const { option1, option2, prix, libelle, formuleImage, productIds, image, qty } = formule
+              const { option1, option2,option3, prix, libelle, formuleImage, productIds, image, qty } = formule
               return (
                 <React.Fragment key={index}>
                   <CardItemFormule
                     option1={option1}
                     option2={option2}
+                    option3={option3}
                     prix_unitaire={prix}
                     incrementhandler={() => incrementhandler(index)}
                     decrementhandler={() => decrementhandler(index)}
