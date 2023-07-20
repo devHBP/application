@@ -2,7 +2,7 @@ import { View, Text , StyleSheet, TouchableOpacity, Image} from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty}) => {
+const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty, prix_unitaire}) => {
 
     const baseUrl = 'http://127.0.0.1:8080';
     //console.log('prix_unitaire', prix)
@@ -25,9 +25,7 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
         }}
         >
              <Image
-                source={{
-                    uri: `${baseUrl}/${image}`
-                }}
+                source={{ uri: `${baseUrl}/${image}` }}
                 style={styles.img}
             /> 
         </View>
@@ -54,7 +52,7 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
             fontWeight: "900",
             }}
         >
-            {prix}€
+              {prix || prix_unitaire}€
         </Text>
         </View>
 
