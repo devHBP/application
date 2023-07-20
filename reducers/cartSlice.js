@@ -39,28 +39,41 @@ const cartSlice = createSlice({
     // addToCart: (state, action) => {
     //   state.cart.push(action.payload);
     // },
+    // addToCart: (state, action) => {
+    //     const product = action.payload;
+    //     const existingProductIndex = state.cart.findIndex(
+    //       (item) => item.productId === product.productId
+    //     );
+    //     if (existingProductIndex !== -1) {
+    //       // Le produit existe déjà dans le panier, mettez à jour sa quantité
+    //       state.cart[existingProductIndex].qty += 1;
+    //     } else {
+    //       // Le produit n'existe pas encore dans le panier, ajoutez-le avec une quantité de 1
+    //       state.cart.push(product);
+    //     }
+    //   },
     addToCart: (state, action) => {
-        const product = action.payload;
-        console.log('product', product)
-        if (product.gratuit) {
-          product.prix_unitaire = 0;
-        }
-        const existingProductIndex = state.cart.findIndex(
-          (item) => item.productId === product.productId
-        );
-        if (existingProductIndex !== -1) {
-          // Le produit existe déjà dans le panier, mettez à jour sa quantité
-          state.cart[existingProductIndex].qty += 1;
-          if (state.cart[existingProductIndex].qty === 3 && product.gratuit) {
-            // Le 4ème produit est gratuit, mettez à jour son prix unitaire
-            state.cart[existingProductIndex].prix_unitaire = 0;
-          }
-        } else {
-          // Le produit n'existe pas encore dans le panier, ajoutez-le avec une quantité de 1
-          state.cart.push(product);
-        }
-      },
+      const product = action.payload;
       
+      const existingProductIndex = state.cart.findIndex(
+        (item) => item.productId === product.productId && item.offre === product.offre
+      );
+    
+      if (existingProductIndex !== -1) {
+        state.cart[existingProductIndex].qty += 1;
+      } else {
+        state.cart.push({ ...product, qty: 1, isFree: false });
+      }
+    },
+    addFreeProductToCart: (state, action) => {
+      const product = action.payload;
+    
+      // Vérifiez que le produit a l'offre
+      if (product.offre && product.offre.startsWith('offre31')) {
+        state.cart.push({ ...product, prix_unitaire: 0, qty: 1, isFree: true });
+      }
+    },
+    
       decrementOrRemoveFromCart: (state, action) => {
         const product = action.payload;
         const existingProductIndex = state.cart.findIndex(
@@ -106,5 +119,5 @@ const cartSlice = createSlice({
   },
 });
 
-export const { addToCart, removeFromCart, updateCart, clearCart, addDate, clearDate,addTime,resetDateTime,clearTime, addPaiement, decrementOrRemoveFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, updateCart, clearCart, addDate, clearDate,addTime,resetDateTime,clearTime, addPaiement, decrementOrRemoveFromCart, addFreeProductToCart } = cartSlice.actions;
 export default cartSlice.reducer;

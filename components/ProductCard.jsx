@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, TouchableHighlight } from 'react-native'
 import React, { useState, useEffect} from 'react'
 import { Button } from 'react-native-paper'
-import { updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
+import { addToCart,addFreeProductToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
@@ -21,8 +21,6 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) =
   const [currentStock, setCurrentStock] = useState(stock);
   const [modalVisible, setModalVisible] = useState(false);
 
-
-
   // Effet de bord pour mettre à jour le stock
   useEffect(() => {
     const fetchStock = async () => {
@@ -34,12 +32,16 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) =
     
   }, [id,]);
 
-
-
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
     const product = cart.find((item) => item.productId === id);
-    //console.log('currentStock', currentStock)
+    const productQuantity = cart.reduce((total, item) => {
+      if (item.productId === id) {
+        return total + item.qty;
+      }
+      return total;
+  }, 0);
+    //console.log(productQuantity)
 
     const baseUrl = 'http://127.0.0.1:8080';
 
@@ -54,8 +56,10 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) =
     //     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
     //   }
     // }
-    
-    // incrementhandler function
+    const handleAcceptOffer = () => {
+      dispatch(addFreeProductToCart(product));
+    };
+   
 const incrementhandler = async () => {
   if (currentStock === 0){
     return Toast.show({
@@ -66,12 +70,10 @@ const incrementhandler = async () => {
   }
   try {
     const stockAvailable = await checkStockForSingleProduct(id);
-    //console.log('stockAvailable', stockAvailable);
-    //console.log(stockAvailable[0].quantite)
     
     // Get the product from the cart
     const productInCart = cart.find((item) => item.productId === id);
-
+   
     // Calculate the remaining stock after accounting for the items in the cart
   const remainingStock = stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
 
@@ -90,14 +92,13 @@ const incrementhandler = async () => {
         // Calculate the total quantity for this specific offer
         const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
       
-        if (totalQuantity > 0 && totalQuantity % 3 === 0) {
+        // if (totalQuantity > 0 && totalQuantity % 3 === 0)
+        if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
          
           //MODALE 4E produit
-
-          setModalVisible(true);
+          setModalVisible(true);  
         
         }
-      
     }
     
     } else {
@@ -113,15 +114,10 @@ const incrementhandler = async () => {
     console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
   }
 };
-
-
    
     const decrementhandler = () => {
-
         dispatch(decrementOrRemoveFromCart({ productId: id, qty: 1 }));
       };
-
-
 
     
   return (
@@ -164,7 +160,8 @@ const incrementhandler = async () => {
              <TouchableOpacity
                   style={style.qtyText}
               >
-                 <Text >{product ? product.qty : 0}</Text>
+                <Text>{productQuantity}</Text>
+                 {/* <Text >{product ? product.qty : 0}</Text> */}
               </TouchableOpacity>
                            
               <TouchableOpacity
@@ -270,13 +267,13 @@ const incrementhandler = async () => {
             <View style={style.modalContainer}>
               <View style={style.modalContent}>
                 <Text>Vous bénéficier de l'offre 3+1</Text>
-                <Text style={{textAlign:'center'}}>Vous pouvez ajouter le 4e produit gratuitement</Text>
+                <Text style={{textAlign:'center'}}>Voulez vous ajouter le 4e produit gratuitement ?</Text>
                 <View style={{flexDirection: 'row'}}>
-                  <Button
+                <Button
                     onPress={() => {
+                      handleAcceptOffer(); // call handleAcceptOffer directly on Button's onPress
                       setModalVisible(!modalVisible);
-                      console.log('total',( product.prix_unitaire * product.qty ).toFixed(2) )
-
+                      //console.log('total',( product.prix_unitaire * product.qty ).toFixed(2) )
                     }}
                   >
                     <Text>Confirmer</Text>
