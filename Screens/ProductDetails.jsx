@@ -5,7 +5,7 @@ import { defaultStyle} from '../styles/styles'
 import { Button, Badge } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux'
 import {  addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
-import { checkStock } from '../CallApi/api.js';
+import { checkStockForSingleProduct } from '../CallApi/api.js';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import FooterProfile from '../components/FooterProfile';
 
@@ -21,7 +21,7 @@ const ProductDetails = ({navigation, route}) => {
     // Effet de bord pour mettre à jour le stock
     useEffect(() => {
     const fetchStock = async () => {
-      const stock = await checkStock(product.productId);
+      const stock = await checkStockForSingleProduct(product.productId);
       console.log('stock details', stock)
       setCurrentStock(stock[0].quantite);
     };
@@ -63,7 +63,7 @@ const ProductDetails = ({navigation, route}) => {
           });
         }
         try {
-          const stockAvailable = await checkStock(product.productId);
+          const stockAvailable = await checkStockForSingleProduct(product.productId);
           
           // Get the product from the cart
           const productInCart = cart.find((item) => item.productId === product.productId);
