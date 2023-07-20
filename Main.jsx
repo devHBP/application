@@ -17,6 +17,7 @@ import Orders from './Screens/Orders'
 import Cookies from './Screens/Cookies'
 import Donnees from './Screens/Donnees'
 import Mentions from './Screens/Mentions'
+import FormuleSandwich from './Screens/FormuleSandwich'
 
 
 const Main = () => {
@@ -41,6 +42,7 @@ const Main = () => {
                 <Stack.Screen name='signup' component={Signup}/>
                 <Stack.Screen name="stores" component={Stores}/>
                 <Stack.Screen name='home' component={Home}/>
+                <Stack.Screen name='formulesandwich' component={FormuleSandwich}/>
                 <Stack.Screen name='details' component={ProductDetails}/>
                 <Stack.Screen name='profile' component={Profile}/>
                 <Stack.Screen name='orders' component={Orders}/>
