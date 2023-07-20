@@ -15,9 +15,11 @@ const FormuleSandwich = ({navigation}) => {
 
     const [products, setProducts] = useState([]);
     const [ desserts, setDesserts] = useState([]);
+    const [ boissons, setBoissons] = useState([]);
     const [dessertSwitch, setDessertSwitch] = useState(true);
     const [selectedSandwich, setSelectedSandwich] = useState(null);
     const [selectedDessert, setSelectedDessert] = useState(null);
+    const [selectedBoisson, setSelectedBoisson] = useState(null);
     const [prix, setTotalPrice] = useState(0);
     const [productIds, setProductIds] = useState([]);
     const [qty, setQty] = useState(1); 
@@ -25,20 +27,21 @@ const FormuleSandwich = ({navigation}) => {
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
-    console.log('cart', cart)
+    //console.log('cart', cart)
 
     const handleBack = () => {
         navigation.navigate('home')
       }
 
       useEffect(() => {
+        //les sandwichs - categorie
         const fetchProducts = async () => {
           try {
             const category = 'Sandwichs'; 
             const products = await getProductsByCategory(category);
-            products.forEach((product) => {
-                console.log(product.libelle, product.prix_unitaire);
-              });
+            // products.forEach((product) => {
+            //     console.log(product.libelle, product.prix_unitaire);
+            //   });
               setProducts(products)
           } catch (error) {
             console.error('Une erreur s\'est produite lors de la récupération des produits:', error);
@@ -47,15 +50,16 @@ const FormuleSandwich = ({navigation}) => {
     
         fetchProducts();
 
+        //les desserts - par id
         const getOneProduct = async () => {
             try {
-                const productIds = [10, 15]; // Remplacez par l'ID du produit souhaité
+                const productIds = [10, 15];
                 const productPromises = productIds.map((productId) => fetchOneProduct(productId));
                 const desserts = await Promise.all(productPromises);
                 //console.log(desserts)
-                    desserts.forEach((product) => {
-                    console.log(product.libelle, product.prix_formule);
-                    });
+                    // desserts.forEach((product) => {
+                    // console.log(product.libelle, product.prix_formule);
+                    // });
                 setDesserts(desserts)
             } catch (error) {
               console.error('Une erreur s\'est produite lors de la récupération du produit:', error);
@@ -63,6 +67,38 @@ const FormuleSandwich = ({navigation}) => {
           };
          getOneProduct()
 
+         //les boisssons - par catégories
+      //    const fetchBoissons = async () => {
+      //     try {
+      //       const category = 'Boissons'; 
+      //       const boissons = await getProductsByCategory(category);
+      //       boissons.forEach((boisson) => {
+      //           console.log(boisson.libelle, boisson.prix_formule);
+      //         });
+      //         setBoissons(boissons)
+      //     } catch (error) {
+      //       console.error('Une erreur s\'est produite lors de la récupération des produits:', error);
+      //     }
+      //   };
+      //  fetchBoissons()
+
+       //les boissons - par id
+       const fetchBoissons = async () => {
+        try {
+            const productIds = [16, 17]; 
+            const productPromises = productIds.map((productId) => fetchOneProduct(productId));
+            const boissons = await Promise.all(productPromises);
+            //console.log(desserts)
+                // boissons.forEach((boisson) => {
+                // console.log(boisson.libelle, boisson.prix_formule);
+                // });
+                setBoissons(boissons)
+        } catch (error) {
+          console.error('Une erreur s\'est produite lors de la récupération du produit:', error);
+        }
+      };
+      fetchBoissons()
+        
       }, []);
 
     //   const handleSwitchToggle = () => {
@@ -74,48 +110,54 @@ const FormuleSandwich = ({navigation}) => {
       
 
     const handleSandwich = (product) => {
-      // Check if the sandwich is already selected
       if (selectedSandwich?.productId === product.productId) {
-        
-          setSelectedSandwich(null); // Deselect the sandwich
+          setSelectedSandwich(null); 
           setProductIds(productIds.filter(productId => productId !== product.productId));
-
       } else {
-          setSelectedSandwich(product); // Select the sandwich
+          setSelectedSandwich(product); 
           setProductIds([...productIds, product.productId]);
-
-          //console.log('Selected Sandwich:', product.libelle);
-          //console.log('Price:', product.prix_unitaire);
       }
   }
   const handleDessert = (product) => {
     if(!selectedSandwich ) {
-      // If a sandwich is not selected, display a toast message
       Toast.show({
           type: 'error',
           text1: 'Attention',
           text2: 'Veuillez sélectionner un sandwich',
       });
       return;
-  }
-    // Check if the dessert is already selected
-    if (selectedDessert?.productId === product.productId) {
-        setSelectedDessert(null); // Deselect the dessert
-        setProductIds(productIds.filter(productId => productId !== product.productId));
-
-    } else {
-        setSelectedDessert(product); // Select the dessert
-        setProductIds([...productIds, product.productId]);
-
-        //console.log('Selected Dessert:', product.libelle);
-        //console.log('Price:', product.prix_formule);
     }
-}
-
+    if (selectedDessert?.productId === product.productId) {
+        setSelectedDessert(null); 
+        setProductIds(productIds.filter(productId => productId !== product.productId));
+    } else {
+        setSelectedDessert(product); 
+        setProductIds([...productIds, product.productId]);
+    }
+  }
+  const handleBoisson = (product) => {
+    if(!selectedSandwich ) {
+      Toast.show({
+          type: 'error',
+          text1: 'Attention',
+          text2: 'Veuillez sélectionner un sandwich',
+      });
+      return;
+    }
+    if (selectedBoisson?.productId === product.productId) {
+        setSelectedBoisson(null); 
+        setProductIds(productIds.filter(productId => productId !== product.productId));
+    } else {
+        setSelectedBoisson(product); 
+        setProductIds([...productIds, product.productId]);
+        console.log('Selected Dessert:', product.libelle);
+        console.log('Price:', product.prix_formule);
+    }
+  }
 
       useEffect(() => {
         calculateTotalPrice();
-      }, [selectedSandwich, selectedDessert, dessertSwitch]);
+      }, [selectedSandwich, selectedDessert,selectedBoisson, dessertSwitch]);
       
       const calculateTotalPrice = () => {
         let prix = 0;
@@ -127,6 +169,10 @@ const FormuleSandwich = ({navigation}) => {
         if (selectedDessert) {
           prix += parseFloat(selectedDessert.prix_formule) || 0;
         }
+
+        if (selectedBoisson) {
+          prix += parseFloat(selectedBoisson.prix_formule) || 0;
+        }
       
         setTotalPrice(prix);
     };
@@ -136,6 +182,7 @@ const FormuleSandwich = ({navigation}) => {
         type: 'formule',
         option1: selectedSandwich,
         option2: selectedDessert,
+        option3:selectedBoisson,
         prix: prix,
         libelle:"Formule Sandwich",
         formuleImage: require('../assets/Formule36.jpg'),
@@ -146,7 +193,6 @@ const FormuleSandwich = ({navigation}) => {
       dispatch(addToCart(formule));
       navigation.navigate('panier')
     }
-    
       
   return (
     <View style={{flex:1}}>
@@ -184,8 +230,7 @@ const FormuleSandwich = ({navigation}) => {
                           onValueChange={() => handleSandwich(product)}
                         />
                     </TouchableOpacity>
-                  </View>
-                    
+                  </View>    
                 ))}
             </ScrollView>
         </View>
@@ -202,7 +247,6 @@ const FormuleSandwich = ({navigation}) => {
                 /> */}
            
           </View>
-            
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {desserts.map((product) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
@@ -219,16 +263,41 @@ const FormuleSandwich = ({navigation}) => {
                          
                         />
                     </TouchableOpacity>
-                  </View>
-                    
+                  </View>     
                 ))}
             </ScrollView>
         </View>
+
+        {/* choix boissons */}
+        <View>
+          <View style={{...style.choixTitle,flexDirection:'row', gap:10, justifyContent:'center', alignItems:'center'}}>
+              <Text style={style.choixTitle}>Les boissons  </Text>
+              <Text style={{fontSize:12}}>(pour 2€ en +)</Text>
+          </View>
+            <ScrollView horizontal={true} style={style.scrollProduct}>
+                {boissons.map((product) => (
+                  <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
+                    <TouchableOpacity key={product.productId} style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
+                     disabled={!selectedSandwich || !dessertSwitch} >
+                       <Image
+                          source={{ uri: `${baseUrl}/${product.image}` }}
+                          style={style.sandwichImage}
+                        />
+                      <Text>{product.libelle}</Text>
+                        <CheckBox
+                          value={selectedBoisson?.productId === product.productId}
+                          onValueChange={() => handleBoisson(product)}
+                         
+                        />
+                    </TouchableOpacity>
+                  </View>     
+                ))}
+            </ScrollView>
+        </View>
+
     </ScrollView>
 
     <View style={style.menu}>
-      
-      <View>
         <View>
           <View style={style.bandeauFormule}>
           <Text style={{ fontWeight:'bold'}}>Prix de la formule</Text>
@@ -238,19 +307,15 @@ const FormuleSandwich = ({navigation}) => {
             <View style={{flexDirection:'row'}}>
             <Text>Avec</Text><Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
-          
           {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:'bold'}}>{(prix*0.8).toFixed(2)} €</Text>}
           </View>
         </View>
-      </View>
       <Button
                 style={style.btn}
                 textColor={'white'} 
                 disabled={!selectedSandwich}
                 onPress={handleFormuleSelection}
-                >
-                Choisir cette formule
-            </Button>
+                >Choisir cette formule</Button>
     </View>
     </View> 
   )
@@ -266,31 +331,30 @@ const style = StyleSheet.create({
         fontSize:20,
         padding:10,
         backgroundColor:colors.color3,
-        
     },
     scrollProduct:{
         height:200,
         paddingHorizontal:20
     },
     sandwichImage: {
-      width: 150,
-      height: 100,
-      borderRadius: 50,
+        width: 150,
+        height: 100,
+        borderRadius: 50,
     },
     menu:{
-      height:85,
-      backgroundColor: '#fff',
-      padding: 10,
-      elevation: 2, // Add the elevation property for the shadow effect
-      shadowColor: '#000', // Specify the shadow color
-      shadowOpacity: 0.6, // Specify the shadow opacity
-      shadowOffset: { width: 0, height: 1 }, // Specify the shadow offset
-      shadowRadius: 2, 
-      borderTopLeftRadius:10,
-      borderTopRightRadius:10,
-      flexDirection:'row',
-      alignItems:'center',
-      justifyContent:'space-between'
+        height:85,
+        backgroundColor: '#fff',
+        padding: 10,
+        elevation: 2, 
+        shadowColor: '#000', 
+        shadowOpacity: 0.6, 
+        shadowOffset: { width: 0, height: 1 }, 
+        shadowRadius: 2, 
+        borderTopLeftRadius:10,
+        borderTopRightRadius:10,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-between'
     },
     disabledCheckBox: {
       opacity: 0.2, 
@@ -305,7 +369,6 @@ const style = StyleSheet.create({
       width:180, 
       justifyContent:'space-between'
     }
-   
   }
 )
 export default FormuleSandwich
