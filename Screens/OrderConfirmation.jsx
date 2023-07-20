@@ -38,9 +38,33 @@ const OrderConfirmation = ({navigation}) => {
   //console.log('paiement store', paiement)
   //console.log('cart items', cartItems)
   // const totalPrice = cartItems.reduce((total, item) => total + item.qty * item.prix, 0);
-  const totalPrice = (cartItems.reduce((total, item) => total + item.qty * item.prix_unitaire, 0)).toFixed(2);
+  //const totalPrice = (cartItems.reduce((total, item) => total + item.qty * item.prix_unitaire, 0)).toFixed(2);
+  
+  // const totalPrice = (cartItems.reduce((total, item) => {
+  //   const prix = item.prix || item.prix_unitaire; // Utilisez la propriété "prix" si elle existe, sinon utilisez "prix_unitaire"
+  //   return total + item.qty * prix;
+  // }, 0)).toFixed(2);
 
-//   console.log(totalPrice)
+  const totalPrice = Number((cartItems.reduce((total, item) => {
+    let prix;
+  
+    // Utilisez la propriété "prix" si elle existe, sinon utilisez "prix_unitaire"
+    if ('prix' in item) {
+      prix = item.prix;
+    } else if ('prix_unitaire' in item) {
+      prix = item.prix_unitaire;
+    } else if (item.option1 && 'prix_unitaire' in item.option1) {
+      prix = item.option1.prix_unitaire;
+    } else if (item.option2 && 'prix_unitaire' in item.option2) {
+      prix = item.option2.prix_unitaire;
+    } else {
+      throw new Error('Prix non trouvé pour l\'élément du panier');
+    }
+  
+    return total + item.qty * prix;
+  }, 0)).toFixed(2));
+
+//console.log('orderconfirm',  totalPrice)
 const totalQuantity = cartItems.reduce((total, item) => total + item.qty, 0)
 // console.log('qty', totalQuantity)
 
@@ -125,9 +149,26 @@ useEffect(() => {
             paymentMethod: paiement,
             //transforme mon array de productsIds en chaine de caractères
             //productIdsString: cartProductId.join(",")
-            products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty })) 
+
+            //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty })) 
+            products: (() => {
+              let products = [];
+      
+              cartItems.forEach(item => {
+                  if (item.type === 'formule') {
+                      item.productIds.forEach(productId => {
+                          products.push({ productId: productId, quantity: item.qty });
+                      });
+                  } else {
+                      products.push({ productId: item.productId, quantity: item.qty });
+                  }
+              });
+      
+              return products;
+          })(),
+
           };
-        //console.log('orderdata', orderData)
+        console.log('orderdata', orderData)
 
           const createOrder = async () => {
             try {
@@ -210,7 +251,6 @@ const checkPaymentStatus = async () => {
 
       const response = await axios.post('http://localhost:8080/updateOrder', updateData);
       console.log('response updateOrder', response.data)
-      
       navigation.navigate('success')
     }
     
@@ -245,7 +285,7 @@ const checkPaymentStatus = async () => {
       {cartItems.map(item => (
         <View key={item.productId} style={styles.itemContainer}>
           <Text>{item.libelle}</Text>
-          <Text>Prix unitaire : {item.prix_unitaire}</Text>
+          <Text>Prix unitaire : {item.prix} euros</Text>
           <Text>Quantité : {item.qty}</Text>
           
         </View>

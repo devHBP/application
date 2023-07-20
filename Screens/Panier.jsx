@@ -8,6 +8,7 @@ import axios from 'axios'
 import { updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
 import { logoutUser} from '../reducers/authSlice';
 import CartItem from '../components/CardItems';
+import CardItemFormule from '../components/CardItemsFormule';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { checkStock } from '../CallApi/api';
@@ -26,7 +27,12 @@ const Panier = ({navigation}) => {
   //console.log('cart', cart)
 
   // const totalPrice = cart.reduce((total, item) => total + item.qty * item.prix, 0);
-  const totalPrice = (cart.reduce((total, item) => total + item.qty * item.prix_unitaire, 0)).toFixed(2);
+  //const totalPrice = (cart.reduce((total, item) => total + item.qty * item.prix_unitaire, 0)).toFixed(2);
+  const totalPrice = Number((cart.reduce((total, item) => {
+    const prix = item.prix || item.prix_unitaire; // Utilisez la propriété "prix" si elle existe, sinon utilisez "prix_unitaire"
+    return total + item.qty * prix;
+  }, 0)).toFixed(2));
+  console.log('pricetotal', typeof totalPrice)
 
   const handleBack = () => {
     navigation.navigate('home');
@@ -62,6 +68,7 @@ const Panier = ({navigation}) => {
   }
 
   const handleConfirm = async () => {
+    console.log(cart)
 
     const token = await AsyncStorage.getItem('userToken');
 
@@ -142,7 +149,7 @@ const Panier = ({navigation}) => {
   
   return (
     <>
-    <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: 'white', margin: 30, paddingHorizontal: 5, paddingBottom:50 }}>
+    <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: 'white', paddingHorizontal: 5,paddingVertical:15,  marginBottom:70 }}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
          <TouchableOpacity onPress={handleBack}>
            <Icon name="arrow-back" size={30} color="#900" />
@@ -155,11 +162,29 @@ const Panier = ({navigation}) => {
           flex: 1,
         }}>
           {cart.map((item, index) => {
-            //console.log('item prix unitaire',item.prix_unitaire);  // Ajoutez cette ligne pour voir ce que contient chaque article
+            if (item.type === 'formule'){
+              
+              const formule = item
+              const { option1, option2, prix, libelle, formuleImage, productIds, image, qty } = formule
+              return (
+                <React.Fragment key={index}>
+                  <CardItemFormule
+                    option1={option1}
+                    option2={option2}
+                    prix_unitaire={prix}
+                    incrementhandler={() => incrementhandler(index)}
+                    decrementhandler={() => decrementhandler(index)}
+                    image={formuleImage}
+                    qty={qty}
+                    key={index}
+                  />
+                </React.Fragment>
+              );
+            }
             return (
               <CartItem 
                 libelle = {item.libelle}
-                prix = {item.prix_unitaire}
+                prix_unitaire={item.prix || item.prix_unitaire}
                 incrementhandler={() => incrementhandler(index)}
                 decrementhandler={() => decrementhandler(index)}
                 image={item.image}
