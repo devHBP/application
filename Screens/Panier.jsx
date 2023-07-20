@@ -11,7 +11,7 @@ import CartItem from '../components/CardItems';
 import CardItemFormule from '../components/CardItemsFormule';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import { checkStock } from '../CallApi/api';
+import { checkStockFormule, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 
 const Panier = ({navigation}) => {
@@ -39,10 +39,44 @@ const Panier = ({navigation}) => {
   };
 
  
+  // const incrementhandler = async (index) => {
+    
+  //   const product = cart[index];
+
+  //   const stock = await checkStock(product.productId);
+  //   if (stock[0].quantite <= product.qty) {
+  //     return Toast.show({
+  //       type: 'error',
+  //       text1: `Victime de son succès`,
+  //       text2: 'Plus de stock disponible' 
+  //     });
+  //   }
+  //   product.qty = 1; 
+  //   dispatch(addToCart(product));
+  // }
   const incrementhandler = async (index) => {
     const product = cart[index];
+    if(product.type === 'formule'){
+      console.log('ok')
+      const stocks = await checkStockFormule(product.productIds); // Assuming product.productIds is an array of product ids
+    
+      for (let stock of stocks) {
+        if (stock[0].quantite <= product.qty) {
+          return Toast.show({
+            type: 'error',
+            text1: `Victime de son succès`,
+            text2: 'Plus de stock disponible' 
+          });
+        }
+      }
 
-    const stock = await checkStock(product.productId);
+    product.qty = 1; 
+    dispatch(addToCart(product));
+    }
+    //si pas formule
+    else {
+      const stock = await checkStockForSingleProduct(product.productId);
+
     if (stock[0].quantite <= product.qty) {
       return Toast.show({
         type: 'error',
@@ -50,10 +84,13 @@ const Panier = ({navigation}) => {
         text2: 'Plus de stock disponible' 
       });
     }
-    
-    product.qty = 1; 
+    product.qty += 1; 
     dispatch(addToCart(product));
   }
+    
+  }
+
+
   const decrementhandler = (index) => {
     const product = cart[index];
     product.qty = 1; 
