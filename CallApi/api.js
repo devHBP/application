@@ -20,7 +20,7 @@ export const checkStockFormule = async (productIds) => {
       const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
       stocks.push(stockResponse.data);
     }
-    console.log('res', stocks)
+    //console.log('res', stocks)
     return stocks;
   } catch (error) {
     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
@@ -29,7 +29,7 @@ export const checkStockFormule = async (productIds) => {
 export const checkStockForSingleProduct = async (productId) => {
   try {
     const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
-    console.log('res', stockResponse.data)
+    //console.log('res', stockResponse.data)
     return stockResponse.data; 
   } catch (error) {
     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
