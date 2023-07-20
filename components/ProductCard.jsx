@@ -8,7 +8,7 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { defaultStyle, fonts, colors} from '../styles/styles'
 
 //call API
-import { checkStock } from '../CallApi/api.js';
+import { checkStockForSingleProduct } from '../CallApi/api.js';
 
 
 
@@ -26,7 +26,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) =
   // Effet de bord pour mettre à jour le stock
   useEffect(() => {
     const fetchStock = async () => {
-      const stock = await checkStock(id);
+      const stock = await checkStockForSingleProduct(id);
       setCurrentStock(stock[0].quantite);
     };
 
@@ -65,7 +65,7 @@ const incrementhandler = async () => {
     });
   }
   try {
-    const stockAvailable = await checkStock(id);
+    const stockAvailable = await checkStockForSingleProduct(id);
     //console.log('stockAvailable', stockAvailable);
     //console.log(stockAvailable[0].quantite)
     
@@ -82,7 +82,7 @@ const incrementhandler = async () => {
 
       if (offre && offre.startsWith('offre31')) {
         // Get a version of the cart that includes the new product
-        const updatedCart = [...cart, { productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre}];
+        const updatedCart = [...cart, { productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre }];
     
         // Filter products that have the same offer as the currently added product
         const sameOfferProducts = updatedCart.filter((item) => item.offre === offre);
@@ -275,8 +275,8 @@ const incrementhandler = async () => {
                   <Button
                     onPress={() => {
                       setModalVisible(!modalVisible);
-                      dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: 10, qty: 1 , offre: offre, gratuit: offre ? true : false})); // Ajoute le produit gratuit et incremente le panier
                       console.log('total',( product.prix_unitaire * product.qty ).toFixed(2) )
+
                     }}
                   >
                     <Text>Confirmer</Text>

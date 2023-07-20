@@ -3,17 +3,17 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const CardItemFormule = ({ option1, option2, option3,  incrementhandler, decrementhandler, image, qty }) => {
-    console.log('test', option1, option2, option3)
+    //console.log('test', option1, option2, option3)
   return (
     <View style={styles.container}>
       <Image source={image} style={styles.image} />
       <View style={styles.content}>
-        <Text style={styles.title}>{option1.libelle}</Text>
-        <Text style={styles.price}>{option1.prix_unitaire} €</Text>
-        <Text style={styles.title}>{option2.libelle}</Text>
-        <Text style={styles.price}>{option2.prix_formule} €</Text>
-        <Text style={styles.title}>{option3.libelle}</Text>
-        <Text style={styles.price}>{option3.prix_formule} €</Text>
+        {option1 && <Text style={styles.title}>{option1.libelle}</Text>}
+        {option1 &&<Text style={styles.price}>{option1.prix_unitaire} €</Text>}
+        {option2 &&<Text style={styles.title}>{option2.libelle}</Text>}
+        {option2 &&<Text style={styles.price}>{option2.prix_formule} €</Text>}
+        {option3 &&<Text style={styles.title}>{option3.libelle}</Text>}
+        {option3 &&<Text style={styles.price}>{option3.prix_formule} €</Text>}
       </View>
       <View style={styles.actions}>
         <TouchableOpacity onPress={decrementhandler}>

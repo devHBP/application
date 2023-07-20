@@ -22,7 +22,7 @@ const FormuleSandwich = ({navigation}) => {
     const [selectedBoisson, setSelectedBoisson] = useState(null);
     const [prix, setTotalPrice] = useState(0);
     const [productIds, setProductIds] = useState([]);
-    const [qty, setQty] = useState(1); 
+    //const [qty, setQty] = useState(1); 
 
 
     const dispatch = useDispatch()
@@ -181,13 +181,13 @@ const FormuleSandwich = ({navigation}) => {
       const formule = {
         type: 'formule',
         option1: selectedSandwich,
-        option2: selectedDessert,
-        option3:selectedBoisson,
+        option2: selectedDessert ? selectedDessert : null,
+        option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
         libelle:"Formule Sandwich",
         formuleImage: require('../assets/Formule36.jpg'),
         productIds: productIds,
-        qty: qty,
+        qty: 1,
       }
       console.log('formule', formule);
       dispatch(addToCart(formule));

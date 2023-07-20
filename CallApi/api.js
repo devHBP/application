@@ -3,15 +3,53 @@ import axios from 'axios';
 const API_BASE_URL = 'http://localhost:8080';
 
 //check des stocks par produits
-export const checkStock = async (productId) => {
+// export const checkStock = async (productId) => {
+//   try {
+//     const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
+//     const stockByProduct = stockResponse.data;
+//     console.log('res', stockByProduct.data)
+//     return stockByProduct; 
+//   } catch (error) {
+//     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
+//   }
+// }
+export const checkStockFormule = async (productIds) => {
   try {
-    const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
-    const stockByProduct = stockResponse.data;
-    return stockByProduct; 
+    let stocks = [];
+    for (let productId of productIds) {
+      const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
+      stocks.push(stockResponse.data);
+    }
+    console.log('res', stocks)
+    return stocks;
   } catch (error) {
     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
   }
 }
+export const checkStockForSingleProduct = async (productId) => {
+  try {
+    const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
+    console.log('res', stockResponse.data)
+    return stockResponse.data; 
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de la récupération du stock :", error);
+  }
+}
+
+//check des stocks par produits
+// export const checkStock = async (productIds) => {
+//   try {
+//     let stockByProduct = [];
+//     for(let i = 0; i < productIds.length; i++){
+//       const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productIds[i]}`);
+//       stockByProduct.push(stockResponse.data);
+//     }
+//     return stockByProduct; 
+//   } catch (error) {
+//     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
+//   }
+// }
+
 //modifier un user
 export const modifyUser = async (userId, userUpdate) => {
   try {
