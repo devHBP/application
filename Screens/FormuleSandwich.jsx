@@ -228,8 +228,21 @@ const FormuleSandwich = ({navigation}) => {
 
     <View style={style.menu}>
       
-      <Text>Prix de la formule</Text>
-      {selectedSandwich && typeof prix === 'number' && <Text>{prix.toFixed(2)} €</Text>}
+      <View>
+        <View>
+          <View style={style.bandeauFormule}>
+          <Text style={{ fontWeight:'bold'}}>Prix de la formule</Text>
+          {selectedSandwich && typeof prix === 'number' && <Text>{prix.toFixed(2)} €</Text>}
+          </View>
+          <View style={style.bandeauFormule}>
+            <View style={{flexDirection:'row'}}>
+            <Text>Avec</Text><Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+            </View>
+          
+          {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:'bold'}}>{(prix*0.8).toFixed(2)} €</Text>}
+          </View>
+        </View>
+      </View>
       <Button
                 style={style.btn}
                 textColor={'white'} 
@@ -267,17 +280,17 @@ const style = StyleSheet.create({
     menu:{
       height:85,
       backgroundColor: '#fff',
-    padding: 10,
-    elevation: 2, // Add the elevation property for the shadow effect
-    shadowColor: '#000', // Specify the shadow color
-    shadowOpacity: 0.6, // Specify the shadow opacity
-    shadowOffset: { width: 0, height: 1 }, // Specify the shadow offset
-    shadowRadius: 2, 
-    borderTopLeftRadius:10,
-    borderTopRightRadius:10,
-    flexDirection:'row',
-    alignItems:'center',
-    justifyContent:'space-between'
+      padding: 10,
+      elevation: 2, // Add the elevation property for the shadow effect
+      shadowColor: '#000', // Specify the shadow color
+      shadowOpacity: 0.6, // Specify the shadow opacity
+      shadowOffset: { width: 0, height: 1 }, // Specify the shadow offset
+      shadowRadius: 2, 
+      borderTopLeftRadius:10,
+      borderTopRightRadius:10,
+      flexDirection:'row',
+      alignItems:'center',
+      justifyContent:'space-between'
     },
     disabledCheckBox: {
       opacity: 0.2, 
@@ -285,8 +298,12 @@ const style = StyleSheet.create({
     btn:{
       backgroundColor:colors.color2,
       height:40,
-      width:180,
-      
+      width:150,
+    },
+    bandeauFormule:{
+      flexDirection:'row', 
+      width:180, 
+      justifyContent:'space-between'
     }
    
   }
