@@ -204,7 +204,7 @@ const Panier = ({navigation}) => {
               const formule = item
               const { option1, option2,option3, prix, libelle, formuleImage, productIds, image, qty } = formule
               return (
-                <React.Fragment key={index}>
+                
                   <CardItemFormule
                     option1={option1}
                     option2={option2}
@@ -216,7 +216,7 @@ const Panier = ({navigation}) => {
                     qty={qty}
                     key={index}
                   />
-                </React.Fragment>
+               
               );
             }
             return (
