@@ -1,10 +1,10 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch, TouchableHighlight } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { fonts, colors} from '../styles/styles'
 import CheckBox from '@react-native-community/checkbox';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import { Button} from 'react-native-paper'
+import { Button, RadioButton} from 'react-native-paper'
 import { addToCart} from '../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../CallApi/api.js'
@@ -217,18 +217,27 @@ const FormuleSandwich = ({navigation}) => {
             <Text style={style.choixTitle}>Votre choix de sandwich</Text>
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {products.map((product) => (
-                  <View style={{flexDirection:'column', justifyContent:'center'}}>
-                    <TouchableOpacity key={product.productId} style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}>
+                  <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
+                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}>
                        <Image
                           source={{ uri: `${baseUrl}/${product.image}` }}
                           style={style.sandwichImage}
                         />
                       <Text>{product.libelle}</Text>
-                        <CheckBox
+                        {/* <CheckBox
                           disabled={false}
                           value={selectedSandwich?.productId === product.productId}
                           onValueChange={() => handleSandwich(product)}
-                        />
+                        /> */}
+                      <TouchableOpacity
+                        style={[
+                          style.checkButton,
+                          selectedSandwich?.productId === product.productId
+                        ]}
+                        onPress={() => handleSandwich(product)}
+                      >
+                        {selectedSandwich?.productId === product.productId && <View style={style.checkInnerCircle} />}
+                      </TouchableOpacity>
                     </TouchableOpacity>
                   </View>    
                 ))}
@@ -250,18 +259,26 @@ const FormuleSandwich = ({navigation}) => {
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {desserts.map((product) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
-                    <TouchableOpacity key={product.productId} style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
+                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedSandwich || !dessertSwitch} >
                        <Image
                           source={{ uri: `${baseUrl}/${product.image}` }}
                           style={style.sandwichImage}
                         />
                       <Text>{product.libelle}</Text>
-                        <CheckBox
+                        {/* <CheckBox
                           value={selectedDessert?.productId === product.productId}
                           onValueChange={() => handleDessert(product)}
-                         
-                        />
+                        /> */}
+                         <TouchableOpacity
+                        style={[
+                          style.checkButton,
+                          selectedDessert?.productId === product.productId
+                        ]}
+                        onPress={() => handleDessert(product)}
+                      >
+                        {selectedDessert?.productId === product.productId && <View style={style.checkInnerCircle} />}
+                      </TouchableOpacity>
                     </TouchableOpacity>
                   </View>     
                 ))}
@@ -277,18 +294,22 @@ const FormuleSandwich = ({navigation}) => {
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {boissons.map((product) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
-                    <TouchableOpacity key={product.productId} style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
+                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedSandwich || !dessertSwitch} >
                        <Image
                           source={{ uri: `${baseUrl}/${product.image}` }}
                           style={style.sandwichImage}
                         />
                       <Text>{product.libelle}</Text>
-                        <CheckBox
-                          value={selectedBoisson?.productId === product.productId}
-                          onValueChange={() => handleBoisson(product)}
-                         
-                        />
+                      <TouchableOpacity
+                        style={[
+                          style.checkButton,
+                          selectedBoisson?.productId === product.productId
+                        ]}
+                        onPress={() => handleBoisson(product)}
+                      >
+                        {selectedBoisson?.productId === product.productId && <View style={style.checkInnerCircle} />}
+                      </TouchableOpacity>
                     </TouchableOpacity>
                   </View>     
                 ))}
@@ -368,7 +389,24 @@ const style = StyleSheet.create({
       flexDirection:'row', 
       width:180, 
       justifyContent:'space-between'
-    }
+    },
+   
+    checkButton: {
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      borderWidth: 1,
+      borderColor: 'gray',
+      justifyContent: 'center',
+      alignItems: 'center',
+      marginTop: 5,
+    },
+    checkInnerCircle: {
+      width: 16,
+      height: 16,
+      borderRadius: 8,
+      backgroundColor: colors.color1,
+    },
   }
 )
 export default FormuleSandwich
