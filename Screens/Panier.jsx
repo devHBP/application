@@ -14,6 +14,9 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { checkStockFormule, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 
+//fonctions
+import { incrementhandler, decrementhandler } from '../Fonctions/fonctions'
+
 const Panier = ({navigation}) => {
 
   const dispatch = useDispatch()
@@ -38,22 +41,6 @@ const Panier = ({navigation}) => {
     navigation.navigate('home');
   };
 
- 
-  // const incrementhandler = async (index) => {
-    
-  //   const product = cart[index];
-
-  //   const stock = await checkStock(product.productId);
-  //   if (stock[0].quantite <= product.qty) {
-  //     return Toast.show({
-  //       type: 'error',
-  //       text1: `Victime de son succès`,
-  //       text2: 'Plus de stock disponible' 
-  //     });
-  //   }
-  //   product.qty = 1; 
-  //   dispatch(addToCart(product));
-  // }
   const incrementhandler = async (index) => {
     const product = cart[index];
     if(product.type === 'formule'){
@@ -90,13 +77,6 @@ const Panier = ({navigation}) => {
     
   }
 
-
-  const decrementhandler = (index) => {
-    const product = cart[index];
-    product.qty = 1; 
-    dispatch(decrementOrRemoveFromCart(product));
-  }
-
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0)
 
   const handleLogout = () => {
@@ -116,11 +96,6 @@ const Panier = ({navigation}) => {
     })
     .then(response => {
       if (response.data.auth) {
-          // console.log('******')
-          // console.log('Contenu du panier :', cart);
-          // console.log('user', user)
-          // console.log('magasin', store)
-          // console.log('******')
           navigation.navigate('choixpaiement');
       } else {
           // Token is not valid, show error...
@@ -211,7 +186,7 @@ const Panier = ({navigation}) => {
                     option3={option3}
                     prix_unitaire={prix}
                     incrementhandler={() => incrementhandler(index)}
-                    decrementhandler={() => decrementhandler(index)}
+                    decrementhandler={() => decrementhandler(item.productId, dispatch)}
                     image={formuleImage}
                     qty={qty}
                     key={index}
@@ -219,19 +194,19 @@ const Panier = ({navigation}) => {
                
               );
             }
-            return (
-              <CartItem 
-                libelle = {item.libelle}
-                prix_unitaire={item.prix || item.prix_unitaire}
-                incrementhandler={() => incrementhandler(index)}
-                decrementhandler={() => decrementhandler(index)}
-                image={item.image}
-                index={index}
-                qty={item.qty}
-                key={index}
-              />
-              );
-          })}
+                return (
+                  <CartItem 
+                    libelle = {item.libelle}
+                    prix_unitaire={item.prix || item.prix_unitaire}
+                    incrementhandler={() => incrementhandler(index)}
+                    decrementhandler={() => decrementhandler(item.productId, dispatch)}
+                    image={item.image}
+                    index={index}
+                    qty={item.qty}
+                    key={index}
+                  />
+                  );
+              })}
               
        </ScrollView>
       
