@@ -6,12 +6,14 @@ import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { defaultStyle, fonts, colors} from '../styles/styles'
+import ModaleOffre31 from '../components/ModaleOffre31';
+
 
 //call API
 import { checkStockForSingleProduct } from '../CallApi/api.js';
 
 //fonctions
-import { incrementhandler, decrementhandler } from '../Fonctions/fonctions'
+import {decrementhandler } from '../Fonctions/fonctions'
 
 
 
@@ -49,17 +51,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) =
 
     const baseUrl = 'http://127.0.0.1:8080';
 
-    // //verification des stocks - global
-    // const checkStock = async () => {
-    //   try {
-    //     const stockResponse = await axios.get(`http://localhost:8080/getStockByProduct/${id}`);
-    //     const stockByProduct = stockResponse.data;
-    //     //console.log('stock', stockByProduct)
-    //     return stockByProduct; 
-    //   } catch (error) {
-    //     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
-    //   }
-    // }
+
     const handleAcceptOffer = () => {
       dispatch(addFreeProductToCart(product));
     };
@@ -119,11 +111,6 @@ const incrementhandler = async () => {
   }
 };
    
-    // const decrementhandler = () => {
-    //     dispatch(decrementOrRemoveFromCart({ productId: id, qty: 1 }));
-    //   };
-
-    
   return (
     
     <View style={style.card_container}>
@@ -169,6 +156,8 @@ const incrementhandler = async () => {
               </TouchableOpacity>
                            
               <TouchableOpacity
+                  // onPress={() => incrementhandler(id, dispatch, cart, currentStock, offre)}
+
                   onPress={incrementhandler}
                   style={style.increment}
               >
@@ -259,42 +248,7 @@ const incrementhandler = async () => {
             </View>
 
   
-
-        <Modal
-            animationType="slide"
-            transparent={true}
-            visible={modalVisible}
-            onRequestClose={() => {
-              setModalVisible(!modalVisible);
-            }}
-          >
-            <View style={style.modalContainer}>
-              <View style={style.modalContent}>
-                <Text>Vous bénéficier de l'offre 3+1</Text>
-                <Text style={{textAlign:'center'}}>Voulez vous ajouter le 4e produit gratuitement ?</Text>
-                <View style={{flexDirection: 'row'}}>
-                <Button
-                    onPress={() => {
-                      handleAcceptOffer(); // call handleAcceptOffer directly on Button's onPress
-                      setModalVisible(!modalVisible);
-                      //console.log('total',( product.prix_unitaire * product.qty ).toFixed(2) )
-                    }}
-                  >
-                    <Text>Confirmer</Text>
-                  </Button>
-                            
-                  <Button
-                    onPress={() => {
-                      setModalVisible(!modalVisible);
-                    }}
-                  >
-                    <Text>Refuser</Text>
-                  </Button>
-                </View>
-                
-              </View>
-            </View>
-          </Modal>
+            <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
 
     </View>   
   )
@@ -364,21 +318,6 @@ const style = StyleSheet.create({
             justifyContent:'center',
             alignItems:'center', 
             borderRadius:5
-        },
-        modalContainer: {
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-          //backgroundColor: 'rgba(0, 0, 0, 0.5)',
-        },
-        modalContent: {
-          backgroundColor: 'lightgrey',
-          padding: 20,
-          borderRadius: 10,
-          width: '80%',
-          height: 180,
-          justifyContent: 'center',
-          alignItems: 'center',
         },
         
 })
