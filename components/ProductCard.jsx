@@ -10,6 +10,10 @@ import { defaultStyle, fonts, colors} from '../styles/styles'
 //call API
 import { checkStockForSingleProduct } from '../CallApi/api.js';
 
+//fonctions
+import { incrementhandler, decrementhandler } from '../Fonctions/fonctions'
+
+
 
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
@@ -115,9 +119,9 @@ const incrementhandler = async () => {
   }
 };
    
-    const decrementhandler = () => {
-        dispatch(decrementOrRemoveFromCart({ productId: id, qty: 1 }));
-      };
+    // const decrementhandler = () => {
+    //     dispatch(decrementOrRemoveFromCart({ productId: id, qty: 1 }));
+    //   };
 
     
   return (
@@ -151,7 +155,7 @@ const incrementhandler = async () => {
 
           <View style={style.qtyContainer}>
               <TouchableOpacity
-                  onPress={decrementhandler}
+                  onPress={() => decrementhandler(id, dispatch)}
                   style={style.decrement}
               >
                   <Icon name="remove" size={16} color="#000" />
