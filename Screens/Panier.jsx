@@ -1,11 +1,11 @@
-import { View, Text, TouchableOpacity,ScrollView, TextInput } from 'react-native'
+import { View, Text, TouchableOpacity,ScrollView, TextInput, Modal, StyleSheet } from 'react-native'
 import React, { useState} from 'react'
 import { defaultStyle} from '../styles/styles'
 import { Button } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios'
-import { updateCart, addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
+import { updateCart, addToCart, decrementOrRemoveFromCart, addFreeProductToCart } from '../reducers/cartSlice';
 import { logoutUser} from '../reducers/authSlice';
 import CartItem from '../components/CardItems';
 import CardItemFormule from '../components/CardItemsFormule';
@@ -13,69 +13,104 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { checkStockFormule, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
+import ModaleOffre31 from '../components/ModaleOffre31';
 
 //fonctions
-import { incrementhandler, decrementhandler } from '../Fonctions/fonctions'
+import { decrementhandler } from '../Fonctions/fonctions'
 
 const Panier = ({navigation}) => {
 
   const dispatch = useDispatch()
   const [promoCode, setPromoCode] = useState('');
   //const [currentStock, setCurrentStock] = useState(product.stock);
+  const [modalVisible, setModalVisible] = useState(false);
+
 
   const cart = useSelector((state) => state.cart.cart);
-  console.log('cart panier', cart )
   const user = useSelector((state) => state.auth.user)
   const store = useSelector((state) => state.auth.selectedStore)
-  //console.log('cart', cart)
-
-  // const totalPrice = cart.reduce((total, item) => total + item.qty * item.prix, 0);
-  //const totalPrice = (cart.reduce((total, item) => total + item.qty * item.prix_unitaire, 0)).toFixed(2);
+  
   const totalPrice = Number((cart.reduce((total, item) => {
     const prix = item.prix || item.prix_unitaire; // Utilisez la propriété "prix" si elle existe, sinon utilisez "prix_unitaire"
     return total + item.qty * prix;
   }, 0)).toFixed(2));
-  console.log('pricetotal', totalPrice)
+  
 
   const handleBack = () => {
     navigation.navigate('home');
   };
 
-  const incrementhandler = async (index) => {
-    const product = cart[index];
-    if(product.type === 'formule'){
-      console.log('ok')
-      const stocks = await checkStockFormule(product.productIds); // Assuming product.productIds is an array of product ids
-    
+
+  const handleAcceptOffer = () => {
+    const lastProductAdded = cart[cart.length - 1];
+  const freeProduct = {
+    ...lastProductAdded,
+    qty: 1,
+    prix_unitaire: 0
+  };
+    dispatch(addFreeProductToCart(freeProduct));
+  };
+
+const incrementhandler = async (id, offre) => {
+  console.log({ id, dispatch, cart, offre });
+
+  const productInCart = cart.find((item) => item.productId === id);
+
+  try {
+    if (productInCart.type === 'formule') {
+      const stocks = await checkStockFormule(productInCart.productIds);
+
       for (let stock of stocks) {
-        if (stock[0].quantite <= product.qty) {
+        if (stock[0].quantite <= productInCart.qty) {
           return Toast.show({
             type: 'error',
             text1: `Victime de son succès`,
-            text2: 'Plus de stock disponible' 
+            text2: 'Plus de stock disponible',
           });
         }
       }
 
-    product.qty = 1; 
-    dispatch(addToCart(product));
-    }
-    //si pas formule
-    else {
-      const stock = await checkStockForSingleProduct(product.productId);
+      productInCart.qty = 1;
+      dispatch(addToCart(productInCart));
+    } else {
+      const stockAvailable = await checkStockForSingleProduct(id);
 
-    if (stock[0].quantite <= product.qty) {
-      return Toast.show({
-        type: 'error',
-        text1: `Victime de son succès`,
-        text2: 'Plus de stock disponible' 
-      });
+      // Calculate the remaining stock after accounting for the items in the cart
+      const remainingStock = stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
+
+      if (stockAvailable.length > 0 && remainingStock > 0) {
+        dispatch(
+          addToCart({
+            productId: id,
+            libelle: productInCart.libelle,
+            image: productInCart.image,
+            prix_unitaire: productInCart.prix,
+            qty: 1,
+            offre: offre,
+          })
+        );
+
+        if (offre && offre.startsWith('offre31')) {
+          const updatedCart = [...cart, { productId: id, libelle: productInCart.libelle, image: productInCart.image, prix_unitaire: productInCart.prix, qty: 1, offre: offre }];
+          const sameOfferProducts = updatedCart.filter((item) => item.offre === offre);
+          const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
+
+          if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
+            setModalVisible(true);
+          }
+        }
+      } else {
+        return Toast.show({
+          type: 'error',
+          text1: `Victime de son succès`,
+          text2: `Quantité maximale: ${stockAvailable[0].quantite}`,
+        });
+      }
     }
-    product.qty += 1; 
-    dispatch(addToCart(product));
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
   }
-    
-  }
+};
 
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0)
 
@@ -185,7 +220,7 @@ const Panier = ({navigation}) => {
                     option2={option2}
                     option3={option3}
                     prix_unitaire={prix}
-                    incrementhandler={() => incrementhandler(index)}
+                    incrementhandler={() => incrementhandler(item.productId, item.offre)}
                     decrementhandler={() => decrementhandler(item.productId, dispatch)}
                     image={formuleImage}
                     qty={qty}
@@ -198,7 +233,7 @@ const Panier = ({navigation}) => {
                   <CartItem 
                     libelle = {item.libelle}
                     prix_unitaire={item.prix || item.prix_unitaire}
-                    incrementhandler={() => incrementhandler(index)}
+                    incrementhandler={() => incrementhandler(item.productId, item.offre)}
                     decrementhandler={() => decrementhandler(item.productId, dispatch)}
                     image={item.image}
                     index={index}
@@ -238,6 +273,8 @@ const Panier = ({navigation}) => {
         </View>
         
     </View>
+          <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
+
           <FooterProfile />
     </>
 
@@ -245,6 +282,8 @@ const Panier = ({navigation}) => {
   
 }
 
-
+const style = StyleSheet.create({
+  
+})
 
 export default Panier
