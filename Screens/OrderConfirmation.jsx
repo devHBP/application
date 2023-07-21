@@ -30,25 +30,10 @@ const OrderConfirmation = ({navigation}) => {
   const selectedTime = useSelector((state) => state.cart.time)
   const paiement = useSelector((state) => state.cart.paiement)
   const numero_commande = useSelector((state) => state.order.numero_commande)
-  //console.log('orderNumber', numero_commande )
-  //const productIds = useSelector((state) => state.order.productIds)
-  //console.log('productsIds', productIds )
-  //console.log('date store', selectedDateString)
-  //console.log('time store', selectedTime)
-  //console.log('paiement store', paiement)
-  //console.log('cart items', cartItems)
-  // const totalPrice = cartItems.reduce((total, item) => total + item.qty * item.prix, 0);
-  //const totalPrice = (cartItems.reduce((total, item) => total + item.qty * item.prix_unitaire, 0)).toFixed(2);
-  
-  // const totalPrice = (cartItems.reduce((total, item) => {
-  //   const prix = item.prix || item.prix_unitaire; // Utilisez la propriété "prix" si elle existe, sinon utilisez "prix_unitaire"
-  //   return total + item.qty * prix;
-  // }, 0)).toFixed(2);
 
   const totalPrice = Number((cartItems.reduce((total, item) => {
     let prix;
   
-    // Utilisez la propriété "prix" si elle existe, sinon utilisez "prix_unitaire"
     if ('prix' in item) {
       prix = item.prix;
     } else if ('prix_unitaire' in item) {
@@ -60,13 +45,11 @@ const OrderConfirmation = ({navigation}) => {
     } else {
       throw new Error('Prix non trouvé pour l\'élément du panier');
     }
-  
     return total + item.qty * prix;
   }, 0)).toFixed(2));
 
-//console.log('orderconfirm',  totalPrice)
 const totalQuantity = cartItems.reduce((total, item) => total + item.qty, 0)
-// console.log('qty', totalQuantity)
+
 
 const [orderInfo, setOrderInfo] = useState(null);
 const [checkoutSession, setCheckoutSession] = useState(null);
@@ -92,7 +75,6 @@ useEffect(() => {
       setCheckoutSession(stripeCheckoutUrl);
       Linking.openURL(sessionUrl);
     };
-
     submitOrder();
   }
 }, [orderInfo, paiement]);
@@ -117,21 +99,6 @@ useEffect(() => {
     })
     .then(response => {
       if (response.data.auth) {
-          // Token is valid, continue with discount application...
-          // console.log('token valide')
-          // console.log('******')
-          // console.log('Envoi de la commande au serveur - test')
-          // console.log('Contenu du panier :', cartItems);
-          // console.log('productsId', cartProductId)
-          // console.log('Nom:', user.lastname);
-          // console.log('Prénom', user.firstname)
-          // console.log('Magasin sélectionné :', selectedStore);
-          // console.log('Prix total :', totalPrice);
-          // console.log('Nb de produits:', totalQuantity);
-          // console.log('Jour sélectionné', selectedDateString);
-          // console.log('Heure de retrait', selectedTime)
-          // console.log('type de paiement', paiement)
-          // console.log('******')
 
           dispatch(setProducts(cartItems));
 
@@ -147,10 +114,14 @@ useEffect(() => {
             slotId: null,
             promotionId: null,
             paymentMethod: paiement,
+            //plus utilisé
             //transforme mon array de productsIds en chaine de caractères
             //productIdsString: cartProductId.join(",")
 
+            //plus utilisé
             //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty })) 
+
+            //verification si produit en formule
             products: (() => {
               let products = [];
       
@@ -174,7 +145,7 @@ useEffect(() => {
             try {
               const response =  await axios.post('http://localhost:8080/createorder', orderData);
               const numero_commande = response.data.numero_commande
-              //console.log('numero_commande', response.data.numero_commande)
+             
               dispatch(setNumeroCommande(numero_commande));
 
               setOrderInfo({
@@ -193,14 +164,10 @@ useEffect(() => {
               console.error(error);
               throw new Error('Erreur lors de la création de la commande');
             }
-        
           }
          createOrder()
-          
       } else {
-          // Token is not valid, show error...
           console.log('erreur ici', error)
-          //handleLogout()
       }
   })
   .catch(error => {
@@ -211,26 +178,18 @@ useEffect(() => {
       text1: 'Session expirée',
       text2: 'Veuillez vous reconnecter'
     });
-    
       // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
   });
-
-    
-  }
-
-
+}
 
 // Vérifier l'état du paiement
 const checkPaymentStatus = async () => {
   const interval = setInterval(async () => {
   try {
     const response = await axios.get(`http://localhost:8080/paiementStatus?sessionId=${sessionId}`);
-    //console.log('response front', response)
-     const { status, transactionId, method } = response.data;
-     console.log('response PaiementStatus', response.data)
+    const { status, transactionId, method } = response.data;
+    console.log('response PaiementStatus', response.data)
      // retour : response data {"status": "paid", "transactionId": "pi_3NOFjcGnFAjiWNhK0KP6l8Nl"}
-     //rajouter idPayment
-
    
     if (status === 'paid') {
       
@@ -261,7 +220,6 @@ const checkPaymentStatus = async () => {
 }, 5000)
 };
 
-
   // const formatDate = (dateString) => {
   //   const date = new Date(dateString);
   //   const day = date.getDate().toString().padStart(2, '0');
@@ -280,64 +238,62 @@ const checkPaymentStatus = async () => {
             <Icon name="logout" size={30} color="#000" onPress={() => handleLogout()}/>
       </View>
       <ScrollView vertical showsVerticalScrollIndicator={false}>
-    <View style={styles.container}>
-      <Text>Contenu du panier :</Text>
-      {cartItems.map(item => (
-        <View key={item.productId} style={styles.itemContainer}>
-          <Text>{item.libelle}</Text>
-          <Text>Prix unitaire : {item.prix} euros</Text>
-          <Text>Quantité : {item.qty}</Text>
-          
+      <View style={styles.container}>
+        <Text>Contenu du panier :</Text>
+        {cartItems.map((item, index) => (
+          <View key={`${item.productId}_${index}`} style={styles.itemContainer}>
+            <Text>{item.libelle}</Text>
+            <Text>Prix unitaire : {item.prix || item.prix_unitaire} euros</Text>
+            <Text>Quantité : {item.qty}</Text>
+            
+          </View>
+        ))}
+        <View>
+          <Text> Prix total: {totalPrice} euros</Text>
+          <Text>Nb de produits: {totalQuantity}</Text>
         </View>
-      ))}
-      <View>
-        <Text> Prix total: {totalPrice} euros</Text>
-        <Text>Nb de produits: {totalQuantity}</Text>
-      </View>
-      <View style={{marginVertical:40}}>    
-        <Text>Informations Client:</Text>
-        <Text>Utilisateur : {user.firstname} {user.lastname}</Text>
-        {
-            user.adresse ? <Text>Adresse : {user.adresse}</Text> : <Text>Adresse : <Text style={{color:'lightgray', fontStyle:'italic'}}>Non renseigné</Text></Text>
-        }
-        {
-            user.telephone ? <Text>Telephone : {user.telephone}</Text> : <Text>Telephone : <Text style={{color:'lightgray', fontStyle:'italic'}}>Non renseigné</Text></Text>
-        }
-        {
-          selectedDateString ? <Text>Retrait: {selectedDateString }</Text> : <Text>Retrait : <Text style={{color:'lightgray', fontStyle:'italic'}}>Non renseigné</Text></Text>
-        }
-        {/* non visible pour les collaborateurs car tournée du camion */}
-        {/* {
-          selectedTime ? <Text>Heure: {selectedTime }</Text> : <Text>Heure : <Text style={{color:'lightgray', fontStyle:'italic'}}>Non renseigné</Text></Text>
-        } */}
+        <View style={{marginVertical:40}}>    
+          <Text>Informations Client:</Text>
+          <Text>Utilisateur : {user.firstname} {user.lastname}</Text>
+          {
+              user.adresse ? <Text>Adresse : {user.adresse}</Text> : <Text>Adresse : <Text style={{color:'lightgray', fontStyle:'italic'}}>Non renseigné</Text></Text>
+          }
+          {
+              user.telephone ? <Text>Telephone : {user.telephone}</Text> : <Text>Telephone : <Text style={{color:'lightgray', fontStyle:'italic'}}>Non renseigné</Text></Text>
+          }
+          {
+            selectedDateString ? <Text>Retrait: {selectedDateString }</Text> : <Text>Retrait : <Text style={{color:'lightgray', fontStyle:'italic'}}>Non renseigné</Text></Text>
+          }
+          {/* non visible pour les collaborateurs car tournée du camion */}
+          {/* {
+            selectedTime ? <Text>Heure: {selectedTime }</Text> : <Text>Heure : <Text style={{color:'lightgray', fontStyle:'italic'}}>Non renseigné</Text></Text>
+          } */}
+          
+          {
+            paiement ? 
+            (
+            <>
+            { paiement === 'online'? ( <Text>Choix du paiement: En ligne</Text> ) : null }
+            { paiement === 'onsite'? ( <Text>Choix du paiement: Sur place</Text> ) : null }
+            </>
+            ) 
+            : <Text>Choix du paiement : <Text style={{color:'lightgray', fontStyle:'italic'}}>Non renseigné</Text></Text>
+          }
         
-        {
-          paiement ? 
-          (
-          <>
-          { paiement === 'online'? ( <Text>Choix du paiement: En ligne</Text> ) : null }
-          { paiement === 'onsite'? ( <Text>Choix du paiement: Sur place</Text> ) : null }
-          </>
-          ) 
-          : <Text>Choix du paiement : <Text style={{color:'lightgray', fontStyle:'italic'}}>Non renseigné</Text></Text>
-        }
-        
-      <Text>Magasin : {selectedStore.nom_magasin}</Text>
+          <Text>Magasin : {selectedStore.nom_magasin}</Text>
+        </View>
+        <Button
+                  style={styles.btn} 
+                  textColor={'white'} 
+                  onPress={submitHandler}
+                  >
+                  VALIDER
+        </Button>
+        {/* {checkoutSession && <WebView ref={webViewRef} source={{ uri: checkoutSession }} onNavigationStateChange={handleNavigationChange} />} */}
+        {checkoutSession && <WebView ref={webViewRef} source={{ uri: checkoutSession }} />}
       </View>
-      <Button
-                style={styles.btn} 
-                textColor={'white'} 
-                onPress={submitHandler}
-                >
-                VALIDER
-      </Button>
-      {/* {checkoutSession && <WebView ref={webViewRef} source={{ uri: checkoutSession }} onNavigationStateChange={handleNavigationChange} />} */}
-      {checkoutSession && <WebView ref={webViewRef} source={{ uri: checkoutSession }} />}
-
-     
-    </View>
     </ScrollView>
-    </View>
+  </View>
   );
 };
 
