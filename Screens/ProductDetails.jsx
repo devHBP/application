@@ -9,9 +9,11 @@ import { checkStockForSingleProduct } from '../CallApi/api.js';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import FooterProfile from '../components/FooterProfile';
 
+//fonctions
+import { incrementhandler, decrementhandler } from '../Fonctions/fonctions'
+
 const ProductDetails = ({navigation, route}) => {
 
-   
    
     const { product } = route.params;
     //console.log('product', product)
@@ -48,12 +50,6 @@ const ProductDetails = ({navigation, route}) => {
         navigation.navigate('panier')
     };
 
-    // const incrementhandler = () => {
-    //     const productWithQty = {...product, qty: 1};
-    //     dispatch(addToCart(productWithQty));
-    //     console.log(product.productId);
-    // }
-
     const incrementhandler = async () => {
         if (currentStock === 0){
           return Toast.show({
@@ -87,13 +83,6 @@ const ProductDetails = ({navigation, route}) => {
           console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
         }
       };
-      
-
-    const decrementhandler = () => {
-        const productWithQty = {...product, qty: 1};
-        dispatch(decrementOrRemoveFromCart(productWithQty ));
-    }
-    
      
   return (
     <>
@@ -131,7 +120,8 @@ const ProductDetails = ({navigation, route}) => {
 
             <View style={style.qtyContainer}>
                              <TouchableOpacity
-                                onPress={decrementhandler}
+                              onPress={() => decrementhandler(product.productId, dispatch)}
+                                // onPress={decrementhandler}
                             >
                                 <Icon name="remove" size={30} color="#000" />
                             </TouchableOpacity>
