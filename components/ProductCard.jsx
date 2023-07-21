@@ -15,9 +15,6 @@ import { checkStockForSingleProduct } from '../CallApi/api.js';
 //fonctions
 import {decrementhandler } from '../Fonctions/fonctions'
 
-
-
-
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
