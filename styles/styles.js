@@ -31,5 +31,6 @@ export const colors = {
 
 export const fonts = {
     font1: 'Postino', 
+    font2:'Montserrat Medium'
    
 };
