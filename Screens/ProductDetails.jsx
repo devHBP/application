@@ -1,24 +1,24 @@
-import { View, TouchableOpacity, Image, Text, StyleSheet, TextInput } from 'react-native'
+import { View, TouchableOpacity, Image, Text, StyleSheet} from 'react-native'
 import React, { useEffect, useState} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { defaultStyle} from '../styles/styles'
-import { Button, Badge } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux'
-import {  addToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
+import {  addToCart, addFreeProductToCart} from '../reducers/cartSlice';
 import { checkStockForSingleProduct } from '../CallApi/api.js';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import FooterProfile from '../components/FooterProfile';
+import ModaleOffre31 from '../components/ModaleOffre31';
+
 
 //fonctions
-import { incrementhandler, decrementhandler } from '../Fonctions/fonctions'
+import { decrementhandler } from '../Fonctions/fonctions'
 
 const ProductDetails = ({navigation, route}) => {
 
    
     const { product } = route.params;
-    //console.log('product', product)
-    const [qty, setQty] = useState('0');
     const [currentStock, setCurrentStock] = useState(product.stock);
+    const [modalVisible, setModalVisible] = useState(false);
 
     // Effet de bord pour mettre à jour le stock
     useEffect(() => {
@@ -32,57 +32,70 @@ const ProductDetails = ({navigation, route}) => {
   }, [product.productId]);
 
     const dispatch = useDispatch();
-    const cart = useSelector((state) => state.cart.cart);
-    const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
-    console.log('qty', totalQuantity)
 
-    const productInCart = useSelector((state) =>
-    state.cart.cart.find((item) => item.productId === product.productId)
-    );
-    const productQty = productInCart ? productInCart.qty : 0;
+
+    const cart = useSelector((state) => state.cart.cart);
+
+    const productQuantity = cart.reduce((total, item) => {
+      if (item.productId === product.productId) {
+        return total + item.qty;
+      }
+      return total;
+    }, 0);
+    console.log('prodQty', productQuantity)
 
     const baseUrl = 'http://127.0.0.1:8080';
 
     const handleBack = () => {
         navigation.navigate('home');
       };
-      const handleNavigateToCart =  () => {
-        navigation.navigate('panier')
-    };
+     
+    const handleAcceptOffer = () => {
+     
+      dispatch(addFreeProductToCart(product));
+      console.log('cart', cart)
 
+    }; 
+    
     const incrementhandler = async () => {
-        if (currentStock === 0){
+      if (currentStock === 0){
+        return Toast.show({
+          type: 'error',
+          text1: `Victime de son succès`,
+          text2: 'Plus de stock disponible' 
+        });
+      }
+      try {
+        const stockAvailable = await checkStockForSingleProduct(product.productId);
+  
+        const remainingStock = stockAvailable[0].quantite - productQuantity;
+  
+        if (stockAvailable.length > 0 && remainingStock > 0) {
+          console.log(`Ajout au panier: ${product.libelle}, prix: ${product.prix_unitaire}, quantité: 1`);
+          dispatch(addToCart({ productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix_unitaire, qty: 1 , offre: product.offre}));
+  
+          if (product.offre && product.offre.startsWith('offre31')) {
+            const updatedCart = [...cart, { productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix, qty: 1 , offre: product.offre}];
+            const sameOfferProducts = updatedCart.filter((item) => item.offre === product.offre);
+            const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
+            
+            if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
+              setModalVisible(true);
+
+            }
+          }
+        } else {
           return Toast.show({
             type: 'error',
             text1: `Victime de son succès`,
-            text2: 'Plus de stock disponible' 
+            text2: `Quantité maximale: ${stockAvailable[0].quantite}` 
           });
         }
-        try {
-          const stockAvailable = await checkStockForSingleProduct(product.productId);
-          
-          // Get the product from the cart
-          const productInCart = cart.find((item) => item.productId === product.productId);
-      
-          // Calculate the remaining stock after accounting for the items in the cart
-          const remainingStock = stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
-      
-          if (stockAvailable.length > 0 && remainingStock > 0) {
-            // The stock is sufficient, add the product to the cart
-            const productWithQty = {...product, qty: 1};
-            dispatch(addToCart(productWithQty));
-          } else {
-            // The stock is insufficient
-            return Toast.show({
-              type: 'error',
-              text1: `Victime de son succès`,
-              text2: `Quantité maximale: ${stockAvailable[0].quantite}` 
-            });
-          }
-        } catch (error) {
-          console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
-        }
-      };
+      } catch (error) {
+        console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
+      }
+    };
+  
      
   return (
     <>
@@ -90,10 +103,10 @@ const ProductDetails = ({navigation, route}) => {
         <View style={style.icons}>
        
         <Icon name="arrow-back" size={30} color="#900" onPress={handleBack}/>
-        <Icon name="shopping-cart" size={30} color="#000" onPress={handleNavigateToCart} style={style.badge_container}/>
+        {/* <Icon name="shopping-cart" size={30} color="#000" onPress={handleNavigateToCart} style={style.badge_container}/>
          <Badge visible={cart.length > 0} size={18} style={style.badge}>
           {totalQuantity}
-        </Badge>
+        </Badge> */}
         
       </View>
      
@@ -125,16 +138,10 @@ const ProductDetails = ({navigation, route}) => {
                             >
                                 <Icon name="remove" size={30} color="#000" />
                             </TouchableOpacity>
-                            {/* <Text style={style.qtyText}>{cart[index].qty}</Text> */}
-                            <Text style={style.qtyText}>{productQty}</Text>
-                            {/* <TextInput 
-                                style={style.qtyText}
-                                keyboardType='numeric'
-                                value={qty}
-                                onChangeText={text => setQty(text)}
-                            /> */}
+                            <Text style={style.qtyText}>{productQuantity}</Text>
                             <TouchableOpacity
-                                onPress={incrementhandler}
+                                // onPress={incrementhandler}
+                                 onPress={() => incrementhandler(product.productId, product.offre)}
                             >
                                 <Icon name="add" size={30} color="#000" />
                             </TouchableOpacity>
@@ -143,6 +150,7 @@ const ProductDetails = ({navigation, route}) => {
             
         </View>
 
+        <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
 
     </View>
     <FooterProfile/>
