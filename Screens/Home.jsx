@@ -1,20 +1,20 @@
-import {View, Text, Pressable, ScrollView , StyleSheet, TouchableOpacity, Image, SectionList } from 'react-native'
+import {View, Text, Pressable, ScrollView , StyleSheet, TouchableOpacity, Image } from 'react-native'
 import  Picker  from 'react-native-picker-select';
-import { defaultStyle, fonts, colors} from '../styles/styles'
+import { fonts, colors} from '../styles/styles'
 import React, {useState, useEffect,  createRef  } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { logoutUser, updateSelectedStore, updateUser} from '../reducers/authSlice';
-import { addDate, addTime, clearCart, resetDateTime} from '../reducers/cartSlice';
+import { updateSelectedStore, updateUser} from '../reducers/authSlice';
+import { addDate, addTime} from '../reducers/cartSlice';
 import ProductCard from '../components/ProductCard'
 import axios from 'axios'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import DatePicker from 'react-native-date-picker'
-import { Badge } from 'react-native-paper';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import FooterProfile from '../components/FooterProfile';
+import { styles, pickerSelectStyles } from '../styles/home'; // Importez les styles depuis le fichier styles.js
+
 import { SearchBar } from 'react-native-elements';
-import { color } from 'react-native-elements/dist/helpers';
 
 
 const Home =  ({navigation}) => {
@@ -34,10 +34,11 @@ const Home =  ({navigation}) => {
   const dateRedux = useSelector((state) => state.cart.date)
   const timeRedux = useSelector((state) => state.cart.time)
   const user = useSelector((state) => state.auth.user);
-  //console.log('user Home', user)
   const cart = useSelector((state) => state.cart.cart);
-  //console.log('cart',cart)
-  const totalPrice = (cart.reduce((total, item) => total + item.qty * item.prix_unitaire, 0)).toFixed(2);
+  const totalPrice = Number((cart.reduce((total, item) => {
+    const prix = item.prix || item.prix_unitaire; 
+    return total + item.qty * prix;
+  }, 0)).toFixed(2));
   const selectedStore = useSelector((state) => state.auth.selectedStore);
 
   const dispatch = useDispatch();
@@ -96,7 +97,6 @@ const Home =  ({navigation}) => {
 
 //filtrage par catégorie
   const categoryButtonHandler = (categorie) => {
-
     if (categorie === 'Tous') {
       setFilteredProducts(products);
       setSelectedCategory(null)
@@ -118,7 +118,10 @@ const Home =  ({navigation}) => {
     //const seconds = date.getSeconds().toString().padStart(2, '0');
     //return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     
-    return `${year}-${month}-${day}`;
+    //return `${year}-${month}-${day}`;
+    //test pour affichage dans le picker
+    return `${day}-${month}-${year}`;
+
     //attention ici au format de la date - a bien verifier dans le order_ctrl (moment.js)
 
   };
@@ -140,7 +143,6 @@ const Home =  ({navigation}) => {
     currentDate.setHours(23, 59, 0, 0); // Set current date to today at 23:59
     return selectedDate >= currentDate;
   };
-
 
 //direction vers la page de détails
 const handleProductPress = (product) => {
@@ -181,22 +183,26 @@ const toggleVisibility = () => {
   setVisible(!visible)
 }
 
+//open Formule Sandwich
+const openFormuleSandwich = () => {
+  navigation.navigate('formulesandwich')
+}
+
   return (
     <>
     <ScrollView vertical={true} style={{ flex:1, paddingVertical:20}} ref={scrollViewRef}>
    
     <View >
 
-    <View style={style.bandeau}>
+    <View style={styles.bandeau}>
       
         <View style={{flexDirection:'row'}}>
         {
           user && 
           <View style={{padding:30, flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10}}>
-            <View>
-              <Text style={{fontFamily:fonts.font1, fontSize:28}}>Bonjour </Text>
-              <Text style={{fontSize:20}}>{user.firstname}</Text>
-              {/* <Text>{user.firstname} {user.lastname} </Text> */}
+            <View >
+              <Text style={{fontFamily:fonts.font1, fontSize:32, color:colors.color1}}>Bonjour </Text>
+              <Text style={{fontSize:18, fontFamily:fonts.font2, color:colors.color1}}>{user.firstname}</Text>
             </View>
               
                {/* SearchBar */}
@@ -204,8 +210,8 @@ const toggleVisibility = () => {
               placeholder="Une petite faim ?"
               onChangeText={handleSearch}
               value={searchQuery}
-              containerStyle={style.searchBarContainer}
-              inputContainerStyle={style.searchBarInputContainer}
+              containerStyle={styles.searchBarContainer}
+              inputContainerStyle={styles.searchBarInputContainer}
               inputStyle={{fontSize:16, }}
               placeholderTextColor={colors.color2}
             />
@@ -213,10 +219,10 @@ const toggleVisibility = () => {
         }
         </View>  
     </View>
-
+   
       {/* test bandeau header */}
-      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', padding:10}}>
-          <View style={{flex:1, flexDirection:'row', gap:5, alignItems:'center', }}>
+      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:20}}>
+          <View style={{ flexDirection:'row', gap:5, alignItems:'center', }}>
               <Image
                   source={require('../assets/store.png')} 
                   style={{ width: 24, height: 25, resizeMode:'contain' }}
@@ -252,7 +258,7 @@ const toggleVisibility = () => {
                     label: store.nom_magasin,
                     value: store.nom_magasin,
                   }))}
-                 
+                  style={pickerSelectStyles}
                 /> 
                 {
                   <View style={{flexDirection:'row'}}>
@@ -269,24 +275,31 @@ const toggleVisibility = () => {
 
           </View>
           </View>
-          <View style={{flex:1}}>
+
+
+          <View >
           
        {/* // Selection Jour  */}
-         <TouchableOpacity onPress={() => setOpenDate(true)} >
+    
+
+         <TouchableOpacity onPress={() => setOpenDate(true)}  style={styles.bordersPicker}>
          {/* <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text>  */}
             <Text>
             {date ? (
                 isTomorrowOrLater(date) ? (
-                <Text style={style.picker}>{formatDate(date)}</Text>
+                <Text style={styles.picker}>{formatDate(date)}</Text>
                 ) : (
-                "Il est trop tard pour commander pour  demain"
+                  <Text style={styles.picker} >
+                  trop tard</Text>
                 )
             ) : (
-                "Choisissez votre jour"
+              <Text style={styles.picker} >
+                Votre jour</Text>
+               
             )}
             </Text>
         </TouchableOpacity> 
-        
+        </View>
                <DatePicker
                 modal
                 open={openDate}
@@ -298,12 +311,13 @@ const toggleVisibility = () => {
                 //test date
                 if (isTomorrowOrLater(date)) {
                   setDate(date);
+                  console.log('date console', date)
                   dispatch(addDate(formatDate(date.toISOString())));
                   console.log('date', formatDate(date.toISOString()))
                   return Toast.show({
                     type: 'success',
                     text1: 'Succès',
-                    text2: `Commande prévue pour ${formatDate(date)}`
+                    text2: `Commande choisie pour le ${formatDate(date)}`
                   });
                 } else {
                   setDate(null)
@@ -327,7 +341,7 @@ const toggleVisibility = () => {
         
          {role !== 'collaborateur' && (
        <TouchableOpacity onPress={() => setOpenTime(true)} >
-        <Text>{timeRedux ? <Text style={style.picker}>{timeRedux}</Text> : "Choisissez votre heure"}</Text>
+        <Text>{timeRedux ? <Text style={styles.picker}>{timeRedux}</Text> : "Choisissez votre heure"}</Text>
         </TouchableOpacity>
         )}
         {role !== 'collaborateur' && (
@@ -351,7 +365,7 @@ const toggleVisibility = () => {
               /> 
         )} 
 
-          </View>
+         
           <View style={{backgroundColor:'lightgrey', borderRadius:25, justifyContent:'center'}}> 
               <TouchableOpacity  onPress={toggleVisibility} activeOpacity={1}>
                   <Icon name="keyboard-arrow-down" size={28} color="#FFF"  />
@@ -376,44 +390,72 @@ const toggleVisibility = () => {
       </View>
 
       {/* categories */}
-      <View style={style.categories}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false} >
-          {
-            categories.map((item, index) => (
-              <Pressable title="button" 
-                style={{...style.btn_categorie, 
-                backgroundColor: item === selectedCategory ? colors.color2 : 'white', 
-               
-              }}
-                key={index}
-                onPress={() => categoryButtonHandler(item)}
-              >
-                <Text style={{fontSize:16,
-                  color: item ===selectedCategory ? 'white' : 'black'
-                  }}>{item}</Text>
-              </Pressable>
-            ))
-          }
-          </ScrollView>
-        </View>
-
-          {/* card products */}
+      <View style={styles.categories} >
         
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} >
+        {
+          categories.map((item, index) => (
+            <Pressable title="button" 
+              style={{...styles.btn_categorie, 
+              backgroundColor: item === selectedCategory ? colors.color2 : 'white', 
+             
+            }}
+              key={index}
+              onPress={() => categoryButtonHandler(item)}
+            >
+              <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight:'600',
+                color: item ===selectedCategory ? 'white' : colors.color1
+                }}>{item}</Text>
+            </Pressable>
+          ))
+        }
+        </ScrollView>
+      </View>
+    
+        
+     
       
+
+          {/* Link page Formule */}
+          <View style={{marginLeft:30}}>
+              <Text>Notre sélection de</Text>
+              <Text>snack et formules</Text>
+              
+              <ScrollView horizontal={true} style={{marginVertical:10}}>
+                <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSandwich} activeOpacity={0.8}>
+                  <Image
+                          source={require('../assets/Formule36.jpg')} 
+                          style={{ width: 315, height: 200, resizeMode:'center', borderRadius:5 }}
+                          />
+                  <Text style={styles.titleFormule}>Formule sandwich</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSandwich} activeOpacity={0.8}>
+                  <Image
+                          source={require('../assets/Formule36.jpg')} 
+                          style={{ width: 315, height: 200, resizeMode:'center', borderRadius:5 }}
+                          />
+                </TouchableOpacity>
+                  
+              </ScrollView>
+          </View>
+          
+        
+           {/* card products */}
           {/* <View style={style.cardScrollview}> */}
           
             {sortedCategories
-            //ne plus afficher par catégorie - mais par choix
-            .map((category) => (
+              .filter(category => category === 'Baguettes')
+              .map((category) => (
               <React.Fragment key={category}>
-                <Text style={style.categoryTitle}>{category}</Text>
+                <Text style={styles.categoryTitle}>{category}</Text>
 
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} >
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
                 {groupedAndSortedProducts[category]
                 //ajouter un ordre de catégorie peut etre ?
                 //.sort((a, b) => a.libelle.localeCompare(b.libelle))
                 .map((item, index) => (
-                  <View key={item.productId} style={style.productContainer}>
+                  <View key={item.productId} style={styles.productContainer}>
                     <TouchableOpacity
                       key={item.productId}
                       onPress={() => handleProductPress(item)}
@@ -440,8 +482,154 @@ const toggleVisibility = () => {
             ))}
           {/* </View > */}
 
+                  {sortedCategories
+              .filter(category => category ===  'Viennoiseries')
+              .map((category) => (
+              <React.Fragment key={category}>
+                <Text style={styles.categoryTitle}>{category}</Text>
+
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
+                {groupedAndSortedProducts[category]
+                //ajouter un ordre de catégorie peut etre ?
+                //.sort((a, b) => a.libelle.localeCompare(b.libelle))
+                .map((item, index) => (
+                  <View key={item.productId} style={styles.productContainer}>
+                    <TouchableOpacity
+                      key={item.productId}
+                      onPress={() => handleProductPress(item)}
+                      activeOpacity={1}
+                    >
+                      <ProductCard
+                        libelle={item.libelle}
+                        key={item.productId}
+                        id={item.productId}
+                        index={index}
+                        image={item.image}
+                        prix={item.prix_unitaire}
+                        prixSUN={item.prix_remise_collaborateur}
+                        qty={item.qty}
+                        stock={item.stock}
+                        offre={item.offre}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              
+              </ScrollView>
+              </React.Fragment>
+            ))}
+
+                  {/* pause */}
+                  <Text>Pause</Text>
+
+              {sortedCategories
+              .filter(category => category ===  'Pâtisseries')
+              .map((category) => (
+              <React.Fragment key={category}>
+                <Text style={styles.categoryTitle}>{category}</Text>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
+                {groupedAndSortedProducts[category]
+                //ajouter un ordre de catégorie peut etre ?
+                //.sort((a, b) => a.libelle.localeCompare(b.libelle))
+                .map((item, index) => (
+                  <View key={item.productId} style={styles.productContainer}>
+                    <TouchableOpacity
+                      key={item.productId}
+                      onPress={() => handleProductPress(item)}
+                      activeOpacity={1}
+                    >
+                      <ProductCard
+                        libelle={item.libelle}
+                        key={item.productId}
+                        id={item.productId}
+                        index={index}
+                        image={item.image}
+                        prix={item.prix_unitaire}
+                        prixSUN={item.prix_remise_collaborateur}
+                        qty={item.qty}
+                        stock={item.stock}
+                        offre={item.offre}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
+              </React.Fragment>
+            ))}
+
+              {sortedCategories
+              .filter(category => category ===  'Boules et Pains spéciaux')
+              .map((category) => (
+              <React.Fragment key={category}>
+                <Text style={styles.categoryTitle}>{category}</Text>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
+                {groupedAndSortedProducts[category]
+                //ajouter un ordre de catégorie peut etre ?
+                //.sort((a, b) => a.libelle.localeCompare(b.libelle))
+                .map((item, index) => (
+                  <View key={item.productId} style={styles.productContainer}>
+                    <TouchableOpacity
+                      key={item.productId}
+                      onPress={() => handleProductPress(item)}
+                      activeOpacity={1}
+                    >
+                      <ProductCard
+                        libelle={item.libelle}
+                        key={item.productId}
+                        id={item.productId}
+                        index={index}
+                        image={item.image}
+                        prix={item.prix_unitaire}
+                        prixSUN={item.prix_remise_collaborateur}
+                        qty={item.qty}
+                        stock={item.stock}
+                        offre={item.offre}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
+              </React.Fragment>
+            ))}
+
+              {sortedCategories
+              .filter(category => category ===  'Boissons')
+              .map((category) => (
+              <React.Fragment key={category}>
+                <Text style={styles.categoryTitle}>{category}</Text>
+                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
+                {groupedAndSortedProducts[category]
+                //ajouter un ordre de catégorie peut etre ?
+                //.sort((a, b) => a.libelle.localeCompare(b.libelle))
+                .map((item, index) => (
+                  <View key={item.productId} style={styles.productContainer}>
+                    <TouchableOpacity
+                      key={item.productId}
+                      onPress={() => handleProductPress(item)}
+                      activeOpacity={1}
+                    >
+                      <ProductCard
+                        libelle={item.libelle}
+                        key={item.productId}
+                        id={item.productId}
+                        index={index}
+                        image={item.image}
+                        prix={item.prix_unitaire}
+                        prixSUN={item.prix_remise_collaborateur}
+                        qty={item.qty}
+                        stock={item.stock}
+                        offre={item.offre}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                ))}
+              </ScrollView>
+              </React.Fragment>
+            ))}
+
+
           <TouchableOpacity onPress={scrollToTop} >
-             <Icon name="arrow-upward" size={30} style={style.scrollTop}   />
+             <Icon name="arrow-upward" size={30} style={styles.scrollTop}   />
           </TouchableOpacity>
 
     </ScrollView>
@@ -450,94 +638,6 @@ const toggleVisibility = () => {
     </>
   )
 }
-const style = StyleSheet.create({
-  // container: {
-  //   //position: 'relative',
-  //   //marginRight: 10,
-  // },
-  bandeau:{
-    flexDirection:'row', 
-    width: "100%", 
-    justifyContent:"space-between", 
-  },
-  badge: {
-    position: 'absolute',
-    top: -8,
-    right: 40,
-  },
-  logos:{
-    flexDirection:'row', 
-    gap: 10, 
-  },
-  picker:{
-    color:'red',
-    fontWeight:'bold',
-  },
-  categories:{
-    flexDirection: "row", 
-    flexWrap:"wrap", 
-    justifyContent:'center', 
-    marginVertical: 20,
-  },
-  btn_categorie:{
-    borderRadius:6,
-    height:40,
-    marginVertical:5,
-    marginHorizontal:10,
-    padding:10,
-    justifyContent:'center',
-    alignItems:'center',
-    borderColor:'white',
-    borderWidth:1,  
-  },
-  categoryTitle:{
-    width:"100%",
-    marginVertical:10,
-    marginLeft:20,
-    fontWeight:'bold',
-    color:colors.color1
-  },
-  cardScrollview:{
-    // flexDirection: 'row', 
-    // flexWrap: 'wrap',
-    //  width:"100%",
-    // paddingBottom:40 ,
-  },
-  productContainer: {
-    width: 200, 
-    padding: 5,
-  },
-  searchBarContainer: {
-    backgroundColor: 'transparent',
-    borderTopWidth: 0,
-    borderBottomWidth: 0,
-    width:"60%",
-    paddingHorizontal:0,
-    marginHorizontal:0
-  },
-  searchBarInputContainer: {
-    backgroundColor: '#e0e0e0',
-    borderRadius:25,
-    width:"90%",
-    padding:0,
-    margin:0
-   
-  },
-  scrollTop:{
-   marginBottom:100, textAlign:'center'
-  }
-});
-
-export default Home
+ export default Home
 
 
-  // const products = [
-  //   {
-  //     id_produit: "1",
-  //     nom:"Le parisien",
-  //     prix: 10,
-  //     categorie:"Sandwich",
-  //     source:{ uri : require('../assets/sandwich.png')}
-  //   },
-  // ]
- 
