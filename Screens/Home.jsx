@@ -16,6 +16,7 @@ import { SearchBar } from 'react-native-elements';
 
 import FormulesSalees from '../components/FormulesSalees';
 import LinkOffres from '../components/LinkOffres';
+import EnvieSalee from '../components/EnvieSalee';
 
 
 
@@ -499,7 +500,7 @@ const toggleVisibility = () => {
           <FormulesSalees />
 
           {/* envie de salé */}
-         
+         <EnvieSalee />
 
             {/* patisseries */}
             {sortedCategories
