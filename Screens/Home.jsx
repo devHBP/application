@@ -1,4 +1,4 @@
-import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Modal } from 'react-native'
+import {View, Text, Pressable, ScrollView , TouchableOpacity, Image } from 'react-native'
 import  Picker  from 'react-native-picker-select';
 import { fonts, colors} from '../styles/styles'
 import React, {useState, useEffect,  createRef  } from 'react'
@@ -13,8 +13,9 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import FooterProfile from '../components/FooterProfile';
 import { styles, pickerSelectStyles } from '../styles/home'; 
 import { SearchBar } from 'react-native-elements';
-import PopUp from '../components/PopUp';
-import popupData from '../Datas/datas.json';
+
+import FormulesSalees from '../components/FormulesSalees';
+import LinkOffres from '../components/LinkOffres';
 
 
 
@@ -32,8 +33,7 @@ const Home =  ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products); // Replace 'products' with your actual product data
   const [ visible, setVisible] = useState(false)
-  const [modalVisible, setModalVisible] = useState(false);
-  const [currentPopupData, setCurrentPopupData] = useState({});
+  
   const dateRedux = useSelector((state) => state.cart.date)
   const timeRedux = useSelector((state) => state.cart.time)
   const user = useSelector((state) => state.auth.user);
@@ -186,19 +186,12 @@ const toggleVisibility = () => {
   setVisible(!visible)
 }
 
-//open Formule Sandwich
-const openFormuleSandwich = () => {
-  navigation.navigate('formulesandwich')
-}
+// //open Formule Sandwich
+// const openFormuleSandwich = () => {
+//   navigation.navigate('formulesandwich')
+// }
 
-const handlePress = (popupData) => {
-  setCurrentPopupData(popupData);
-  setModalVisible(true);
-}
 
-const handleClose = () => {
-  setModalVisible(false);
-}
 
   return (
     <>
@@ -422,112 +415,8 @@ const handleClose = () => {
       </View>
           
           {/* link - anti gaspi -  */}
+          <LinkOffres />
               
-              <ScrollView horizontal={true} style={{marginVertical:10, marginLeft:30}}>
-
-                {/* anti gaspi */}
-                {/* ajouter action onPress */}
-                
-                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
-                  <Image
-                          source={require('../assets/Formule36.jpg')} 
-                          style={{ width: 315, height: 200, resizeMode:'center', borderTopLeftRadius:10, borderTopRightRadius:10 }}
-                          />
-                  <View style={styles.container_offre_antigaspi}>
-                    <View style={styles.text_antigaspi}>
-                      <Text style={styles.texte_offre} >L'offre </Text>
-                      <Text style={styles.texte_anti}>Anti-gaspillage</Text>
-                      </View>
-                    <View style={styles.pastille}>
-                     
-                      <Image
-                        source={require('../assets/pastille_antigaspi.png')}
-                        style={{ width:50, resizeMode:'contain'}}
-                      />
-                      
-                    </View>
-                  </View>
-                  
-                </TouchableOpacity>
-              
-              {/* Offre 3+1 */}
-                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={() => handlePress({ title: popupData.title1, text: popupData.text1, image:popupData.image1 })}>
-                  <Image
-                          source={require('../assets/Croissant_offre31.jpg')} 
-                          style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
-                          />
-                  <View style={styles.container_offre_antigaspi}>
-                    <View style={styles.text_offre31}>
-                      <Text style={styles.texte_offre31} >Profitez d'un produit</Text>
-                      <Text style={styles.texte_gratuit}>Gratuit</Text>
-                      </View>
-                    <View style={styles.pastille}>
-                      <Image
-                        source={require('../assets/offre31.png')}
-                        style={{ width:60, resizeMode:'contain'}}
-                      />
-                      
-                    </View>
-                  </View>
-                 
-                </TouchableOpacity>
-                
-                {/* collaboration Les Halles Solanid */}
-                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={() => handlePress({ title: popupData.title2, text: popupData.text2, image:popupData.image2 })}>
-                  <Image
-                          source={require('../assets/fond_halles.jpg')} 
-                          style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
-                          />
-                  <View style={styles.container_offre_antigaspi}>
-                    <View style={styles.text_offre31}>
-                      <Text style={styles.texte_offre31} >Un repas sain avec</Text>
-                      <Text style={styles.texte_gratuit}>Les Halles Solanid</Text>
-                      </View>
-                    <View style={styles.pastille}>
-                      <Image
-                        source={require('../assets/halles_solanid.png')}
-                        style={{ width:60, resizeMode:'contain'}}
-                      />
-                      
-                    </View>
-                  </View>
-                  
-                </TouchableOpacity>
-
-                {/* SUN */}
-                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
-                  <Image
-                          source={require('../assets/fond_halles.jpg')} 
-                          style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
-                          />
-                  <View style={styles.container_offre_antigaspi}>
-                    <View style={styles.text_offre31}>
-                      <Text style={styles.texte_offre31} >  Découvrez</Text>
-                      <Text style={styles.texte_gratuit}>   les bénéfices</Text>
-                      </View>
-                    <View style={styles.pastille}>
-                      <Image
-                        source={require('../assets/start_union.png')}
-                        style={{ width:60, resizeMode:'contain'}}
-                      />
-                      
-                    </View>
-                  </View>
-                  
-                </TouchableOpacity>
-
-               
-                <Modal
-                  animationType="fade"
-                  transparent={true}
-                  visible={modalVisible}
-                >
-                    <PopUp onClose={handleClose} title={currentPopupData.title} text={currentPopupData.text} image={currentPopupData.image}/>
-
-                </Modal>
-
-              </ScrollView>
-  
            {/* card products */}
           {/* <View style={style.cardScrollview}> */}
           
@@ -607,31 +496,7 @@ const handleClose = () => {
             ))}
 
           {/* Link page Formule */}
-          <View style={{marginLeft:30, marginVertical:30}}>
-              <Text style={styles.text1formule}>Notre sélection de</Text>
-              <Text style={styles.text2formule}>snack <Text style={styles.text1formule}>et </Text>formules</Text>
-              
-              <ScrollView horizontal={true} style={{marginVertical:10}}>
-                <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSandwich} activeOpacity={0.8}>
-                  <Image
-                          source={require('../assets/Formule36.jpg')} 
-                          style={{ width: 315, height: 200, resizeMode:'center' }}
-                          />
-                  <View style={styles.cardTitle}>
-                     <Text style={styles.titleFormule}>Formule sandwich</Text>
-                     <Text style={styles.textFormule}>Un sandwich, un dessert et une boisson</Text>
-                  </View>
-                  
-                </TouchableOpacity>
-
-                <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSandwich} activeOpacity={0.8}>
-                  <Image
-                          source={require('../assets/Formule36.jpg')} 
-                          style={{ width: 315, height: 200, resizeMode:'center', borderRadius:5 }}
-                          />
-                </TouchableOpacity>
-              </ScrollView>
-          </View>
+          <FormulesSalees />
 
           {/* envie de salé */}
 
