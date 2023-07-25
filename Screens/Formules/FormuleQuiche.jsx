@@ -1,13 +1,14 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch, TouchableHighlight } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { fonts, colors} from '../styles/styles'
+import { fonts, colors} from '../../styles/styles'
 import CheckBox from '@react-native-community/checkbox';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { Button, RadioButton} from 'react-native-paper'
-import { addToCart} from '../reducers/cartSlice';
+import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
-import { getProductsByCategory, fetchOneProduct } from '../CallApi/api.js'
+import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
+import { style } from '../../styles/formules'; 
 
 const FormuleQuiche = ({navigation}) => {
 
@@ -185,7 +186,7 @@ const FormuleQuiche = ({navigation}) => {
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
         libelle:"Formule Sandwich",
-        formuleImage: require('../assets/Formule36.jpg'),
+        formuleImage: require('../../assets/Formule36.jpg'),
         productIds: productIds,
         qty: 1,
       }
@@ -199,7 +200,7 @@ const FormuleQuiche = ({navigation}) => {
       <ScrollView>
         <View>
             <Image
-                    source={require('../assets/Formule36.jpg')} 
+                    source={require('../../assets/Formule36.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
 
@@ -326,7 +327,7 @@ const FormuleQuiche = ({navigation}) => {
           </View>
           <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
-            <Text>Avec</Text><Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+            <Text>Avec</Text><Image source={require('../../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
           {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:'bold'}}>{(prix*0.8).toFixed(2)} €</Text>}
           </View>
@@ -341,72 +342,5 @@ const FormuleQuiche = ({navigation}) => {
     </View> 
   )
 }
-const style = StyleSheet.create({
-    title:{
-        fontFamily:fonts.font1,
-        fontSize:20,
-        paddingBottom:10,
-    },
-    choixTitle:{
-        textAlign:'center',
-        fontSize:20,
-        padding:10,
-        backgroundColor:colors.color3,
-    },
-    scrollProduct:{
-        height:200,
-        paddingHorizontal:20
-    },
-    sandwichImage: {
-        width: 150,
-        height: 100,
-        borderRadius: 50,
-    },
-    menu:{
-        height:85,
-        backgroundColor: '#fff',
-        padding: 10,
-        elevation: 2, 
-        shadowColor: '#000', 
-        shadowOpacity: 0.6, 
-        shadowOffset: { width: 0, height: 1 }, 
-        shadowRadius: 2, 
-        borderTopLeftRadius:10,
-        borderTopRightRadius:10,
-        flexDirection:'row',
-        alignItems:'center',
-        justifyContent:'space-between'
-    },
-    disabledCheckBox: {
-      opacity: 0.2, 
-    },
-    btn:{
-      backgroundColor:colors.color2,
-      height:40,
-      width:150,
-    },
-    bandeauFormule:{
-      flexDirection:'row', 
-      width:180, 
-      justifyContent:'space-between'
-    },
-   
-    checkButton: {
-      width: 24,
-      height: 24,
-      borderRadius: 12,
-      borderWidth: 1,
-      borderColor: 'gray',
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: 5,
-    },
-    checkInnerCircle: {
-      width: 16,
-      height: 16,
-      borderRadius: 8,
-      backgroundColor: colors.color1,
-    },
-  }
-)
+
 export default FormuleQuiche

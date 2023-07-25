@@ -499,6 +499,7 @@ const toggleVisibility = () => {
           <FormulesSalees />
 
           {/* envie de salé */}
+         
 
             {/* patisseries */}
             {sortedCategories

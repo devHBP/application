@@ -8,7 +8,7 @@ import { Button, RadioButton} from 'react-native-paper'
 import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
-import { style } from '../styles/formules'; 
+import { style } from '../../styles/formules'; 
 
 const FormulePanini = ({navigation}) => {
 
@@ -186,7 +186,7 @@ const FormulePanini = ({navigation}) => {
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
         libelle:"Formule Sandwich",
-        formuleImage: require('../assets/Formule36.jpg'),
+        formuleImage: require('../../assets/Formule36.jpg'),
         productIds: productIds,
         qty: 1,
       }
@@ -200,7 +200,7 @@ const FormulePanini = ({navigation}) => {
       <ScrollView>
         <View>
             <Image
-                    source={require('../assets/Formule36.jpg')} 
+                    source={require('../../assets/Formule36.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
 
@@ -327,7 +327,7 @@ const FormulePanini = ({navigation}) => {
           </View>
           <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
-            <Text>Avec</Text><Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+            <Text>Avec</Text><Image source={require('../../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
           {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:'bold'}}>{(prix*0.8).toFixed(2)} €</Text>}
           </View>

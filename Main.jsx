@@ -26,7 +26,7 @@ import FormulePainBagnat from './Screens/Formules/FormulePainBagnat'
 import FormuleBurger from './Screens/Formules/FormuleBurger'
 import FormuleCroques from './Screens/Formules/FormuleCroque'
 import FormulePanini from './Screens/Formules/FormulePanini'
-import FormuleQuiche from './Screens/FormuleQuiche'
+import FormuleQuiche from './Screens/Formules/FormuleQuiche'
 
 
 const Main = () => {

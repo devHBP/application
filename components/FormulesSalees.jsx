@@ -153,7 +153,7 @@ const FormulesSalees = () => {
                     </View>
                 </TouchableOpacity>
 
-                {/* quiches*/}
+                {/* quiches */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleQuiche} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule36.jpg')} 
