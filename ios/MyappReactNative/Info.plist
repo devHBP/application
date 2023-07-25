@@ -49,6 +49,7 @@
 	<key>UIAppFonts</key>
 	<array>
 		<string>MaterialIcons.ttf</string>
+		<string>Montserrat Bold 700.ttf</string>
 		<string>Montserrat Medium 500.ttf</string>
 		<string>Postino Italic.ttf</string>
 	</array>
