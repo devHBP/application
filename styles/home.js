@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { colors } from '../styles/styles'
+import { colors, fonts } from '../styles/styles'
 
 
 const styles = StyleSheet.create({
@@ -51,8 +51,10 @@ const styles = StyleSheet.create({
     width: "100%",
     marginVertical: 10,
     marginLeft: 30,
-    fontWeight: 'bold',
-    color: colors.color1
+    color: colors.color1,
+    fontFamily:fonts.font2,
+    fontSize:20,
+    fontWeight:'600'
   },
   scrollHorizontal: {
     marginLeft: 30,
@@ -88,13 +90,22 @@ const styles = StyleSheet.create({
     textAlign: 'center'
   },
   titleFormule: {
-    position: 'absolute',
-    color: 'white',
-    top: 20,
-    left: 20,
-    fontSize: 30,
-    width: 200,
-    fontWeight: 'bold'
+   color:colors.color2,
+   fontSize:20,
+   fontWeight: 'bold',
+  },
+  textFormule:{
+    color:colors.color1,
+    fontSize:14,
+    fontWeight: 500,
+  },
+  cardTitle:{
+    backgroundColor:'white',
+    height:57,
+    borderBottomLeftRadius:10,
+    borderBottomRightRadius:10,
+    justifyContent:'center',
+    paddingHorizontal:10
   },
   bordersPicker: {
     borderLeftWidth: 1,
@@ -105,7 +116,69 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: "100%",
     paddingHorizontal: 20
-  }
+  },
+  text1formule:{
+    fontFamily:fonts.font2,
+    color:colors.color1, 
+    fontSize:16,
+    fontWeight:'600'
+  },
+  text2formule:{
+    color:colors.color2,
+    fontFamily:fonts.font2,
+    fontSize:24,
+    fontWeight:'600'
+  },
+  container_offre_antigaspi:{
+    width:"100%",
+    height:100,
+    flexDirection:'row',
+    backgroundColor:colors.color6,
+    borderBottomLeftRadius:10, 
+    borderBottomRightRadius:10,
+  },
+  text_antigaspi:{
+    flexDirection:'column',
+    justifyContent:'center',
+    paddingLeft:20
+  },
+  texte_offre:{
+    color:colors.color1,
+    fontFamily:fonts.font2,
+    fontSize:20,
+    fontWeight:'700',
+  },
+  texte_anti:{
+    color:colors.color8,
+    fontFamily:fonts.font2,
+    fontSize:24,
+    fontWeight:'700'
+  },
+  pastille:{
+    height:'100%',
+    flexDirection:'row',
+    alignItems:'center',
+    paddingLeft:40
+  },
+  text_offre31:{
+    flexDirection:'column',
+    justifyContent:'center',
+    alignItems:'flex-end',
+    paddingLeft:20
+  },
+  texte_offre31:{
+    color:colors.color1,
+    fontFamily:fonts.font2,
+    fontSize:18,
+    fontWeight:'700',
+  },
+  texte_gratuit:{
+    color:colors.color2,
+    fontFamily:fonts.font2,
+    fontSize:20,
+    fontWeight:'900'
+  },
+
 });
 
 const pickerSelectStyles = StyleSheet.create({

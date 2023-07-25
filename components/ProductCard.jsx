@@ -167,17 +167,19 @@ const incrementhandler = async () => {
 
             <View style={{
                 flexDirection:'row',
-                justifyContent:'space-around',
+                justifyContent:'space-between',
+                paddingLeft:10,
+                paddingRight:10,
                 }}>
             
                 <View
                     style={{
                     flexDirection: "column",
                     justifyContent: "center",
-                    //width: "100%",
                     height:40,
                     backgroundColor:'white',
-                    paddingVertical:5
+                    paddingVertical:5,
+                    width:"50%"
                     }}
                 >
                     <Text
@@ -186,7 +188,6 @@ const incrementhandler = async () => {
                         fontSize: 14,
                         fontWeight: "300",
                         width: "100%",
-                        textAlign:'center',
                         }}
                     >
                         {libelle}
@@ -197,7 +198,6 @@ const incrementhandler = async () => {
                             fontSize: 14,
                             fontWeight: "300",
                             width: "100%",
-                            textAlign:'center'
                             }}
                         >
                             {prix}€
@@ -212,12 +212,12 @@ const incrementhandler = async () => {
                 <View style={{
                     flexDirection: "column",
                     justifyContent: "center",
+                    alignItems:'flex-end',
                     height:40,
                     backgroundColor:'white',
-                    
                     paddingVertical:5
                     }}>
-                <Text
+                {/* <Text
                         numberOfLines={1}
                         style={{
                         fontSize: 16,
@@ -226,9 +226,12 @@ const incrementhandler = async () => {
                         textAlign:'center',
                         color:colors.color2
                         }}
-                    >
-                        SUN
-                    </Text>
+                    > */}
+                        <Image
+                          source={require('../assets/SUN.png')} 
+                          style={{ width: 30, height: 20, resizeMode:'center' }}
+                          />
+                    {/* </Text> */}
                     <Text
                             numberOfLines={1}
                             style={{

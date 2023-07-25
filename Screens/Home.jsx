@@ -1,4 +1,4 @@
-import {View, Text, Pressable, ScrollView , StyleSheet, TouchableOpacity, Image } from 'react-native'
+import {View, Text, Pressable, ScrollView , TouchableOpacity, Image } from 'react-native'
 import  Picker  from 'react-native-picker-select';
 import { fonts, colors} from '../styles/styles'
 import React, {useState, useEffect,  createRef  } from 'react'
@@ -10,10 +10,8 @@ import axios from 'axios'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import DatePicker from 'react-native-date-picker'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import AsyncStorage from '@react-native-async-storage/async-storage'
 import FooterProfile from '../components/FooterProfile';
-import { styles, pickerSelectStyles } from '../styles/home'; // Importez les styles depuis le fichier styles.js
-
+import { styles, pickerSelectStyles } from '../styles/home'; 
 import { SearchBar } from 'react-native-elements';
 
 
@@ -280,8 +278,6 @@ const openFormuleSandwich = () => {
           <View >
           
        {/* // Selection Jour  */}
-    
-
          <TouchableOpacity onPress={() => setOpenDate(true)}  style={styles.bordersPicker}>
          {/* <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text>  */}
             <Text>
@@ -364,8 +360,7 @@ const openFormuleSandwich = () => {
                 }}
               /> 
         )} 
-
-         
+   
           <View style={{backgroundColor:'lightgrey', borderRadius:25, justifyContent:'center'}}> 
               <TouchableOpacity  onPress={toggleVisibility} activeOpacity={1}>
                   <Icon name="keyboard-arrow-down" size={28} color="#FFF"  />
@@ -411,36 +406,107 @@ const openFormuleSandwich = () => {
         }
         </ScrollView>
       </View>
-    
-        
-     
-      
-
-          {/* Link page Formule */}
-          <View style={{marginLeft:30}}>
-              <Text>Notre sélection de</Text>
-              <Text>snack et formules</Text>
-              
-              <ScrollView horizontal={true} style={{marginVertical:10}}>
-                <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSandwich} activeOpacity={0.8}>
-                  <Image
-                          source={require('../assets/Formule36.jpg')} 
-                          style={{ width: 315, height: 200, resizeMode:'center', borderRadius:5 }}
-                          />
-                  <Text style={styles.titleFormule}>Formule sandwich</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSandwich} activeOpacity={0.8}>
-                  <Image
-                          source={require('../assets/Formule36.jpg')} 
-                          style={{ width: 315, height: 200, resizeMode:'center', borderRadius:5 }}
-                          />
-                </TouchableOpacity>
-                  
-              </ScrollView>
-          </View>
           
-        
+          {/* link - anti gaspi -  */}
+              
+              <ScrollView horizontal={true} style={{marginVertical:10, marginLeft:30}}>
+
+                {/* anti gaspi */}
+                {/* ajouter action onPress */}
+                
+                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+                  <Image
+                          source={require('../assets/Formule36.jpg')} 
+                          style={{ width: 315, height: 200, resizeMode:'center', borderTopLeftRadius:10, borderTopRightRadius:10 }}
+                          />
+                  <View style={styles.container_offre_antigaspi}>
+                    <View style={styles.text_antigaspi}>
+                      <Text style={styles.texte_offre} >L'offre </Text>
+                      <Text style={styles.texte_anti}>Anti-gaspillage</Text>
+                      </View>
+                    <View style={styles.pastille}>
+                     
+                      <Image
+                        source={require('../assets/pastille_antigaspi.png')}
+                        style={{ width:50, resizeMode:'contain'}}
+                      />
+                      
+                    </View>
+                  </View>
+                  
+                </TouchableOpacity>
+              
+              {/* Offre 3+1 */}
+                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+                  <Image
+                          source={require('../assets/Croissant_offre31.jpg')} 
+                          style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
+                          />
+                  <View style={styles.container_offre_antigaspi}>
+                    <View style={styles.text_offre31}>
+                      <Text style={styles.texte_offre31} >Profitez d'un produit</Text>
+                      <Text style={styles.texte_gratuit}>Gratuit</Text>
+                      </View>
+                    <View style={styles.pastille}>
+                      <Image
+                        source={require('../assets/offre31.png')}
+                        style={{ width:60, resizeMode:'contain'}}
+                      />
+                      
+                    </View>
+                  </View>
+                  
+                </TouchableOpacity>
+
+                {/* collaboration Les Halles Solanid */}
+                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+                  <Image
+                          source={require('../assets/fond_halles.jpg')} 
+                          style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
+                          />
+                  <View style={styles.container_offre_antigaspi}>
+                    <View style={styles.text_offre31}>
+                      <Text style={styles.texte_offre31} >Un repas sain avec</Text>
+                      <Text style={styles.texte_gratuit}>Les Halles Solanid</Text>
+                      </View>
+                    <View style={styles.pastille}>
+                      <Image
+                        source={require('../assets/halles_solanid.png')}
+                        style={{ width:60, resizeMode:'contain'}}
+                      />
+                      
+                    </View>
+                  </View>
+                  
+                </TouchableOpacity>
+
+                {/* SUN */}
+                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+                  <Image
+                          source={require('../assets/fond_halles.jpg')} 
+                          style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
+                          />
+                  <View style={styles.container_offre_antigaspi}>
+                    <View style={styles.text_offre31}>
+                      <Text style={styles.texte_offre31} >  Découvrez</Text>
+                      <Text style={styles.texte_gratuit}>   les bénéfices</Text>
+                      </View>
+                    <View style={styles.pastille}>
+                      <Image
+                        source={require('../assets/start_union.png')}
+                        style={{ width:60, resizeMode:'contain'}}
+                      />
+                      
+                    </View>
+                  </View>
+                  
+                </TouchableOpacity>
+
+               
+
+
+              </ScrollView>
+  
            {/* card products */}
           {/* <View style={style.cardScrollview}> */}
           
@@ -482,7 +548,7 @@ const openFormuleSandwich = () => {
             ))}
           {/* </View > */}
 
-                  {sortedCategories
+            {sortedCategories
               .filter(category => category ===  'Viennoiseries')
               .map((category) => (
               <React.Fragment key={category}>
@@ -519,10 +585,37 @@ const openFormuleSandwich = () => {
               </React.Fragment>
             ))}
 
-                  {/* pause */}
-                  <Text>Pause</Text>
+          {/* Link page Formule */}
+          <View style={{marginLeft:30, marginVertical:30}}>
+              <Text style={styles.text1formule}>Notre sélection de</Text>
+              <Text style={styles.text2formule}>snack <Text style={styles.text1formule}>et </Text>formules</Text>
+              
+              <ScrollView horizontal={true} style={{marginVertical:10}}>
+                <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSandwich} activeOpacity={0.8}>
+                  <Image
+                          source={require('../assets/Formule36.jpg')} 
+                          style={{ width: 315, height: 200, resizeMode:'center' }}
+                          />
+                  <View style={styles.cardTitle}>
+                     <Text style={styles.titleFormule}>Formule sandwich</Text>
+                     <Text style={styles.textFormule}>Un sandwich, un dessert et une boisson</Text>
+                  </View>
+                  
+                </TouchableOpacity>
 
-              {sortedCategories
+                <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSandwich} activeOpacity={0.8}>
+                  <Image
+                          source={require('../assets/Formule36.jpg')} 
+                          style={{ width: 315, height: 200, resizeMode:'center', borderRadius:5 }}
+                          />
+                </TouchableOpacity>
+              </ScrollView>
+          </View>
+
+          {/* envie de salé */}
+
+            {/* patisseries */}
+            {sortedCategories
               .filter(category => category ===  'Pâtisseries')
               .map((category) => (
               <React.Fragment key={category}>
@@ -557,7 +650,8 @@ const openFormuleSandwich = () => {
               </React.Fragment>
             ))}
 
-              {sortedCategories
+            {/* pains speciaux */}
+            {sortedCategories
               .filter(category => category ===  'Boules et Pains spéciaux')
               .map((category) => (
               <React.Fragment key={category}>
@@ -592,7 +686,12 @@ const openFormuleSandwich = () => {
               </React.Fragment>
             ))}
 
-              {sortedCategories
+
+            {/* formules petits dejeuners */}
+
+
+            {/* boissons */}
+            {sortedCategories
               .filter(category => category ===  'Boissons')
               .map((category) => (
               <React.Fragment key={category}>
@@ -632,10 +731,10 @@ const openFormuleSandwich = () => {
              <Icon name="arrow-upward" size={30} style={styles.scrollTop}   />
           </TouchableOpacity>
 
-    </ScrollView>
-    <FooterProfile />
-   
-    </>
+     </ScrollView>
+  <FooterProfile />
+
+ </>
   )
 }
  export default Home
