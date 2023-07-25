@@ -1,4 +1,4 @@
-import {View, Text, Pressable, ScrollView , TouchableOpacity, Image } from 'react-native'
+import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Modal } from 'react-native'
 import  Picker  from 'react-native-picker-select';
 import { fonts, colors} from '../styles/styles'
 import React, {useState, useEffect,  createRef  } from 'react'
@@ -13,6 +13,9 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import FooterProfile from '../components/FooterProfile';
 import { styles, pickerSelectStyles } from '../styles/home'; 
 import { SearchBar } from 'react-native-elements';
+import PopUp from '../components/PopUp';
+import popupData from '../Datas/datas.json';
+
 
 
 const Home =  ({navigation}) => {
@@ -29,6 +32,8 @@ const Home =  ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products); // Replace 'products' with your actual product data
   const [ visible, setVisible] = useState(false)
+  const [modalVisible, setModalVisible] = useState(false);
+  const [currentPopupData, setCurrentPopupData] = useState({});
   const dateRedux = useSelector((state) => state.cart.date)
   const timeRedux = useSelector((state) => state.cart.time)
   const user = useSelector((state) => state.auth.user);
@@ -184,6 +189,15 @@ const toggleVisibility = () => {
 //open Formule Sandwich
 const openFormuleSandwich = () => {
   navigation.navigate('formulesandwich')
+}
+
+const handlePress = (popupData) => {
+  setCurrentPopupData(popupData);
+  setModalVisible(true);
+}
+
+const handleClose = () => {
+  setModalVisible(false);
 }
 
   return (
@@ -437,7 +451,7 @@ const openFormuleSandwich = () => {
                 </TouchableOpacity>
               
               {/* Offre 3+1 */}
-                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={() => handlePress({ title: popupData.title1, text: popupData.text1, image:popupData.image1 })}>
                   <Image
                           source={require('../assets/Croissant_offre31.jpg')} 
                           style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
@@ -455,11 +469,11 @@ const openFormuleSandwich = () => {
                       
                     </View>
                   </View>
-                  
+                 
                 </TouchableOpacity>
-
+                
                 {/* collaboration Les Halles Solanid */}
-                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={() => handlePress({ title: popupData.title2, text: popupData.text2, image:popupData.image2 })}>
                   <Image
                           source={require('../assets/fond_halles.jpg')} 
                           style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
@@ -503,7 +517,14 @@ const openFormuleSandwich = () => {
                 </TouchableOpacity>
 
                
+                <Modal
+                  animationType="fade"
+                  transparent={true}
+                  visible={modalVisible}
+                >
+                    <PopUp onClose={handleClose} title={currentPopupData.title} text={currentPopupData.text} image={currentPopupData.image}/>
 
+                </Modal>
 
               </ScrollView>
   
@@ -730,10 +751,10 @@ const openFormuleSandwich = () => {
           <TouchableOpacity onPress={scrollToTop} >
              <Icon name="arrow-upward" size={30} style={styles.scrollTop}   />
           </TouchableOpacity>
-
+          
      </ScrollView>
   <FooterProfile />
-
+  
  </>
   )
 }
