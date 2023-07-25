@@ -17,7 +17,16 @@ import Orders from './Screens/Orders'
 import Cookies from './Screens/Cookies'
 import Donnees from './Screens/Donnees'
 import Mentions from './Screens/Mentions'
-import FormuleSandwich from './Screens/FormuleSandwich'
+import FormuleSandwich from './Screens/Formules/FormuleSandwich'
+import FormulePoke from './Screens/Formules/FormulePoke'
+import FormuleSalade from './Screens/Formules/FormuleSalades'
+import FormulePizzas from './Screens/Formules/FormulePizzas'
+import FormuleWraps from './Screens/Formules/FormuleWraps'
+import FormulePainBagnat from './Screens/Formules/FormulePainBagnat'
+import FormuleBurger from './Screens/Formules/FormuleBurger'
+import FormuleCroques from './Screens/Formules/FormuleCroque'
+import FormulePanini from './Screens/Formules/FormulePanini'
+import FormuleQuiche from './Screens/FormuleQuiche'
 
 
 const Main = () => {
@@ -42,7 +51,17 @@ const Main = () => {
                 <Stack.Screen name='signup' component={Signup}/>
                 <Stack.Screen name="stores" component={Stores}/>
                 <Stack.Screen name='home' component={Home}/>
-                <Stack.Screen name='formulesandwich' component={FormuleSandwich}/>
+                    {/*  Formules  */}
+                    <Stack.Screen name='formulesandwich' component={FormuleSandwich}/>
+                    <Stack.Screen name='formulepoke' component={FormulePoke}/>
+                    <Stack.Screen name='formulesalade' component={FormuleSalade}/>
+                    <Stack.Screen name='formulepizza' component={FormulePizzas}/>
+                    <Stack.Screen name='formulewrap' component={FormuleWraps}/>
+                    <Stack.Screen name='formulepainbagnat' component={FormulePainBagnat}/>
+                    <Stack.Screen name='formuleburger' component={FormuleBurger}/>
+                    <Stack.Screen name='formulecroque' component={FormuleCroques}/>
+                    <Stack.Screen name='formulepanini' component={FormulePanini}/>
+                    <Stack.Screen name='formulequiche' component={FormuleQuiche}/>
                 <Stack.Screen name='details' component={ProductDetails}/>
                 <Stack.Screen name='profile' component={Profile}/>
                 <Stack.Screen name='orders' component={Orders}/>

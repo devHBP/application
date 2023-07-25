@@ -1,15 +1,15 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch, TouchableHighlight } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import { fonts, colors} from '../styles/styles'
+import { fonts, colors} from '../../styles/styles'
 import CheckBox from '@react-native-community/checkbox';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { Button, RadioButton} from 'react-native-paper'
-import { addToCart} from '../reducers/cartSlice';
+import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
-import { getProductsByCategory, fetchOneProduct } from '../CallApi/api.js'
+import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 
-const FormuleSandwich = ({navigation}) => {
+const FormulePanini = ({navigation}) => {
 
   const baseUrl = 'http://127.0.0.1:8080';
 
@@ -208,7 +208,7 @@ const FormuleSandwich = ({navigation}) => {
                 </TouchableOpacity>
         </View>
         <View style={{padding:30}}>
-            <Text style={style.title}>Sandwich</Text>
+            <Text style={style.title}>Paninis</Text>
             <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa sunt accusantium cum veniam sequi molestiae! Qui, perferendis ab magni enim veritatis
             oluptates, quis earum?</Text>
         </View>
@@ -409,4 +409,4 @@ const style = StyleSheet.create({
     },
   }
 )
-export default FormuleSandwich
+export default FormulePanini
