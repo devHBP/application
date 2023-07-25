@@ -132,7 +132,7 @@ const incrementhandler = async () => {
             offre && offre.startsWith('offre31') && (
               <Image
                 source={require('../assets/offre31.png')}
-                style={{ width: 40, resizeMode:'contain', position:'absolute',top:-5, right:5}}
+                style={{ width: 35,height:35,  resizeMode:'contain', position:'absolute',top:10, right:10}}
               />
             )
           }
