@@ -6,7 +6,7 @@ import {colors} from '../styles/styles'
 const PopUp = ({ onClose, title, text, image }) => {
 
     const images = {
-        offre31: require('../assets/offre31.png'),
+        sun: require('../assets/SUN.png'),
         halles: require('../assets/halles_solanid.png')
       };
   return (
@@ -19,7 +19,7 @@ const PopUp = ({ onClose, title, text, image }) => {
         <View style={{flexDirection:'column', alignItems:'center', justifyContent:'center', height:"80%", gap:30, marginTop:50}}>
             <Text>{title}</Text>
             <Text style={{textAlign:'justify'}}>{text}</Text>
-            <Image source={images[image]} style={{width: 150, height: 150}}/>  
+            <Image source={images[image]} style={{width: 250, height: 150}}/>  
         </View>
       
     </View>

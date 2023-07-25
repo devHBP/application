@@ -47,7 +47,7 @@ const LinkOffres = () => {
         </TouchableOpacity>
 
         {/* Offre 3+1 */}
-        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={() => handlePress({ title: popupData.title1, text: popupData.text1, image:popupData.image1 })}>
+        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} >
         <Image
                 source={require('../assets/Croissant_offre31.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
@@ -69,7 +69,7 @@ const LinkOffres = () => {
         </TouchableOpacity>
 
         {/* collaboration Les Halles Solanid */}
-        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={() => handlePress({ title: popupData.title2, text: popupData.text2, image:popupData.image2 })}>
+        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} >
         <Image
                 source={require('../assets/fond_halles.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
@@ -91,7 +91,7 @@ const LinkOffres = () => {
         </TouchableOpacity>
 
         {/* SUN */}
-        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={() => handlePress({ title: popupData.title1, text: popupData.text1, image:popupData.image1 })}>
         <Image
                 source={require('../assets/fond_halles.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
