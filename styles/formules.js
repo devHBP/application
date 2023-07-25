@@ -20,7 +20,7 @@ const style = StyleSheet.create({
     sandwichImage: {
         width: 150,
         height: 100,
-        borderRadius: 50,
+        borderRadius: 10,
     },
     menu:{
         height:85,
@@ -67,6 +67,14 @@ const style = StyleSheet.create({
       borderRadius: 8,
       backgroundColor: colors.color1,
     },
+
+    //page produit
+    texte_page_produit:{
+      color:colors.color1,
+      fontSize:15,
+      fontFamily:fonts.font2,
+      fontWeight:'400'
+    }
   }
 )
 
