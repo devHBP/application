@@ -1,8 +1,15 @@
 import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { styles} from '../styles/home'; 
+import { useNavigation } from '@react-navigation/native';
 
 const EnvieSalee = () => {
+
+    const navigation = useNavigation();
+
+    const openPageSandwich = () => {
+        navigation.navigate('sandwich')
+    }
   return (
     <View style={{marginLeft:30}}>
         <Text style={styles.text1formule}>Une petite envie <Text style={styles.text2formule}>Salée ? </Text></Text>
@@ -10,7 +17,7 @@ const EnvieSalee = () => {
         <ScrollView horizontal={true} style={{marginVertical:20}}>
 
             {/* Sandwichs */}
-            <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+            <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageSandwich}>
                     <Image
                             source={require('../assets/Formule36.jpg')} 
                             style={{ width: 200, height: 234, resizeMode:'cover' }}

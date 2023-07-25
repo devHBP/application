@@ -181,7 +181,9 @@ const styles = StyleSheet.create({
   titleFormule_envie:{
     fontSize:24,
     color:colors.color2,
-    textAlign:'center'
+    textAlign:'center',
+    fontFamily:fonts.font3,
+    fontWeight:'700'
   }
 
 });

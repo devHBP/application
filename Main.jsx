@@ -27,6 +27,7 @@ import FormuleBurger from './Screens/Formules/FormuleBurger'
 import FormuleCroques from './Screens/Formules/FormuleCroque'
 import FormulePanini from './Screens/Formules/FormulePanini'
 import FormuleQuiche from './Screens/Formules/FormuleQuiche'
+import PageSandwich from './Screens/PagesSalées/PageSandwich'
 
 
 const Main = () => {
@@ -62,6 +63,8 @@ const Main = () => {
                     <Stack.Screen name='formulecroque' component={FormuleCroques}/>
                     <Stack.Screen name='formulepanini' component={FormulePanini}/>
                     <Stack.Screen name='formulequiche' component={FormuleQuiche}/>
+                    {/* Pages salées */}
+                    <Stack.Screen name='sandwich' component={PageSandwich}/>
                 <Stack.Screen name='details' component={ProductDetails}/>
                 <Stack.Screen name='profile' component={Profile}/>
                 <Stack.Screen name='orders' component={Orders}/>
