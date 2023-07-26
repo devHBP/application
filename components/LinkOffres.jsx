@@ -1,10 +1,44 @@
 import { View, Text, TouchableOpacity, ScrollView , Modal, Image} from 'react-native'
-import React, { useState} from 'react'
+import React, { useState, useEffect} from 'react'
 import { styles} from '../styles/home'; 
 import PopUp from '../components/PopUp';
 import popupData from '../Datas/datas.json';
+import axios from 'axios'
 
 const LinkOffres = () => {
+
+    const [solanidProductNames, setSolanidProductNames] = useState([]);
+    const [offre31ProductNames, setoffre31ProductNames] = useState([])
+
+
+    useEffect(() => {
+        // Fonction pour récupérer les données de la base de données
+        const fetchData = async () => {
+          try {
+          const response = await axios.get('http://127.0.0.1:8080/getAllProducts');
+        
+          const updatedProducts = response.data.map((product) => ({
+            ...product,
+            qty: 0, 
+          }));
+
+        //produits offre 3+1
+        const productsOffre = updatedProducts.filter(product => product.offre && product.offre.startsWith("offre31"))
+        const productsOffreNames = productsOffre.map(product => product.libelle)
+        setoffre31ProductNames(productsOffreNames)
+       
+        // produits solanid
+        const solanidProducts = updatedProducts.filter(product => product.reference_fournisseur === "Solanid");
+        const solanidProductNames = solanidProducts.map(product => product.libelle);
+        setSolanidProductNames(solanidProductNames);
+        
+          
+          } catch (error) {
+            console.error('Une erreur s\'est produite, error products :', error);
+          }
+        };
+        fetchData(); // Appel de la fonction fetchData lors du montage du composant
+      }, []);
 
     const [modalVisible, setModalVisible] = useState(false);
     const [currentPopupData, setCurrentPopupData] = useState({});
@@ -16,6 +50,14 @@ const LinkOffres = () => {
       
       const handleClose = () => {
         setModalVisible(false);
+      }
+
+      const handleHallesSolanid = () => {
+        console.log(solanidProductNames)
+      }
+
+      const handleOffre31 = () => {
+        console.log(offre31ProductNames)
       }
   return (
     <View >
@@ -47,7 +89,7 @@ const LinkOffres = () => {
         </TouchableOpacity>
 
         {/* Offre 3+1 */}
-        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} >
+        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={handleOffre31}>
         <Image
                 source={require('../assets/Croissant_offre31.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
@@ -69,7 +111,7 @@ const LinkOffres = () => {
         </TouchableOpacity>
 
         {/* collaboration Les Halles Solanid */}
-        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} >
+        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={handleHallesSolanid}>
         <Image
                 source={require('../assets/fond_halles.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
