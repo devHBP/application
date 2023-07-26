@@ -87,7 +87,7 @@ const Home =  ({navigation}) => {
         ...product,
         qty: 0, 
       }));
-      //console.log('all products', updatedProducts)
+      console.log('all products', updatedProducts)
       setProducts(updatedProducts);
       setCategories([...new Set(updatedProducts.map((product) => product.categorie)), 'Tous']);
       //setCategories(updatedProducts.map((product) => product.categorie));
@@ -400,14 +400,14 @@ const toggleVisibility = () => {
           categories.map((item, index) => (
             <Pressable title="button" 
               style={{...styles.btn_categorie, 
-              backgroundColor: item === selectedCategory ? colors.color2 : 'white', 
+              backgroundColor: item === (selectedCategory || 'Tous') ? colors.color2 : 'white', 
              
             }}
               key={index}
               onPress={() => categoryButtonHandler(item)}
             >
               <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight:'600',
-                color: item ===selectedCategory ? 'white' : colors.color1
+                color: item === (selectedCategory || 'Tous') ? 'white' : colors.color1
                 }}>{item}</Text>
             </Pressable>
           ))
@@ -422,7 +422,7 @@ const toggleVisibility = () => {
           {/* <View style={style.cardScrollview}> */}
           
             {sortedCategories
-              .filter(category => category === 'Baguettes')
+              .filter(category => category === 'baguettes')
               .map((category) => (
               <React.Fragment key={category}>
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -460,7 +460,7 @@ const toggleVisibility = () => {
           {/* </View > */}
 
             {sortedCategories
-              .filter(category => category ===  'Viennoiseries')
+              .filter(category => category ===  'viennoiseries')
               .map((category) => (
               <React.Fragment key={category}>
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -504,7 +504,7 @@ const toggleVisibility = () => {
 
             {/* patisseries */}
             {sortedCategories
-              .filter(category => category ===  'Pâtisseries')
+              .filter(category => category ===  'pâtisseries')
               .map((category) => (
               <React.Fragment key={category}>
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -540,7 +540,7 @@ const toggleVisibility = () => {
 
             {/* pains speciaux */}
             {sortedCategories
-              .filter(category => category ===  'Boules et Pains spéciaux')
+              .filter(category => category ===  'boules et pains speciaux')
               .map((category) => (
               <React.Fragment key={category}>
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -580,7 +580,7 @@ const toggleVisibility = () => {
 
             {/* boissons */}
             {sortedCategories
-              .filter(category => category ===  'Boissons')
+              .filter(category => category ===  'boissons')
               .map((category) => (
               <React.Fragment key={category}>
                 <Text style={styles.categoryTitle}>{category}</Text>
