@@ -15,6 +15,7 @@ import { styles, pickerSelectStyles } from '../styles/home';
 import { SearchBar } from 'react-native-elements';
 
 import FormulesSalees from '../components/FormulesSalees';
+import FormulesPetitDejeuner from '../components/FormulesPetitDejeuner';
 import LinkOffres from '../components/LinkOffres';
 import EnvieSalee from '../components/EnvieSalee';
 
@@ -87,7 +88,7 @@ const Home =  ({navigation}) => {
         ...product,
         qty: 0, 
       }));
-      console.log('all products', updatedProducts)
+      //console.log('all products', updatedProducts)
       setProducts(updatedProducts);
       setCategories([...new Set(updatedProducts.map((product) => product.categorie)), 'Tous']);
       //setCategories(updatedProducts.map((product) => product.categorie));
@@ -576,7 +577,7 @@ const toggleVisibility = () => {
 
 
             {/* formules petits dejeuners */}
-
+            <FormulesPetitDejeuner />
 
             {/* boissons */}
             {sortedCategories

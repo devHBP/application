@@ -28,6 +28,9 @@ import FormuleCroques from './Screens/Formules/FormuleCroque'
 import FormulePanini from './Screens/Formules/FormulePanini'
 import FormuleQuiche from './Screens/Formules/FormuleQuiche'
 import PageSandwich from './Screens/PagesSalées/PageSandwich'
+import FormuleArtisan from './Screens/Formules/FormuleArtisan'
+import FormulePetitDejeuner from './Screens/Formules/FormulePetitDejeuner'
+import FormulePetitDejeunerGourmand from './Screens/Formules/FormulePetitDejeunerGourmand'
 
 
 const Main = () => {
@@ -65,6 +68,10 @@ const Main = () => {
                     <Stack.Screen name='formulequiche' component={FormuleQuiche}/>
                     {/* Pages salées */}
                     <Stack.Screen name='sandwich' component={PageSandwich}/>
+                    {/* Formules petit dejeuner */}
+                    <Stack.Screen name='artisan' component={FormuleArtisan}/>
+                    <Stack.Screen name='petitdej' component={FormulePetitDejeuner}/>
+                    <Stack.Screen name='petitdejgourmand' component={FormulePetitDejeunerGourmand}/>
                 <Stack.Screen name='details' component={ProductDetails}/>
                 <Stack.Screen name='profile' component={Profile}/>
                 <Stack.Screen name='orders' component={Orders}/>
