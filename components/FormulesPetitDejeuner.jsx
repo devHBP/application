@@ -59,7 +59,7 @@ const FormulesSalees = () => {
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Petit déjeuner gourmand</Text>
-                        <Text style={styles.textFormule}>Une viennoiserie, un jus d'orange et une boisson gourmande</Text>
+                        <Text style={styles.textFormule} numberOfLines={2}>Une viennoiserie, un jus d'orange et une boisson gourmande</Text>
                     </View>
                 </TouchableOpacity>
                     

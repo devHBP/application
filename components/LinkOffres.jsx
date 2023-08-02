@@ -68,8 +68,8 @@ const LinkOffres = () => {
 
         <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
         <Image
-                source={require('../assets/Formule36.jpg')} 
-                style={{ width: 315, height: 200, resizeMode:'center', borderTopLeftRadius:10, borderTopRightRadius:10 }}
+                source={require('../assets/antigaspi.jpg')} 
+                style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
                 />
         <View style={styles.container_offre_antigaspi}>
             <View style={styles.text_antigaspi}>

@@ -23,7 +23,7 @@ const EnvieSalee = () => {
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
                             />
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule_envie}>Sandwich</Text>
+                        <Text style={styles.titleFormule_envie}>Sandwichs</Text>
                     </View>
             </TouchableOpacity>
 

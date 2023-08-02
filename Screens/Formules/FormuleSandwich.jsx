@@ -54,7 +54,7 @@ const FormuleSandwich = ({navigation}) => {
         //les desserts - par id
         const getOneProduct = async () => {
             try {
-                const productIds = [10, 15];
+                const productIds = [];
                 const productPromises = productIds.map((productId) => fetchOneProduct(productId));
                 const desserts = await Promise.all(productPromises);
                 //console.log(desserts)
@@ -86,7 +86,7 @@ const FormuleSandwich = ({navigation}) => {
        //les boissons - par id
        const fetchBoissons = async () => {
         try {
-            const productIds = [16, 17]; 
+            const productIds = []; 
             const productPromises = productIds.map((productId) => fetchOneProduct(productId));
             const boissons = await Promise.all(productPromises);
             //console.log(desserts)
