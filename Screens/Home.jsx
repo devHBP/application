@@ -1,7 +1,7 @@
 import {View, Text, Pressable, ScrollView , TouchableOpacity, Image } from 'react-native'
 import  Picker  from 'react-native-picker-select';
 import { fonts, colors} from '../styles/styles'
-import React, {useState, useEffect,  createRef  } from 'react'
+import React, {useState, useEffect,  createRef, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { updateSelectedStore, updateUser} from '../reducers/authSlice';
 import { addDate, addTime} from '../reducers/cartSlice';
@@ -18,8 +18,8 @@ import FormulesSalees from '../components/FormulesSalees';
 import FormulesPetitDejeuner from '../components/FormulesPetitDejeuner';
 import LinkOffres from '../components/LinkOffres';
 import EnvieSalee from '../components/EnvieSalee';
-
-
+import Catalogue from '../components/Catalogue';
+import StorePicker from '../components/StorePicker';
 
 const Home =  ({navigation}) => {
 
@@ -30,24 +30,26 @@ const Home =  ({navigation}) => {
   const [stores, setStores] = useState([]);
   const [role, setRole] = useState('');
   const [ selectedCategory, setSelectedCategory] = useState(null)
+  const [ selectedOnglet, setSelectedOnglet] = useState(null)
   const [ products, setProducts] = useState([])
   const [ categories, setCategories] = useState([])
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredProducts, setFilteredProducts] = useState(products); // Replace 'products' with your actual product data
+  const [filteredProducts, setFilteredProducts] = useState(products); 
   const [ visible, setVisible] = useState(false)
   
   const dateRedux = useSelector((state) => state.cart.date)
   const timeRedux = useSelector((state) => state.cart.time)
   const user = useSelector((state) => state.auth.user);
   const cart = useSelector((state) => state.cart.cart);
+
   const totalPrice = Number((cart.reduce((total, item) => {
     const prix = item.prix || item.prix_unitaire; 
     return total + item.qty * prix;
   }, 0)).toFixed(2));
-  const selectedStore = useSelector((state) => state.auth.selectedStore);
 
   const dispatch = useDispatch();
   const scrollViewRef = createRef();
+  
 
   const allStores = async () => {
     try {
@@ -111,7 +113,7 @@ const Home =  ({navigation}) => {
       setSelectedCategory(categorie)
     }
   }
- 
+
   //date formatée ou pas ? 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -123,13 +125,13 @@ const Home =  ({navigation}) => {
     //const seconds = date.getSeconds().toString().padStart(2, '0');
     //return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
     
-    //return `${year}-${month}-${day}`;
+    return `${year}-${month}-${day}`;
     //test pour affichage dans le picker
-    return `${day}-${month}-${year}`;
+    //return `${day}-${month}-${year}`;
 
     //attention ici au format de la date - a bien verifier dans le order_ctrl (moment.js)
-
   };
+
   // heure non formaté pour l'instant - inutile pour les collaborateurs
   const formatTime = (dateString) => {
     const time = new Date(dateString);
@@ -188,12 +190,30 @@ const toggleVisibility = () => {
   setVisible(!visible)
 }
 
-// //open Formule Sandwich
-// const openFormuleSandwich = () => {
-//   navigation.navigate('formulesandwich')
-// }
+const ongletPositions = {
+  'Promos': 250,
+  'Baguettes': 600,
+  'Viennoieries': 830,
+  'Formules': 1120,
+  'Produits salés': 1460,
+  'Pâtisseries': 1850,
+  'Pains spéciaux': 2100,
+  'Petits déjeuners': 2350,
+  'Boissons': 2700,
+  'Tarterie': 2960,
+};
 
+const onglets = Object.keys(ongletPositions);
+const ongletButtonHandler = (onglet) => {
+  setSelectedOnglet(onglet)
+  // Obtenir la position Y pour l'onglet sélectionné
+  const positionY = ongletPositions[onglet];
 
+  // Faire défiler jusqu'à la position Y
+  if (scrollViewRef.current) {
+    scrollViewRef.current.scrollTo({ x: 0, y: positionY, animated: true });
+  }
+}
 
   return (
     <>
@@ -206,10 +226,10 @@ const toggleVisibility = () => {
         <View style={{flexDirection:'row'}}>
         {
           user && 
-          <View style={{padding:30, flexDirection:'row', alignItems:'center', justifyContent:'center', gap:10}}>
+          <View style={{paddingVertical:20, flexDirection:'row', alignItems:'center', justifyContent:'center', width:"100%"}}>
             <View >
-              <Text style={{fontFamily:fonts.font1, fontSize:32, color:colors.color1}}>Bonjour </Text>
-              <Text style={{fontSize:18, fontFamily:fonts.font2, color:colors.color1}}>{user.firstname}</Text>
+              <Text style={{fontFamily:fonts.font1, fontSize:32, color:colors.color1, paddingLeft:50}}>Bonjour </Text>
+              <Text style={{fontSize:18, fontFamily:fonts.font2, color:colors.color1, paddingLeft:50}}>{user.firstname}</Text>
             </View>
               
                {/* SearchBar */}
@@ -219,8 +239,9 @@ const toggleVisibility = () => {
               value={searchQuery}
               containerStyle={styles.searchBarContainer}
               inputContainerStyle={styles.searchBarInputContainer}
-              inputStyle={{fontSize:16, }}
+              inputStyle={{fontSize:12, }}
               placeholderTextColor={colors.color2}
+              searchIcon={{ size: 20, color: colors.color2, margin:0 }} 
             />
           </View>
         }
@@ -230,63 +251,16 @@ const toggleVisibility = () => {
       {/* test bandeau header */}
       <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:20}}>
           <View style={{ flexDirection:'row', gap:5, alignItems:'center', }}>
-              <Image
-                  source={require('../assets/store.png')} 
-                  style={{ width: 24, height: 25, resizeMode:'contain' }}
-                />
-            <View>   
-              <Picker
-                  placeholder={{
-                      label: "Choisissez un magasin"
-                    }}
-                  value={selectedStore.nom_magasin}
-                  onValueChange={(value) => {
-                    const selected = stores.find((store) => store.nom_magasin === value);
-
-                    if (selected) {
-                      dispatch(updateSelectedStore(selected));
-                    // dispatch(updateUser({ ...user, id_magasin: selected.id_magasin }));
-                    dispatch(updateUser({ ...user, storeId: selected.storeId }));
-
-                    axios.put(`http://127.0.0.1:8080/updateOneUser/${user.userId}`, {storeId: selected.storeId})
-                    .then(response => {
-                      // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
-                      // console.log(response.data)
-                    })
-                    .catch(error => {
-                      console.error('Erreur lors de la mise à jour du choix du magasin dans la base de données (ici) - erreur ici:', error);
-                    });
-                  }
-                else {
-                  console.log('pas de magasin selectionné encore')
-                }}
-                }
-                  items={stores.map((store) => ({
-                    label: store.nom_magasin,
-                    value: store.nom_magasin,
-                  }))}
-                  style={pickerSelectStyles}
-                /> 
-                {
-                  <View style={{flexDirection:'row'}}>
-                  
-                    <View >
-                      <Text style={{fontSize:12}}>
-                        {selectedStore.adresse_magasin}   
-                      </Text>
-                      <Text  style={{fontSize:12}}>{selectedStore.cp_magasin} {selectedStore.ville_magasin}</Text>
-                    </View>
-                    
-                  </View>  
-                }
+              
+            <View>     
+            <StorePicker />
+            </View> 
 
           </View>
-          </View>
 
-
-          <View >
+        <View >
           
-       {/* // Selection Jour  */}
+          {/* // Selection Jour  */}
          <TouchableOpacity onPress={() => setOpenDate(true)}  style={styles.bordersPicker}>
          {/* <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text>  */}
             <Text>
@@ -394,7 +368,7 @@ const toggleVisibility = () => {
       </View>
 
       {/* categories */}
-      <View style={styles.categories} >
+      {/* <View style={styles.categories} >
         
         <ScrollView horizontal showsHorizontalScrollIndicator={false} >
         {
@@ -410,6 +384,39 @@ const toggleVisibility = () => {
               <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight:'600',
                 color: item === (selectedCategory || 'Tous') ? 'white' : colors.color1
                 }}>{item}</Text>
+            </Pressable>
+          ))
+        }
+        </ScrollView>
+      </View> */}
+
+      {/* onglet ancres */}
+      <View style={styles.categories} >
+
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} >
+        {
+          onglets.map((item, index) => (
+            <Pressable title="button" 
+              style={{...styles.btn_categorie, 
+                backgroundColor: item === 'Promos' ? colors.color2 : 'white', 
+             
+            }}
+              key={index}
+              onPress={() => ongletButtonHandler(item)}
+            >
+              <View style={{flexDirection:'row', alignItems:'center', gap:6}}>
+                <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight:'600',
+                   color: item === 'Promos' ? 'white' : colors.color1, 
+                  }}>{item}</Text>
+                  
+                 {item === 'Promos' && <Image
+                    source={require('../assets/promos.png')} 
+                    style={{ width: 15, height: 15, resizeMode:'cover' }}
+                   
+                />}
+                 
+              </View>
+              
             </Pressable>
           ))
         }
@@ -615,6 +622,8 @@ const toggleVisibility = () => {
               </React.Fragment>
             ))}
 
+            {/* catalogue */}
+            <Catalogue />
 
           <TouchableOpacity onPress={scrollToTop} >
              <Icon name="arrow-upward" size={30} style={styles.scrollTop}   />
