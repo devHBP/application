@@ -38,7 +38,7 @@ const FormuleSalade = ({navigation}) => {
         //les sandwichs - categorie
         const fetchProducts = async () => {
           try {
-            const category = 'Sandwichs'; 
+            const category = 'Salades'; 
             const products = await getProductsByCategory(category);
             // products.forEach((product) => {
             //     console.log(product.libelle, product.prix_unitaire);
@@ -54,7 +54,7 @@ const FormuleSalade = ({navigation}) => {
         //les desserts - par id
         const getOneProduct = async () => {
             try {
-                const productIds = [10, 15];
+                const productIds = [];
                 const productPromises = productIds.map((productId) => fetchOneProduct(productId));
                 const desserts = await Promise.all(productPromises);
                 //console.log(desserts)
@@ -86,7 +86,7 @@ const FormuleSalade = ({navigation}) => {
        //les boissons - par id
        const fetchBoissons = async () => {
         try {
-            const productIds = [16, 17]; 
+            const productIds = []; 
             const productPromises = productIds.map((productId) => fetchOneProduct(productId));
             const boissons = await Promise.all(productPromises);
             //console.log(desserts)
@@ -186,7 +186,7 @@ const FormuleSalade = ({navigation}) => {
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
         libelle:"Formule Sandwich",
-        formuleImage: require('../../assets/Formule36.jpg'),
+        formuleImage: require('../../assets/Formule25.jpg'),
         productIds: productIds,
         qty: 1,
       }
@@ -200,7 +200,7 @@ const FormuleSalade = ({navigation}) => {
       <ScrollView>
         <View>
             <Image
-                    source={require('../../assets/Formule36.jpg')} 
+                    source={require('../../assets/Formule25.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
 
@@ -213,9 +213,9 @@ const FormuleSalade = ({navigation}) => {
             <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa sunt accusantium cum veniam sequi molestiae! Qui, perferendis ab magni enim veritatis
             oluptates, quis earum?</Text>
         </View>
-        {/* choix sandwich */}
+        {/* choix salade */}
         <View>
-            <Text style={style.choixTitle}>Votre choix de sandwich</Text>
+            <Text style={style.choixTitle}>Votre choix de salade</Text>
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {products.map((product) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>

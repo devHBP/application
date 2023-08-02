@@ -4,8 +4,11 @@ import { styles} from '../styles/home';
 import PopUp from '../components/PopUp';
 import popupData from '../Datas/datas.json';
 import axios from 'axios'
+import { useNavigation } from '@react-navigation/native';
 
-const LinkOffres = () => {
+const LinkOffres = ({}) => {
+
+    const navigation = useNavigation();
 
     const [solanidProductNames, setSolanidProductNames] = useState([]);
     const [offre31ProductNames, setoffre31ProductNames] = useState([])
@@ -23,7 +26,7 @@ const LinkOffres = () => {
           }));
 
         //produits offre 3+1
-        const productsOffre = updatedProducts.filter(product => product.offre && product.offre.startsWith("offre31"))
+        const productsOffre = updatedProducts.filter(product => product.offre && product.offre.startsWith("offre31_"))
         const productsOffreNames = productsOffre.map(product => product.libelle)
         setoffre31ProductNames(productsOffreNames)
        
@@ -54,10 +57,12 @@ const LinkOffres = () => {
 
       const handleHallesSolanid = () => {
         console.log(solanidProductNames)
+        navigation.navigate('solanid')
       }
 
       const handleOffre31 = () => {
         console.log(offre31ProductNames)
+        navigation.navigate('offre31')
       }
   return (
     <View >

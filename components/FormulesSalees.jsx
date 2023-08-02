@@ -48,13 +48,18 @@ const FormulesSalees = () => {
                 {/* Poke Bowl */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePoke} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/Formule26.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
+                            />
+                   <Image
+                            source={require('../assets/halles_solanid.png')} 
+                            style={styles.pastilleSolanid}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Poké Bowl</Text>
                         <Text style={styles.textFormule}>Une salade, un dessert et une boisson</Text>
                     </View>
+                    
                 </TouchableOpacity>
 
                 {/* Sandwich */}
@@ -72,7 +77,7 @@ const FormulesSalees = () => {
                 {/* Salades*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSalade} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/Formule25.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>

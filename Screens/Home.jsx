@@ -430,7 +430,7 @@ const ongletButtonHandler = (onglet) => {
           {/* <View style={style.cardScrollview}> */}
           
             {sortedCategories
-              .filter(category => category === 'baguettes')
+              .filter(category => category === 'Baguettes')
               .map((category) => (
               <React.Fragment key={category}>
                 <Text style={styles.categoryTitle}>{category}</Text>
