@@ -31,6 +31,8 @@ import PageSandwich from './Screens/PagesSalees/PageSandwich'
 import FormuleArtisan from './Screens/Formules/FormuleArtisan'
 import FormulePetitDejeuner from './Screens/Formules/FormulePetitDejeuner'
 import FormulePetitDejeunerGourmand from './Screens/Formules/FormulePetitDejeunerGourmand'
+import Offre31 from './Screens/Offre31'
+import Solanid from './Screens/Solanid'
 
 
 const Main = () => {
@@ -72,6 +74,9 @@ const Main = () => {
                     <Stack.Screen name='artisan' component={FormuleArtisan}/>
                     <Stack.Screen name='petitdej' component={FormulePetitDejeuner}/>
                     <Stack.Screen name='petitdejgourmand' component={FormulePetitDejeunerGourmand}/>
+                    {/* Link Offres */}
+                    <Stack.Screen name='offre31' component={Offre31}/>
+                    <Stack.Screen name='solanid' component={Solanid}/>
                 <Stack.Screen name='details' component={ProductDetails}/>
                 <Stack.Screen name='profile' component={Profile}/>
                 <Stack.Screen name='orders' component={Orders}/>
