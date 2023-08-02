@@ -145,7 +145,7 @@ useEffect(() => {
             try {
               const response =  await axios.post('http://localhost:8080/createorder', orderData);
               const numero_commande = response.data.numero_commande
-             
+             console.log('num', response)
               dispatch(setNumeroCommande(numero_commande));
 
               setOrderInfo({
