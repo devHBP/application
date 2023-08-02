@@ -35,7 +35,8 @@ const style = StyleSheet.create({
         borderTopRightRadius:10,
         flexDirection:'row',
         alignItems:'center',
-        justifyContent:'space-between'
+        justifyContent:'space-between',
+        marginBottom:65
     },
     disabledCheckBox: {
       opacity: 0.2, 

@@ -185,8 +185,29 @@ const styles = StyleSheet.create({
     textAlign:'center',
     fontFamily:fonts.font3,
     fontWeight:'700'
+  },
+  pastilleSolanid:{
+    position:'absolute',
+    width:50,
+    height:50,
+    top:10,
+    right:10, 
+    transform: [{rotate: '28deg'}]
+  },
+  pastilleOffre31:{
+    width: 150, 
+    height: 150, 
+    resizeMode:'cover',
+    transform: [{rotate: '28deg'}],
+    position:'absolute',
+    bottom:-40,
+    right:5
+  },
+  texteOffre:{
+    fontSize:15,
+    color:colors.color1,
+    fontFamily:fonts.font2
   }
-
 });
 
 const pickerSelectStyles = StyleSheet.create({
