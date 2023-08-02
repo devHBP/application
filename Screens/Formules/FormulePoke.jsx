@@ -9,6 +9,7 @@ import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
+import FooterProfile from '../../components/FooterProfile';
 
 const FormulePoke = ({navigation}) => {
 
@@ -38,7 +39,7 @@ const FormulePoke = ({navigation}) => {
         //les sandwichs - categorie
         const fetchProducts = async () => {
           try {
-            const category = 'Sandwichs'; 
+            const category = 'Poke Bowls'; 
             const products = await getProductsByCategory(category);
             // products.forEach((product) => {
             //     console.log(product.libelle, product.prix_unitaire);
@@ -54,7 +55,7 @@ const FormulePoke = ({navigation}) => {
         //les desserts - par id
         const getOneProduct = async () => {
             try {
-                const productIds = [10, 15];
+                const productIds = [];
                 const productPromises = productIds.map((productId) => fetchOneProduct(productId));
                 const desserts = await Promise.all(productPromises);
                 //console.log(desserts)
@@ -86,7 +87,7 @@ const FormulePoke = ({navigation}) => {
        //les boissons - par id
        const fetchBoissons = async () => {
         try {
-            const productIds = [16, 17]; 
+            const productIds = []; 
             const productPromises = productIds.map((productId) => fetchOneProduct(productId));
             const boissons = await Promise.all(productPromises);
             //console.log(desserts)
@@ -186,7 +187,7 @@ const FormulePoke = ({navigation}) => {
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
         libelle:"Formule Sandwich",
-        formuleImage: require('../../assets/Formule36.jpg'),
+        formuleImage: require('../../assets/Formule26.jpg'),
         productIds: productIds,
         qty: 1,
       }
@@ -200,7 +201,7 @@ const FormulePoke = ({navigation}) => {
       <ScrollView>
         <View>
             <Image
-                    source={require('../../assets/Formule36.jpg')} 
+                    source={require('../../assets/Formule26.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
 
@@ -215,7 +216,7 @@ const FormulePoke = ({navigation}) => {
         </View>
         {/* choix sandwich */}
         <View>
-            <Text style={style.choixTitle}>Votre choix de sandwich</Text>
+            <Text style={style.choixTitle}>Votre choix de Poke Bowl</Text>
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {products.map((product) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
@@ -339,6 +340,7 @@ const FormulePoke = ({navigation}) => {
                 onPress={handleFormuleSelection}
                 >Choisir cette formule</Button>
     </View>
+    <FooterProfile />
     </View> 
   )
 }
