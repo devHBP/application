@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderTopWidth: 0,
     borderBottomWidth: 0,
-    width: "60%",
+    width: "55%",
     paddingHorizontal: 0,
     marginHorizontal: 0
   },
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
     color:colors.color1,
     fontSize:14,
     fontWeight: 500,
+    width:250
   },
   cardTitle:{
     backgroundColor:'white',
