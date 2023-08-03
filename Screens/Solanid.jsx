@@ -9,8 +9,9 @@ import { useSelector, useDispatch } from 'react-redux'
 import { style } from '../styles/formules'; 
 import { styles } from '../styles/home'; 
 import axios from 'axios'
-import { getFamilyProductDetails } from '../CallApi/api';
+import { getFamilyProductDetails, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
+import { setProductIds } from '../reducers/orderSlice';
 
 
 const Solanid = ({navigation}) => {
@@ -31,7 +32,7 @@ const Solanid = ({navigation}) => {
     const handleBack = () => {
         navigation.navigate('home')
       }
-
+    
       useEffect(() => {
         //les produits ayant une offre 3+1
         const fetchData = async () => {
@@ -47,7 +48,7 @@ const Solanid = ({navigation}) => {
           //produits offre 3+1
           const solanidProducts = updatedProducts.filter(product => product.reference_fournisseur === "Solanid");
           const solanidProductNames = solanidProducts.map(product => product.libelle)
-          console.log(solanidProductNames)
+          //console.log(solanidProductNames)
 
     
           setSolanidProductNames(solanidProducts)
@@ -67,7 +68,7 @@ const Solanid = ({navigation}) => {
               const responses = await Promise.all(
                 familyProductIds.map((id) => getFamilyProductDetails(id))
               );
-              console.log('responses', responses)
+              //console.log('responses', responses)
               const familleProductDetailsMap = {};
               responses.forEach((famille) => {
                 if (famille) {
@@ -91,19 +92,41 @@ const Solanid = ({navigation}) => {
         setSelectedProduct(product)
     }
 
-    const handleCart = () => {
-        if (selectedProduct) {
-            dispatch(addToCart(selectedProduct));
+    const handleCart = async () => {
+      try{
+        const productStock = await checkStockForSingleProduct(selectedProduct.productId);
+        const cartQty = cart.reduce((sum, cartItem) => {
+          return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
+        }, 0);
+        console.log('qty in cart', cartQty)
+        const remainingStock = productStock[0]?.quantite - cartQty || 0;
+
+        console.log('remain', remainingStock)
+        if ( remainingStock > 0) {
+           
+            dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire, qty: 1 , offre: selectedProduct.offre}));
+           
             Toast.show({
               type: 'success',
-              position: 'bottom',
               text1: 'Produit ajouté au panier',
-              visibilityTime: 4000,
-              autoHide: true,
-              topOffset: 30,
-              bottomOffset: 40,
             });
-    }
+            
+          }else {
+            Toast.show({
+              type: 'error',
+              position: 'bottom',
+              text1: 'Victime de son succès',
+              text2: `Quantité maximale: ${productStock[0].quantite}`,
+              
+            });
+          } 
+          
+         
+      }  catch (error) {
+        console.error("Une erreur s'est produite lors de la vérification du stock :", error);
+      
+      }  
+    
 }   
   return (
     <View style={{flex:1}}>
@@ -115,7 +138,7 @@ const Solanid = ({navigation}) => {
                 />
             <Image
                 source={require('../assets/halles_solanid.png')} 
-                style={ styles.pastilleOffre31}
+                style={{ ...styles.pastilleOffre31, transform: [{rotate: '15deg'}]}}
                 />
             <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'white', borderRadius:25}}>
                     <Icon name="keyboard-arrow-left" size={40} color="#000" style={{}}  />
