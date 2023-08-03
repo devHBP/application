@@ -7,19 +7,21 @@ import { fonts, colors} from '../../styles/styles'
 import { Button} from 'react-native-paper'
 import { useDispatch, useSelector } from 'react-redux';
 import FooterProfile from '../../components/FooterProfile';
-import { addToCart } from '../../reducers/cartSlice';
-
+import { addToCart, decrementOrRemoveFromCart } from '../../reducers/cartSlice';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 
 //fonctions
-import { decrementhandler } from '../../Fonctions/fonctions'
+// import { decrementhandler } from '../../Fonctions/fonctions'
 
 const PageSandwich = ({navigation}) => {
 
     const [sandwichs, setSandwichs] = useState([]); // Ajoutez cette ligne
     const [selectedSandwich, setSelectedSandwich] = useState(null); // Nouvel état pour le sandwich sélectionné
     const [stock, setStock] = useState([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+
 
     const dispatch = useDispatch();
 
@@ -30,6 +32,11 @@ const PageSandwich = ({navigation}) => {
       const productInCart = cart.find(item => item.productId === productId);
       return productInCart ? productInCart.qty : 0;
     };
+
+    useEffect(() => {
+      const totalPrice = sandwichs.reduce((acc, product) => acc + (product.qty * product.prix_unitaire), 0);
+      setTotalPrice(totalPrice);
+    }, [sandwichs]);
 
     useEffect(() => {
       const fetchStock = async () => {
@@ -152,6 +159,28 @@ const PageSandwich = ({navigation}) => {
       }
     };
 
+    const decrementhandler = async (productId) => {
+      const product = sandwichs.find(p => p.productId === productId);
+      if (!product) {
+        console.error(`Product with ID ${productId} not found.`);
+        return;
+      }
+  
+      if (product.qty <= 0) {
+        console.error(`Product with ID ${productId} already has a quantity of 0.`);
+        return;
+      }
+  
+      dispatch(decrementOrRemoveFromCart({ productId: product.productId}));
+  
+      setSandwichs((prevSandwichs) =>
+        prevSandwichs.map((product) =>
+          product.productId === productId ? { ...product, qty: product.qty - 1 } : product
+        )
+      );
+     
+  };
+
     const openFormuleSandwich = () => {
       navigation.navigate('formulesandwich')
   }
@@ -191,7 +220,7 @@ const PageSandwich = ({navigation}) => {
                     {/* rajouter increment / decrement */}
                     <View style={styles.qtyContainer}>
                     <TouchableOpacity
-                        onPress={() => decrementhandler(product.productId, dispatch)}
+                        onPress={() => decrementhandler(product.productId)}
                         style={styles.decrement}
                     >
                         <Icon name="remove" size={14} color="#000" />
@@ -284,13 +313,13 @@ const PageSandwich = ({navigation}) => {
                 <View>
                 <View style={style.bandeauFormule}>
                 <Text style={{ fontWeight:'bold'}}>Prix du produit</Text>
-                {selectedSandwich && typeof prix === 'number' && <Text>{prix.toFixed(2)} €</Text>}
+               <Text>{totalPrice.toFixed(2)} €</Text>
                 </View>
                 <View style={style.bandeauFormule}>
                     <View style={{flexDirection:'row'}}>
                     <Text>Avec</Text><Image source={require('../../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
                     </View>
-                {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:'bold'}}>{(prix*0.8).toFixed(2)} €</Text>}
+               <Text style={{color:colors.color2, fontWeight:'bold'}}>{(totalPrice*0.8).toFixed(2)}€</Text>
                 </View>
                 </View>
             <Button
