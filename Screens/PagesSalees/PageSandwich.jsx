@@ -5,12 +5,39 @@ import { style } from '../../styles/formules';
 import axios from 'axios'
 import { fonts, colors} from '../../styles/styles'
 import { Button} from 'react-native-paper'
+import { useDispatch, useSelector } from 'react-redux';
 import FooterProfile from '../../components/FooterProfile';
+import { addToCart } from '../../reducers/cartSlice';
+
+//call API
+import { checkStockForSingleProduct } from '../../CallApi/api.js';
 
 const PageSandwich = ({navigation}) => {
 
     const [sandwichs, setSandwichs] = useState([]); // Ajoutez cette ligne
     const [selectedSandwich, setSelectedSandwich] = useState(null); // Nouvel état pour le sandwich sélectionné
+    const [stock, setStock] = useState([]);
+
+    const dispatch = useDispatch();
+
+    const cart = useSelector(state => state.cart);
+
+    useEffect(() => {
+      const fetchStock = async () => {
+        const updatedStock = []; 
+
+        for (const product of sandwichs) {
+          const productStock = await checkStockForSingleProduct(product.productId); 
+        }
+
+        setStock(updatedStock);
+        console.log(updatedStock)
+      };
+
+      if (sandwichs.length > 0) {
+        fetchStock();
+      }
+    }, [sandwichs]);
 
 
     const handleBack = () => {
@@ -31,7 +58,7 @@ const PageSandwich = ({navigation}) => {
         const sandwichs = updatedProducts.filter(product => product.categorie === "Sandwichs");
         //const sandwichsProduct = sandwichs.map(product => product.libelle);
         setSandwichs(sandwichs)
-        console.log(sandwichs)
+        //console.log(sandwichs)
         
           
           } catch (error) {
@@ -47,9 +74,12 @@ const PageSandwich = ({navigation}) => {
     }
 
     //increment
-    const increment = () => {
-      console.log('plus')
-    }
+    const incrementHandler = async (product) => {
+      const {id, libelle, image, prix, offre} = product; // Déstructurez le produit
+      console.log(product)
+     
+    
+    };
 
     const openFormuleSandwich = () => {
       navigation.navigate('formulesandwich')
@@ -93,10 +123,10 @@ const PageSandwich = ({navigation}) => {
                         <Icon name="remove" size={14} color="#000" />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.qtyText}>
-                      <Text>Q</Text>
+                      <Text>{product.qty}</Text>
                   </TouchableOpacity>          
                     <TouchableOpacity
-                        onPress={increment}
+                        onPress={() => incrementHandler(product)}
                         style={styles.increment}
                     >
                         <Icon name="add" size={14}  color="white" />
