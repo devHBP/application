@@ -12,6 +12,9 @@ import { addToCart } from '../../reducers/cartSlice';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 
+//fonctions
+import { decrementhandler } from '../../Fonctions/fonctions'
+
 const PageSandwich = ({navigation}) => {
 
     const [sandwichs, setSandwichs] = useState([]); // Ajoutez cette ligne
@@ -20,18 +23,29 @@ const PageSandwich = ({navigation}) => {
 
     const dispatch = useDispatch();
 
-    const cart = useSelector(state => state.cart);
+    const cart = useSelector(state => state.cart.cart);
+    console.log(cart)
+    
+    const getProductQtyInCart = (productId) => {
+      const productInCart = cart.find(item => item.productId === productId);
+      return productInCart ? productInCart.qty : 0;
+    };
 
     useEffect(() => {
       const fetchStock = async () => {
         const updatedStock = []; 
 
         for (const product of sandwichs) {
-          const productStock = await checkStockForSingleProduct(product.productId); 
+
+          //sous forme d'un seul tableau
+          //[{"productId": 45, "quantite": 50}, {"productId": 46, "quantite": 30}, {"productId": 47, "quantite": 30}, {"productId": 48, "quantite": 30}, 
+          //{"productId": 49, "quantite": 30}, {"productId": 50, "quantite": 30}, {"productId": 51, "quantite": 30}]
+          const [productStock] = await checkStockForSingleProduct(product.productId); 
+          updatedStock.push(productStock); 
         }
 
         setStock(updatedStock);
-        console.log(updatedStock)
+        //console.log('stock', updatedStock)
       };
 
       if (sandwichs.length > 0) {
@@ -73,16 +87,76 @@ const PageSandwich = ({navigation}) => {
       console.log('moins')
     }
 
-    //increment
-    const incrementHandler = async (product) => {
-      const {id, libelle, image, prix, offre} = product; // Déstructurez le produit
-      console.log(product)
-     
     
+    //increment
+    const incrementHandler = async (productId) => {
+      const product = sandwichs.find(p => p.productId === productId);
+      if (!product) {
+        console.error(`Product with ID ${productId} not found.`);
+        return;
+      }
+
+      const { libelle, image, prix_unitaire, offre} = product; // Déstructurez le produit
+      //console.log(product.productId);
+
+      const productStock = stock.find(item => item.productId === product.productId);
+      
+      // Obtenir la quantité en stock pour ce produit
+      const productQuantity = productStock ? productStock.quantite : 0;
+      console.log(`The quantity in stock for product ${productId} is ${productQuantity}`);
+
+      //si plus de stock
+      if(productQuantity === 0){
+        return Toast.show({
+          type: 'error',
+          text1: `Victime de son succès`,
+          text2: 'Plus de stock disponible' 
+        });
+      }
+      try{
+        const stockAvailable = await checkStockForSingleProduct(product.productId);
+        console.log(stockAvailable)
+
+        const remainingStock = stockAvailable[0].quantite - product.qty;
+        console.log(remainingStock)
+
+        if (stockAvailable.length > 0 && remainingStock > 0) {
+          console.log(`Ajout au panier: ${product.libelle}, prix: ${product.prix_unitaire}, quantité: 1`);
+          dispatch(addToCart({ productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix_unitaire, qty: 1 , offre: product.offre}));
+  
+          setSandwichs((prevSandwichs) =>
+          prevSandwichs.map((product) =>
+            product.productId === productId ? { ...product, qty: product.qty + 1 } : product
+          )
+        );
+          if (product.offre && product.offre.startsWith('offre31')) {
+            const updatedCart = [...cart, { productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix, qty: 1 , offre: product.offre}];
+            const sameOfferProducts = updatedCart.filter((item) => item.offre === product.offre);
+            const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
+            
+            if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
+              setModalVisible(true);
+
+            }
+          }
+        } else {
+          return Toast.show({
+            type: 'error',
+            text1: `Victime de son succès`,
+            text2: `Quantité maximale: ${stockAvailable[0].quantite}` 
+          });
+        }
+        
+      }catch (error) {
+        console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
+      }
     };
 
     const openFormuleSandwich = () => {
       navigation.navigate('formulesandwich')
+  }
+  const handleCart = () => {
+    navigation.navigate('panier')
   }
 
   return (
@@ -117,16 +191,18 @@ const PageSandwich = ({navigation}) => {
                     {/* rajouter increment / decrement */}
                     <View style={styles.qtyContainer}>
                     <TouchableOpacity
-                        onPress={decrement}
+                        onPress={() => decrementhandler(product.productId, dispatch)}
                         style={styles.decrement}
                     >
                         <Icon name="remove" size={14} color="#000" />
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.qtyText}>
-                      <Text>{product.qty}</Text>
+                      {/* <Text>{product.qty}</Text> */}
+                      <Text>{getProductQtyInCart(product.productId)}</Text>
+
                   </TouchableOpacity>          
                     <TouchableOpacity
-                        onPress={() => incrementHandler(product)}
+                        onPress={() => incrementHandler(product.productId)}
                         style={styles.increment}
                     >
                         <Icon name="add" size={14}  color="white" />
@@ -146,12 +222,12 @@ const PageSandwich = ({navigation}) => {
             <Text style={styles.titleOptions}>Ingrédients</Text>
             {/* nom libelle du sandwich cliqué */}
             {selectedSandwich && selectedSandwich.ingredients && (
-  <View style={styles.ingredients}>
-    <Text style={styles.listeIngredients}>
-      {selectedSandwich.ingredients}
-    </Text>
-  </View>
-)}
+        <View style={styles.ingredients}>
+          <Text style={styles.listeIngredients}>
+            {selectedSandwich.ingredients}
+          </Text>
+        </View>
+      )}
             {/* {selectedSandwich && <Text>{selectedSandwich.description}</Text>} */}
             {
                 selectedSandwich && 
@@ -220,8 +296,9 @@ const PageSandwich = ({navigation}) => {
             <Button
                         style={style.btn}
                         textColor={'white'} 
-                        disabled={!selectedSandwich}
-                        >Choisir ce produit</Button>
+                        // disabled={!selectedSandwich}
+                        onPress={handleCart}
+                        >Allez au panier</Button>
             </View>
     <FooterProfile />
     </View>
