@@ -16,6 +16,21 @@ const EnvieSalee = () => {
     const openPageSalade = () => {
         navigation.navigate('salade')
     }
+    const openPageBurger = () => {
+        navigation.navigate('burger')
+    }
+    const openPagePanini = () => {
+        navigation.navigate('panini')
+    }
+    const openPagePainBagnat = () => {
+        navigation.navigate('painbagnat')
+    }
+    const openPageQuiche = () => {
+        navigation.navigate('quiche')
+    }
+    const openPageCroque = () => {
+        navigation.navigate('croque')
+    }
   return (
     <View style={{marginLeft:30}}>
         <Text style={styles.text1formule}>Une petite envie <Text style={styles.text2formule}>Salée ? </Text></Text>
@@ -45,7 +60,7 @@ const EnvieSalee = () => {
                         <Text style={styles.titleFormule_envie}>Pizzas</Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity activeOpacity={0.8} onPress={openPageWrap}>
+                <TouchableOpacity onPress={openPageWrap}>
                     <Image
                         source={require('../assets/Formule36.jpg')} 
                         style={{ width: 200, height: 80, resizeMode:'cover' }}
@@ -68,10 +83,9 @@ const EnvieSalee = () => {
                     </View>
             </TouchableOpacity>
 
-            {/* Burgers et Paninis */}
-            <TouchableOpacity style={{marginRight:10, flexDirection:'column', gap:12}}  activeOpacity={0.8}>
-                
-                <View>
+            {/* Burgers et Paninis */}    
+            <TouchableOpacity style={{marginRight:10, flexDirection:'column', gap:12}}>            
+                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageBurger}>
                     <Image
                         source={require('../assets/Formule36.jpg')} 
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
@@ -79,8 +93,10 @@ const EnvieSalee = () => {
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Burgers</Text>
                     </View>
-                </View>
-                <View>
+                </TouchableOpacity>
+               
+
+                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPagePanini}>
                     <Image
                         source={require('../assets/Formule36.jpg')} 
                         style={{ width: 200, height: 80, resizeMode:'cover' }}
@@ -88,12 +104,11 @@ const EnvieSalee = () => {
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Paninis</Text>
                     </View>
-                </View>
-                    
-            </TouchableOpacity>
+                </TouchableOpacity>
+            </TouchableOpacity>    
 
             {/* Pains bagnats */}
-            <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+            <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPagePainBagnat}>
                     <Image
                             source={require('../assets/Formule36.jpg')} 
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
@@ -106,7 +121,7 @@ const EnvieSalee = () => {
             {/* Quiches et Croques */}
             <TouchableOpacity style={{marginRight:10, flexDirection:'column', gap:12}}  activeOpacity={0.8}>
                 
-                <View>
+                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageQuiche}>
                     <Image
                         source={require('../assets/Formule36.jpg')} 
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
@@ -114,8 +129,8 @@ const EnvieSalee = () => {
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Quiches</Text>
                     </View>
-                </View>
-                <View>
+                </TouchableOpacity>
+                <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageCroque}>
                     <Image
                         source={require('../assets/Formule36.jpg')} 
                         style={{ width: 200, height: 80, resizeMode:'cover' }}
@@ -123,7 +138,7 @@ const EnvieSalee = () => {
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Croques</Text>
                     </View>
-                </View>
+                </TouchableOpacity>
                     
             </TouchableOpacity>
 

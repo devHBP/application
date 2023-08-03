@@ -35,6 +35,11 @@ import Offre31 from './Screens/Offre31'
 import Solanid from './Screens/Solanid'
 import PageWrap from './Screens/PagesSalees/PageWrap'
 import PageSalade from './Screens/PagesSalees/PageSalade'
+import PageBurger from './Screens/PagesSalees/PageBurger'
+import PagePanini from './Screens/PagesSalees/PagePanini'
+import PagePainBagnat from './Screens/PagesSalees/PagePainBagnat'
+import PageQuiche from './Screens/PagesSalees/PageQuiche'
+import PageCroque from './Screens/PagesSalees/PageCroque'
 
 
 const Main = () => {
@@ -74,6 +79,11 @@ const Main = () => {
                     <Stack.Screen name='sandwich' component={PageSandwich}/>
                     <Stack.Screen name='wrap' component={PageWrap}/>
                     <Stack.Screen name='salade' component={PageSalade}/>
+                    <Stack.Screen name='burger' component={PageBurger}/>
+                    <Stack.Screen name='panini' component={PagePanini}/>
+                    <Stack.Screen name='painbagnat' component={PagePainBagnat}/>
+                    <Stack.Screen name='quiche' component={PageQuiche}/>
+                    <Stack.Screen name='croque' component={PageCroque}/>
                     {/* Formules petit dejeuner */}
                     <Stack.Screen name='artisan' component={FormuleArtisan}/>
                     <Stack.Screen name='petitdej' component={FormulePetitDejeuner}/>
