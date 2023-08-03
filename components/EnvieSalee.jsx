@@ -13,6 +13,9 @@ const EnvieSalee = () => {
     const openPageWrap = () => {
         navigation.navigate('wrap')
     }
+    const openPageSalade = () => {
+        navigation.navigate('salade')
+    }
   return (
     <View style={{marginLeft:30}}>
         <Text style={styles.text1formule}>Une petite envie <Text style={styles.text2formule}>Salée ? </Text></Text>
@@ -55,7 +58,7 @@ const EnvieSalee = () => {
             </TouchableOpacity>
 
             {/* Salades */}
-            <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+            <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageSalade}>
                     <Image
                             source={require('../assets/Formule36.jpg')} 
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
