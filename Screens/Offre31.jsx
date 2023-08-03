@@ -9,7 +9,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { style } from '../styles/formules'; 
 import { styles } from '../styles/home'; 
 import axios from 'axios'
-import { getFamilyProductDetails } from '../CallApi/api';
+import { getFamilyProductDetails, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ModalePageOffre31 from '../components/ModalePageOffre';
 
@@ -94,9 +94,20 @@ const Offre31 = ({navigation}) => {
     console.log(product)
 }
       
-const handleAcceptOffer = () => {
+const handleAcceptOffer = async () => {
   console.log('modale')
-  // Ajoutez le produit trois fois
+   //verifier le stock
+try {
+  const productStock = await checkStockForSingleProduct(selectedProduct.productId);
+  console.log(productStock)
+  const cartQty = cart.reduce((sum, cartItem) => {
+    return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
+  }, 0);
+  console.log('qty in cart', cartQty)
+  const remainingStock = productStock[0]?.quantite - cartQty || 0;
+
+  if ( remainingStock >= 4){
+    // Ajoutez le produit trois fois
   for (let i = 0; i < 3; i++) {
     dispatch(addToCart({ 
       productId: selectedProduct.productId, 
@@ -109,6 +120,36 @@ const handleAcceptOffer = () => {
   }
   //le produit gratuit
   dispatch(addFreeProductToCart(selectedProduct));
+
+  Toast.show({
+    type: 'success',
+    text1: 'Offre 3+1 ajouté au panier',
+  });
+  }else {
+    Toast.show({
+      type: 'error',
+      position: 'bottom',
+      text1: 'Victime de son succès',
+      text2: `Quantité maximale: ${productStock[0].quantite}`,
+      
+    });
+  } 
+
+  
+  
+}
+catch (error) {
+  console.error("Une erreur s'est produite lors de la vérification du stock :", error);
+
+}  
+ 
+
+
+
+
+
+
+
 };
 
 const handleCart = () => {
