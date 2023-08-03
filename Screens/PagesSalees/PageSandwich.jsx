@@ -21,7 +21,7 @@ const PageSandwich = ({navigation}) => {
     const [selectedSandwich, setSelectedSandwich] = useState(null); // Nouvel état pour le sandwich sélectionné
     const [stock, setStock] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
-
+    const [productCount, setProductCount] = useState(0);
 
     const dispatch = useDispatch();
 
@@ -88,16 +88,11 @@ const PageSandwich = ({navigation}) => {
         };
         fetchData(); // Appel de la fonction fetchData lors du montage du composant
       }, []);
-
-    //decrement
-    const decrement = () => {
-      console.log('moins')
-    }
-
     
     //increment
     const incrementHandler = async (productId) => {
       const product = sandwichs.find(p => p.productId === productId);
+      setProductCount(productCount + 1);
       if (!product) {
         console.error(`Product with ID ${productId} not found.`);
         return;
@@ -161,6 +156,8 @@ const PageSandwich = ({navigation}) => {
 
     const decrementhandler = async (productId) => {
       const product = sandwichs.find(p => p.productId === productId);
+      setProductCount(productCount - 1);
+
       if (!product) {
         console.error(`Product with ID ${productId} not found.`);
         return;
@@ -312,7 +309,7 @@ const PageSandwich = ({navigation}) => {
         <View style={{...style.menu, marginBottom:65}}>
                 <View>
                 <View style={style.bandeauFormule}>
-                <Text style={{ fontWeight:'bold'}}>Prix du produit</Text>
+                <Text style={{ fontWeight:'bold'}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
                <Text>{totalPrice.toFixed(2)} €</Text>
                 </View>
                 <View style={style.bandeauFormule}>

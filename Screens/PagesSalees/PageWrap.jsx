@@ -21,12 +21,12 @@ const PageWrap = ({navigation}) => {
     const [selectedSandwich, setSelectedSandwich] = useState(null); // Nouvel état pour le sandwich sélectionné
     const [stock, setStock] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
-
+    const [productCount, setProductCount] = useState(0);
 
     const dispatch = useDispatch();
 
     const cart = useSelector(state => state.cart.cart);
-    console.log(cart)
+   
     
     const getProductQtyInCart = (productId) => {
       const productInCart = cart.find(item => item.productId === productId);
@@ -92,6 +92,8 @@ const PageWrap = ({navigation}) => {
     //increment
     const incrementHandler = async (productId) => {
       const product = products.find(p => p.productId === productId);
+      setProductCount(productCount + 1);
+
       if (!product) {
         console.error(`Product with ID ${productId} not found.`);
         return;
@@ -155,6 +157,7 @@ const PageWrap = ({navigation}) => {
 
     const decrementhandler = async (productId) => {
       const product = products.find(p => p.productId === productId);
+      setProductCount(productCount - 1);
       if (!product) {
         console.error(`Product with ID ${productId} not found.`);
         return;
@@ -241,7 +244,7 @@ const PageWrap = ({navigation}) => {
 
 
         {/* les ingredients */}
-        <View style={{marginHorizontal:30}}>
+        <View style={{marginHorizontal:30, marginBottom:20}}>
             <Text style={styles.titleOptions}>Ingrédients</Text>
             {/* nom libelle du sandwich cliqué */}
             {selectedSandwich && selectedSandwich.ingredients && (
@@ -287,12 +290,12 @@ const PageWrap = ({navigation}) => {
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
             <TouchableOpacity style={{marginRight:10}} onPress={openFormuleWrap} activeOpacity={0.8}>
                     <Image
-                            source={require('../../assets/Formule36.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            source={require('../../assets/wrap.jpg')} 
+                            style={{ width: 305, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Wrap</Text>
-                        <Text style={styles.textFormule}>Un sandwich, un dessert et une boisson</Text>
+                        <Text style={styles.textFormule}>Un wrap, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>
           </View>
@@ -306,8 +309,8 @@ const PageWrap = ({navigation}) => {
         <View style={{...style.menu, marginBottom:65}}>
                 <View>
                 <View style={style.bandeauFormule}>
-                <Text style={{ fontWeight:'bold'}}>Prix du produit</Text>
-               <Text>{totalPrice.toFixed(2)} €</Text>
+                    <Text style={{ fontWeight:'bold'}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
+                   <Text>{totalPrice.toFixed(2)} €</Text>
                 </View>
                 <View style={style.bandeauFormule}>
                     <View style={{flexDirection:'row'}}>
