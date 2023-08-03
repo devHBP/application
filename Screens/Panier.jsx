@@ -56,6 +56,7 @@ const incrementhandler = async (id, offre) => {
 
   const productInCart = cart.find((item) => item.productId === id);
 
+
   try {
     if (productInCart.type === 'formule') {
       const stocks = await checkStockFormule(productInCart.productIds);
