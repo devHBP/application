@@ -18,7 +18,7 @@ import { checkStockForSingleProduct } from '../../CallApi/api.js';
 const PageSandwich = ({navigation}) => {
 
     const [sandwichs, setSandwichs] = useState([]); // Ajoutez cette ligne
-    const [selectedSandwich, setSelectedSandwich] = useState(null); // Nouvel état pour le sandwich sélectionné
+    const [selectedProduct, setSelectedProduct] = useState(null); // Nouvel état pour le sandwich sélectionné
     const [stock, setStock] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [productCount, setProductCount] = useState(0);
@@ -205,7 +205,7 @@ const PageSandwich = ({navigation}) => {
             <Text style={styles.titleOptions}>Les options</Text>
             <ScrollView horizontal={true} style={{marginVertical:20}}>
             {sandwichs.map((product, index) => (
-                <TouchableOpacity key={index} onPress={() => setSelectedSandwich(product)}>
+                <TouchableOpacity key={index} onPress={() => setSelectedProduct(product)}>
                 <View style={{marginHorizontal:20, flexDirection:'column', alignItems:'center'}} key={index}>
                     <Image
                     key={index}
@@ -239,7 +239,7 @@ const PageSandwich = ({navigation}) => {
                 </TouchableOpacity>
             ))}
             </ScrollView >
-           <Text>{selectedSandwich && selectedSandwich.descriptionProduit}</Text>
+           <Text>{selectedProduct && selectedProduct.descriptionProduit}</Text>
         </View>
 
 
@@ -247,18 +247,18 @@ const PageSandwich = ({navigation}) => {
         <View style={{marginHorizontal:30}}>
             <Text style={styles.titleOptions}>Ingrédients</Text>
             {/* nom libelle du sandwich cliqué */}
-            {selectedSandwich && selectedSandwich.ingredients && (
+            {selectedProduct && selectedProduct.ingredients && (
         <View style={styles.ingredients}>
           <Text style={styles.listeIngredients}>
-            {selectedSandwich.ingredients}
+            {selectedProduct.ingredients}
           </Text>
         </View>
       )}
-            {/* {selectedSandwich && <Text>{selectedSandwich.description}</Text>} */}
+            {/* {selectedProduct && <Text>{selectedProduct.description}</Text>} */}
             {
-                selectedSandwich && 
-                selectedSandwich.description && 
-                selectedSandwich.description.toLowerCase().includes('halal') && 
+                selectedProduct && 
+                selectedProduct.description && 
+                selectedProduct.description.toLowerCase().includes('halal') && 
                 <View style={styles.description}>
                     <Image
                     source={require('../../assets/halal.png')}
@@ -268,9 +268,9 @@ const PageSandwich = ({navigation}) => {
                 </View>
             }
             {
-                selectedSandwich && 
-                selectedSandwich.description && 
-                selectedSandwich.description.toLowerCase().includes('vegan') && 
+                selectedProduct && 
+                selectedProduct.description && 
+                selectedProduct.description.toLowerCase().includes('vegan') && 
                 <View style={styles.description}>
                     <Image
                     source={require('../../assets/vegan.png')}
@@ -322,7 +322,7 @@ const PageSandwich = ({navigation}) => {
             <Button
                         style={style.btn}
                         textColor={'white'} 
-                        // disabled={!selectedSandwich}
+                        // disabled={!selectedProduct}
                         onPress={handleCart}
                         >Allez au panier</Button>
             </View>
