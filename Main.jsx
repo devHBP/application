@@ -33,6 +33,7 @@ import FormulePetitDejeuner from './Screens/Formules/FormulePetitDejeuner'
 import FormulePetitDejeunerGourmand from './Screens/Formules/FormulePetitDejeunerGourmand'
 import Offre31 from './Screens/Offre31'
 import Solanid from './Screens/Solanid'
+import PageWrap from './Screens/PagesSalees/PageWrap'
 
 
 const Main = () => {
@@ -70,6 +71,7 @@ const Main = () => {
                     <Stack.Screen name='formulequiche' component={FormuleQuiche}/>
                     {/* Pages salées */}
                     <Stack.Screen name='sandwich' component={PageSandwich}/>
+                    <Stack.Screen name='wrap' component={PageWrap}/>
                     {/* Formules petit dejeuner */}
                     <Stack.Screen name='artisan' component={FormuleArtisan}/>
                     <Stack.Screen name='petitdej' component={FormulePetitDejeuner}/>
