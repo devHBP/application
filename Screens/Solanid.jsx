@@ -11,7 +11,6 @@ import { styles } from '../styles/home';
 import axios from 'axios'
 import { getFamilyProductDetails, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
-import { setProductIds } from '../reducers/orderSlice';
 
 
 const Solanid = ({navigation}) => {
