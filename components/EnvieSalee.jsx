@@ -10,6 +10,9 @@ const EnvieSalee = () => {
     const openPageSandwich = () => {
         navigation.navigate('sandwich')
     }
+    const openPageWrap = () => {
+        navigation.navigate('wrap')
+    }
   return (
     <View style={{marginLeft:30}}>
         <Text style={styles.text1formule}>Une petite envie <Text style={styles.text2formule}>Salée ? </Text></Text>
@@ -30,7 +33,7 @@ const EnvieSalee = () => {
             {/* Wraps et pizza */}
             <TouchableOpacity style={{marginRight:10, flexDirection:'column', gap:12}}  activeOpacity={0.8}>
                 
-                <View>
+                <TouchableOpacity>
                     <Image
                         source={require('../assets/Formule36.jpg')} 
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
@@ -38,8 +41,8 @@ const EnvieSalee = () => {
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Pizzas</Text>
                     </View>
-                </View>
-                <View>
+                </TouchableOpacity>
+                <TouchableOpacity activeOpacity={0.8} onPress={openPageWrap}>
                     <Image
                         source={require('../assets/Formule36.jpg')} 
                         style={{ width: 200, height: 80, resizeMode:'cover' }}
@@ -47,7 +50,7 @@ const EnvieSalee = () => {
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Wraps</Text>
                     </View>
-                </View>
+                </TouchableOpacity>
                     
             </TouchableOpacity>
 
