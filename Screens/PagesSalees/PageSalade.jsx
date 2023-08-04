@@ -178,8 +178,8 @@ const PageSalade = ({navigation}) => {
       
   };
 
-    const openFormuleWrap = () => {
-      navigation.navigate('formulewrap')
+    const openFormuleSalade = () => {
+      navigation.navigate('formulesalade')
   }
   const handleCart = () => {
     navigation.navigate('panier')
@@ -288,14 +288,14 @@ const PageSalade = ({navigation}) => {
           </View>
           <View style={{margin:30, flexDirection:'column', justifyContent:'flex-start', gap:20}}>
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
-            <TouchableOpacity style={{marginRight:10}} onPress={openFormuleWrap} activeOpacity={0.8}>
+            <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSalade} activeOpacity={0.8}>
                     <Image
-                            source={require('../../assets/wrap.jpg')} 
+                            source={require('../../assets/Formule25.jpg')} 
                             style={{ width: 305, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Wrap</Text>
-                        <Text style={styles.textFormule}>Un wrap, un dessert et une boisson</Text>
+                        <Text style={styles.titleFormule}>Formule Salade</Text>
+                        <Text style={styles.textFormule}>Une salade, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>
           </View>

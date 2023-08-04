@@ -184,7 +184,7 @@ const PageBurger = ({navigation}) => {
        <ScrollView>
         <View>
             <Image
-                    source={require('../../assets/wrap.jpg')} 
+                    source={require('../../assets/burger.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
              <Text style={styles.titleProduct}>Burger</Text>
@@ -284,7 +284,7 @@ const PageBurger = ({navigation}) => {
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
             <TouchableOpacity style={{marginRight:10}} onPress={openFormuleBurger} activeOpacity={0.8}>
                     <Image
-                            source={require('../../assets/wrap.jpg')} 
+                            source={require('../../assets/burger.jpg')} 
                             style={{ width: 305, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>

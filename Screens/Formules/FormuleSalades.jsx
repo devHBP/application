@@ -9,6 +9,7 @@ import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
+import FooterProfile from '../../components/FooterProfile';
 
 const FormuleSalade = ({navigation}) => {
 
@@ -339,6 +340,7 @@ const FormuleSalade = ({navigation}) => {
                 onPress={handleFormuleSelection}
                 >Choisir cette formule</Button>
     </View>
+    <FooterProfile />
     </View> 
   )
 }

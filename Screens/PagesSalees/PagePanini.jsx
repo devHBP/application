@@ -73,7 +73,7 @@ const PagePanini = ({navigation}) => {
           }));
        
       
-        const products = updatedProducts.filter(product => product.categorie === "Burgers");
+        const products = updatedProducts.filter(product => product.categorie === "Paninis");
         setProducts(products)
           
           } catch (error) {
@@ -184,7 +184,7 @@ const PagePanini = ({navigation}) => {
        <ScrollView>
         <View>
             <Image
-                    source={require('../../assets/wrap.jpg')} 
+                    source={require('../../assets/panini.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
              <Text style={styles.titleProduct}>Panini</Text>
@@ -284,7 +284,7 @@ const PagePanini = ({navigation}) => {
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
             <TouchableOpacity style={{marginRight:10}} onPress={openFormulePanini} activeOpacity={0.8}>
                     <Image
-                            source={require('../../assets/wrap.jpg')} 
+                            source={require('../../assets/Formule55.jpg')} 
                             style={{ width: 305, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>

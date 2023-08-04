@@ -73,7 +73,7 @@ const PageQuiche = ({navigation}) => {
           }));
        
       
-        const products = updatedProducts.filter(product => product.categorie === "Burgers");
+        const products = updatedProducts.filter(product => product.categorie === "Quiches");
         setProducts(products)
           
           } catch (error) {
@@ -184,7 +184,7 @@ const PageQuiche = ({navigation}) => {
        <ScrollView>
         <View>
             <Image
-                    source={require('../../assets/wrap.jpg')} 
+                    source={require('../../assets/quiche.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
              <Text style={styles.titleProduct}>Quiche</Text>
@@ -284,7 +284,7 @@ const PageQuiche = ({navigation}) => {
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
             <TouchableOpacity style={{marginRight:10}} onPress={openFormuleQuiche} activeOpacity={0.8}>
                     <Image
-                            source={require('../../assets/wrap.jpg')} 
+                            source={require('../../assets/Formule22.jpg')} 
                             style={{ width: 305, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>

@@ -73,7 +73,7 @@ const PageCroque = ({navigation}) => {
           }));
        
       
-        const products = updatedProducts.filter(product => product.categorie === "Burgers");
+        const products = updatedProducts.filter(product => product.categorie === "Croques");
         setProducts(products)
           
           } catch (error) {
@@ -184,7 +184,7 @@ const PageCroque = ({navigation}) => {
        <ScrollView>
         <View>
             <Image
-                    source={require('../../assets/wrap.jpg')} 
+                    source={require('../../assets/croque.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
              <Text style={styles.titleProduct}>Croque</Text>
@@ -284,7 +284,7 @@ const PageCroque = ({navigation}) => {
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
             <TouchableOpacity style={{marginRight:10}} onPress={openFormuleCroque} activeOpacity={0.8}>
                     <Image
-                            source={require('../../assets/wrap.jpg')} 
+                            source={require('../../assets/Formule16.jpg')} 
                             style={{ width: 305, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
