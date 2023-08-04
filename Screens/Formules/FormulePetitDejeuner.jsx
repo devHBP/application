@@ -200,7 +200,7 @@ const FormulePetitDejeuner = ({navigation}) => {
       <ScrollView>
         <View>
             <Image
-                    source={require('../../assets/Formule36.jpg')} 
+                    source={require('../../assets/FormulePetitdejeuner.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
 

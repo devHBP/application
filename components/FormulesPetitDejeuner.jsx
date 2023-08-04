@@ -30,7 +30,7 @@ const FormulesSalees = () => {
                 {/* artisan */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleArtisan} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/Formuleartisan.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
@@ -42,7 +42,7 @@ const FormulesSalees = () => {
                 {/* petit dej */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePetitDejeuner} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/FormulePetitdejeuner.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
@@ -54,7 +54,7 @@ const FormulesSalees = () => {
                 {/* petit dej gourmand*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePetitDejeunerGourmand} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/FormulepetitdejeunerGourmand.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
