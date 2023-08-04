@@ -625,9 +625,16 @@ const ongletButtonHandler = (onglet) => {
             {/* catalogue */}
             <Catalogue />
 
-          <TouchableOpacity onPress={scrollToTop} >
+          {/* <TouchableOpacity onPress={scrollToTop} >
              <Icon name="arrow-upward" size={30} style={styles.scrollTop}   />
-          </TouchableOpacity>
+          </TouchableOpacity> */}
+          <View style={{flexDirection:'row', justifyContent:'center'}}>
+              <TouchableOpacity style={styles.scrollTop }  onPress={scrollToTop}>
+                <Icon name={'keyboard-arrow-up'} size={30} color={colors.color4}  />
+              </TouchableOpacity>
+          </View>
+          
+         
           
      </ScrollView>
   <FooterProfile />

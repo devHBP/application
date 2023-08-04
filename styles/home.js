@@ -86,8 +86,11 @@ const styles = StyleSheet.create({
 
   },
   scrollTop: {
-    marginBottom: 100,
-    textAlign: 'center'
+    marginBottom: 120,
+    backgroundColor:colors.color3, 
+    borderRadius:25,
+     width:30,
+     height:30
   },
   titleFormule: {
    color:colors.color2,
