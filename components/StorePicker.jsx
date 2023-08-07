@@ -79,10 +79,10 @@ const StorePicker = () => {
                     /> 
                     <View style={{flexDirection:'row'}}>
                         <View >
-                            <Text style={{fontSize:12}}>
+                            <Text style={{fontSize:10, color:colors.color1}}>
                                 {selectedStore.adresse_magasin}   
                             </Text>
-                            <Text  style={{fontSize:12}}>{selectedStore.cp_magasin} {selectedStore.ville_magasin}</Text>
+                            <Text  style={{fontSize:10, color:colors.color1}}>{selectedStore.cp_magasin} {selectedStore.ville_magasin}</Text>
                         </View>
                     </View>  
                 </View>
