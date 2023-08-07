@@ -18,9 +18,19 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   picker: {
-    color: 'red',
+    color: colors.color1,
     fontWeight: "bold",
-    width: 70
+    fontSize:12,
+  },
+  textPickerDate:{
+    color:colors.color1,
+    fontFamily:fonts.font3,
+    fontWeight: "700",
+    fontSize:18,
+  },
+  pickerNoDate:{
+    fontSize:12,
+    color:colors.color3
   },
   categories: {
     flexDirection: "row",
@@ -119,7 +129,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     width: "100%",
-    paddingHorizontal: 20
+    paddingHorizontal: 5
   },
   text1formule:{
     fontFamily:fonts.font2,
@@ -213,20 +223,6 @@ const styles = StyleSheet.create({
   }
 });
 
-const pickerSelectStyles = StyleSheet.create({
-  inputIOS: {
-    fontSize: 20,
-    color: colors.color1,
-    fontWeight: "bold"
-  },
-  inputAndroid: {
-    fontSize: 18,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-    borderWidth: 1,
-    borderRadius: 8,
-    color: colors.color1,
-  },
-});
 
-export { styles, pickerSelectStyles };
+
+export { styles};

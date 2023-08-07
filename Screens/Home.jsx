@@ -23,7 +23,13 @@ import StorePicker from '../components/StorePicker';
 
 const Home =  ({navigation}) => {
 
-  const API_BASE_URL = 'http://127.0.0.1:8080';
+  let API_BASE_URL = 'http://127.0.0.1:8080';
+
+  if (Platform.OS === 'android') {
+    if (__DEV__) {
+        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+    } 
+}
 
   const [date, setDate] = useState(null)
   const [openDate, setOpenDate] = useState(false)
@@ -254,7 +260,7 @@ const ongletButtonHandler = (onglet) => {
     </View>
    
       {/* test bandeau header */}
-      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:20}}>
+      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
           <View style={{ flexDirection:'row', gap:5, alignItems:'center', }}>
               
             <View>
@@ -269,8 +275,10 @@ const ongletButtonHandler = (onglet) => {
           {/* // Selection Jour  */}
          <TouchableOpacity onPress={() => setOpenDate(true)}  style={styles.bordersPicker}>
          {/* <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text>  */}
+            <Text style={styles.textPickerDate}>Pour quel jour ?</Text>
             <Text>
-            {date ? (
+            {date ? 
+            (
                 isTomorrowOrLater(date) ? (
                 <Text style={styles.picker}>{formatDate(date)}</Text>
                 ) : (
@@ -278,11 +286,11 @@ const ongletButtonHandler = (onglet) => {
                   trop tard</Text>
                 )
             ) : (
-              <Text style={styles.picker} >
-                Votre jour</Text>
-               
+           
+                  <Text style={styles.pickerNoDate}>jj/mm/aaaa</Text>
             )}
             </Text>
+            <Text style={{fontSize:10, color:colors.color2}}>Status</Text>
         </TouchableOpacity> 
         </View>
                <DatePicker
