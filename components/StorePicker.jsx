@@ -1,12 +1,13 @@
-import {View, Image, Text} from 'react-native'
+import {View, Image, Text, Platform, StyleSheet } from 'react-native'
 import  Picker  from 'react-native-picker-select';
 import React, {useState, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { updateSelectedStore, updateUser} from '../reducers/authSlice';
 import axios from 'axios'
 import { useSelector } from 'react-redux'
+import { fonts, colors} from '../styles/styles'
 
-import { pickerSelectStyles } from '../styles/home'; 
+//import { pickerSelectStyles } from '../styles/home';
 
 const StorePicker = () => {
 
@@ -15,9 +16,19 @@ const StorePicker = () => {
     const user = useSelector((state) => state.auth.user);
     const selectedStore = useSelector((state) => state.auth.selectedStore);
 
+    let API_BASE_URL = 'http://127.0.0.1:8080';
+
+    if (Platform.OS === 'android') {
+      if (__DEV__) {
+          API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+      } 
+  }
+
+
+
     const allStores = async () => {
         try {
-          const response = await axios.get('http://127.0.0.1:8080/getAllStores');
+          const response = await axios.get(`${API_BASE_URL}/getAllStores`);
           setStores(response.data);
         } catch (error) {
           console.error("Une erreur s'est produite, erreur stores :", error);
@@ -48,12 +59,12 @@ const StorePicker = () => {
                                 dispatch(updateSelectedStore(selected));
                                 dispatch(updateUser({ ...user, storeId: selected.storeId }));
 
-                                axios.put(`http://127.0.0.1:8080/updateOneUser/${user.userId}`, {storeId: selected.storeId})
+                                axios.put(`${API_BASE_URL}/updateOneUser/${user.userId}`, {storeId: selected.storeId})
                                 .then(response => {
-                                    //console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
+                                    console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
                                 })
                                 .catch(error => {
-                                    //console.error('Erreur lors de la mise à jour du choix du magasin dans la base de données (ici) - erreur ici:', error);
+                                    console.error('Erreur lors de la mise à jour du choix du magasin dans la base de données (ici) - erreur ici:', error);
                                 });
                             }
                             else {
@@ -79,5 +90,27 @@ const StorePicker = () => {
         </View>
     )
 }
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 20,
+    color: colors.color1,
+    fontWeight: "bold",
+  },
+  inputAndroid: {
+    fontSize: 18,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderRadius: 8,
+    color: colors.color1,
+  },
+});
+
+const pickerStyles = Platform.select({
+    ios:  pickerSelectStyles.inputIOS ,  // Styles pour iOS
+    android: pickerSelectStyles.inputAndroid   // Styles pour Android
+});
+
 
 export default StorePicker;

@@ -18,7 +18,13 @@ const inputOptions = {
 
 const Signup = ({navigation}) => {
 
-  const API_BASE_URL = 'http://localhost:8080'
+  let API_BASE_URL = 'http://127.0.0.1:8080';
+
+  if (Platform.OS === 'android') {
+    if (__DEV__) {
+        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+    } 
+}
 
   const dispatch = useDispatch()
   const selectedStore = useSelector((state) => state.auth.selectedStore);

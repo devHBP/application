@@ -16,7 +16,13 @@ import ModalePageOffre31 from '../components/ModalePageOffre';
 
 const Offre31 = ({navigation}) => {
 
-  const API_BASE_URL = 'http://127.0.0.1:8080';
+  let API_BASE_URL = 'http://127.0.0.1:8080';
+
+  if (Platform.OS === 'android') {
+    if (__DEV__) {
+        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+    } 
+}
 
   const [offre31Products, setOffre31ProductNames] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
