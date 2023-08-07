@@ -1,14 +1,17 @@
 import { View, Text , StyleSheet, TouchableOpacity, Image} from 'react-native'
 import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import { fonts, colors} from '../styles/styles'
 
-const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty, prix_unitaire}) => {
+const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty, prix_unitaire, isFree, freeCount }) => {
 
     const baseUrl = 'http://127.0.0.1:8080';
     //console.log('prix_unitaire', prix)
 
   return (
+   
     <View style={styles.container}>
+     
       <Image source={{ uri: `${baseUrl}/${image}` }} style={styles.image} 
     //   onPress={() => navigate.navigate("productdetails", { id })}
     />
@@ -26,6 +29,13 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
           <Icon name="add-circle" size={25} color="#000" />
         </TouchableOpacity>
       </View>
+   
+      <Text style={styles.isFree}> 
+        {/* {isFree = 'true' ? `Vous avez ${freeCount} produit gratuit` : 'sans offre'} */}
+        {isFree = 'true'  ? `Vous avez ${freeCount} produit${freeCount > 1 ? 's' : ''} gratuit${freeCount > 1 ? 's' : ''}` : 'sans offre'}
+
+      </Text>
+      
     </View>
   )
 }
@@ -64,6 +74,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         paddingHorizontal: 10,
       },
+      isFree:{
+        position: "absolute",
+        bottom: 0,
+        right:0,
+        color:colors.color9
+      }
   });
 
 export default CartItem
