@@ -17,8 +17,9 @@ const inputOptions = {
     outlineColor:'white',
 }
 
-
 const Login = ({navigation}) => {
+
+  const API_BASE_URL = 'http://127.0.0.1:8080';
 
      const dispatch = useDispatch()
      const selectedStoreRedux = useSelector(state => state.auth.selectedStore);
@@ -36,36 +37,38 @@ const Login = ({navigation}) => {
         }
 
         try{
-            //appel axios pour se loger
-            const res = await axios.post('http://localhost:8080/login', clientData)
+
+            const res = await axios.post(`${API_BASE_URL}/login`, clientData)
+            //const res = await axios.post('http://10.0.2.2:8080/login', clientData)
             const user = res.data.user
 
-            // //stockage du token dans asyncstorage
+
             const token = res.data.token;
             //console.log('token login', token)
             await AsyncStorage.setItem('userToken', token);
 
             const selectedStoreId = user.storeId;
-            // const selectedStoreId = selectedStoreRedux.id_magasin;
+
 
             //  console.log('2- selected store id', selectedStoreId)
 
-            axios.get(`http://localhost:8080/getOneStore/${selectedStoreId}`)
+            axios.get(`${API_BASE_URL}/getOneStore/${selectedStoreId}`)
+            //axios.get(`http://10.0.2.2:8080/getOneStore/${selectedStoreId}`)
                 .then(storeResponse => {
-                    const selectedStore = storeResponse.data; // Récupérez les détails du magasin choisi
-                    // console.log('3- store selectionné' ,selectedStore)
-                    // Dispatchez l'action pour mettre à jour le magasin choisi dans le store
+                    const selectedStore = storeResponse.data;
+
+
                      dispatch(updateSelectedStore(selectedStore));
                      dispatch(loginUser(user))
         
                     navigation.navigate('home')
-                    //champs de connexion vide (une fois connecté)
+
                     //setEmail('');
                     //setPassword('');
                     return Toast.show({
                         type: 'success',
-                        text1: `Connexion réussie`,
-                        text2: `Bienvenue ${user.firstname} ${user.lastname} ` 
+                        text1: `Connexion ok`,
+                        text2: `Bienvenue ${user.firstname} ${user.lastname}`
                       });
                 })
                 .catch(error => {
@@ -157,7 +160,7 @@ const style = StyleSheet.create({
         marginVertical:5,
         color:colors.color2,
         fontSize:33,
-        fontWeight:900,
+        fontWeight: "900",
       },
       pain:{
         fontStyle:'italic',
@@ -182,7 +185,7 @@ const style = StyleSheet.create({
     signup:{
         textAlign:'center',
         color:colors.color2,
-        fontWeight:'bold',
+        fontWeight:"bold",
         marginVertical:10
     },
     label:{

@@ -6,20 +6,22 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSelectedStore } from '../reducers/authSlice';
 
+const API_BASE_URL = 'http://localhost:8080'
+
 const Stores = ({navigation}) => {
   const [selectedStore, setSelectedStore] = useState(null);
   const [stores, setStores] = useState([]);
 
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
-  console.log('user dans Stores', user)
+  //console.log('user dans Stores', user)
   //modif userId <= id
   const userId = useSelector(state => state.auth.user.userId)
-   console.log('userId dans stores', userId),
+   //console.log('userId dans stores', userId),
 
   useEffect(() => {
     // Récupérer les magasins depuis la base de données
-    axios.get('http://localhost:8080/getAllStores')
+    axios.get(`${API_BASE_URL}/getAllStores`)
       .then(response => {
         setStores(response.data);
         // console.log('stores', response.data)
@@ -44,7 +46,7 @@ const Stores = ({navigation}) => {
       console.log('update user',updatedUser)
 
       axios
-        .put(`http://127.0.0.1:8080/updateOneUser/${userId}`, updatedUser)
+        .put(`${API_BASE_URL}/updateOneUser/${userId}`, updatedUser)
         .then((response) => {
           console.log('User updated:', response.data);
           navigation.navigate('login');

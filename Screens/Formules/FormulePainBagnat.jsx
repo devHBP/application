@@ -323,14 +323,14 @@ const FormulePainBagnat = ({navigation}) => {
     <View style={style.menu}>
         <View>
           <View style={style.bandeauFormule}>
-          <Text style={{ fontWeight:'bold'}}>Prix de la formule</Text>
+          <Text style={{ fontWeight: "bold"}}>Prix de la formule</Text>
           {selectedSandwich && typeof prix === 'number' && <Text>{prix.toFixed(2)} €</Text>}
           </View>
           <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
             <Text>Avec</Text><Image source={require('../../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
-          {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:'bold'}}>{(prix*0.8).toFixed(2)} €</Text>}
+          {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:"bold"}}>{(prix*0.8).toFixed(2)} €</Text>}
           </View>
         </View>
       <Button

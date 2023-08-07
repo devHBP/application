@@ -23,6 +23,8 @@ import StorePicker from '../components/StorePicker';
 
 const Home =  ({navigation}) => {
 
+  const API_BASE_URL = 'http://127.0.0.1:8080';
+
   const [date, setDate] = useState(null)
   const [openDate, setOpenDate] = useState(false)
   const [time, setTime] = useState()
@@ -53,7 +55,8 @@ const Home =  ({navigation}) => {
 
   const allStores = async () => {
     try {
-      const response = await axios.get('http://127.0.0.1:8080/getAllStores');
+      const response = await axios.get(`${API_BASE_URL}/getAllStores`);
+      //const response = await axios.get('http://10.0.2.2:8080/getAllStores');
       // console.log('all stores', response.data)
       setStores(response.data);
     } catch (error) {
@@ -68,7 +71,8 @@ const Home =  ({navigation}) => {
 
   useEffect(() => {
     // Effectuez une requête GET pour récupérer le rôle de l'utilisateur
-    axios.get(`http://127.0.0.1:8080/getOne/${user.userId}`)
+    axios.get(`${API_BASE_URL}/getOne/${user.userId}`)
+    //axios.get(`http://10.0.2.2:8080/getOne/${user.userId}`)
       .then(response => {
         //console.log(response.data.role)
         const role  = response.data.role;
@@ -84,7 +88,8 @@ const Home =  ({navigation}) => {
     // Fonction pour récupérer les données de la base de données
     const fetchData = async () => {
       try {
-      const response = await axios.get('http://127.0.0.1:8080/getAllProducts');
+      const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
+      //const response = await axios.get('http://10.0.2.2:8080/getAllProducts');
     
       const updatedProducts = response.data.map((product) => ({
         ...product,
@@ -252,8 +257,9 @@ const ongletButtonHandler = (onglet) => {
       <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:20}}>
           <View style={{ flexDirection:'row', gap:5, alignItems:'center', }}>
               
-            <View>     
-            <StorePicker />
+            <View>
+             <StorePicker />
+
             </View> 
 
           </View>
@@ -353,13 +359,13 @@ const ongletButtonHandler = (onglet) => {
         {
           visible && (
             <View style={{ width:"100%", height:'auto', backgroundColor:'white', flexDirection:'column', paddingHorizontal:25, borderBottomLeftRadius:10, borderBottomRightRadius:10, paddingVertical:10}}> 
-              <Text style={{fontWeight:'bold'}}>Vos articles:</Text>
+              <Text style={{fontWeight:"bold"}}>Vos articles:</Text>
             {cart.map((item, index) => (
                 <View key={index} style={{paddingLeft:20}}>
                     <Text> {item.qty} x {item.libelle}</Text>
                 </View>
             ))}
-            <Text style={{fontWeight:'bold', paddingVertical:10}}>Votre total: {totalPrice}€</Text>
+            <Text style={{fontWeight:"bold", paddingVertical:10}}>Votre total: {totalPrice}€</Text>
 
             </View>
           )
@@ -381,7 +387,7 @@ const ongletButtonHandler = (onglet) => {
               key={index}
               onPress={() => categoryButtonHandler(item)}
             >
-              <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight:'600',
+              <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight:"600",
                 color: item === (selectedCategory || 'Tous') ? 'white' : colors.color1
                 }}>{item}</Text>
             </Pressable>
@@ -405,7 +411,7 @@ const ongletButtonHandler = (onglet) => {
               onPress={() => ongletButtonHandler(item)}
             >
               <View style={{flexDirection:'row', alignItems:'center', gap:6}}>
-                <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight:'600',
+                <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight: "600",
                    color: item === 'Promos' ? 'white' : colors.color1, 
                   }}>{item}</Text>
                   

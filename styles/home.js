@@ -19,7 +19,7 @@ const styles = StyleSheet.create({
   },
   picker: {
     color: 'red',
-    fontWeight: 'bold',
+    fontWeight: "bold",
     width: 70
   },
   categories: {
@@ -54,7 +54,7 @@ const styles = StyleSheet.create({
     color: colors.color1,
     fontFamily:fonts.font2,
     fontSize:20,
-    fontWeight:'600'
+    fontWeight: "600"
   },
   scrollHorizontal: {
     marginLeft: 30,
@@ -95,12 +95,12 @@ const styles = StyleSheet.create({
   titleFormule: {
    color:colors.color2,
    fontSize:20,
-   fontWeight: 'bold',
+   fontWeight: "bold",
   },
   textFormule:{
     color:colors.color1,
     fontSize:14,
-    fontWeight: 500,
+    fontWeight: "500",
     width:250
   },
   cardTitle:{
@@ -125,13 +125,13 @@ const styles = StyleSheet.create({
     fontFamily:fonts.font2,
     color:colors.color1, 
     fontSize:16,
-    fontWeight:'600'
+    fontWeight:"600"
   },
   text2formule:{
     color:colors.color2,
     fontFamily:fonts.font2,
     fontSize:24,
-    fontWeight:'600'
+    fontWeight: "600"
   },
   container_offre_antigaspi:{
     width:"100%",
@@ -150,13 +150,13 @@ const styles = StyleSheet.create({
     color:colors.color1,
     fontFamily:fonts.font2,
     fontSize:20,
-    fontWeight:'700',
+    fontWeight: "700",
   },
   texte_anti:{
     color:colors.color8,
     fontFamily:fonts.font2,
     fontSize:24,
-    fontWeight:'700'
+    fontWeight: "700"
   },
   pastille:{
     height:'100%',
@@ -174,20 +174,20 @@ const styles = StyleSheet.create({
     color:colors.color1,
     fontFamily:fonts.font2,
     fontSize:18,
-    fontWeight:'700',
+    fontWeight: "700",
   },
   texte_gratuit:{
     color:colors.color2,
     fontFamily:fonts.font2,
     fontSize:20,
-    fontWeight:'900'
+    fontWeight: "900"
   },
   titleFormule_envie:{
     fontSize:24,
     color:colors.color2,
     textAlign:'center',
     fontFamily:fonts.font3,
-    fontWeight:'700'
+    fontWeight: "700"
   },
   pastilleSolanid:{
     position:'absolute',
@@ -217,7 +217,7 @@ const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
     fontSize: 20,
     color: colors.color1,
-    fontWeight: 'bold'
+    fontWeight: "bold"
   },
   inputAndroid: {
     fontSize: 18,

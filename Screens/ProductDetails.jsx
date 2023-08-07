@@ -44,7 +44,7 @@ const ProductDetails = ({navigation, route}) => {
     }, 0);
     console.log('prodQty', productQuantity)
 
-    const baseUrl = 'http://127.0.0.1:8080';
+    const API_BASE_URL = 'http://127.0.0.1:8080';
 
     const handleBack = () => {
         navigation.navigate('home');
@@ -115,7 +115,7 @@ const ProductDetails = ({navigation, route}) => {
          <View style={style.container}>
 
             <View style={style.image_container}>
-                <Image source={{ uri: `${baseUrl}/${product.image}` }} style={{width: "100%", height:"100%", objectFit:'cover'}} />
+                <Image source={{ uri: `${API_BASE_URL}/${product.image}` }} style={{width: "100%", height:"100%", objectFit:'cover'}} />
             </View>
             
             <View style={style.details}>

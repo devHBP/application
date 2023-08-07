@@ -303,14 +303,14 @@ const PagePanini = ({navigation}) => {
         <View style={{...style.menu, marginBottom:65}}>
                 <View>
                 <View style={style.bandeauFormule}>
-                    <Text style={{ fontWeight:'bold'}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
+                    <Text style={{ fontWeight:"bold"}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
                    <Text>{totalPrice.toFixed(2)} €</Text>
                 </View>
                 <View style={style.bandeauFormule}>
                     <View style={{flexDirection:'row'}}>
                     <Text>Avec</Text><Image source={require('../../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
                     </View>
-               <Text style={{color:colors.color2, fontWeight:'bold'}}>{(totalPrice*0.8).toFixed(2)}€</Text>
+               <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice*0.8).toFixed(2)}€</Text>
                 </View>
                 </View>
             <Button
@@ -336,7 +336,7 @@ const styles = StyleSheet.create({
     },
     titleOptions:{
         fontSize:20,
-        fontWeight:'600',
+        fontWeight: "600",
         fontFamily:fonts.font2
     },
     imageOptions:{
@@ -347,14 +347,14 @@ const styles = StyleSheet.create({
     libelle:{
         fontSize:12,
         fontFamily: fonts.font2,
-        fontWeight: '400',
+        fontWeight: "400",
         textAlign:'center',
         paddingVertical:5
     },
     sousTexte:{
         // fontFamily:fonts.font2,
         fontSize:14,
-        fontWeight:'400'
+        fontWeight: "400"
     },
     ingredients:{
         backgroundColor:'white',
@@ -403,18 +403,18 @@ const styles = StyleSheet.create({
     textBandeau:{
       paddingLeft:30,
       fontFamily:fonts.font3,
-      fontWeight:'600',
+      fontWeight: "600",
       fontSize:20
     },
     titleFormule: {
       color:colors.color2,
       fontSize:20,
-      fontWeight: 'bold',
+      fontWeight: "bold",
      },
      textFormule:{
        color:colors.color1,
        fontSize:14,
-       fontWeight: 500,
+       fontWeight: "500",
        width:250
      },
      cardTitle:{
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
      },
      texteFormule:{
       fontSize:14,
-      fontWeight:'700',
+      fontWeight:  "700",
       fontFamily:fonts.font2
      }
   }); 

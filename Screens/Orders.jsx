@@ -12,6 +12,8 @@ import { getStoreById } from '../CallApi/api';
 
 const Orders = ({navigation}) => {
 
+    const API_BASE_URL = 'http://127.0.0.1:8080';
+
     const user = useSelector((state) => state.auth.user);
     const userId = user.userId
     const [store, setStore] = useState(null); 
@@ -28,7 +30,7 @@ const Orders = ({navigation}) => {
     
     const handleCancel = async (orderId) => {
         try {
-            const response = await axios.post(`http://127.0.0.1:8080/cancelOrder`, { orderId });
+            const response = await axios.post(`${API_BASE_URL}/cancelOrder`, { orderId });
             setCancelledOrder(orderId); 
         } catch (error) {
             console.error('An error occurred while updating the order status:', error);
@@ -47,11 +49,11 @@ const Orders = ({navigation}) => {
       //recupérer toutes les commandes du user
       const allMyOrders = async () => {
         try {
-          const response = await axios.get(`http://127.0.0.1:8080/ordersOfUser/${userId}`);
+          const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}`);
           const orders = response.data;
           console.log('orders', orders)
           const ordersWithDetails = await Promise.all(orders.map(async order => {
-            const productResponse = await axios.get(`http://127.0.0.1:8080/getOrderProducts/${order.orderId}`);
+            const productResponse = await axios.get(`${API_BASE_URL}/getOrderProducts/${order.orderId}`);
             const products = productResponse.data;
             const store = await getStoreById(order.storeId);
             console.log(store)
@@ -105,18 +107,18 @@ const Orders = ({navigation}) => {
                 >
                     <View style={{flexDirection:'row',justifyContent:'center', width:"100%", alignItems: 'center', gap:20}}>
                         <View style={{flexDirection:'column', justifyContent:'flex-start'}}>
-                            <Text style={{color:colors.color1, fontWeight:'bold'}}>{item.status.charAt(0).toUpperCase() + item.status.substring(1)}</Text>
+                            <Text style={{color:colors.color1, fontWeight:"bold"}}>{item.status.charAt(0).toUpperCase() + item.status.substring(1)}</Text>
                             <Text style={{color:colors.color5, fontSize:10}}>OrderID: {item.orderId}</Text>
                         </View>
                         <View style={{flexDirection:'column', justifyContent:'flex-start', borderLeftWidth: 1,
                                 borderRightWidth: 1,
                                 borderColor: colors.color4,
                                 paddingHorizontal:10}}>
-                            <Text style={{color:colors.color1, fontWeight:'bold'}}>{item.store && item.store.nom_magasin}</Text>
+                            <Text style={{color:colors.color1, fontWeight:"bold"}}>{item.store && item.store.nom_magasin}</Text>
                             <Text style={{color:colors.color5, fontSize:10}}>{formatDate(item.createdAt)}</Text>
                         </View>
                         <View style={{flexDirection:'column', justifyContent:'flex-start'}}>
-                            <Text style={{color:colors.color2, fontWeight:'bold'}}>{item.prix_total}€</Text>
+                            <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                             <Text style={{color:colors.color5, fontSize:10}}>{item.productIds.split(",").length}x Articles</Text>
                         </View>
                         <View style={{backgroundColor:'lightgrey', borderRadius:25, justifyContent:'center'}}> 
@@ -137,8 +139,8 @@ const Orders = ({navigation}) => {
                             );
                         })}
                         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                            <Text style={{fontSize:14, fontWeight:'600'}}>Votre total:</Text>
-                            <Text style={{color:colors.color2, fontWeight:'bold'}}>{item.prix_total}€</Text>
+                            <Text style={{fontSize:14, fontWeight: "600"}}>Votre total:</Text>
+                            <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                         </View>
                        <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
                             <TouchableOpacity onPress={handleReorder} style={{...style.btnReorder,flexDirection:'row', gap:10, alignItems:'center',justifyContent:'center',  width:'35%', marginVertical:10 }}>
@@ -158,7 +160,7 @@ const Orders = ({navigation}) => {
     const renderLastOrder = (item, index) => {
         return (
             <View style={{ borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
-                <Text style={{paddingLeft:30,  marginVertical:20, fontFamily:fonts.font3, fontWeight:'600', color:colors.color1, fontSize:16}}>Votre derniere commande</Text>
+                <Text style={{paddingLeft:30,  marginVertical:20, fontFamily:fonts.font3, fontWeight: "600", color:colors.color1, fontSize:16}}>Votre derniere commande</Text>
                 <View style={{backgroundColor:colors.color4, height:'auto', paddingHorizontal:30}}>
                     <View
                         style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, alignItems:'center', gap:10 }}
@@ -168,7 +170,7 @@ const Orders = ({navigation}) => {
                             <Text style={{color:colors.color5, fontSize:10}}>{formatDate(item.createdAt)}</Text>
                         </View>
                         <View>
-                            <Text style={{color:colors.color1, fontSize:14, fontWeight:'600'}}>{item.store && item.store.nom_magasin}</Text>
+                            <Text style={{color:colors.color1, fontSize:14, fontWeight: "600"}}>{item.store && item.store.nom_magasin}</Text>
                         </View>
                         
                     </View>
@@ -185,8 +187,8 @@ const Orders = ({navigation}) => {
                         );
                     })}
                     <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                        <Text style={{fontSize:14, fontWeight:'600'}}>Votre total:</Text>
-                        <Text style={{color:colors.color2, fontWeight:'bold'}}>{item.prix_total}€</Text>
+                        <Text style={{fontSize:14, fontWeight: "600"}}>Votre total:</Text>
+                        <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                     </View>
                    
                     <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%", marginVertical:20}}>
@@ -214,7 +216,7 @@ const Orders = ({navigation}) => {
     const ListHeader = ({ lastOrder }) => (
         <View>
           {lastOrder && renderLastOrder(lastOrder)}
-          <Text style={{ paddingHorizontal: 30, marginVertical: 10, fontFamily: fonts.font3, fontWeight: '600', color: colors.color1, fontSize: 16 }}>Vos commandes antérieures</Text>
+          <Text style={{ paddingHorizontal: 30, marginVertical: 10, fontFamily: fonts.font3, fontWeight: "600", color: colors.color1, fontSize: 16 }}>Vos commandes antérieures</Text>
         </View>
       )
     
@@ -225,7 +227,7 @@ const Orders = ({navigation}) => {
     <View style={{ flex:1,  alignItems: 'center', backgroundColor:colors.color3}}>
     
         <View style={{ flexDirection: 'row', alignItems: 'center', gap:70, marginTop:30 }}>
-            <Text style={{ fontSize: 20, fontWeight: 'bold', fontFamily:fonts.font1}}>Vos commandes</Text>
+            <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1}}>Vos commandes</Text>
             <TouchableOpacity onPress={handleBack} style={style.back}>
                   <Icon name="keyboard-arrow-left" size={30} color="#fff" />
             </TouchableOpacity>

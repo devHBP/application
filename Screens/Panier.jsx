@@ -20,6 +20,8 @@ import { decrementhandler } from '../Fonctions/fonctions'
 
 const Panier = ({navigation}) => {
 
+  const API_BASE_URL = 'http://127.0.0.1:8080';
+
   const dispatch = useDispatch()
   const [promoCode, setPromoCode] = useState('');
   //const [currentStock, setCurrentStock] = useState(product.stock);
@@ -125,7 +127,7 @@ const incrementhandler = async (id, offre) => {
 
     const token = await AsyncStorage.getItem('userToken');
 
-    axios.get('http://localhost:8080/verifyToken', {
+    axios.get(`${API_BASE_URL}/verifyToken`, {
       headers: {
           'x-access-token': token
       }
@@ -153,7 +155,7 @@ const incrementhandler = async (id, offre) => {
  //Promotion
   const handleApplyDiscount = async () => {
 
-    axios.get(`http://localhost:8080/promocodes/${promoCode}`)
+    axios.get(`${API_BASE_URL}/promocodes/${promoCode}`)
     .then(response => {
       const data = response.data;
       //console.log('data', data)
@@ -202,7 +204,7 @@ const incrementhandler = async (id, offre) => {
          <TouchableOpacity onPress={handleBack}>
            <Icon name="arrow-back" size={30} color="#900" />
          </TouchableOpacity>
-         <Text style={{ fontSize: 20, fontWeight: 'bold', marginLeft: 10 }}>Mon Panier</Text>
+         <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10 }}>Mon Panier</Text>
        </View>
        <ScrollView  style={{
         marginVertical:10,
@@ -247,10 +249,10 @@ const incrementhandler = async (id, offre) => {
        </ScrollView>
       
         <View  style={{ marginTop:10, alignItems:'center' }} >
-            <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
+            <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
             Total des quantités : {totalQuantity}
           </Text>
-          <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10 }}>
+          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
           Total de la commande : { totalPrice} euros
           </Text>
 

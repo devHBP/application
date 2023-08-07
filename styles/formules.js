@@ -74,7 +74,7 @@ const style = StyleSheet.create({
       color:colors.color1,
       fontSize:15,
       fontFamily:fonts.font2,
-      fontWeight:'400'
+      fontWeight: "400"
     }
   }
 )

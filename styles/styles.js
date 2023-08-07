@@ -13,7 +13,7 @@ export const inputStyling = StyleSheet.create({
     height: 50,
     marginVertical: 5,
     marginHorizontal: 20,
-    backgroundColor:'white',
+    backgroundColor:"white",
     
   });
 
@@ -30,8 +30,8 @@ export const colors = {
 };
 
 export const fonts = {
-    font1: 'Postino', 
-    font2:'Montserrat Medium',
-    font3:'Monserrat Bold'
+    font1: "Postino",
+    font2:"Montserrat Medium",
+    font3:"Monserrat Bold"
    
 };

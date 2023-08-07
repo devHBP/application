@@ -23,6 +23,8 @@ const inputOptions = {
 
 const Profile =  ({navigation}) => {
 
+  const API_BASE_URL = 'http://localhost:8080'
+
   const [stores, setStores] = useState([]);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -58,7 +60,7 @@ const Profile =  ({navigation}) => {
 
     const allStores = async () => {
       try {
-        const response = await axios.get('http://127.0.0.1:8080/getAllStores');
+        const response = await axios.get(`${API_BASE_URL}/getAllStores`);
         setStores(response.data);
       } catch (error) {
         console.error("Une erreur s'est produite :", error);
@@ -66,7 +68,7 @@ const Profile =  ({navigation}) => {
     };
     const getUserInfo = async(user) => {
       try {
-        const response = await axios.get(`http://127.0.0.1:8080/getOne/${user.userId}`); // Remplacez par la bonne URL de l'API
+        const response = await axios.get(`${API_BASE_URL}/getOne/${user.userId}`); // Remplacez par la bonne URL de l'API
         const userData = response.data;
         //console.log('userData', userData)
          setFirstname(userData.firstname);
@@ -292,7 +294,7 @@ const Profile =  ({navigation}) => {
                 // dispatch(updateUser({ ...user, id_magasin: selected.id_magasin }));
                 dispatch(updateUser({ ...user, storeId: selected.storeId }));
 
-                axios.put(`http://127.0.0.1:8080/updateOneUser/${user.userId}`, {storeId: selected.storeId})
+                axios.put(`${API_BASE_URL}/updateOneUser/${user.userId}`, {storeId: selected.storeId})
                 .then(response => {
                   // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
                   // console.log(response.data)
@@ -523,7 +525,7 @@ const style = StyleSheet.create({
 
   title:{
     fontSize: 26, 
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color:colors.color1,
     fontFamily: fonts.font1
   },
@@ -540,13 +542,13 @@ const style = StyleSheet.create({
     borderRadius:25
   },
   title_section:{
-    fontWeight:'bold',
+    fontWeight:"bold",
     color:colors.color2,
     marginVertical:20,
     paddingHorizontal:10
   }, 
   label:{
-   fontWeight:'bold',
+   fontWeight:"bold",
     color:colors.color1,
     paddingVertical:5
   },

@@ -18,6 +18,8 @@ const inputOptions = {
 
 const Signup = ({navigation}) => {
 
+  const API_BASE_URL = 'http://localhost:8080'
+
   const dispatch = useDispatch()
   const selectedStore = useSelector((state) => state.auth.selectedStore);
 
@@ -39,7 +41,7 @@ const Signup = ({navigation}) => {
       storeId: selectedStore ? selectedStore.storeId : null,
     }
     //appel axios post pour s'enregister
-    axios.post('http://localhost:8080/signup', clientData)
+    axios.post(`${API_BASE_URL}/signup`, clientData)
     .then(response => {
       console.log('client data', clientData)
        //console.log('response.data', response.data)
@@ -212,7 +214,7 @@ const style = StyleSheet.create({
     marginVertical:5,
     color:colors.color2,
     fontSize:33,
-    fontWeight:900,
+    fontWeight: "900",
   },
   pain:{
     fontStyle:'italic',
@@ -221,7 +223,7 @@ const style = StyleSheet.create({
   login:{
     textAlign:'center',
     color:colors.color2,
-    fontWeight:'bold',
+    fontWeight:"bold",
     marginVertical:10
   },
   label:{

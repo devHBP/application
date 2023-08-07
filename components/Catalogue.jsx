@@ -63,7 +63,7 @@ const styles = StyleSheet.create({
       catalogueTitleStyle:{
         fontSize:24,
         fontFamily:fonts.font3,
-        fontWeight:'700',
+        fontWeight: "700",
         color:colors.color1
       },
       catalogueText:{
@@ -71,7 +71,7 @@ const styles = StyleSheet.create({
         margin:10,
         fontSize:12,
         fontFamily:fonts.font3,
-        fontWeight:'700',
+        fontWeight: "700",
         color:colors.color1
       },
       button:{
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
         color:'white',
         fontSize:16,
         fontFamily:fonts.font3,
-        fontWeight:'600',
+        fontWeight: "600",
       },
       icon:{
         width:30,

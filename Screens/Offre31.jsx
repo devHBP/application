@@ -16,7 +16,7 @@ import ModalePageOffre31 from '../components/ModalePageOffre';
 
 const Offre31 = ({navigation}) => {
 
-  const baseUrl = 'http://127.0.0.1:8080';
+  const API_BASE_URL = 'http://127.0.0.1:8080';
 
   const [offre31Products, setOffre31ProductNames] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
@@ -28,7 +28,7 @@ const Offre31 = ({navigation}) => {
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
-    console.log('cart', cart)
+    //console.log('cart', cart)
 
     const handleBack = () => {
         navigation.navigate('home')
@@ -38,7 +38,7 @@ const Offre31 = ({navigation}) => {
         //les produits ayant une offre 3+1
           const fetchData = async () => {
             try {
-            const response = await axios.get('http://127.0.0.1:8080/getAllProducts');
+            const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
           
             const updatedProducts = response.data.map((product) => ({
               ...product,
@@ -91,7 +91,7 @@ const Offre31 = ({navigation}) => {
 
   const handleProduct = (product) => {
     setSelectedProduct(product)
-    console.log(product)
+    //console.log(product)
 }
       
 const handleAcceptOffer = async () => {
@@ -143,25 +143,10 @@ catch (error) {
 
 }  
  
-
-
-
-
-
-
-
 };
 
 const handleCart = () => {
   setModalVisible(true);
-  // if (selectedProduct) {
-  //     dispatch(addToCart(selectedProduct));
-  //     Toast.show({
-  //       type: 'success',
-  //       position: 'bottom',
-  //       text1: 'Produit ajouté au panier',
-  //     });
-  // }
 }
   return (
     <View style={{flex:1}}>
@@ -206,7 +191,7 @@ const handleCart = () => {
                 {group.products.map((product) => (
                   <View key={product.libelle} style={{ gap: 10, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
                     <Image
-                      source={{ uri: `${baseUrl}/${product.image}` }}
+                      source={{ uri: `${API_BASE_URL}/${product.image}` }}
                       style={style.sandwichImage}
                     />
                     <Text>{product.libelle}</Text>
@@ -236,14 +221,14 @@ const handleCart = () => {
     <View style={style.menu}>
         <View>
           <View style={style.bandeauFormule}>
-          <Text style={{ fontWeight:'bold'}}>Prix de l'offre</Text>
+          <Text style={{ fontWeight:"bold"}}>Prix de l'offre</Text>
          <Text> {totalPrice.toFixed(2)}€</Text>
           </View>
           <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
             <Text>Avec</Text><Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
-         <Text style={{color:colors.color2, fontWeight:'bold'}}> {(totalPrice*0.8).toFixed(2)}€</Text>
+         <Text style={{color:colors.color2, fontWeight:"bold"}}> {(totalPrice*0.8).toFixed(2)}€</Text>
           </View>
         </View>
       <Button

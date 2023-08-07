@@ -15,7 +15,7 @@ import FooterProfile from '../components/FooterProfile';
 
 const Solanid = ({navigation}) => {
 
-  const baseUrl = 'http://127.0.0.1:8080';
+  const API_BASE_URL = 'http://localhost:8080'
 
   
   const [solanidProducts, setSolanidProductNames] = useState([]);
@@ -36,7 +36,7 @@ const Solanid = ({navigation}) => {
         //les produits ayant une offre 3+1
         const fetchData = async () => {
             try {
-            const response = await axios.get('http://127.0.0.1:8080/getAllProducts');
+            const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
           
             const updatedProducts = response.data.map((product) => ({
               ...product,
@@ -173,7 +173,7 @@ const Solanid = ({navigation}) => {
             {group.products.map((product) => (
               <View key={product.libelle} style={{ gap: 10, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
                 <Image
-                  source={{ uri: `${baseUrl}/${product.image}` }}
+                  source={{ uri: `${API_BASE_URL}/${product.image}` }}
                   style={style.sandwichImage}
                 />
                 <Text>{product.libelle}</Text>
@@ -203,14 +203,14 @@ const Solanid = ({navigation}) => {
     <View style={style.menu}>
         <View>
           <View style={style.bandeauFormule}>
-          <Text style={{ fontWeight:'bold'}}>Prix du produit</Text>
+          <Text style={{ fontWeight: "bold"}}>Prix du produit</Text>
          <Text>{selectedProduct ? selectedProduct.prix_unitaire : 0} €</Text>
           </View>
           <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
             <Text>Avec</Text><Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
-         <Text style={{color:colors.color2, fontWeight:'bold'}}>{selectedProduct ?  Number(selectedProduct.prix_remise_collaborateur) : 0} €</Text>
+         <Text style={{color:colors.color2, fontWeight:"bold"}}>{selectedProduct ?  Number(selectedProduct.prix_remise_collaborateur) : 0} €</Text>
           </View>
         </View>
       <Button

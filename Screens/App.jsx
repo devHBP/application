@@ -20,10 +20,10 @@ const App = ({navigation}) => {
         <Text style={style.title}>Le pain du jour</Text>
         <Text style={style.title2}>Click'n'Collect</Text>
 
-        <View style={{ flexDirection:'row', justifyContent:'center', marginVertical:40}}>
+        <View style={{ flexDirection:"row", justifyContent:"center", marginVertical:40}}>
             <Image
-            source={require('../assets/logo_pdj.png')} // Remplacez 'my-image' par le nom de votre image
-            style={{ width: 150, height: 150, resizeMode:'contain' }} // Remplacez ces valeurs par les dimensions souhaitées
+            source={require("../assets/logo_pdj.png")} // Remplacez 'my-image' par le nom de votre image
+            style={{ width: 150, height: 150, resizeMode:"contain" }} // Remplacez ces valeurs par les dimensions souhaitées
         />
         </View>
         
@@ -38,14 +38,14 @@ const App = ({navigation}) => {
      
             <Button
                 style={style.btn} 
-                textColor={'white'} 
+                textColor={"white"} 
                 onPress={navigationToSignUp}
                 >
             S'INSCRIRE
             </Button>
             <Button
                 style={style.btn} 
-                textColor={'white'} 
+                textColor={"white"} 
                 
                 onPress={navigationToLogin}
                 >
@@ -60,7 +60,7 @@ const style = StyleSheet.create({
     container:{
         flex:1,
         padding:20,
-        justifyContent:'center',
+        justifyContent:"center",
         //reajustement margin pour laisser de la place au footer
        // marginBottom:70,
         
@@ -74,26 +74,26 @@ const style = StyleSheet.create({
       },
     title:{
         fontFamily: fonts.font1,
-        textAlign:'center',
+        textAlign:"center",
         fontSize:26,
         color: colors.color3
     },
     title2:{
         color: colors.color3,
-        textAlign:'center',
+        textAlign:"center",
         fontSize:24,
         // fontFamily: fonts.font3
     },
     container_slogan:{
-        flexDirection:'column',
-        alignItems:'center',
+        flexDirection:"column",
+        alignItems:"center",
         marginVertical:20
     },
     slogan:{
         color: colors.color2,
         fontSize:25,
-        // fontFamily: fonts.font2,
-        fontWeight:400,
+        fontFamily: fonts.font3,
+        fontWeight: "bold"
     }
 })
 

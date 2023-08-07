@@ -13,6 +13,8 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 
 const OrderConfirmation = ({navigation}) => {
 
+  const API_BASE_URL = 'http://127.0.0.1:8080';
+
   const dispatch = useDispatch()
   const webViewRef = useRef(null);
 
@@ -66,7 +68,7 @@ const handleBack = () => {
 useEffect(() => {
   if (orderInfo && paiement === 'online') {
     const submitOrder = async () => {
-      const response = await axios.post('http://localhost:8080/checkout_session', { orderInfo });
+      const response = await axios.post(`${API_BASE_URL}/checkout_session`, { orderInfo });
       const sessionUrl = response.data.session;
       const sessionId = response.data.id
       //console.log('data id', sessionId)
@@ -92,7 +94,7 @@ useEffect(() => {
     const token = await AsyncStorage.getItem('userToken');
     //console.log('token valider', token)
 
-    axios.get('http://localhost:8080/verifyToken', {
+    axios.get(`${API_BASE_URL}/verifyToken`, {
       headers: {
           'x-access-token': token
       }
@@ -143,7 +145,7 @@ useEffect(() => {
 
           const createOrder = async () => {
             try {
-              const response =  await axios.post('http://localhost:8080/createorder', orderData);
+              const response =  await axios.post(`${API_BASE_URL}/createorder`, orderData);
               const numero_commande = response.data.numero_commande
              console.log('num', response)
               dispatch(setNumeroCommande(numero_commande));
@@ -186,7 +188,7 @@ useEffect(() => {
 const checkPaymentStatus = async () => {
   const interval = setInterval(async () => {
   try {
-    const response = await axios.get(`http://localhost:8080/paiementStatus?sessionId=${sessionId}`);
+    const response = await axios.get(`${API_BASE_URL}/paiementStatus?sessionId=${sessionId}`);
     const { status, transactionId, method } = response.data;
     console.log('response PaiementStatus', response.data)
      // retour : response data {"status": "paid", "transactionId": "pi_3NOFjcGnFAjiWNhK0KP6l8Nl"}
@@ -200,7 +202,7 @@ const checkPaymentStatus = async () => {
         transactionId
       };
   
-      const updateResponse = await axios.post('http://localhost:8080/createPaiement', paymentData);
+      const updateResponse = await axios.post(`${API_BASE_URL}/createPaiement`, paymentData);
       console.log('Response createPaiement:', updateResponse.data);
       //console.log('paymentId', updateResponse.data.paymentId)
       const paymentId = updateResponse.data.paymentId
@@ -208,7 +210,7 @@ const checkPaymentStatus = async () => {
       const updateData = { numero_commande, status, paymentId}
       //console.log('updData', updateData)
 
-      const response = await axios.post('http://localhost:8080/updateOrder', updateData);
+      const response = await axios.post(`${API_BASE_URL}/updateOrder`, updateData);
       console.log('response updateOrder', response.data)
       navigation.navigate('success')
     }
