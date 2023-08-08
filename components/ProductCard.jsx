@@ -1,9 +1,9 @@
 import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, TouchableHighlight } from 'react-native'
+import TextTicker from 'react-native-text-ticker'
 import React, { useState, useEffect} from 'react'
 import { Button } from 'react-native-paper'
 import { addToCart,addFreeProductToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
-import axios from 'axios'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { defaultStyle, fonts, colors} from '../styles/styles'
 import ModaleOffre31 from '../components/ModaleOffre31';
@@ -179,10 +179,10 @@ const incrementhandler = async () => {
                     height:40,
                     backgroundColor:'white',
                     paddingVertical:5,
-                    width:"50%"
+                    width:"80%"
                     }}
                 >
-                    <Text
+                    {/* <Text
                         numberOfLines={1}
                         style={{
                         fontSize: 14,
@@ -191,7 +191,22 @@ const incrementhandler = async () => {
                         }}
                     >
                         {libelle}
-                    </Text>
+                    </Text> */}
+                    <TextTicker
+                      style={{
+                          fontSize: 14,
+                          fontWeight: "300",
+                          width: "100%",
+                      }}
+                      duration={3000} // durée en ms pour un aller-retour (peut être modifié selon vos besoins)
+                      loop // pour répéter l'animation en boucle
+                      // bounce // pour que le texte "rebondisse" à chaque extrémité
+                      repeatSpacer={50} // espace entre chaque répétition
+                      marqueeDelay={1000} // délai avant que l'animation ne commence
+                      
+                  >
+                      {libelle}
+                  </TextTicker>
                     <Text
                             numberOfLines={1}
                             style={{
