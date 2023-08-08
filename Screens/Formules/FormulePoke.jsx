@@ -40,32 +40,8 @@ const FormulePoke = ({navigation}) => {
         navigation.navigate('home')
       }
 
-      // //---STOCK---//
-      // //verif des stock
-      // const checkProductStock = async (productId) => {
-      //   try {
-      //     const isAvailable = await checkStockForSingleProduct(productId);
-      //     return isAvailable.find(item => item.productId === productId) || null;  
-      //   } catch (error) {
-      //     console.error('Erreur lors de la vérification du stock:', error);
-      //     return false;
-      //   }
-      // };
-      // //verifie si produit dans le panier pour verif stock
-      // const getProductQtyInCart = (productId) => {
-      //   let totalQty = 0;
-      
-      //   cart.forEach(item => {
-      //     totalQty += item.productIds.filter(id => id === productId).length;
-      //   });
-      
-      //   return totalQty;
-      // }
-      //---STOCK---//
-
-
       useEffect(() => {
-        //les sandwichs - categorie
+        //les pokebowl - categorie
         const fetchProducts = async () => {
           try {
             const category = 'Poke Bowls'; 
@@ -134,23 +110,7 @@ const FormulePoke = ({navigation}) => {
 
 
     const handleSandwich = async (product) => {
-      // const stockObject = await checkProductStock(product.productId);
-      // const stockAvailable = stockObject.quantite
-      // console.log(stockAvailable)
-
-      // const productInCartQty = getProductQtyInCart(product.productId);
-      // console.log('productInCartQty', productInCartQty)
-
-      // const remainingStock = stockObject.quantite - productInCartQty;
-      // console.log('stock après déduction du panier', remainingStock);
-
-      // if (remainingStock <= 0) {
-      //   return Toast.show({
-      //     type: 'error',
-      //     text1: `Victime de son succès`,
-      //     text2: `Plus de stock disponible`,
-      //   });
-      // }
+   
       const isAvailable = await checkProductAvailability(product, checkStockForSingleProduct, cart);
 
         if (selectedSandwich?.productId === product.productId) {
@@ -160,12 +120,12 @@ const FormulePoke = ({navigation}) => {
           setSelectedSandwich(product); 
           setProductIds([...productIds, product.productId]);
       }
-
-      
-
-      
+   
   }
   const handleDessert = (product) => {
+    //test si dessert dispo ?
+    // const isAvailable = await checkProductAvailability(product, checkStockForSingleProduct, cart);
+
     if(!selectedSandwich ) {
       Toast.show({
           type: 'error',
@@ -182,6 +142,7 @@ const FormulePoke = ({navigation}) => {
         setProductIds([...productIds, product.productId]);
     }
   }
+
   const handleBoisson = (product) => {
     if(!selectedSandwich ) {
       Toast.show({
@@ -237,6 +198,7 @@ const FormulePoke = ({navigation}) => {
         qty: 1,
       }
       console.log('formule', formule);
+      console.log('option', formule.option1)
       dispatch(addToCart(formule));
       navigation.navigate('panier')
     }

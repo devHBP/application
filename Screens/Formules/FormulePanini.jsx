@@ -186,7 +186,7 @@ const FormulePanini = ({navigation}) => {
         option2: selectedDessert ? selectedDessert : null,
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
-        libelle:"Formule Sandwich",
+        libelle:"Formule Panini",
         formuleImage: require('../../assets/Formule55.jpg'),
         productIds: productIds,
         qty: 1,

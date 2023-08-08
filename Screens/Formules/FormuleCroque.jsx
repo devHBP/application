@@ -186,7 +186,7 @@ const FormuleCroques = ({navigation}) => {
         option2: selectedDessert ? selectedDessert : null,
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
-        libelle:"Formule Sandwich",
+        libelle:"Formule Croque",
         formuleImage: require('../../assets/Formule16.jpg'),
         productIds: productIds,
         qty: 1,

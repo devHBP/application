@@ -186,7 +186,7 @@ const FormulePainBagnat = ({navigation}) => {
         option2: selectedDessert ? selectedDessert : null,
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
-        libelle:"Formule Sandwich",
+        libelle:"Formule Pain Bagnat",
         formuleImage: require('../../assets/Formule28.jpg'),
         productIds: productIds,
         qty: 1,
