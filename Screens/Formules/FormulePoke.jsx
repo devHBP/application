@@ -1,21 +1,26 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch, TouchableHighlight } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { fonts, colors} from '../../styles/styles'
-import CheckBox from '@react-native-community/checkbox';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import { Button, RadioButton} from 'react-native-paper'
+import { Button, } from 'react-native-paper'
 import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
 import FooterProfile from '../../components/FooterProfile';
 
+
+//call API
+import { checkStockForSingleProduct, checkStockFormule } from '../../CallApi/api.js';
+//fonctions
+import { checkProductAvailability } from '../../Fonctions/fonctions';
+
 const FormulePoke = ({navigation}) => {
 
   const baseUrl = 'http://127.0.0.1:8080';
 
-    const [products, setProducts] = useState([]);
+    const [ products, setProducts] = useState([]);
     const [ desserts, setDesserts] = useState([]);
     const [ boissons, setBoissons] = useState([]);
     const [dessertSwitch, setDessertSwitch] = useState(true);
@@ -34,6 +39,30 @@ const FormulePoke = ({navigation}) => {
     const handleBack = () => {
         navigation.navigate('home')
       }
+
+      // //---STOCK---//
+      // //verif des stock
+      // const checkProductStock = async (productId) => {
+      //   try {
+      //     const isAvailable = await checkStockForSingleProduct(productId);
+      //     return isAvailable.find(item => item.productId === productId) || null;  
+      //   } catch (error) {
+      //     console.error('Erreur lors de la vérification du stock:', error);
+      //     return false;
+      //   }
+      // };
+      // //verifie si produit dans le panier pour verif stock
+      // const getProductQtyInCart = (productId) => {
+      //   let totalQty = 0;
+      
+      //   cart.forEach(item => {
+      //     totalQty += item.productIds.filter(id => id === productId).length;
+      //   });
+      
+      //   return totalQty;
+      // }
+      //---STOCK---//
+
 
       useEffect(() => {
         //les sandwichs - categorie
@@ -103,22 +132,38 @@ const FormulePoke = ({navigation}) => {
         
       }, []);
 
-    //   const handleSwitchToggle = () => {
-    //     setDessertSwitch(!dessertSwitch);
-    //     if (dessertSwitch) { // If the switch is being turned off
-    //         setSelectedDessert(null); // Deselect the dessert
-    //     }
-    // };
-      
 
-    const handleSandwich = (product) => {
-      if (selectedSandwich?.productId === product.productId) {
+    const handleSandwich = async (product) => {
+      // const stockObject = await checkProductStock(product.productId);
+      // const stockAvailable = stockObject.quantite
+      // console.log(stockAvailable)
+
+      // const productInCartQty = getProductQtyInCart(product.productId);
+      // console.log('productInCartQty', productInCartQty)
+
+      // const remainingStock = stockObject.quantite - productInCartQty;
+      // console.log('stock après déduction du panier', remainingStock);
+
+      // if (remainingStock <= 0) {
+      //   return Toast.show({
+      //     type: 'error',
+      //     text1: `Victime de son succès`,
+      //     text2: `Plus de stock disponible`,
+      //   });
+      // }
+      const isAvailable = await checkProductAvailability(product, checkStockForSingleProduct, cart);
+
+        if (selectedSandwich?.productId === product.productId) {
           setSelectedSandwich(null); 
           setProductIds(productIds.filter(productId => productId !== product.productId));
       } else {
           setSelectedSandwich(product); 
           setProductIds([...productIds, product.productId]);
       }
+
+      
+
+      
   }
   const handleDessert = (product) => {
     if(!selectedSandwich ) {

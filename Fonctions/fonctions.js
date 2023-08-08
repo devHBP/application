@@ -66,4 +66,60 @@ export  const incrementhandler = async (id, dispatch, cart, currentStock, offre)
       console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
     }
   };
+
+
+//---STOCK---//
+
+// Vérification des stocks
+async function checkProductStock(checkStockForSingleProduct, productId) {
+  try {
+    const isAvailable = await checkStockForSingleProduct(productId);
+    return isAvailable.find(item => item.productId === productId) || null;
+  } catch (error) {
+    console.error('Erreur lors de la vérification du stock:', error);
+    return false;
+  }
+}
+
+// Vérifie la quantité d'un produit dans le panier
+function getProductQtyInCart(cart, productId) {
+  let totalQty = 0;
+
+  cart.forEach(item => {
+    totalQty += item.productIds.filter(id => id === productId).length;
+  });
+
+  return totalQty;
+}
+
+// Vérifie la disponibilité d'un produit en prenant en compte les stocks et le panier
+async function checkProductAvailability(product, checkStockForSingleProduct, cart) {
+  const stockObject = await checkProductStock(checkStockForSingleProduct, product.productId);
+  if (!stockObject) {
+    Toast.show({
+      type: 'error',
+      text1: `Erreur`,
+      text2: `Erreur lors de la vérification du stock.`,
+    });
+    return false;
+  }
+  
+  const stockAvailable = stockObject.quantite;
+  const productInCartQty = getProductQtyInCart(cart, product.productId);
+  
+  const remainingStock = stockAvailable - productInCartQty;
+  if (remainingStock <= 0) {
+    Toast.show({
+      type: 'error',
+      text1: `Victime de son succès`,
+      text2: `Plus de stock disponible`,
+    });
+    return false;
+  }
+  
+  return true;
+}
+
+export { checkProductStock, getProductQtyInCart, checkProductAvailability };
+
      
