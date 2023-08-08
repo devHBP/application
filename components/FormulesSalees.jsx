@@ -89,7 +89,7 @@ const FormulesSalees = () => {
                 {/* Pizzas*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePizzas} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/Formule2.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
@@ -101,7 +101,7 @@ const FormulesSalees = () => {
                 {/* Wraps*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleWraps} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/Formule32.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
@@ -113,7 +113,7 @@ const FormulesSalees = () => {
                 {/* Pains Bagnats*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePainBagnat} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/Formule28.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
@@ -125,7 +125,7 @@ const FormulesSalees = () => {
                 {/* Burgers*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleBurger} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/Formule27.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
@@ -137,7 +137,7 @@ const FormulesSalees = () => {
                 {/* croques*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleCroque} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/Formule16.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
@@ -149,7 +149,7 @@ const FormulesSalees = () => {
                 {/* paninis*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePanini} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/Formule55.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
@@ -161,7 +161,7 @@ const FormulesSalees = () => {
                 {/* quiches */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleQuiche} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            source={require('../assets/Formule22.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'center' }}
                             />
                     <View style={styles.cardTitle}>
