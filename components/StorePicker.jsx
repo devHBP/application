@@ -61,7 +61,7 @@ const StorePicker = () => {
 
                                 axios.put(`${API_BASE_URL}/updateOneUser/${user.userId}`, {storeId: selected.storeId})
                                 .then(response => {
-                                    console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
+                                    // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
                                 })
                                 .catch(error => {
                                     console.error('Erreur lors de la mise à jour du choix du magasin dans la base de données (ici) - erreur ici:', error);
