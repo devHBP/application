@@ -332,6 +332,8 @@ const groupedItemsArray = Object.values(groupedItems);
           <Button 
               buttonColor='lightgray' 
               onPress={handleConfirm}
+              disabled={groupedItemsArray.length === 0} 
+
           >Confirmer ma commande</Button>
             
           
