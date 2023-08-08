@@ -39,6 +39,38 @@ const OrderConfirmation = ({navigation}) => {
   const paiement = useSelector((state) => state.cart.paiement)
   const numero_commande = useSelector((state) => state.order.numero_commande)
 
+  const aggregatedCartItems = cartItems.reduce((accumulator, currentItem) => {
+    
+    // Recherchez l'article dans l'accumulateur par idProduct
+    const existingItem = accumulator.find(
+      item => item.productId === currentItem.productId
+    );
+
+    if (existingItem) {
+      // Si l'article existe déjà dans l'accumulateur, ajoutez simplement la quantité
+      existingItem.qty += currentItem.qty;
+
+      // Si l'élément actuel est gratuit, ajoutez une note à l'élément existant
+      if (currentItem.isFree) {
+        existingItem.isFree = true;
+        existingItem.freeCount += currentItem.qty; // ajoutez la quantité de produits gratuits
+
+      }
+
+      // Conservez le nom de l'offre du produit (vous pouvez ajouter d'autres logiques si nécessaire)
+      existingItem.offre = currentItem.offre;
+    } else {
+      // Sinon, ajoutez un nouvel élément à l'accumulateur
+      accumulator.push({...currentItem,
+        freeCount: currentItem.isFree ? currentItem.qty : 0 // Initialisez freeCount
+      }); // Utilisez la déstructuration pour éviter les références croisées
+    }
+  
+    return accumulator;
+  }, []);
+  
+  console.log('panier fusionné', aggregatedCartItems);
+  
   const totalPrice = Number((cartItems.reduce((total, item) => {
     let prix;
   
@@ -133,14 +165,39 @@ useEffect(() => {
             products: (() => {
               let products = [];
       
-              cartItems.forEach(item => {
+              aggregatedCartItems.forEach(item => {
                   if (item.type === 'formule') {
-                      item.productIds.forEach(productId => {
-                          products.push({ productId: productId, quantity: item.qty });
-                      });
+
+
+
+                      // item.productIds.forEach(productId => {
+                        
+                      //     products.push({ productId: productId, quantity: item.qty, formule: item.libelle, category: item.option1.categorie });
+                      // });
+
+                      ['option1', 'option2', 'option3'].forEach(option => {
+                        if (item[option]) {  // Si l'option est présente
+                            products.push({
+                                productId: item[option].productId,
+                                quantity: item.qty,
+                                formule: item.libelle,
+                                category: item[option].categorie
+                            });
+                          }
+                        })
                   } else {
-                      products.push({ productId: item.productId, quantity: item.qty });
-                  }
+                      // products.push({ productId: item.productId, quantity: item.qty, offre: item.offre });
+                      const productData = {
+                        productId: item.productId,
+                        quantity: item.qty
+                      };
+                
+                      if (item.isFree && item.qty >= 4) {
+                        productData.offre = item.offre;
+                      }
+                
+                      products.push(productData);
+                    }
               });
       
               return products;
@@ -157,7 +214,7 @@ useEffect(() => {
               dispatch(setNumeroCommande(numero_commande));
 
               setOrderInfo({
-                cartItems,
+                aggregatedCartItems,
                 user,
                 selectedStore,
                 totalPrice,
@@ -173,7 +230,7 @@ useEffect(() => {
               throw new Error('Erreur lors de la création de la commande');
             }
           }
-         createOrder()
+         //createOrder()
       } else {
           console.log('erreur ici', error)
       }
@@ -248,11 +305,14 @@ const checkPaymentStatus = async () => {
       <ScrollView vertical showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <Text>Contenu du panier :</Text>
-        {cartItems.map((item, index) => (
+        {aggregatedCartItems.map((item, index) => (
           <View key={`${item.productId}_${index}`} style={styles.itemContainer}>
             <Text>{item.libelle}</Text>
             <Text>Prix unitaire : {item.prix || item.prix_unitaire} euros</Text>
             <Text>Quantité : {item.qty}</Text>
+            {
+              item.freeCount > 0 && <Text>Nb de produits offerts: {item.freeCount}</Text>
+            }
             
           </View>
         ))}

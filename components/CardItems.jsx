@@ -32,7 +32,7 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
    
       <Text style={styles.isFree}> 
         {/* {isFree = 'true' ? `Vous avez ${freeCount} produit gratuit` : 'sans offre'} */}
-        {isFree = 'true'  ? `Vous avez ${freeCount} produit${freeCount > 1 ? 's' : ''} gratuit${freeCount > 1 ? 's' : ''}` : 'sans offre'}
+        {isFree = 'true' && freeCount > 0 ? `Vous avez ${freeCount} produit${freeCount > 1 ? 's' : ''} gratuit${freeCount > 1 ? 's' : ''}` : ''}
 
       </Text>
       

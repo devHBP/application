@@ -261,6 +261,7 @@ const groupedItemsArray = Object.values(groupedItems);
                   //   qty={qty}
                   //   key={index}
                   // />
+                  
                   <CardItemFormule
                       option1={option1}
                       option2={option2}
@@ -286,7 +287,7 @@ const groupedItemsArray = Object.values(groupedItems);
                 //   qty={item.qty}
                 //   key={index}
                 // />
-                <View >
+                <View key={index}>
     
                     <CartItem 
                       libelle={group.items[0].libelle}
@@ -296,7 +297,6 @@ const groupedItemsArray = Object.values(groupedItems);
                       decrementhandler={() => decrementhandler(group.items[0].productId, dispatch)}
                       image={group.items[0].image}
                       index={index}
-                      key={index}
                       isFree={group.items[0].isFree}
                       freeCount={group.freeCount}
                     />
