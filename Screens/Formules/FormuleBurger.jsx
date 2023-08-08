@@ -11,6 +11,11 @@ import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
 import FooterProfile from '../../components/FooterProfile';
 
+//call API
+import { checkStockForSingleProduct } from '../../CallApi/api.js';
+//fonctions
+import { checkProductAvailability } from '../../Fonctions/fonctions';
+
 const FormuleBurger = ({navigation}) => {
 
   const baseUrl = 'http://127.0.0.1:8080';
@@ -111,7 +116,10 @@ const FormuleBurger = ({navigation}) => {
     // };
       
 
-    const handleSandwich = (product) => {
+    const handleSandwich = async (product) => {
+
+       await checkProductAvailability(product, checkStockForSingleProduct, cart);
+
       if (selectedSandwich?.productId === product.productId) {
           setSelectedSandwich(null); 
           setProductIds(productIds.filter(productId => productId !== product.productId));

@@ -12,7 +12,7 @@ import FooterProfile from '../../components/FooterProfile';
 
 
 //call API
-import { checkStockForSingleProduct, checkStockFormule } from '../../CallApi/api.js';
+import { checkStockForSingleProduct } from '../../CallApi/api.js';
 //fonctions
 import { checkProductAvailability } from '../../Fonctions/fonctions';
 
@@ -111,7 +111,7 @@ const FormulePoke = ({navigation}) => {
 
     const handleSandwich = async (product) => {
    
-      const isAvailable = await checkProductAvailability(product, checkStockForSingleProduct, cart);
+     await checkProductAvailability(product, checkStockForSingleProduct, cart);
 
         if (selectedSandwich?.productId === product.productId) {
           setSelectedSandwich(null); 
