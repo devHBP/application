@@ -186,7 +186,7 @@ const FormulePoke = ({navigation}) => {
         option2: selectedDessert ? selectedDessert : null,
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
-        libelle:"Formule Sandwich",
+        libelle:"Formule Poke Bowl",
         formuleImage: require('../../assets/Formule26.jpg'),
         productIds: productIds,
         qty: 1,
