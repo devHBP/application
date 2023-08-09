@@ -205,9 +205,21 @@ const incrementhandler = async (productIds, offre) => {
     setPromoCode('');
   };
   
-  // 1. Regroupez les articles par offre
-const groupedItems = cart.reduce((accumulator, item) => {
-  const key = item.offre || '';
+//filtrage si formule ou produits
+  const formules = cart.filter(item => item.type === 'formule');
+  const produits = cart.filter(item => item.type !== 'formule');
+
+//Regroupez les articles par offre
+const groupedItems = produits.reduce((accumulator, item) => {
+
+  let key;
+  //pour différencier les produits par key
+  if (item.offre) {
+    key = item.offre;
+  } else {
+    key = 'product-' + item.productId;
+  }
+
   if (!accumulator[key]) {
     // accumulator[key] = [item];
     accumulator[key] = {
@@ -233,22 +245,13 @@ const groupedItemsArray = Object.values(groupedItems);
          </TouchableOpacity>
          <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10 }}>Mon Panier</Text>
        </View>
-       <ScrollView  style={{
-        marginVertical:10,
-          // paddingVertical: 40,
-          flex: 1,
-        }}>
-          {cart.map((item, index) => {
+       <ScrollView  style={{marginVertical:10,flex: 1,}}>
+        {/* - formules -  */}
+          {formules.map((item, index) => {
             if (item.type === 'formule'){
-              
-              // const formule = item
-              // const formule = group[0];
-              // const formule = group.items[0];
-
-              // const { option1, option2,option3, prix, libelle, formuleImage, productIds, image, qty, id } = formule
               return (
-                <View key={item.index}>
-                  <Text>Une formule {item.libelle}</Text>
+                <View key={index}>
+                  <Text>{item.libelle}</Text>
                   <CardItemFormule
                     option1={item.option1}
                     option2={item.option2}
@@ -260,12 +263,11 @@ const groupedItemsArray = Object.values(groupedItems);
                     qty={item.qty}
                     // key={item.id}
                   />
-                </View>
-              
+                </View>   
               );
-
-            }
+          }
           })} 
+           {/* - produits seuls ou avec offre -  */}
             {groupedItemsArray.map((group, index) => {
               if (group.items[0].type !== 'formule') {
                   return (
@@ -284,11 +286,7 @@ const groupedItemsArray = Object.values(groupedItems);
                       </View>
                   );
               }   
-                
-              })} 
-              
-
-              
+            })}    
        </ScrollView>
       
         <View  style={{ marginTop:10, alignItems:'center' }} >
@@ -313,13 +311,11 @@ const groupedItemsArray = Object.values(groupedItems);
           <Button 
               buttonColor='lightgray' 
               onPress={handleConfirm}
-              disabled={groupedItemsArray.length === 0} 
-
-          >Confirmer ma commande</Button>
-            
+              disabled={groupedItemsArray.length === 0}>
+            Confirmer ma commande
+          </Button>
           
-        </View>
-        
+        </View>      
     </View>
           <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
 

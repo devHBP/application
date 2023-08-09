@@ -83,12 +83,16 @@ async function checkProductStock(checkStockForSingleProduct, productId) {
   }
 }
 
-// Vérifie la quantité d'un produit dans le panier
+//Vérifie la quantité d'un produit dans le panier
 function getProductQtyInCart(cart, productId) {
   let totalQty = 0;
 
   cart.forEach(item => {
-    totalQty += item.productIds.filter(id => id === productId).length;
+    if (item.productIds && Array.isArray(item.productIds)) {
+      totalQty += item.productIds.filter(id => id === productId).length;
+    } else if (item.productId === productId) {
+      totalQty += item.qty || 0;
+    }
   });
 
   return totalQty;
@@ -121,6 +125,8 @@ async function checkProductAvailability(product, checkStockForSingleProduct, car
   
   return true;
 }
+//--- FIN STOCK---//
+
 
 export { checkProductStock, getProductQtyInCart, checkProductAvailability };
 
