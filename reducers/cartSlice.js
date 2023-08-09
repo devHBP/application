@@ -9,19 +9,48 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
  
+    // addToCart: (state, action) => {
+    //   const product = action.payload;
+      
+    //   const existingProductIndex = state.cart.findIndex(
+    //     (item) => item.productId === product.productId && item.offre === product.offre
+    //   );
+    
+    //   if (existingProductIndex !== -1) {
+    //     state.cart[existingProductIndex].qty += 1;
+    //   } else {
+    //     state.cart.push({ ...product, qty: 1, isFree: false });
+    //   }
+    // },
     addToCart: (state, action) => {
       const product = action.payload;
-      
-      const existingProductIndex = state.cart.findIndex(
-        (item) => item.productId === product.productId && item.offre === product.offre
-      );
-    
-      if (existingProductIndex !== -1) {
-        state.cart[existingProductIndex].qty += 1;
-      } else {
-        state.cart.push({ ...product, qty: 1, isFree: false });
+  
+      // Si c'est une formule
+      if (product.type === "formule") {
+          const existingFormuleIndex = state.cart.findIndex(
+            (item) => item.id === product.id
+          );
+  
+          if (existingFormuleIndex !== -1) {
+            state.cart[existingFormuleIndex].qty += 1;
+          } else {
+            state.cart.push(product);
+          }
+      } 
+      // Pour les autres produits
+      else {
+          const existingProductIndex = state.cart.findIndex(
+            (item) => item.productId === product.productId && item.offre === product.offre
+          );
+  
+          if (existingProductIndex !== -1) {
+            state.cart[existingProductIndex].qty += 1;
+          } else {
+            state.cart.push({ ...product, qty: 1, isFree: false });
+          }
       }
-    },
+  },
+  
 
     addFreeProductToCart: (state, action) => {
       const product = action.payload;
@@ -31,19 +60,36 @@ const cartSlice = createSlice({
       }
     },
     
-      decrementOrRemoveFromCart: (state, action) => {
-        const product = action.payload;
-        const existingProductIndex = state.cart.findIndex(
-          (item) => item.productId === product.productId
-        );
-        if (existingProductIndex !== -1) {
-          if (state.cart[existingProductIndex].qty > 1) {
-            state.cart[existingProductIndex].qty -= 1;
-          } else {
-            state.cart = state.cart.filter((item) => item.productId !== product.productId);
-          }
+    //   decrementOrRemoveFromCart: (state, action) => {
+    //     const product = action.payload;
+    //     console.log("Decrement or remove product:", product);
+
+    //     const existingProductIndex = state.cart.findIndex(
+    //       (item) => item.productId === product.productId
+    //     );
+    //     if (existingProductIndex !== -1) {
+    //       if (state.cart[existingProductIndex].qty > 1) {
+    //         state.cart[existingProductIndex].qty -= 1;
+    //       } else {
+    //         state.cart = state.cart.filter((item) => item.productId !== product.productId);
+    //       }
+    //     }
+    // },
+
+    decrementOrRemoveFromCart: (state, action) => {
+      const product = action.payload;
+      const existingProductIndex = state.cart.findIndex(
+        (item) => Array.isArray(item.productIds) ? item.productIds[0] === product.productId : item.productId === product.productId
+      );
+      if (existingProductIndex !== -1) {
+        if (state.cart[existingProductIndex].qty > 1) {
+          state.cart[existingProductIndex].qty -= 1;
+        } else {
+          state.cart = state.cart.filter((item) => Array.isArray(item.productIds) ? item.productIds[0] !== product.productId : item.productId !== product.productId);
         }
-    },
+      }
+  },
+  
     incrementProductQty: (state, action) => {
       const productId = action.payload;
       

@@ -4,8 +4,10 @@ import Toast from 'react-native-toast-message';
 
 
 export const decrementhandler = (id, dispatch) => {
+  // console.log("Decrementing product with ID:", id);
+  const productId = Array.isArray(id) ? id[0] : id;
 
-    dispatch(decrementOrRemoveFromCart({ productId: id, qty: 1 }));
+    dispatch(decrementOrRemoveFromCart({ productId: productId, qty: 1 }));
   };
   
 

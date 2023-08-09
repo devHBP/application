@@ -60,10 +60,12 @@ const Panier = ({navigation}) => {
     dispatch(addFreeProductToCart(freeProduct));
   };
 
-const incrementhandler = async (id, offre) => {
+const incrementhandler = async (productIds, offre) => {
   console.log({ id, dispatch, cart, offre });
+  const id = Array.isArray(productIds) ? productIds[0] : productIds; // Si productIds est un tableau, prenez le premier élément. Sinon, prenez productIds tel quel.
 
-  const productInCart = cart.find((item) => item.productId === id);
+  // const productInCart = cart.find((item) => item.productId === id);
+  const productInCart = cart.find((item) => Array.isArray(item.productIds) ? item.productIds[0] === id : item.productId === id);
 
 
   try {
@@ -205,7 +207,7 @@ const incrementhandler = async (id, offre) => {
   
   // 1. Regroupez les articles par offre
 const groupedItems = cart.reduce((accumulator, item) => {
-  const key = item.offre || 'no-offer';
+  const key = item.offre || '';
   if (!accumulator[key]) {
     // accumulator[key] = [item];
     accumulator[key] = {
@@ -222,8 +224,6 @@ const groupedItems = cart.reduce((accumulator, item) => {
 
 const groupedItemsArray = Object.values(groupedItems);
 
-
-  
   return (
     <>
     <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: 'white', paddingHorizontal: 5,paddingVertical:15,  marginBottom:70 }}>
@@ -238,75 +238,56 @@ const groupedItemsArray = Object.values(groupedItems);
           // paddingVertical: 40,
           flex: 1,
         }}>
-          {groupedItemsArray.map((group, index) => {
-
-            
-            if (group.items[0].type === 'formule'){
+          {cart.map((item, index) => {
+            if (item.type === 'formule'){
               
               // const formule = item
               // const formule = group[0];
-              const formule = group.items[0];
+              // const formule = group.items[0];
 
-              const { option1, option2,option3, prix, libelle, formuleImage, productIds, image, qty } = formule
+              // const { option1, option2,option3, prix, libelle, formuleImage, productIds, image, qty, id } = formule
               return (
-                
-                  // <CardItemFormule
-                  //   option1={option1}
-                  //   option2={option2}
-                  //   option3={option3}
-                  //   prix_unitaire={prix}
-                  //   incrementhandler={() => incrementhandler(item.productId, item.offre)}
-                  //   decrementhandler={() => decrementhandler(item.productId, dispatch)}
-                  //   image={formuleImage}
-                  //   qty={qty}
-                  //   key={index}
-                  // />
-                  
+                <View key={item.index}>
+                  <Text>Une formule {item.libelle}</Text>
                   <CardItemFormule
-                      option1={option1}
-                      option2={option2}
-                      option3={option3}
-                      prix_unitaire={prix}
-                      incrementhandler={() => incrementhandler(formule.productId, formule.offre)}
-                      decrementhandler={() => decrementhandler(formule.productId, dispatch)}
-                      image={formuleImage}
-                      qty={qty}
-                      key={index}
-                    />
-               
-              );
-            } else {
-              return (
-                // <CartItem 
-                //   libelle = {item.libelle}
-                //   prix_unitaire={item.prix || item.prix_unitaire}
-                //   incrementhandler={() => incrementhandler(item.productId, item.offre)}
-                //   decrementhandler={() => decrementhandler(item.productId, dispatch)}
-                //   image={item.image}
-                //   index={index}
-                //   qty={item.qty}
-                //   key={index}
-                // />
-                <View key={index}>
-    
-                    <CartItem 
-                      libelle={group.items[0].libelle}
-                      prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
-                      qty={group.items.reduce((acc, item) => acc + item.qty, 0)} // Somme des quantités pour cette offre
-                      incrementhandler={() => incrementhandler(group.items[0].productId, group.items[0].offre)}
-                      decrementhandler={() => decrementhandler(group.items[0].productId, dispatch)}
-                      image={group.items[0].image}
-                      index={index}
-                      isFree={group.items[0].isFree}
-                      freeCount={group.freeCount}
-                    />
-                    
+                    option1={item.option1}
+                    option2={item.option2}
+                    option3={item.option3}
+                    prix_unitaire={item.prix}
+                    incrementhandler={() => incrementhandler(item.productIds, item.offre)}
+                    decrementhandler={() => decrementhandler(item.productIds, dispatch)}
+                    image={item.formuleImage}
+                    qty={item.qty}
+                    // key={item.id}
+                  />
                 </View>
-                
-                );
+              
+              );
+
             }
+          })} 
+            {groupedItemsArray.map((group, index) => {
+              if (group.items[0].type !== 'formule') {
+                  return (
+                      <View key={index}>
+                          <CartItem 
+                              libelle={group.items[0].libelle}
+                              prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
+                              qty={group.items.reduce((acc, item) => acc + item.qty, 0)} // Sum quantities for this offer
+                              incrementhandler={() => incrementhandler(group.items[0].productId, group.items[0].offre)}
+                              decrementhandler={() => decrementhandler(group.items[0].productId, dispatch)}
+                              image={group.items[0].image}
+                              index={index}
+                              isFree={group.items[0].isFree}
+                              freeCount={group.freeCount}
+                          />
+                      </View>
+                  );
+              }   
                 
-              })}
+              })} 
+              
+
               
        </ScrollView>
       
