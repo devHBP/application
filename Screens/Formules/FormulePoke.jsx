@@ -60,7 +60,7 @@ const FormulePoke = ({navigation}) => {
         //les desserts - par id
         const getOneProduct = async () => {
             try {
-                const productIds = [];
+                const productIds = [88, 89];
                 const productPromises = productIds.map((productId) => fetchOneProduct(productId));
                 const desserts = await Promise.all(productPromises);
                 //console.log(desserts)
@@ -92,7 +92,7 @@ const FormulePoke = ({navigation}) => {
        //les boissons - par id
        const fetchBoissons = async () => {
         try {
-            const productIds = []; 
+            const productIds = [90]; 
             const productPromises = productIds.map((productId) => fetchOneProduct(productId));
             const boissons = await Promise.all(productPromises);
             //console.log(desserts)
@@ -111,8 +111,11 @@ const FormulePoke = ({navigation}) => {
 
     const handleSandwich = async (product) => {
    
-     await checkProductAvailability(product, checkStockForSingleProduct, cart);
-
+     const isAvailable = await checkProductAvailability(product, checkStockForSingleProduct, cart);
+      //pas de selection possible si pas de stock
+     if (!isAvailable){
+       return
+     }
         if (selectedSandwich?.productId === product.productId) {
           setSelectedSandwich(null); 
           setProductIds(productIds.filter(productId => productId !== product.productId));
@@ -122,15 +125,19 @@ const FormulePoke = ({navigation}) => {
       }
    
   }
-  const handleDessert = (product) => {
-    //test si dessert dispo ?
-    // const isAvailable = await checkProductAvailability(product, checkStockForSingleProduct, cart);
+  const handleDessert = async (product) => {
+  
+    const isAvailable = await checkProductAvailability(product, checkStockForSingleProduct, cart);
+    //pas de selection possible si pas de stock
+    if (!isAvailable){
+      return
+    }
 
     if(!selectedSandwich ) {
       Toast.show({
           type: 'error',
           text1: 'Attention',
-          text2: 'Veuillez sélectionner un sandwich',
+          text2: 'Veuillez sélectionner un Poke Bowl',
       });
       return;
     }
@@ -143,12 +150,19 @@ const FormulePoke = ({navigation}) => {
     }
   }
 
-  const handleBoisson = (product) => {
+  const handleBoisson = async (product) => {
+
+    const isAvailable = await checkProductAvailability(product, checkStockForSingleProduct, cart);
+    //pas de selection possible si pas de stock
+    if (!isAvailable){
+      return
+    }
+
     if(!selectedSandwich ) {
       Toast.show({
           type: 'error',
           text1: 'Attention',
-          text2: 'Veuillez sélectionner un sandwich',
+          text2: 'Veuillez sélectionner un Poke Bowl',
       });
       return;
     }
@@ -187,6 +201,7 @@ const FormulePoke = ({navigation}) => {
 
     const handleFormuleSelection = () => {
       const formule = {
+        id: `formule-${Date.now()}`,
         type: 'formule',
         option1: selectedSandwich,
         option2: selectedDessert ? selectedDessert : null,
@@ -198,7 +213,9 @@ const FormulePoke = ({navigation}) => {
         qty: 1,
       }
       console.log('formule', formule);
-      console.log('option', formule.option1)
+      console.log('option1', formule.option1.libelle)
+      console.log('option2', formule.option2?.libelle)
+      console.log('option3', formule.option3?.libelle)
       dispatch(addToCart(formule));
       navigation.navigate('panier')
     }
