@@ -21,13 +21,14 @@ const CustomDatePicker = () => {
     } 
 }
 
-    const [date, setDate] = useState(null)
+    const dateRedux = useSelector((state) => state.cart.date)
+    const [date, setDate] = useState(  null)
     const [openDate, setOpenDate] = useState(false)
     const [role, setRole] = useState('');
     const [time, setTime] = useState()
     const [openTime, setOpenTime] = useState(false)
 
-    const dateRedux = useSelector((state) => state.cart.date)
+   
     const timeRedux = useSelector((state) => state.cart.time)
     const user = useSelector((state) => state.auth.user);
 
