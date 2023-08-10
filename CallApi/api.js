@@ -108,3 +108,13 @@ export const getStoreById = async (id) => {
   }
 };
 
+//recuperer famille du produit
+export const getFamilyOfProduct = async (id) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/getFamillyOfProduct/${id}`);
+    return response.data;
+  } catch (error) {
+    console.error('Une erreur s est produite lors de la récupération des données du magasin :', error);
+    return null;
+  }
+};

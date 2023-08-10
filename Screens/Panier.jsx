@@ -1,11 +1,10 @@
 import { View, Text, TouchableOpacity,ScrollView, TextInput, Modal, StyleSheet, Linking, Image } from 'react-native'
 import React, { useState, useEffect, useRef} from 'react'
-import { defaultStyle} from '../styles/styles'
 import { Button } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios'
-import { updateCart, addToCart, decrementOrRemoveFromCart, addFreeProductToCart, updateCartTotal } from '../reducers/cartSlice';
+import { updateCart, addToCart, addFreeProductToCart, updateCartTotal } from '../reducers/cartSlice';
 import { logoutUser} from '../reducers/authSlice';
 import { setNumeroCommande, setProducts } from '../reducers/orderSlice';
 import CartItem from '../components/CardItems';
@@ -21,7 +20,7 @@ import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import { style } from '../styles/formules'; 
 
-
+import { getFamilyOfProduct } from '../CallApi/api';
 
 //fonctions
 import { decrementhandler } from '../Fonctions/fonctions'
@@ -36,6 +35,7 @@ const Panier = ({navigation}) => {
     } 
 }
 
+
   const dispatch = useDispatch()
   const webViewRef = useRef(null);
   const [promoCode, setPromoCode] = useState('');
@@ -44,6 +44,7 @@ const Panier = ({navigation}) => {
   const [orderInfo, setOrderInfo] = useState(null);
   const [checkoutSession, setCheckoutSession] = useState(null);
   const [sessionId, setSessionId] = useState(null);
+  const [productFamilies, setProductFamilies] = useState({});
 
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
   const user = useSelector((state) => state.auth.user)
@@ -64,6 +65,8 @@ const Panier = ({navigation}) => {
     return total + item.qty * prix;
   }, 0)).toFixed(2));
   
+
+  const totalQuantity = cart.reduce((total, item) => total + item.qty, 0)
 
 
   const aggregatedCartItems = cart.reduce((accumulator, currentItem) => {
@@ -183,7 +186,43 @@ const incrementhandler = async (productIds, offre) => {
   }
 };
 
-  const totalQuantity = cart.reduce((total, item) => total + item.qty, 0)
+// family produits - si une formules = famille "Formules"
+useEffect(() => {
+  const fetchFamilies = async () => {
+    const productIds = cart.map(item => {
+      if (item.type === 'formule') {
+        return null;  // Nous traiterons les formules séparément
+      }
+      return item.productId;
+    }).filter(id => id !== null); 
+
+    const fetchedFamilies = await Promise.all(productIds.map(async id => {
+      const data = await getFamilyOfProduct(id);
+      return {
+        productId: id,
+        family: data.FamillyProduct.nom_famille_produit
+      };
+    }));
+
+    const familiesObject = fetchedFamilies.reduce((acc, item) => {
+      acc[item.productId] = item.family;
+      return acc;
+    }, {});
+
+    // famille "Formules" pour les formules
+    cart.forEach(item => {
+      if (item.type === 'formule') {
+        familiesObject[item.productId] = "Formules";
+      }
+    });
+
+    setProductFamilies(familiesObject);
+  };
+
+  fetchFamilies();
+}, [cart]);
+
+
 
   const handleLogout = () => {
     dispatch(logoutUser()); 
@@ -449,6 +488,20 @@ const groupedItems = produits.reduce((accumulator, item) => {
 
 const groupedItemsArray = Object.values(groupedItems);
 
+const itemsGroupedByFamily = groupedItemsArray.reduce((acc, group) => {
+  if (group.items[0].type !== 'formule') {
+    const familyName = productFamilies[group.items[0].productId];
+    if (!acc[familyName]) {
+      acc[familyName] = [];
+    }
+    acc[familyName].push(group);
+  }
+  return acc;
+}, {});
+
+
+
+
 useEffect(() => {
   if (orderInfo && paiement === 'online') {
     const submitOrder = async () => {
@@ -501,7 +554,7 @@ useEffect(() => {
 
        <ScrollView  style={{marginVertical:10,flex: 1,}}>
         {/* - formules -  */}{
-          formules.length > 0 && <Text>Formules</Text>
+          formules.length > 0 && <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>Formules</Text>
         }
           {formules.map((item, index) => {
             if (item.type === 'formule'){
@@ -530,13 +583,17 @@ useEffect(() => {
           })} 
            {/* - produits seuls ou avec offre -  */}
            
-            {groupedItemsArray.map((group, index) => {
-              if (group.items[0].type !== 'formule') {
-                // console.log('group', group.items[0])
+            {
+              Object.entries(itemsGroupedByFamily).map(([familyName, items], index) => {
+            // groupedItemsArray.map((group, index) => {
+              // if (group.items[0].type !== 'formule') {
                   return (
-                      <View key={index}>
-                        <Text>{group.items[0].categorie }</Text>
-                        <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}}>
+                      <View  key={index}>
+                        {/* ici le nom de famille */}
+                         <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>{familyName}</Text>
+                         {items.map((group, groupIndex) => (
+
+                        <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}} key={groupIndex}>
                           <CartItem 
                                 libelle={group.items[0].libelle}
                                 prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
@@ -549,11 +606,12 @@ useEffect(() => {
                                 freeCount={group.freeCount}
                             />
                         </View>
-                          
+                         
+                         ))} 
                       </View>
-                  );
-              }   
-            })}    
+                  )
+              } )  
+            }    
        </ScrollView>
       
         
