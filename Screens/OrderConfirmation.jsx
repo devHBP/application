@@ -141,7 +141,7 @@ useEffect(() => {
       if (response.data.auth) {
 
           dispatch(setProducts(cartItems));
-
+          
           const orderData = {
             firstname_client: user.firstname,
             lastname_client: user.lastname,
@@ -230,7 +230,7 @@ useEffect(() => {
               throw new Error('Erreur lors de la création de la commande');
             }
           }
-         //createOrder()
+         createOrder()
       } else {
           console.log('erreur ici', error)
       }
@@ -305,7 +305,9 @@ const checkPaymentStatus = async () => {
       <ScrollView vertical showsVerticalScrollIndicator={false}>
       <View style={styles.container}>
         <Text>Contenu du panier :</Text>
-        {aggregatedCartItems.map((item, index) => (
+        {/* {cartItems.map((item, index) => ( */}
+              {cartItems.filter(item => !item.isFree).map((item, index) => (
+
           <View key={`${item.productId}_${index}`} style={styles.itemContainer}>
             <Text>{item.libelle}</Text>
             <Text>Prix unitaire : {item.prix || item.prix_unitaire} euros</Text>
@@ -316,6 +318,21 @@ const checkPaymentStatus = async () => {
             
           </View>
         ))}
+        {
+          // aggregatedCartItems.map((item, index) => (
+          aggregatedCartItems.filter(item => item.isFree).map((item, index) => (
+
+            <View key={`${item.productId}_${index}`} style={styles.itemContainer}>
+              <Text>{item.libelle}</Text>
+              <Text>Prix unitaire : {item.prix || item.prix_unitaire} euros</Text>
+              <Text>Quantité : {item.qty}</Text>
+              {
+                item.freeCount > 0 && <Text>Nb de produits offerts: {item.freeCount}</Text>
+              }
+              
+            </View>
+          ))
+        }
         <View>
           <Text> Prix total: {totalPrice} euros</Text>
           <Text>Nb de produits: {totalQuantity}</Text>
