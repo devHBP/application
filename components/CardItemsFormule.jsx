@@ -5,7 +5,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const CardItemFormule = ({ option1, option2, option3,  incrementhandler, decrementhandler, image, qty }) => {
   return (
     <View style={styles.container}>
-      <Image source={image} style={styles.image} />
+      {/* <Image source={image} style={styles.image} /> */}
       <View style={styles.content}>
         {option1 && <Text style={styles.title}>{option1.libelle}</Text>}
         {option1 &&<Text style={styles.price}>{option1.prix_unitaire} €</Text>}
@@ -31,9 +31,11 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    justifyContent:'center',
+    padding: 10,
+    width:300,
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#ccc',
   },
   image: {
     width: 80,

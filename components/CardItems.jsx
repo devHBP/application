@@ -12,9 +12,9 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
    
     <View style={styles.container}>
      
-      <Image source={{ uri: `${baseUrl}/${image}` }} style={styles.image} 
+      {/* <Image source={{ uri: `${baseUrl}/${image}` }} style={styles.image} 
     //   onPress={() => navigate.navigate("productdetails", { id })}
-    />
+    /> */}
       <View style={styles.content}>
         <Text numberOfLines={2} style={styles.title}>{libelle}</Text>
        <Text style={styles.price}> {prix || prix_unitaire}€</Text>
@@ -45,9 +45,11 @@ const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         alignItems: 'center',
-        paddingVertical: 10,
-        borderBottomWidth: 1,
-        borderBottomColor: '#ccc',
+        justifyContent:'center',
+        // borderBottomWidth: 1,
+        // borderBottomColor: '#ccc',
+        padding:10,
+        width:300,
       },
       image: {
         width: 80,
