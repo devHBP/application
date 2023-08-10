@@ -16,6 +16,10 @@ import { WebView } from 'react-native-webview';
 import { checkStockFormule, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ModaleOffre31 from '../components/ModaleOffre31';
+import { fonts, colors} from '../styles/styles'
+import StorePicker from '../components/StorePicker';
+import CustomDatePicker from '../components/CustomDatePicker';
+
 
 //fonctions
 import { decrementhandler } from '../Fonctions/fonctions'
@@ -456,13 +460,32 @@ useEffect(() => {
 
   return (
     <>
-    <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: 'white', paddingHorizontal: 5,paddingVertical:15,  marginBottom:70 }}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 20 }}>
-         <TouchableOpacity onPress={handleBack}>
-           <Icon name="arrow-back" size={30} color="#900" />
+    <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: colors.color3,paddingVertical:15,  marginBottom:70 }}>
+      <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical:30,paddingHorizontal:30, justifyContent:'space-between', width:"100%" }}>
+         
+         <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10, fontFamily:fonts.font1 }}>Votre Panier</Text>
+         <TouchableOpacity onPress={handleBack} style={{backgroundColor: colors.color1, borderRadius:25, justifyContent:'center'}}>
+           <Icon name="keyboard-arrow-left" size={26} color="white" />
          </TouchableOpacity>
-         <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10 }}>Mon Panier</Text>
        </View>
+
+
+       {/* bandeau picker */}
+       <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-around', paddingHorizontal:10}}>
+          {/* <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'center'}}> */}
+              
+            <View>
+              <StorePicker />
+            </View> 
+            <View >
+              <CustomDatePicker />
+            </View>
+
+            
+          {/* </View> */}
+          
+        </View>
+
        <ScrollView  style={{marginVertical:10,flex: 1,}}>
         {/* - formules -  */}{
           formules.length > 0 && <Text>Formules</Text>
