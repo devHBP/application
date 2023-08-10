@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity,ScrollView, TextInput, Modal, StyleSheet, Linking } from 'react-native'
+import { View, Text, TouchableOpacity,ScrollView, TextInput, Modal, StyleSheet, Linking, Image } from 'react-native'
 import React, { useState, useEffect, useRef} from 'react'
 import { defaultStyle} from '../styles/styles'
 import { Button } from 'react-native-paper'
@@ -19,6 +19,8 @@ import ModaleOffre31 from '../components/ModaleOffre31';
 import { fonts, colors} from '../styles/styles'
 import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
+import { style } from '../styles/formules'; 
+
 
 
 //fonctions
@@ -48,7 +50,7 @@ const Panier = ({navigation}) => {
   const selectedStore = useSelector(state => state.auth.selectedStore);
   const cartTotal = useSelector((state) => state.cart.cartTotal)
   //console.log('cart Total', cartTotal)
-  //console.log('cart panier', cart)
+  console.log('cart panier', cart)
 
   const selectedDateString = useSelector((state) => state.cart.date)
 
@@ -62,7 +64,14 @@ const Panier = ({navigation}) => {
     return total + item.qty * prix;
   }, 0)).toFixed(2));
   
+
+
   const aggregatedCartItems = cart.reduce((accumulator, currentItem) => {
+
+     // Vérifiez si le produit a une offre avant de continuer
+     if (!currentItem.offre ){
+      return accumulator; // Si le produit n'a pas d'offre, ignorez-le simplement
+    }
     
     // Recherchez l'article dans l'accumulateur par idProduct
     const existingItem = accumulator.find(
@@ -92,7 +101,8 @@ const Panier = ({navigation}) => {
     return accumulator;
   }, []);
   
-  console.log('panier fusionné page panier', aggregatedCartItems);
+  console.log('produit fusionné page panier', aggregatedCartItems);
+  
 
   const handleBack = () => {
     navigation.navigate('home');
@@ -238,7 +248,7 @@ const incrementhandler = async (productIds, offre) => {
         products: (() => {
           let products = [];
   
-          aggregatedCartItems.forEach(item => {
+          cart.forEach(item => {
               if (item.type === 'formule') {
 
 
@@ -258,21 +268,24 @@ const incrementhandler = async (productIds, offre) => {
                         });
                       }
                     })
-              } else {
-                  // products.push({ productId: item.productId, quantity: item.qty, offre: item.offre });
-                  const productData = {
-                    productId: item.productId,
-                    quantity: item.qty
-                  };
+              } 
+            })
             
-                  if (item.isFree && item.qty >= 4) {
-                    productData.offre = item.offre;
-                  }
-            
-                  products.push(productData);
+            aggregatedCartItems.forEach( item => {
+              {
+                // products.push({ productId: item.productId, quantity: item.qty, offre: item.offre });
+                const productData = {
+                  productId: item.productId,
+                  quantity: item.qty,
+                };
+          
+                if (item.isFree = 'true' && item.qty >= 4) {
+                  productData.offre = item.offre;  
                 }
-          });
-  
+                products.push(productData);
+              }
+            })
+          //console.log('products', products) 
           return products;
       })(),
 
@@ -288,7 +301,7 @@ const incrementhandler = async (productIds, offre) => {
           dispatch(setNumeroCommande(numero_commande));
 
           setOrderInfo({
-            aggregatedCartItems,
+            cart,
             user,
             selectedStore,
             totalPrice,
@@ -460,7 +473,7 @@ useEffect(() => {
 
   return (
     <>
-    <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: colors.color3,paddingVertical:15,  marginBottom:70 }}>
+    <View style={{ flex:1, alignItems: 'center', backgroundColor: colors.color3,paddingVertical:15}}>
       <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical:30,paddingHorizontal:30, justifyContent:'space-between', width:"100%" }}>
          
          <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10, fontFamily:fonts.font1 }}>Votre Panier</Text>
@@ -495,6 +508,8 @@ useEffect(() => {
               return (
                 
                 <View key={index}>
+                
+                  <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}}>
                   <Text>{item.libelle}</Text>
                   <CardItemFormule
                     option1={item.option1}
@@ -508,6 +523,7 @@ useEffect(() => {
                     // key={item.id}
                   />
                 </View> 
+                </View>
              
               );
           }
@@ -516,55 +532,72 @@ useEffect(() => {
            
             {groupedItemsArray.map((group, index) => {
               if (group.items[0].type !== 'formule') {
-                console.log('group', group.items[0])
+                // console.log('group', group.items[0])
                   return (
                       <View key={index}>
                         <Text>{group.items[0].categorie }</Text>
+                        <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}}>
                           <CartItem 
-                              libelle={group.items[0].libelle}
-                              prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
-                              qty={group.items.reduce((acc, item) => acc + item.qty, 0)} // Sum quantities for this offer
-                              incrementhandler={() => incrementhandler(group.items[0].productId, group.items[0].offre)}
-                              decrementhandler={() => decrementhandler(group.items[0].productId, dispatch)}
-                              image={group.items[0].image}
-                              index={index}
-                              isFree={group.items[0].isFree}
-                              freeCount={group.freeCount}
-                          />
+                                libelle={group.items[0].libelle}
+                                prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
+                                qty={group.items.reduce((acc, item) => acc + item.qty, 0)} // Sum quantities for this offer
+                                incrementhandler={() => incrementhandler(group.items[0].productId, group.items[0].offre)}
+                                decrementhandler={() => decrementhandler(group.items[0].productId, dispatch)}
+                                // image={group.items[0].image}
+                                index={index}
+                                isFree={group.items[0].isFree}
+                                freeCount={group.freeCount}
+                            />
+                        </View>
+                          
                       </View>
                   );
               }   
             })}    
        </ScrollView>
       
-        <View  style={{ marginTop:10, alignItems:'center' }} >
-            <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
-            Total des quantités : {totalQuantity}
-          </Text>
-          <Text style={{ fontSize: 18, fontWeight: "bold", marginBottom: 10 }}>
-          Total de la commande : { totalPrice} euros
-          </Text>
+        
+        {/* Promotions */}
+          <View style={{ flexDirection:'row', alignItems:'center', gap: 10, }}>
+              <TextInput
+                value={promoCode}
+                onChangeText={(value) => setPromoCode(value)}
+                placeholder="Code promo"
+                style={{ width: 150, marginVertical: 10, borderWidth: 1, borderColor: 'white', paddingHorizontal: 20, paddingVertical: 10 }}
+              />
+              <Icon name="done" size={20} color="#900" onPress={handleApplyDiscount} />
+              <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
+          </View>
+        
 
-          <View style={{ flexDirection:'row', alignItems:'center', gap: 10, marginVertical:10 }}>
-          <TextInput
-            value={promoCode}
-            onChangeText={(value) => setPromoCode(value)}
-            placeholder="Code promo"
-            style={{ width: 150, marginVertical: 10, borderWidth: 1, borderColor: 'lightgray', paddingHorizontal: 20, paddingVertical: 10 }}
-          />
-          <Icon name="done" size={30} color="#900" onPress={handleApplyDiscount} />
-          <Icon name="clear" size={30} color="#900" onPress={handleRemoveDiscount} />
+
         </View>
-            
-          <Button 
-              buttonColor='lightgray' 
-              onPress={handleConfirm}
-              disabled={cart.length === 0}>
-            Confirmer ma commande
-          </Button>
-          
-        </View>      
-    </View>
+
+
+
+        {/* bandeau selection commande */}
+          <View style={{...style.menu }}>
+            <View style={{flexDirection:'row', paddingHorizontal:30, justifyContent:'center', gap:10}}>
+              <View >
+                <Text style={{ fontWeight:"bold"}}>Votre total</Text>
+                <Text style={{color:colors.color2}}>Total Avec<Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/></Text>
+              </View>
+              <View style={{flexDirection:'column', justifyContent:'space-between'}}>
+                  <Text>{totalPrice.toFixed(2)}€</Text>
+                  <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice *0.8).toFixed(2)}€</Text>
+              </View>
+              <Button 
+                  buttonColor='lightgray' 
+                  onPress={handleConfirm}
+                  // disabled={cart.length === 0}
+                  >
+                Valider votre commande
+              </Button>  
+              
+            </View>  
+              
+          </View>
+
           <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
 
           <FooterProfile />
@@ -574,8 +607,6 @@ useEffect(() => {
   
 }
 
-const style = StyleSheet.create({
-  
-})
+
 
 export default Panier
