@@ -95,8 +95,8 @@ const Main = () => {
                 <Stack.Screen name='profile' component={Profile}/>
                 <Stack.Screen name='orders' component={Orders}/>
                 <Stack.Screen name='panier' component={Panier}/>
-                <Stack.Screen name='choixpaiement' component={ChoixPaiement}/>
-                <Stack.Screen name='orderconfirm' component={OrderConfirmation}/>
+                {/* <Stack.Screen name='choixpaiement' component={ChoixPaiement}/> */}
+                {/* <Stack.Screen name='orderconfirm' component={OrderConfirmation}/> */}
                 <Stack.Screen name='success' component={SuccessPage}/>
                 <Stack.Screen name='cookies' component={Cookies}/>
                 <Stack.Screen name='donnees' component={Donnees}/>
