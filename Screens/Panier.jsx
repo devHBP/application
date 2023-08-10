@@ -1,16 +1,18 @@
-import { View, Text, TouchableOpacity,ScrollView, TextInput, Modal, StyleSheet } from 'react-native'
-import React, { useState} from 'react'
+import { View, Text, TouchableOpacity,ScrollView, TextInput, Modal, StyleSheet, Linking } from 'react-native'
+import React, { useState, useEffect, useRef} from 'react'
 import { defaultStyle} from '../styles/styles'
 import { Button } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios'
-import { updateCart, addToCart, decrementOrRemoveFromCart, addFreeProductToCart } from '../reducers/cartSlice';
+import { updateCart, addToCart, decrementOrRemoveFromCart, addFreeProductToCart, updateCartTotal } from '../reducers/cartSlice';
 import { logoutUser} from '../reducers/authSlice';
+import { setNumeroCommande, setProducts } from '../reducers/orderSlice';
 import CartItem from '../components/CardItems';
 import CardItemFormule from '../components/CardItemsFormule';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import { WebView } from 'react-native-webview';
 import { checkStockFormule, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ModaleOffre31 from '../components/ModaleOffre31';
@@ -29,21 +31,64 @@ const Panier = ({navigation}) => {
 }
 
   const dispatch = useDispatch()
+  const webViewRef = useRef(null);
   const [promoCode, setPromoCode] = useState('');
   //const [currentStock, setCurrentStock] = useState(product.stock);
   const [modalVisible, setModalVisible] = useState(false);
+  const [orderInfo, setOrderInfo] = useState(null);
+  const [checkoutSession, setCheckoutSession] = useState(null);
+  const [sessionId, setSessionId] = useState(null);
 
-
-  const cart = useSelector((state) => state.cart.cart);
+  const cart = useSelector((state) => state.cart.cart); //ou cartItems
   const user = useSelector((state) => state.auth.user)
-  const store = useSelector((state) => state.auth.selectedStore)
-  
-  console.log('cart panier', cart)
+  const selectedStore = useSelector(state => state.auth.selectedStore);
+  const cartTotal = useSelector((state) => state.cart.cartTotal)
+  //console.log('cart Total', cartTotal)
+  //console.log('cart panier', cart)
+
+  const selectedDateString = useSelector((state) => state.cart.date)
+
+  const selectedTime = useSelector((state) => state.cart.time)
+  // const paiement = useSelector((state) => state.cart.paiement)
+  const paiement = "online"
+  const numero_commande = useSelector((state) => state.order.numero_commande)
+
   const totalPrice = Number((cart.reduce((total, item) => {
     const prix = item.prix || item.prix_unitaire; // Utilisez la propriété "prix" si elle existe, sinon utilisez "prix_unitaire"
     return total + item.qty * prix;
   }, 0)).toFixed(2));
   
+  const aggregatedCartItems = cart.reduce((accumulator, currentItem) => {
+    
+    // Recherchez l'article dans l'accumulateur par idProduct
+    const existingItem = accumulator.find(
+      item => item.productId === currentItem.productId
+    );
+
+    if (existingItem) {
+      // Si l'article existe déjà dans l'accumulateur, ajoutez simplement la quantité
+      existingItem.qty += currentItem.qty;
+
+      // Si l'élément actuel est gratuit, ajoutez une note à l'élément existant
+      if (currentItem.isFree) {
+        existingItem.isFree = true;
+        existingItem.freeCount += currentItem.qty; // ajoutez la quantité de produits gratuits
+
+      }
+
+      // Conservez le nom de l'offre du produit (vous pouvez ajouter d'autres logiques si nécessaire)
+      existingItem.offre = currentItem.offre;
+    } else {
+      // Sinon, ajoutez un nouvel élément à l'accumulateur
+      accumulator.push({...currentItem,
+        freeCount: currentItem.isFree ? currentItem.qty : 0 // Initialisez freeCount
+      }); // Utilisez la déstructuration pour éviter les références croisées
+    }
+  
+    return accumulator;
+  }, []);
+  
+  console.log('panier fusionné page panier', aggregatedCartItems);
 
   const handleBack = () => {
     navigation.navigate('home');
@@ -61,7 +106,7 @@ const Panier = ({navigation}) => {
   };
 
 const incrementhandler = async (productIds, offre) => {
-  console.log({ id, dispatch, cart, offre });
+  //console.log({ id, dispatch, cart, offre });
   const id = Array.isArray(productIds) ? productIds[0] : productIds; // Si productIds est un tableau, prenez le premier élément. Sinon, prenez productIds tel quel.
 
   // const productInCart = cart.find((item) => item.productId === id);
@@ -132,7 +177,11 @@ const incrementhandler = async (productIds, offre) => {
   }
 
   const handleConfirm = async () => {
-    console.log(cart)
+    //console.log(cart)
+    dispatch(updateCartTotal({
+      groupedItemsArray: groupedItemsArray,
+      formules: formules
+    }));
 
     const token = await AsyncStorage.getItem('userToken');
 
@@ -142,24 +191,171 @@ const incrementhandler = async (productIds, offre) => {
       }
     })
     .then(response => {
-      if (response.data.auth) {
-          navigation.navigate('choixpaiement');
+    //   if (response.data.auth) {
+    //       navigation.navigate('choixpaiement');
+    //   } else {
+    //       // Token is not valid, show error...
+    //       handleLogout()
+    //   }
+    // })
+    // .catch(error => {
+    //   handleLogout()
+    //   return Toast.show({
+    //     type: 'error',
+    //     text1: 'Session expirée',
+    //     text2: 'Veuillez vous reconnecter'
+    //   });
+    //   // console.log('token invalide catch')
+    //     // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
+    if (response.data.auth) {
+
+      dispatch(setProducts(cart));
+      
+      const orderData = {
+        firstname_client: user.firstname,
+        lastname_client: user.lastname,
+        prix_total: totalPrice,
+        date: selectedDateString,
+        //delivery,
+        heure: selectedTime,
+        userId: user.userId,
+        storeId: selectedStore.storeId,
+        slotId: null,
+        promotionId: null,
+        paymentMethod: paiement,
+        //plus utilisé
+        //transforme mon array de productsIds en chaine de caractères
+        //productIdsString: cartProductId.join(",")
+
+        //plus utilisé
+        //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty })) 
+
+        //verification si produit en formule
+        products: (() => {
+          let products = [];
+  
+          aggregatedCartItems.forEach(item => {
+              if (item.type === 'formule') {
+
+
+
+                  // item.productIds.forEach(productId => {
+                    
+                  //     products.push({ productId: productId, quantity: item.qty, formule: item.libelle, category: item.option1.categorie });
+                  // });
+
+                  ['option1', 'option2', 'option3'].forEach(option => {
+                    if (item[option]) {  // Si l'option est présente
+                        products.push({
+                            productId: item[option].productId,
+                            quantity: item.qty,
+                            formule: item.libelle,
+                            category: item[option].categorie
+                        });
+                      }
+                    })
+              } else {
+                  // products.push({ productId: item.productId, quantity: item.qty, offre: item.offre });
+                  const productData = {
+                    productId: item.productId,
+                    quantity: item.qty
+                  };
+            
+                  if (item.isFree && item.qty >= 4) {
+                    productData.offre = item.offre;
+                  }
+            
+                  products.push(productData);
+                }
+          });
+  
+          return products;
+      })(),
+
+      };
+    console.log('orderdata', orderData) 
+
+      const createOrder = async () => {
+        console.log(selectedDateString) 
+        try {
+          const response =  await axios.post(`${API_BASE_URL}/createorder`, orderData);
+          const numero_commande = response.data.numero_commande
+          //console.log('num', response)
+          dispatch(setNumeroCommande(numero_commande));
+
+          setOrderInfo({
+            aggregatedCartItems,
+            user,
+            selectedStore,
+            totalPrice,
+            totalQuantity,
+            selectedDateString, 
+            paiement
+          });
+
+          console.log('response createOrder', response.data)
+          return response.data;
+        } catch (error) {
+          console.error(error);
+          throw new Error('Erreur lors de la création de la commande');
+        }
+      }
+     createOrder()
       } else {
-          // Token is not valid, show error...
-          handleLogout()
+          console.log('erreur ici', error)
       }
     })
     .catch(error => {
-      handleLogout()
-      return Toast.show({
-        type: 'error',
-        text1: 'Session expirée',
-        text2: 'Veuillez vous reconnecter'
-      });
-      // console.log('token invalide catch')
-        // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
+    console.log('erreur', error)
+    handleLogout()
+    return Toast.show({
+      type: 'error',
+      text1: 'Session expirée',
+      text2: 'Veuillez vous reconnecter'
     });
+      // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
+    });  
+}
+
+// Vérifier l'état du paiement
+const checkPaymentStatus = async () => {
+  const interval = setInterval(async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/paiementStatus?sessionId=${sessionId}`);
+    const { status, transactionId, method } = response.data;
+    console.log('response PaiementStatus', response.data)
+     // retour : response data {"status": "paid", "transactionId": "pi_3NOFjcGnFAjiWNhK0KP6l8Nl"}
+   
+    if (status === 'paid') {
+      
+      clearInterval(interval);
+      const paymentData = {
+        method,
+        status,
+        transactionId
+      };
+  
+      const updateResponse = await axios.post(`${API_BASE_URL}/createPaiement`, paymentData);
+      console.log('Response createPaiement:', updateResponse.data);
+      //console.log('paymentId', updateResponse.data.paymentId)
+      const paymentId = updateResponse.data.paymentId
+
+      const updateData = { numero_commande, status, paymentId}
+      //console.log('updData', updateData)
+
+      const response = await axios.post(`${API_BASE_URL}/updateOrder`, updateData);
+      console.log('response updateOrder', response.data)
+      navigation.navigate('success')
+    }
+    
+  } catch (error) {
+    console.error('Erreur lors de la vérification de l\'état du paiement :', error);
+    // navigation.navigate('echec')
   }
+}, 5000)
+};
+
+  
 
  //Promotion
   const handleApplyDiscount = async () => {
@@ -236,6 +432,28 @@ const groupedItems = produits.reduce((accumulator, item) => {
 
 const groupedItemsArray = Object.values(groupedItems);
 
+useEffect(() => {
+  if (orderInfo && paiement === 'online') {
+    const submitOrder = async () => {
+      const response = await axios.post(`${API_BASE_URL}/checkout_session`, { orderInfo });
+      const sessionUrl = response.data.session;
+      const sessionId = response.data.id
+      //console.log('data id', sessionId)
+      setSessionId(sessionId);
+      const stripeCheckoutUrl = `${sessionUrl}`;
+      setCheckoutSession(stripeCheckoutUrl);
+      Linking.openURL(sessionUrl);
+    };
+    submitOrder();
+  }
+}, [orderInfo, paiement]);
+
+useEffect(() => {
+  if(paiement === 'online' && sessionId){
+    checkPaymentStatus() 
+  }
+}, [paiement, sessionId]); 
+
   return (
     <>
     <View style={{ ...defaultStyle, alignItems: 'center', backgroundColor: 'white', paddingHorizontal: 5,paddingVertical:15,  marginBottom:70 }}>
@@ -246,10 +464,13 @@ const groupedItemsArray = Object.values(groupedItems);
          <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10 }}>Mon Panier</Text>
        </View>
        <ScrollView  style={{marginVertical:10,flex: 1,}}>
-        {/* - formules -  */}
+        {/* - formules -  */}{
+          formules.length > 0 && <Text>Formules</Text>
+        }
           {formules.map((item, index) => {
             if (item.type === 'formule'){
               return (
+                
                 <View key={index}>
                   <Text>{item.libelle}</Text>
                   <CardItemFormule
@@ -263,15 +484,19 @@ const groupedItemsArray = Object.values(groupedItems);
                     qty={item.qty}
                     // key={item.id}
                   />
-                </View>   
+                </View> 
+             
               );
           }
           })} 
            {/* - produits seuls ou avec offre -  */}
+           
             {groupedItemsArray.map((group, index) => {
               if (group.items[0].type !== 'formule') {
+                console.log('group', group.items[0])
                   return (
                       <View key={index}>
+                        <Text>{group.items[0].categorie }</Text>
                           <CartItem 
                               libelle={group.items[0].libelle}
                               prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
@@ -311,7 +536,7 @@ const groupedItemsArray = Object.values(groupedItems);
           <Button 
               buttonColor='lightgray' 
               onPress={handleConfirm}
-              disabled={groupedItemsArray.length || formules === 0}>
+              disabled={cart.length === 0}>
             Confirmer ma commande
           </Button>
           
