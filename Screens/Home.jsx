@@ -3,15 +3,12 @@ import  Picker  from 'react-native-picker-select';
 import { fonts, colors} from '../styles/styles'
 import React, {useState, useEffect,  createRef, } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { updateSelectedStore, updateUser} from '../reducers/authSlice';
-import { addDate, addTime} from '../reducers/cartSlice';
+import {  updateUser} from '../reducers/authSlice';
 import ProductCard from '../components/ProductCard'
 import axios from 'axios'
 import Icon from 'react-native-vector-icons/MaterialIcons'
-import DatePicker from 'react-native-date-picker'
-import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import FooterProfile from '../components/FooterProfile';
-import { styles, pickerSelectStyles } from '../styles/home'; 
+import { styles } from '../styles/home'; 
 import { SearchBar } from 'react-native-elements';
 
 import FormulesSalees from '../components/FormulesSalees';
@@ -20,6 +17,7 @@ import LinkOffres from '../components/LinkOffres';
 import EnvieSalee from '../components/EnvieSalee';
 import Catalogue from '../components/Catalogue';
 import StorePicker from '../components/StorePicker';
+import CustomDatePicker from '../components/CustomDatePicker';
 
 const Home =  ({navigation}) => {
 
@@ -31,13 +29,9 @@ const Home =  ({navigation}) => {
     } 
 }
 
-  const [date, setDate] = useState(null)
-  const [openDate, setOpenDate] = useState(false)
-  const [time, setTime] = useState()
-  const [openTime, setOpenTime] = useState(false)
   const [stores, setStores] = useState([]);
   const [role, setRole] = useState('');
-  const [ selectedCategory, setSelectedCategory] = useState(null)
+  // const [ selectedCategory, setSelectedCategory] = useState(null)
   const [ selectedOnglet, setSelectedOnglet] = useState(null)
   const [ products, setProducts] = useState([])
   const [ categories, setCategories] = useState([])
@@ -45,8 +39,6 @@ const Home =  ({navigation}) => {
   const [filteredProducts, setFilteredProducts] = useState(products); 
   const [ visible, setVisible] = useState(false)
   
-  const dateRedux = useSelector((state) => state.cart.date)
-  const timeRedux = useSelector((state) => state.cart.time)
   const user = useSelector((state) => state.auth.user);
   const cart = useSelector((state) => state.cart.cart);
 
@@ -58,12 +50,10 @@ const Home =  ({navigation}) => {
   const dispatch = useDispatch();
   const scrollViewRef = createRef();
   
-
   const allStores = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/getAllStores`);
       //const response = await axios.get('http://10.0.2.2:8080/getAllStores');
-      // console.log('all stores', response.data)
       setStores(response.data);
     } catch (error) {
       console.error("Une erreur s'est produite, erreur stores :", error);
@@ -76,11 +66,9 @@ const Home =  ({navigation}) => {
   }, [products]);
 
   useEffect(() => {
-    // Effectuez une requête GET pour récupérer le rôle de l'utilisateur
     axios.get(`${API_BASE_URL}/getOne/${user.userId}`)
     //axios.get(`http://10.0.2.2:8080/getOne/${user.userId}`)
       .then(response => {
-        //console.log(response.data.role)
         const role  = response.data.role;
          setRole(role); 
          dispatch(updateUser(response.data))
@@ -91,7 +79,6 @@ const Home =  ({navigation}) => {
   }, [])
 
   useEffect(() => {
-    // Fonction pour récupérer les données de la base de données
     const fetchData = async () => {
       try {
       const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
@@ -114,53 +101,16 @@ const Home =  ({navigation}) => {
 
 
 //filtrage par catégorie
-  const categoryButtonHandler = (categorie) => {
-    if (categorie === 'Tous') {
-      setFilteredProducts(products);
-      setSelectedCategory(null)
-    } else {
-      const filtered = products.filter((product) => product.categorie === categorie);
-      setFilteredProducts(filtered);
-      setSelectedCategory(categorie)
-    }
-  }
-
-  //date formatée ou pas ? 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    const day = date.getDate().toString().padStart(2, '0');
-    const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    const year = date.getFullYear().toString();
-    //const hours = date.getHours().toString().padStart(2, '0');
-    //const minutes = date.getMinutes().toString().padStart(2, '0');
-    //const seconds = date.getSeconds().toString().padStart(2, '0');
-    //return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-    
-    return `${year}-${month}-${day}`;
-    //test pour affichage dans le picker
-    //return `${day}-${month}-${year}`;
-
-    //attention ici au format de la date - a bien verifier dans le order_ctrl (moment.js)
-  };
-
-  // heure non formaté pour l'instant - inutile pour les collaborateurs
-  const formatTime = (dateString) => {
-    const time = new Date(dateString);
-    //const day = date.getDate().toString().padStart(2, '0');
-    //const month = (date.getMonth() + 1).toString().padStart(2, '0');
-    //const year = date.getFullYear().toString();
-    const hours = time.getHours().toString().padStart(2, '0');
-    const minutes = time.getMinutes().toString().padStart(2, '0');
-    //return `${day}-${month}-${year} ${hours}h${minutes}`;
-    return `${hours}h${minutes}`;
-  };
-
-  //commande possible jusqu'à la veille au soir
-  const isTomorrowOrLater = (selectedDate) => {
-    const currentDate = new Date();
-    currentDate.setHours(23, 59, 0, 0); // Set current date to today at 23:59
-    return selectedDate >= currentDate;
-  };
+  // const categoryButtonHandler = (categorie) => {
+  //   if (categorie === 'Tous') {
+  //     setFilteredProducts(products);
+  //     setSelectedCategory(null)
+  //   } else {
+  //     const filtered = products.filter((product) => product.categorie === categorie);
+  //     setFilteredProducts(filtered);
+  //     setSelectedCategory(categorie)
+  //   }
+  // }
 
 //direction vers la page de détails
 const handleProductPress = (product) => {
@@ -261,108 +211,22 @@ const ongletButtonHandler = (onglet) => {
    
       {/* test bandeau header */}
       <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
-          <View style={{ flexDirection:'row', gap:5, alignItems:'center', }}>
+          <View style={{ flexDirection:'row', gap:15, alignItems:'center',}}>
               
             <View>
-             <StorePicker />
-
+              <StorePicker />
             </View> 
+            <View >
+              <CustomDatePicker />
+            </View>
 
-          </View>
-
-        <View >
-          
-          {/* // Selection Jour  */}
-         <TouchableOpacity onPress={() => setOpenDate(true)}  style={styles.bordersPicker}>
-         {/* <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text>  */}
-            <Text style={styles.textPickerDate}>Pour quel jour ?</Text>
-            <Text>
-            {date ? 
-            (
-                isTomorrowOrLater(date) ? (
-                <Text style={styles.picker}>{formatDate(date)}</Text>
-                ) : (
-                  <Text style={styles.picker} >
-                  trop tard</Text>
-                )
-            ) : (
-           
-                  <Text style={styles.pickerNoDate}>jj/mm/aaaa</Text>
-            )}
-            </Text>
-            <Text style={{fontSize:10, color:colors.color2}}>Status</Text>
-        </TouchableOpacity> 
-        </View>
-               <DatePicker
-                modal
-                open={openDate}
-                date={date ? new Date(date) : new Date()}
-                mode="date"
-                onConfirm={(date) => {
-                  setOpenDate(false)
-
-                //test date
-                if (isTomorrowOrLater(date)) {
-                  setDate(date);
-                  console.log('date console', date)
-                  dispatch(addDate(formatDate(date.toISOString())));
-                  console.log('date', formatDate(date.toISOString()))
-                  return Toast.show({
-                    type: 'success',
-                    text1: 'Succès',
-                    text2: `Commande choisie pour le ${formatDate(date)}`
-                  });
-                } else {
-                  setDate(null)
-                  dispatch(addDate(null))
-                  console.log('La date sélectionnée doit être supérieure ou égale à demain');
-                  return Toast.show({
-                    type: 'error',
-                    text1: 'Erreur, Vous arrivez trop tard pour demain',
-                    text2: 'Veuillez selectionner une nouvelle date'
-                  });
-                } 
-                }}
-                onCancel={() => {
-                  setOpenDate(false)
-                }}
-                minimumDate={new Date()}
-                
-              /> 
-               {/* Selection Heure */}
-        {/* non visible pour les collaborateurs car heure = tournée du camion */}
-        
-         {role !== 'collaborateur' && (
-       <TouchableOpacity onPress={() => setOpenTime(true)} >
-        <Text>{timeRedux ? <Text style={styles.picker}>{timeRedux}</Text> : "Choisissez votre heure"}</Text>
-        </TouchableOpacity>
-        )}
-        {role !== 'collaborateur' && (
-              <DatePicker
-                modal
-                open={openTime}
-                date={time ? new Date(time) : new Date()}
-                mode="time"
-                onConfirm={(time) => {
-                  setOpenTime(false)
-                  setTime(time)
-                  dispatch(addTime(formatTime(time.toISOString())));
-                  //converti en chaine de caractères
-                  console.log('heure commande',formatTime(time))
-                  //console.log('selection date store redux:', selectedDateString)
-                  //console.log('selection date chaine de caractère:', selectedDateString)
-                }}
-                onCancel={() => {
-                  setOpenTime(false)
-                }}
-              /> 
-        )} 
-   
-          <View style={{backgroundColor:'lightgrey', borderRadius:25, justifyContent:'center'}}> 
+            <View style={{backgroundColor:'lightgrey', borderRadius:25, justifyContent:'center'}}> 
               <TouchableOpacity  onPress={toggleVisibility} activeOpacity={1}>
                   <Icon name="keyboard-arrow-down" size={28} color="#FFF"  />
               </TouchableOpacity>
           </View>
+          </View>
+          
         </View>
         {
           visible && (
@@ -430,7 +294,6 @@ const ongletButtonHandler = (onglet) => {
                 />}
                  
               </View>
-              
             </Pressable>
           ))
         }
@@ -442,7 +305,6 @@ const ongletButtonHandler = (onglet) => {
               
            {/* card products */}
           {/* <View style={style.cardScrollview}> */}
-          
             {sortedCategories
               .filter(category => category === 'Baguettes')
               .map((category) => (
@@ -482,7 +344,7 @@ const ongletButtonHandler = (onglet) => {
           {/* </View > */}
 
             {sortedCategories
-              .filter(category => category ===  'viennoiseries')
+              .filter(category => category ===  'Viennoiseries')
               .map((category) => (
               <React.Fragment key={category}>
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -526,7 +388,7 @@ const ongletButtonHandler = (onglet) => {
 
             {/* patisseries */}
             {sortedCategories
-              .filter(category => category ===  'pâtisseries')
+              .filter(category => category ===  'Pâtisseries')
               .map((category) => (
               <React.Fragment key={category}>
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -562,7 +424,7 @@ const ongletButtonHandler = (onglet) => {
 
             {/* pains speciaux */}
             {sortedCategories
-              .filter(category => category ===  'boules et pains speciaux')
+              .filter(category => category ===  'Boules et Pains Spéciaux')
               .map((category) => (
               <React.Fragment key={category}>
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -602,7 +464,7 @@ const ongletButtonHandler = (onglet) => {
 
             {/* boissons */}
             {sortedCategories
-              .filter(category => category ===  'boissons')
+              .filter(category => category ===  'Boissons')
               .map((category) => (
               <React.Fragment key={category}>
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -647,8 +509,6 @@ const ongletButtonHandler = (onglet) => {
                 <Icon name={'keyboard-arrow-up'} size={30} color={colors.color4}  />
               </TouchableOpacity>
           </View>
-          
-         
           
      </ScrollView>
   <FooterProfile />
