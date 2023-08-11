@@ -47,9 +47,10 @@ const Panier = ({navigation}) => {
   const [productFamilies, setProductFamilies] = useState({});
 
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
+  console.log('cart panier', cart)
   const user = useSelector((state) => state.auth.user)
   const selectedStore = useSelector(state => state.auth.selectedStore);
-  // const cartTotal = useSelector((state) => state.cart.cartTotal)
+   const cartTotal = useSelector((state) => state.cart.cartTotal)
 
   const selectedDateString = useSelector((state) => state.cart.date)
   const selectedTime = useSelector((state) => state.cart.time)
@@ -101,7 +102,7 @@ const Panier = ({navigation}) => {
     return accumulator;
   }, []);
   
-  console.log('produit fusionné page panier', aggregatedCartItems);
+  //console.log('produit fusionné page panier', aggregatedCartItems);
   
 
   const handleBack = () => {
@@ -230,10 +231,10 @@ useEffect(() => {
   
   const handleConfirm = async () => {
     //console.log(cart)
-    dispatch(updateCartTotal({
-      groupedItemsArray: groupedItemsArray,
-      formules: formules
-    }));
+    // dispatch(updateCartTotal({
+    //   groupedItemsArray: groupedItemsArray,
+    //   formules: formules
+    // }));
 
     const token = await AsyncStorage.getItem('userToken');
 
@@ -243,22 +244,7 @@ useEffect(() => {
       }
     })
     .then(response => {
-    //   if (response.data.auth) {
-    //       navigation.navigate('choixpaiement');
-    //   } else {
-    //       // Token is not valid, show error...
-    //       handleLogout()
-    //   }
-    // })
-    // .catch(error => {
-    //   handleLogout()
-    //   return Toast.show({
-    //     type: 'error',
-    //     text1: 'Session expirée',
-    //     text2: 'Veuillez vous reconnecter'
-    //   });
-    //   // console.log('token invalide catch')
-    //     // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
+   
     if (response.data.auth) {
 
       dispatch(setProducts(cart));
@@ -267,8 +253,7 @@ useEffect(() => {
         firstname_client: user.firstname,
         lastname_client: user.lastname,
         prix_total: totalPrice,
-        date: selectedDateString, //revoir ici formater en string
-        //delivery,
+        date: selectedDateString, 
         heure: selectedTime,
         userId: user.userId,
         storeId: selectedStore.storeId,
@@ -282,50 +267,165 @@ useEffect(() => {
         //plus utilisé
         //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty })) 
 
-        //verification si produit en formule
-        products: (() => {
-          let products = [];
+        //j'ajoute ici les formule et lesp produits fusionnés
+        // products: (() => {
+        //   let products = [];
   
-          cart.forEach(item => {
-              if (item.type === 'formule') {
+        //   cart.forEach(item => {
+        //       if (item.type === 'formule') {
 
 
 
-                  // item.productIds.forEach(productId => {
+        //           // item.productIds.forEach(productId => {
                     
-                  //     products.push({ productId: productId, quantity: item.qty, formule: item.libelle, category: item.option1.categorie });
-                  // });
+        //           //     products.push({ productId: productId, quantity: item.qty, formule: item.libelle, category: item.option1.categorie });
+        //           // });
 
-                  ['option1', 'option2', 'option3'].forEach(option => {
-                    if (item[option]) {  // Si l'option est présente
-                        products.push({
-                            productId: item[option].productId,
-                            quantity: item.qty,
-                            formule: item.libelle,
-                            category: item[option].categorie
-                        });
-                      }
-                    })
-              } 
-            })
+        //           ['option1', 'option2', 'option3'].forEach(option => {
+        //             if (item[option]) {  // Si l'option est présente
+        //                 products.push({
+        //                     productId: item[option].productId,
+        //                     quantity: item.qty,
+        //                     formule: item.libelle,
+        //                     category: item[option].categorie
+        //                 });
+        //               }
+        //             })
+        //       } 
+        //     })
             
-            aggregatedCartItems.forEach( item => {
-              {
-                // products.push({ productId: item.productId, quantity: item.qty, offre: item.offre });
-                const productData = {
-                  productId: item.productId,
-                  quantity: item.qty,
-                };
+        //     aggregatedCartItems.forEach( item => {
+        //       {
+        //         // products.push({ productId: item.productId, quantity: item.qty, offre: item.offre });
+        //         const productData = {
+        //           productId: item.productId,
+        //           quantity: item.qty,
+        //         };
           
-                if (item.isFree = 'true' && item.qty >= 4) {
-                  productData.offre = item.offre;  
-                }
-                products.push(productData);
-              }
-            })
-          //console.log('products', products) 
-          return products;
-      })(),
+        //         if (item.isFree = 'true' && item.qty >= 4) {
+        //           productData.offre = item.offre;  
+        //         }
+        //         products.push(productData);
+        //       }
+        //     })
+         //return products;
+      //})(),
+
+
+        //test panier total
+        //products: cart
+
+        products: (() => {
+//           let products = [];
+        
+          
+      
+//           // Parcourir chaque élément de 'aggregatedCartItems'
+//           aggregatedCartItems.forEach(item => {
+//               const productData = {
+//                   productId: item.productId,
+//                   quantity: item.qty,
+//                   // ... Autres propriétés de 'item' que vous souhaitez inclure
+//               };
+            
+//               if (item.isFree) {
+//                   productData.offre = item.offre;
+//                   // Vous pouvez également ajouter la quantité gratuite (freeCount) si nécessaire
+//                   // productData.freeCount = item.freeCount;
+//               }
+            
+//               products.push(productData);
+//           });
+
+//           cart.forEach(item => {
+//                   if (item.type === 'formule') {
+    
+//                       ['option1', 'option2', 'option3'].forEach(option => {
+//                         if (item[option]) {  // Si l'option est présente
+//                             products.push({
+//                                 productId: item[option].productId,
+//                                 quantity: item.qty,
+//                                 formule: item.libelle,
+//                                 category: item[option].categorie
+//                             });
+//                           }
+//                         })
+//                   } 
+//                   // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée)
+//   else if (!item.offre || (item.offre && item.qty < 4)) {
+//     if (item.productId) { // Assurez-vous que productId est défini
+//       products.push({
+//         productId: item.productId,
+//         quantity: item.qty
+//         // ... Autres propriétés de 'item' que vous souhaitez inclure
+//       });
+//     }
+//   }
+// });
+                
+      
+//         //         // Parcourir chaque élément de 'cart'
+//         //   cart.forEach(item => {
+//         //     if (!item.offre || (item.offre && item.qty < 4)) { // si le produit n'a pas d'offre, ajoutez-le directement à 'products'
+//         //         products.push({
+//         //             productId: item.productId,
+//         //             quantity: item.qty,
+//         //             // ... Autres propriétés de 'item' que vous souhaitez inclure
+//         //         });
+//         //     }
+//         // });
+//           return products;
+let products = [];
+let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
+
+// Traitement des produits agrégés avec des offres
+aggregatedCartItems.forEach(item => {
+  const productData = {
+    productId: item.productId,
+    quantity: item.qty
+  };
+
+  if (item.isFree) {
+    productData.offre = item.offre;
+  }
+
+  products.push(productData);
+  processedProductIds.push(item.productId); // Ajoutez l'ID du produit à la liste des produits traités
+});
+
+cart.forEach(item => {
+  // Si l'ID du produit a déjà été traité, sautez ce produit
+  if (processedProductIds.includes(item.productId)) return;
+
+  // Traitement des produits de type 'formule'
+  if (item.type === 'formule') {
+    ['option1', 'option2', 'option3'].forEach(option => {
+      if (item[option]) {
+        products.push({
+          productId: item[option].productId,
+          quantity: item.qty,
+          formule: item.libelle,
+          category: item[option].categorie
+        });
+      }
+    });
+  } 
+  // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée)
+  else if (!item.offre || (item.offre && item.qty < 4)) {
+    if (item.productId) { // Assurez-vous que productId est défini
+      products.push({
+        productId: item.productId,
+        quantity: item.qty
+      });
+    }
+  }
+});
+
+return products;
+
+      })()
+          
+    
 
       };
     console.log('orderdata', orderData) 
