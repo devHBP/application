@@ -14,11 +14,11 @@ const Orders = ({navigation}) => {
 
     let API_BASE_URL = 'http://127.0.0.1:8080';
 
-    if (Platform.OS === 'android') {
-      if (__DEV__) {
-          API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-      } 
-  }
+//     if (Platform.OS === 'android') {
+//       if (__DEV__) {
+//           API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+//       } 
+//   }
 
     const user = useSelector((state) => state.auth.user);
     const userId = user.userId
@@ -28,7 +28,7 @@ const Orders = ({navigation}) => {
     const [cancelledOrder, setCancelledOrder] = useState(null);
     const [lastOrder, setLastOrder] = useState(null);
     const [previousOrders, setPreviousOrders] = useState([]);
-
+    const [ hasOrder, setHasOrder] = useState(false)
 
     const handleBack = () => {
         navigation.navigate('home');
@@ -58,6 +58,12 @@ const Orders = ({navigation}) => {
           const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}`);
           const orders = response.data;
           console.log('orders', orders)
+          if(orders.length > 0){
+            console.log('commande presente')
+            setHasOrder(true)
+          } else {
+            console.log('pas de commande')
+          }
           const ordersWithDetails = await Promise.all(orders.map(async order => {
             const productResponse = await axios.get(`${API_BASE_URL}/getOrderProducts/${order.orderId}`);
             const products = productResponse.data;
@@ -230,26 +236,51 @@ const Orders = ({navigation}) => {
 
     
     <>
-    <View style={{ flex:1,  alignItems: 'center', backgroundColor:colors.color3}}>
     
-        <View style={{ flexDirection: 'row', alignItems: 'center', gap:70, marginTop:30 }}>
-            <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1}}>Vos commandes</Text>
-            <TouchableOpacity onPress={handleBack} style={style.back}>
-                  <Icon name="keyboard-arrow-left" size={30} color="#fff" />
-            </TouchableOpacity>
-        </View>
-
-        <View style={{flex:1, width:"100%"}}>
-            <FlatList
-                data={previousOrders}
-                renderItem={({ item, index }) => renderOrder(item, index)}
-                keyExtractor={item => item.orderId.toString()}
-                ListHeaderComponent={lastOrder ? <ListHeader lastOrder={lastOrder} /> : null}
-            />
-
+    
         
-        </View>
-    </View>
+            {
+                hasOrder ? (
+                    <View style={{ flex:1,  alignItems: 'center', backgroundColor:colors.color3}}>
+                    <View>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', gap:70, marginTop:30 }}>
+                        <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1}}>Vos commandes</Text>
+                        <TouchableOpacity onPress={handleBack} style={style.back}>
+                            <Icon name="keyboard-arrow-left" size={30} color="#fff" />
+                        </TouchableOpacity>
+                    </View>
+                            <View style={{flex:1, width:"100%"}}>
+                                        <FlatList
+                                            data={previousOrders}
+                                            renderItem={({ item, index }) => renderOrder(item, index)}
+                                            keyExtractor={item => item.orderId.toString()}
+                                            ListHeaderComponent={lastOrder ? <ListHeader lastOrder={lastOrder} /> : null}
+                                        />     
+                            </View>
+                </View>
+             
+                </View>
+                )
+                :
+                (
+                    <View style={{ flex:1,  alignItems: 'center', backgroundColor:colors.color3}}>
+                        <View >
+                                <View style={{ flexDirection: 'row', alignItems: 'center', gap:70, marginVertical:30 }}>
+                                    <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1}}>Vos commandes</Text>
+                                    <TouchableOpacity onPress={handleBack} style={style.back}>
+                                        <Icon name="keyboard-arrow-left" size={30} color="#fff" />
+                                    </TouchableOpacity>
+                                </View>
+
+                        <View style={{backgroundColor:'white', flex:1, flexDirection:'row', justifyContent:'center', alignItems:'center', marginBottom:100, borderRadius:20}}>
+                            <Text>Pas de commandes encore</Text>
+                        </View>
+                    </View>
+                    </View>
+                )
+            }
+        
+    
     <FooterProfile />
     </>
     
@@ -282,4 +313,3 @@ const style = StyleSheet.create({
 })
 
 export default Orders
-
