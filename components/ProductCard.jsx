@@ -73,11 +73,11 @@ const incrementhandler = async () => {
 
     if (stockAvailable.length > 0 && remainingStock > 0) {
       // The stock is sufficient, add the product to the cart
-      dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre}));
+      dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre,}));
 
       if (offre && offre.startsWith('offre31')) {
         // Get a version of the cart that includes the new product
-        const updatedCart = [...cart, { productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre }];
+        const updatedCart = [...cart, { productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre}];
     
         // Filter products that have the same offer as the currently added product
         const sameOfferProducts = updatedCart.filter((item) => item.offre === offre);
