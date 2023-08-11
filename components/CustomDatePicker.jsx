@@ -24,8 +24,8 @@ const CustomDatePicker = () => {
     const dateRedux = useSelector((state) => state.cart.date)
     
     const [date, setDate] = useState( dateRedux ||  null)
-    console.log('Date redux',dateRedux)
-    console.log("Date initialisée:", date);
+    //console.log('Date redux',dateRedux)
+    //console.log("Date initialisée:", date);
     const [openDate, setOpenDate] = useState(false)
     const [role, setRole] = useState('');
     const [time, setTime] = useState()
