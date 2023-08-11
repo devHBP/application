@@ -49,12 +49,9 @@ const Panier = ({navigation}) => {
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
   const user = useSelector((state) => state.auth.user)
   const selectedStore = useSelector(state => state.auth.selectedStore);
-  const cartTotal = useSelector((state) => state.cart.cartTotal)
-  //console.log('cart Total', cartTotal)
-  console.log('cart panier', cart)
+  // const cartTotal = useSelector((state) => state.cart.cartTotal)
 
   const selectedDateString = useSelector((state) => state.cart.date)
-
   const selectedTime = useSelector((state) => state.cart.time)
   // const paiement = useSelector((state) => state.cart.paiement)
   const paiement = "online"
@@ -229,6 +226,8 @@ useEffect(() => {
     navigation.navigate('app')
   }
 
+
+  
   const handleConfirm = async () => {
     //console.log(cart)
     dispatch(updateCartTotal({
@@ -268,7 +267,7 @@ useEffect(() => {
         firstname_client: user.firstname,
         lastname_client: user.lastname,
         prix_total: totalPrice,
-        date: selectedDateString,
+        date: selectedDateString, //revoir ici formater en string
         //delivery,
         heure: selectedTime,
         userId: user.userId,
@@ -345,7 +344,7 @@ useEffect(() => {
             selectedStore,
             totalPrice,
             totalQuantity,
-            selectedDateString, 
+            selectedDateString, //verifier ici si format en string
             paiement
           });
 

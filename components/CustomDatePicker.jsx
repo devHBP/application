@@ -22,7 +22,10 @@ const CustomDatePicker = () => {
 }
 
     const dateRedux = useSelector((state) => state.cart.date)
-    const [date, setDate] = useState(  null)
+    
+    const [date, setDate] = useState( dateRedux ||  null)
+    console.log('Date redux',dateRedux)
+    console.log("Date initialisée:", date);
     const [openDate, setOpenDate] = useState(false)
     const [role, setRole] = useState('');
     const [time, setTime] = useState()
@@ -36,11 +39,10 @@ const CustomDatePicker = () => {
     const dispatch = useDispatch();
 
     const isTomorrowOrLater = (selectedDate) => {
-        const currentDate = new Date();
-        currentDate.setHours(23, 59, 0, 0); // Set current date to today at 23:59
-        return selectedDate >= currentDate;
-      };
-
+      const currentDate = new Date();
+      currentDate.setHours(23, 59, 0, 0); // Set current date to today at 23:59
+      return selectedDate >= currentDate;
+    };
       useEffect(() => {
         // Effectuez une requête GET pour récupérer le rôle de l'utilisateur
         axios.get(`${API_BASE_URL}/getOne/${user.userId}`)
@@ -55,6 +57,8 @@ const CustomDatePicker = () => {
             console.error('Erreur lors de la récupération du rôle de l\'utilisateur:', error);
           });
       }, [])
+
+     
 
     const formatDate = (dateString) => {
     const date = new Date(dateString);
@@ -95,14 +99,10 @@ const CustomDatePicker = () => {
             <Text style={styles.textPickerDate}>Pour quel jour ?</Text>
             <Text>
             {date ? 
+          
+            <Text style={styles.picker}>{dateRedux}</Text>
+            :
             (
-                isTomorrowOrLater(date) ? (
-                <Text style={styles.picker}>{formatDate(date)}</Text>
-                ) : (
-                  <Text style={styles.picker} >
-                  trop tard</Text>
-                )
-            ) : (
            
                   <Text style={styles.pickerNoDate}>jj/mm/aaaa</Text>
             )}
@@ -113,32 +113,30 @@ const CustomDatePicker = () => {
                <DatePicker
                 modal
                 open={openDate}
-                date={date ? new Date(date) : new Date()}
+                date={date ? new Date() : new Date()}
                 mode="date"
                 onConfirm={(date) => {
+                  
                   setOpenDate(false)
-
+                  
+                  if (!isTomorrowOrLater(date)) {
+                    Toast.show({
+                      type: 'error',
+                      text1: 'Erreur, Vous arrivez trop tard pour cette date',
+                    text2: 'Veuillez selectionner une nouvelle date',
+                    });
+                    return;
+                  }
                 //test date
-                if (isTomorrowOrLater(date)) {
-                  setDate(date);
-                  console.log('date console', date)
-                  dispatch(addDate(formatDate(date.toISOString())));
-                  console.log('date', formatDate(date.toISOString()))
+                  const formattedDate = formatDate(date.toISOString());
+                  setDate(formattedDate);
+                  dispatch(addDate(formattedDate));
                   return Toast.show({
                     type: 'success',
                     text1: 'Succès',
-                    text2: `Commande choisie pour le ${formatDate(date)}`
+                    text2: `Commande choisie pour le ${formattedDate}`
                   });
-                } else {
-                  setDate(null)
-                  dispatch(addDate(null))
-                  console.log('La date sélectionnée doit être supérieure ou égale à demain');
-                  return Toast.show({
-                    type: 'error',
-                    text1: 'Erreur, Vous arrivez trop tard pour demain',
-                    text2: 'Veuillez selectionner une nouvelle date'
-                  });
-                } 
+                
                 }}
                 onCancel={() => {
                   setOpenDate(false)
@@ -160,7 +158,7 @@ const CustomDatePicker = () => {
                           onConfirm={(time) => {
                             setOpenTime(false)
                             setTime(time)
-                            dispatch(addTime(formatTime(time.toISOString())));
+                            dispatch(addTime(formatTime(time.toISOString()))); 
                             //converti en chaine de caractères
                             console.log('heure commande',formatTime(time))
                             //console.log('selection date store redux:', selectedDateString)
