@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
 import FooterProfile from '../../components/FooterProfile';
+import ArrowLeft from '../../SVG/ArrowLeft';
 
 const FormuleSalade = ({navigation}) => {
 
@@ -181,12 +182,13 @@ const FormuleSalade = ({navigation}) => {
 
     const handleFormuleSelection = () => {
       const formule = {
+        id: `formule-${Date.now()}`,
         type: 'formule',
         option1: selectedSandwich,
         option2: selectedDessert ? selectedDessert : null,
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
-        libelle:"Formule Sandwich",
+        libelle:"Formule Salade",
         formuleImage: require('../../assets/Formule25.jpg'),
         productIds: productIds,
         qty: 1,
@@ -205,9 +207,9 @@ const FormuleSalade = ({navigation}) => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
 
-            <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'white', borderRadius:25}}>
-                    <Icon name="keyboard-arrow-left" size={40} color="#000" style={{}}  />
-                </TouchableOpacity>
+                <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
+                    <ArrowLeft fill="white"/>
+                </TouchableOpacity> 
         </View>
         <View style={{padding:30}}>
             <Text style={style.title}>Salade</Text>

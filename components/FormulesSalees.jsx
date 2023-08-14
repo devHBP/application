@@ -49,7 +49,7 @@ const FormulesSalees = () => {
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePoke} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule26.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                    <Image
                             source={require('../assets/halles_solanid.png')} 
@@ -66,7 +66,7 @@ const FormulesSalees = () => {
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSandwich} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule36.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Sandwichs</Text>
@@ -78,7 +78,7 @@ const FormulesSalees = () => {
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSalade} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule25.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Salades</Text>
@@ -90,7 +90,7 @@ const FormulesSalees = () => {
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePizzas} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule2.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Pizzas</Text>
@@ -102,7 +102,7 @@ const FormulesSalees = () => {
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleWraps} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule32.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Wraps</Text>
@@ -114,7 +114,7 @@ const FormulesSalees = () => {
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePainBagnat} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule28.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Pains Bagnats</Text>
@@ -126,7 +126,7 @@ const FormulesSalees = () => {
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleBurger} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule27.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Burgers</Text>
@@ -138,7 +138,7 @@ const FormulesSalees = () => {
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleCroque} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule16.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Croques</Text>
@@ -150,7 +150,7 @@ const FormulesSalees = () => {
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePanini} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule55.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Paninis</Text>
@@ -162,7 +162,7 @@ const FormulesSalees = () => {
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleQuiche} activeOpacity={0.8}>
                     <Image
                             source={require('../assets/Formule22.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'center' }}
+                            style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Quiches</Text>

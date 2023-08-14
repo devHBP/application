@@ -1,10 +1,14 @@
-import { View, Text, StyleSheet, Image } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { fonts, colors} from '../styles/styles'
 import { Button } from 'react-native-paper';
 
 
 const Catalogue = () => {
+
+  const handleUpload = () => {
+    console.log('test')
+  }
   return (
     <View style={styles.container}>
       <View style={styles.container_image}>
@@ -24,7 +28,8 @@ const Catalogue = () => {
              ou en grandes quantités. N’hésitez pas à contacter votre établissement si avez plus de questions.</Text>
       </View>
 
-      <Button style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={handleUpload}>
+        <View style={{flexDirection:'row', justifyContent: 'center', gap:10, alignItems:'center', paddingHorizontal:10}}>
         <View style={{flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
             <Text style={styles.textButton}>Télécharger notre</Text>
             <Text style={styles.textButton}>catalogue</Text>
@@ -32,8 +37,10 @@ const Catalogue = () => {
         <Image
                   source={require('../assets/upload.png')} 
                   style={styles.icon}
-                />    
-        </Button>
+                />  
+        </View>
+          
+        </TouchableOpacity>
       
     </View>
   )
@@ -78,6 +85,7 @@ const styles = StyleSheet.create({
         backgroundColor:colors.color2,
         borderRadius:5,
         padding:5,
+        width:'auto'
       },
       textButton:{
         color:'white',

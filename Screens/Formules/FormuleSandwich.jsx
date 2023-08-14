@@ -13,6 +13,7 @@ import FooterProfile from '../../components/FooterProfile';
 
 import { checkProductAvailability } from '../../Fonctions/fonctions';
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
+import ArrowLeft from '../../SVG/ArrowLeft';
 
 
 const FormuleSandwich = ({navigation}) => {
@@ -59,7 +60,7 @@ const FormuleSandwich = ({navigation}) => {
         //les desserts - par id
         const getOneProduct = async () => {
             try {
-                const productIds = [];
+                const productIds = [88,89];
                 const productPromises = productIds.map((productId) => fetchOneProduct(productId));
                 const desserts = await Promise.all(productPromises);
                 //console.log(desserts)
@@ -187,6 +188,7 @@ const FormuleSandwich = ({navigation}) => {
 
     const handleFormuleSelection = () => {
       const formule = {
+        id: `formule-${Date.now()}`,
         type: 'formule',
         option1: selectedSandwich,
         option2: selectedDessert ? selectedDessert : null,
@@ -211,8 +213,8 @@ const FormuleSandwich = ({navigation}) => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
 
-            <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'white', borderRadius:25}}>
-                    <Icon name="keyboard-arrow-left" size={40} color="#000" style={{}}  />
+                <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
+                    <ArrowLeft fill="white"/>
                 </TouchableOpacity>
         </View>
         <View style={{padding:30}}>

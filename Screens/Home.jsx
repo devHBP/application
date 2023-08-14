@@ -18,6 +18,9 @@ import EnvieSalee from '../components/EnvieSalee';
 import Catalogue from '../components/Catalogue';
 import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
+import ArrowDown from '../SVG/ArrowDown';
+
+
 
 const Home =  ({navigation}) => {
 
@@ -88,7 +91,7 @@ const Home =  ({navigation}) => {
         ...product,
         qty: 0, 
       }));
-      //console.log('all products', updatedProducts)
+      console.log('all products', updatedProducts)
       setProducts(updatedProducts);
       setCategories([...new Set(updatedProducts.map((product) => product.categorie)), 'Tous']);
       //setCategories(updatedProducts.map((product) => product.categorie));
@@ -214,15 +217,21 @@ const ongletButtonHandler = (onglet) => {
           <View style={{ flexDirection:'row', gap:15, alignItems:'center',}}>
               
             <View>
-              <StorePicker />
+              {/* <StorePicker /> */}
             </View> 
             <View >
               <CustomDatePicker />
             </View>
 
-            <View style={{backgroundColor:'lightgrey', borderRadius:25, justifyContent:'center'}}> 
-              <TouchableOpacity  onPress={toggleVisibility} activeOpacity={1}>
-                  <Icon name="keyboard-arrow-down" size={28} color="#FFF"  />
+            <View style={{backgroundColor:'white'}}> 
+              <TouchableOpacity  onPress={toggleVisibility} activeOpacity={1} >
+                  {/* <Icon name="keyboard-arrow-down" size={28} color="#FFF"  /> */}
+                  {/* <Image
+                    source={require('../assets/arrow_down.png')} // Remplacez 'my-image' par le nom de votre image
+                    style={{ width: 30, height: 30, resizeMode:'cover' }} // Remplacez ces valeurs par les dimensions souhaitées
+                  /> */}
+                <ArrowDown />
+
               </TouchableOpacity>
           </View>
           </View>
@@ -287,11 +296,14 @@ const ongletButtonHandler = (onglet) => {
                    color: item === 'Promos' ? 'white' : colors.color1, 
                   }}>{item}</Text>
                   
-                 {item === 'Promos' && <Image
+                 {item === 'Promos' && 
+                 
+                 <Image
                     source={require('../assets/promos.png')} 
                     style={{ width: 15, height: 15, resizeMode:'cover' }}
                    
-                />}
+                />
+                }
                  
               </View>
             </Pressable>
@@ -506,7 +518,8 @@ const ongletButtonHandler = (onglet) => {
           </TouchableOpacity> */}
           <View style={{flexDirection:'row', justifyContent:'center'}}>
               <TouchableOpacity style={styles.scrollTop }  onPress={scrollToTop}>
-                <Icon name={'keyboard-arrow-up'} size={30} color={colors.color4}  />
+                {/* <Icon name={'keyboard-arrow-up'} size={30} color={colors.color4}  /> */}
+                <ArrowDown />
               </TouchableOpacity>
           </View>
           

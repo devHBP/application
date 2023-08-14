@@ -15,6 +15,7 @@ import FooterProfile from '../../components/FooterProfile';
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 //fonctions
 import { checkProductAvailability } from '../../Fonctions/fonctions';
+import ArrowLeft from '../../SVG/ArrowLeft';
 
 
 const FormuleCroques = ({navigation}) => {
@@ -215,8 +216,8 @@ const FormuleCroques = ({navigation}) => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
 
-            <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'white', borderRadius:25}}>
-                    <Icon name="keyboard-arrow-left" size={40} color="#000" style={{}}  />
+                <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
+                    <ArrowLeft fill="white"/>
                 </TouchableOpacity>
         </View>
         <View style={{padding:30}}>

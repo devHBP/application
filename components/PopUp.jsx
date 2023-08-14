@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text , TouchableOpacity, StyleSheet, Image} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {colors} from '../styles/styles'
+import ArrowLeft from '../SVG/ArrowLeft';
 
 const PopUp = ({ onClose, title, text, image }) => {
 
@@ -12,9 +13,13 @@ const PopUp = ({ onClose, title, text, image }) => {
   return (
     <View style={{flex:1, backgroundColor:'white', padding:30, height:"100%"}}>
         
-        <TouchableOpacity onPress={onClose} style={style.back}>
+        {/* <TouchableOpacity onPress={onClose} style={style.back}>
             <Icon name="keyboard-arrow-left" size={30} color="#fff" />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <TouchableOpacity  onPress={onClose} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'white', borderRadius:25, borderColor:'white', borderWidth:5}}>
+                    {/* <Icon name="keyboard-arrow-left" size={40} color="#000" style={{}}  /> */}
+                    <ArrowLeft fill="#273545"/>
+                </TouchableOpacity>
 
         <View style={{flexDirection:'column', alignItems:'center', justifyContent:'center', height:"80%", gap:30, marginTop:50}}>
             <Text>{title}</Text>
