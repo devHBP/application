@@ -145,6 +145,11 @@ const Login = ({navigation}) => {
             <TouchableOpacity onPress={() => navigation.navigate('signup')}>
                 <Text style={style.signup}>S'enregistrer</Text>
             </TouchableOpacity>
+
+            <TouchableOpacity onPress={() => navigation.navigate('pwd')}>
+                <Text style={style.signup}>Mot de passe oublié ?</Text>
+            </TouchableOpacity>
+
         </View>
     </View>
   )
