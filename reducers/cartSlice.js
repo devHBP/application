@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   cart: [],
+  cartTotal: {}
 };
 
 const cartSlice = createSlice({
@@ -46,7 +47,7 @@ const cartSlice = createSlice({
           if (existingProductIndex !== -1) {
             state.cart[existingProductIndex].qty += 1;
           } else {
-            state.cart.push({ ...product, qty: 1, isFree: false });
+            state.cart.push({ ...product, qty: 1, isFree: false,});
           }
       }
   },
@@ -56,7 +57,7 @@ const cartSlice = createSlice({
       const product = action.payload;
     
       if (product.offre && product.offre.startsWith('offre31')) {
-        state.cart.push({ ...product, prix_unitaire: 0, qty: 1, isFree: true });
+        state.cart.push({ ...product, prix_unitaire: 0, qty: 1, isFree: true});
       }
     },
     
@@ -127,10 +128,16 @@ const cartSlice = createSlice({
       },
     addPaiement: (state, action) => {
         state.paiement = action.payload
-      }
-  },
+      },
+  updateCartTotal: (state, action) => {
+    state.cartTotal = {
+      groupedItems: action.payload.groupedItemsArray,
+      formules: action.payload.formules
+    };
+  }
+},
 });
 
 export const { addToCart, removeFromCart, updateCart, clearCart, addDate, clearDate,
-addTime,resetDateTime,clearTime, addPaiement, decrementOrRemoveFromCart, addFreeProductToCart, incrementProductQty } = cartSlice.actions;
+addTime,resetDateTime,clearTime, addPaiement, decrementOrRemoveFromCart, addFreeProductToCart, incrementProductQty, updateCartTotal } = cartSlice.actions;
 export default cartSlice.reducer;

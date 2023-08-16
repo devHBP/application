@@ -97,10 +97,9 @@ const styles = StyleSheet.create({
   },
   scrollTop: {
     marginBottom: 120,
-    backgroundColor:colors.color3, 
+    backgroundColor:'white', 
     borderRadius:25,
-     width:30,
-     height:30
+    transform: [{ rotate: '180deg' }],
   },
   titleFormule: {
    color:colors.color2,
@@ -109,13 +108,13 @@ const styles = StyleSheet.create({
   },
   textFormule:{
     color:colors.color1,
-    fontSize:14,
+    fontSize:13,
     fontWeight: "500",
     width:250
   },
   cardTitle:{
     backgroundColor:'white',
-    height:57,
+    height:60,
     borderBottomLeftRadius:10,
     borderBottomRightRadius:10,
     justifyContent:'center',

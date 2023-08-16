@@ -91,7 +91,7 @@ const Home =  ({navigation}) => {
         ...product,
         qty: 0, 
       }));
-      console.log('all products', updatedProducts)
+      //console.log('all products', updatedProducts)
       setProducts(updatedProducts);
       setCategories([...new Set(updatedProducts.map((product) => product.categorie)), 'Tous']);
       //setCategories(updatedProducts.map((product) => product.categorie));
@@ -217,7 +217,7 @@ const ongletButtonHandler = (onglet) => {
           <View style={{ flexDirection:'row', gap:15, alignItems:'center',}}>
               
             <View>
-              {/* <StorePicker /> */}
+              <StorePicker />
             </View> 
             <View >
               <CustomDatePicker />

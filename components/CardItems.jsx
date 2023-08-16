@@ -17,7 +17,7 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
     /> */}
       <View style={styles.content}>
         <Text numberOfLines={2} style={styles.title}>{libelle}</Text>
-       <Text style={styles.price}> {prix || prix_unitaire}€</Text>
+       <Text style={styles.price}>{prix || prix_unitaire }€</Text>
         
       </View>
       <View style={styles.actions}>

@@ -87,13 +87,10 @@ const Signup = ({navigation}) => {
   };
 
   return (
-    <View style={defaultStyle}>
+    <View style={style.container}>
 
-<ScrollView>
-
-
-      
-      <View style={style.container}>
+      <ScrollView>
+      <View >
         <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
             <View>
               <Text style={style.title}>Incription</Text>
@@ -189,10 +186,11 @@ const Signup = ({navigation}) => {
 const style = StyleSheet.create({
     container:{
         flex:1,
-        padding:20,
+        paddingTop:30,
+        paddingHorizontal:20,
         justifyContent:'center',
         //reajustement margin pour laisser de la place au footer
-        // marginBottom:70
+        // marginBottom:70,
         backgroundColor:colors.color3
     },
   inputOpts : {
@@ -221,6 +219,7 @@ const style = StyleSheet.create({
     color:colors.color2,
     fontSize:33,
     fontWeight: "900",
+    fontFamily:fonts.font1
   },
   pain:{
     fontStyle:'italic',

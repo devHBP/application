@@ -47,7 +47,7 @@ const Panier = ({navigation}) => {
   const [productFamilies, setProductFamilies] = useState({});
 
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
-  console.log('cart panier', cart)
+  //console.log('cart panier', cart)
   const user = useSelector((state) => state.auth.user)
   const selectedStore = useSelector(state => state.auth.selectedStore);
    const cartTotal = useSelector((state) => state.cart.cartTotal)
@@ -248,12 +248,18 @@ useEffect(() => {
     if (response.data.auth) {
 
       dispatch(setProducts(cart));
+
+      //formater la date chaine de caractère -> format ISO
+      // à l'heure 0:00
+      const [day, month, year] = selectedDateString.split("/").map(Number);
+      const formattedDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+      const dateForDatabase = formattedDate.toISOString();
       
       const orderData = {
         firstname_client: user.firstname,
         lastname_client: user.lastname,
         prix_total: totalPrice,
-        date: selectedDateString, 
+        date: dateForDatabase, 
         heure: selectedTime,
         userId: user.userId,
         storeId: selectedStore.storeId,
@@ -267,171 +273,64 @@ useEffect(() => {
         //plus utilisé
         //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty })) 
 
-        //j'ajoute ici les formule et lesp produits fusionnés
-        // products: (() => {
-        //   let products = [];
-  
-        //   cart.forEach(item => {
-        //       if (item.type === 'formule') {
-
-
-
-        //           // item.productIds.forEach(productId => {
-                    
-        //           //     products.push({ productId: productId, quantity: item.qty, formule: item.libelle, category: item.option1.categorie });
-        //           // });
-
-        //           ['option1', 'option2', 'option3'].forEach(option => {
-        //             if (item[option]) {  // Si l'option est présente
-        //                 products.push({
-        //                     productId: item[option].productId,
-        //                     quantity: item.qty,
-        //                     formule: item.libelle,
-        //                     category: item[option].categorie
-        //                 });
-        //               }
-        //             })
-        //       } 
-        //     })
-            
-        //     aggregatedCartItems.forEach( item => {
-        //       {
-        //         // products.push({ productId: item.productId, quantity: item.qty, offre: item.offre });
-        //         const productData = {
-        //           productId: item.productId,
-        //           quantity: item.qty,
-        //         };
-          
-        //         if (item.isFree = 'true' && item.qty >= 4) {
-        //           productData.offre = item.offre;  
-        //         }
-        //         products.push(productData);
-        //       }
-        //     })
-         //return products;
-      //})(),
-
-
-        //test panier total
-        //products: cart
-
         products: (() => {
-//           let products = [];
-        
-          
-      
-//           // Parcourir chaque élément de 'aggregatedCartItems'
-//           aggregatedCartItems.forEach(item => {
-//               const productData = {
-//                   productId: item.productId,
-//                   quantity: item.qty,
-//                   // ... Autres propriétés de 'item' que vous souhaitez inclure
-//               };
-            
-//               if (item.isFree) {
-//                   productData.offre = item.offre;
-//                   // Vous pouvez également ajouter la quantité gratuite (freeCount) si nécessaire
-//                   // productData.freeCount = item.freeCount;
-//               }
-            
-//               products.push(productData);
-//           });
 
-//           cart.forEach(item => {
-//                   if (item.type === 'formule') {
-    
-//                       ['option1', 'option2', 'option3'].forEach(option => {
-//                         if (item[option]) {  // Si l'option est présente
-//                             products.push({
-//                                 productId: item[option].productId,
-//                                 quantity: item.qty,
-//                                 formule: item.libelle,
-//                                 category: item[option].categorie
-//                             });
-//                           }
-//                         })
-//                   } 
-//                   // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée)
-//   else if (!item.offre || (item.offre && item.qty < 4)) {
-//     if (item.productId) { // Assurez-vous que productId est défini
-//       products.push({
-//         productId: item.productId,
-//         quantity: item.qty
-//         // ... Autres propriétés de 'item' que vous souhaitez inclure
-//       });
-//     }
-//   }
-// });
-                
-      
-//         //         // Parcourir chaque élément de 'cart'
-//         //   cart.forEach(item => {
-//         //     if (!item.offre || (item.offre && item.qty < 4)) { // si le produit n'a pas d'offre, ajoutez-le directement à 'products'
-//         //         products.push({
-//         //             productId: item.productId,
-//         //             quantity: item.qty,
-//         //             // ... Autres propriétés de 'item' que vous souhaitez inclure
-//         //         });
-//         //     }
-//         // });
-//           return products;
-let products = [];
-let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
+  
+                    let products = [];
+                    let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
 
-// Traitement des produits agrégés avec des offres
-aggregatedCartItems.forEach(item => {
-  const productData = {
-    productId: item.productId,
-    quantity: item.qty
-  };
+                    // Traitement des produits fusionnés avec des offres (3+1)
+                    aggregatedCartItems.forEach(item => {
+                      const productData = {
+                        productId: item.productId,
+                        quantity: item.qty
+                      };
 
-  if (item.isFree) {
-    productData.offre = item.offre;
-  }
+                      if (item.isFree) {
+                        productData.offre = item.offre;
+                      }
 
-  products.push(productData);
-  processedProductIds.push(item.productId); // Ajoutez l'ID du produit à la liste des produits traités
-});
+                      products.push(productData);
+                      processedProductIds.push(item.productId); // Ajoutez l'ID du produit à la liste des produits traités
+                    });
 
-cart.forEach(item => {
-  // Si l'ID du produit a déjà été traité, sautez ce produit
-  if (processedProductIds.includes(item.productId)) return;
+                    cart.forEach(item => {
+                      // Si l'ID du produit a déjà été traité, sautez ce produit
+                      //pour eviter les doublons dans le panier
+                      if (processedProductIds.includes(item.productId)) return;
 
-  // Traitement des produits de type 'formule'
-  if (item.type === 'formule') {
-    ['option1', 'option2', 'option3'].forEach(option => {
-      if (item[option]) {
-        products.push({
-          productId: item[option].productId,
-          quantity: item.qty,
-          formule: item.libelle,
-          category: item[option].categorie
-        });
-      }
-    });
-  } 
-  // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée)
-  else if (!item.offre || (item.offre && item.qty < 4)) {
-    if (item.productId) { // Assurez-vous que productId est défini
-      products.push({
-        productId: item.productId,
-        quantity: item.qty
-      });
-    }
-  }
-});
+                    // Traitement des produits de type 'formule'
+                    if (item.type === 'formule') {
+                      ['option1', 'option2', 'option3'].forEach(option => {
+                        if (item[option]) {
+                          products.push({
+                            productId: item[option].productId,
+                            quantity: item.qty,
+                            formule: item.libelle,
+                            category: item[option].categorie
+                          });
+                        }
+                      });
+                    } 
+                    // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée)
+                    else if (!item.offre || (item.offre && item.qty < 4)) {
+                      if (item.productId) { 
+                        products.push({
+                          productId: item.productId,
+                          quantity: item.qty
+                        });
+                      }
+                    }
+                  });
 
-return products;
+                  return products;
 
-      })()
-          
-    
-
+                        })()
       };
     console.log('orderdata', orderData) 
 
       const createOrder = async () => {
-        console.log(selectedDateString) 
+        console.log(dateForDatabase) 
         try {
           const response =  await axios.post(`${API_BASE_URL}/createorder`, orderData);
           const numero_commande = response.data.numero_commande
@@ -444,7 +343,7 @@ return products;
             selectedStore,
             totalPrice,
             totalQuantity,
-            selectedDateString, //verifier ici si format en string
+            dateForDatabase, //(en format ISO))
             paiement
           });
 
@@ -455,7 +354,7 @@ return products;
           throw new Error('Erreur lors de la création de la commande');
         }
       }
-     createOrder()
+     //createOrder()
       } else {
           console.log('erreur ici', error)
       }
@@ -598,9 +497,6 @@ const itemsGroupedByFamily = groupedItemsArray.reduce((acc, group) => {
   return acc;
 }, {});
 
-
-
-
 useEffect(() => {
   if (orderInfo && paiement === 'online') {
     const submitOrder = async () => {
@@ -615,13 +511,13 @@ useEffect(() => {
     };
     submitOrder();
   }
-}, [orderInfo, paiement]);
+    }, [orderInfo, paiement]);
 
-useEffect(() => {
-  if(paiement === 'online' && sessionId){
-    checkPaymentStatus() 
-  }
-}, [paiement, sessionId]); 
+    useEffect(() => {
+      if(paiement === 'online' && sessionId){
+        checkPaymentStatus() 
+      }
+    }, [paiement, sessionId]); 
 
   return (
     <>
@@ -637,7 +533,6 @@ useEffect(() => {
 
        {/* bandeau picker */}
        <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-around', paddingHorizontal:10}}>
-          {/* <View style={{ flexDirection:'row', alignItems:'center', justifyContent:'center'}}> */}
               
             <View>
               <StorePicker />
@@ -645,43 +540,38 @@ useEffect(() => {
             <View >
               <CustomDatePicker />
             </View>
-
-            
-          {/* </View> */}
           
         </View>
 
-       <ScrollView  style={{marginVertical:10,flex: 1,}}>
-        {/* - formules -  */}{
-          formules.length > 0 && <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>Formules</Text>
-        }
-          {formules.map((item, index) => {
-            if (item.type === 'formule'){
-              return (
+          <ScrollView  style={{marginVertical:10,flex: 1,}}>
+            {/* - formules -  */}{
+              formules.length > 0 && <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>Formules</Text>
+            }
+              {formules.map((item, index) => {
+                if (item.type === 'formule'){
+                  return (
+                    
+                    <View key={index}>
+                      <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}}>
+                      <Text>{item.libelle}</Text>
+                      <CardItemFormule
+                        option1={item.option1}
+                        option2={item.option2}
+                        option3={item.option3}
+                        prix_unitaire={item.prix}
+                        incrementhandler={() => incrementhandler(item.productIds, item.offre)}
+                        decrementhandler={() => decrementhandler(item.productIds, dispatch)}
+                        image={item.formuleImage}
+                        qty={item.qty}
+                        // key={item.id}
+                      />
+                    </View> 
+                    </View>
                 
-                <View key={index}>
-                
-                  <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}}>
-                  <Text>{item.libelle}</Text>
-                  <CardItemFormule
-                    option1={item.option1}
-                    option2={item.option2}
-                    option3={item.option3}
-                    prix_unitaire={item.prix}
-                    incrementhandler={() => incrementhandler(item.productIds, item.offre)}
-                    decrementhandler={() => decrementhandler(item.productIds, dispatch)}
-                    image={item.formuleImage}
-                    qty={item.qty}
-                    // key={item.id}
-                  />
-                </View> 
-                </View>
-             
-              );
-          }
-          })} 
+                  );
+              }
+              })} 
            {/* - produits seuls ou avec offre -  */}
-           
             {
               Object.entries(itemsGroupedByFamily).map(([familyName, items], index) => {
             // groupedItemsArray.map((group, index) => {
@@ -712,7 +602,6 @@ useEffect(() => {
               } )  
             }    
        </ScrollView>
-      
         
         {/* Promotions */}
           <View style={{ flexDirection:'row', alignItems:'center', gap: 10, }}>
@@ -725,12 +614,7 @@ useEffect(() => {
               <Icon name="done" size={20} color="#900" onPress={handleApplyDiscount} />
               <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
           </View>
-        
-
-
         </View>
-
-
 
         {/* bandeau selection commande */}
           <View style={{...style.menu }}>
@@ -746,7 +630,7 @@ useEffect(() => {
               <Button 
                   buttonColor='lightgray' 
                   onPress={handleConfirm}
-                  // disabled={cart.length === 0}
+                  disabled={cart.length === 0}
                   >
                 Valider votre commande
               </Button>  
@@ -759,11 +643,6 @@ useEffect(() => {
 
           <FooterProfile />
     </>
-
   )
-  
 }
-
-
-
 export default Panier
