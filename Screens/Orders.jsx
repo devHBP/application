@@ -6,9 +6,11 @@ import { useSelector} from 'react-redux'
 import { Button } from 'react-native-paper'
 import axios from 'axios'
 import FooterProfile from '../components/FooterProfile';
+import ArrowLeft from '../SVG/ArrowLeft';
 
 //call Api
 import { getStoreById } from '../CallApi/api';
+import ArrowDown from '../SVG/ArrowDown';
 
 const Orders = ({navigation}) => {
 
@@ -133,8 +135,9 @@ const Orders = ({navigation}) => {
                             <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                             <Text style={{color:colors.color5, fontSize:10}}>{item.productIds.split(",").length}x Articles</Text>
                         </View>
-                        <View style={{backgroundColor:'lightgrey', borderRadius:25, justifyContent:'center'}}> 
-                            <Icon name={expandedOrderIds.includes(item.orderId) ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={28} color={colors.color4}  />
+                        <View style={{backgroundColor:'white', borderRadius:25, justifyContent:'center'}}> 
+                            {/* <Icon name={expandedOrderIds.includes(item.orderId) ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={28} color={colors.color4}  /> */}
+                            <ArrowDown />
                         </View>
                     </View>
                 </TouchableOpacity>
@@ -243,12 +246,13 @@ const Orders = ({navigation}) => {
                 hasOrder ? (
                     <View style={{ flex:1,  alignItems: 'center', backgroundColor:colors.color3}}>
                     <View>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap:70, marginTop:30, justifyContent:'center' }}>
-                        <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1}}>Vos commandes</Text>
-                        <TouchableOpacity onPress={handleBack} style={style.back}>
-                            <Icon name="keyboard-arrow-left" size={30} color="#fff" />
-                        </TouchableOpacity>
-                    </View>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap:90, marginTop:30, justifyContent:'center' }}>
+                                 <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1}}>Vos commandes</Text>
+                            
+                                <TouchableOpacity  onPress={handleBack} activeOpacity={0.8} style={{backgroundColor:'white', borderRadius:25,}}>                           
+                                    <ArrowLeft fill={colors.color1}/>
+                                </TouchableOpacity>     
+                            </View>
                             <View style={{flex:1, width:"100%"}}>
                                         <FlatList
                                             data={previousOrders}
@@ -280,11 +284,8 @@ const Orders = ({navigation}) => {
                 )
             }
         
-    
     <FooterProfile />
     </>
-    
-    
   )
 }
 
