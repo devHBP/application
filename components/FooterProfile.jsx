@@ -150,6 +150,7 @@ const FooterProfile = () => {
       />
       </TouchableOpacity> 
        
+      <View style={style.badgeContainer}>
        {/* <Icon name="person" size={30} color="#000" style={style.icon} onPress={openProfile}/> */}
        {isBadgeVisible && (
         <Badge size={16} style={{...style.badge, backgroundColor: badgeColor}}></Badge>
@@ -161,16 +162,19 @@ const FooterProfile = () => {
            // Remplacez ces valeurs par les dimensions souhaitées
         />
       </TouchableOpacity>
+      </View>
 
-      <Badge visible={cart.length > 0} size={18} style={style.badgeCart}>
-          {totalQuantity}
-        </Badge>
-      <TouchableOpacity onPress={openCart}>
-      <Image
-         source={require('../assets/panier.png')} // Remplacez 'my-image' par le nom de votre image
-         style={{ width: 25, height: 28, resizeMode:'stretch'  }} // Remplacez ces valeurs par les dimensions souhaitées
-      />
+      <View style={style.badgeContainer}>
+        <Badge visible={cart.length > 0} size={18} style={style.badgeCart}>
+            {totalQuantity}
+          </Badge>
+        <TouchableOpacity onPress={openCart}>
+        <Image
+          source={require('../assets/panier.png')} // Remplacez 'my-image' par le nom de votre image
+          style={{ width: 25, height: 28, resizeMode:'stretch'  }} // Remplacez ces valeurs par les dimensions souhaitées
+        />
       </TouchableOpacity>
+      </View>
 
       <TouchableOpacity onPress={openProfile}>
       <Image
@@ -194,16 +198,21 @@ const style = StyleSheet.create({
         justifyContent:'space-around',
         alignItems:'center',
     },
+    badgeContainer: {
+      position: 'relative',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
     badge: {
       position: 'absolute',
-      top: 10,
-      left: 150,  
+      top: -10,
+      right: -10,  
       zIndex:99
      },
      badgeCart: {
       position: 'absolute',
-      top: 10,
-      left: 245,  
+      top: -10,
+      right: -10,  
       zIndex:99,
       backgroundColor:colors.color2
      },
