@@ -10,6 +10,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 
 const FooterProfile = () => {
+
+  let API_BASE_URL = 'http://127.0.0.1:8080';
+
+  if (Platform.OS === 'android') {
+    if (__DEV__) {
+        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+    } 
+}
+
   //on utilise ici useNavigation et non pas navigation car le footer n'est pas dans la pile de screens
   const navigation = useNavigation()
 
@@ -46,7 +55,7 @@ const FooterProfile = () => {
   }
   const openCart = async () => {
     const token = await AsyncStorage.getItem('userToken');
-     axios.get('http://localhost:8080/verifyToken', {
+     axios.get(`${API_BASE_URL}/verifyToken`, {
       headers: {
           'x-access-token': token
       }
@@ -83,7 +92,7 @@ const FooterProfile = () => {
       return;
     }
     try {
-      const response = await axios.get(`http://127.0.0.1:8080/ordersOfUser/${userId}`);
+      const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}`);
       const orders = response.data;
      
 

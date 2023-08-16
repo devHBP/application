@@ -8,6 +8,14 @@ import { useNavigation } from '@react-navigation/native';
 
 const LinkOffres = ({}) => {
 
+  let API_BASE_URL = 'http://127.0.0.1:8080';
+
+  if (Platform.OS === 'android') {
+    if (__DEV__) {
+        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+    } 
+}
+
     const navigation = useNavigation();
 
     const [solanidProductNames, setSolanidProductNames] = useState([]);
@@ -18,7 +26,7 @@ const LinkOffres = ({}) => {
         // Fonction pour récupérer les données de la base de données
         const fetchData = async () => {
           try {
-          const response = await axios.get('http://127.0.0.1:8080/getAllProducts');
+          const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
         
           const updatedProducts = response.data.map((product) => ({
             ...product,

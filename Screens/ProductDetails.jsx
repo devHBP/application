@@ -15,7 +15,13 @@ import { decrementhandler } from '../Fonctions/fonctions'
 
 const ProductDetails = ({navigation, route}) => {
 
-   
+  let API_BASE_URL = 'http://127.0.0.1:8080';
+
+  if (Platform.OS === 'android') {
+    if (__DEV__) {
+        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+    } 
+}
     const { product } = route.params;
     const [currentStock, setCurrentStock] = useState(product.stock);
     const [modalVisible, setModalVisible] = useState(false);
@@ -44,13 +50,7 @@ const ProductDetails = ({navigation, route}) => {
     }, 0);
     console.log('prodQty', productQuantity)
 
-    let API_BASE_URL = 'http://127.0.0.1:8080';
-
-    if (Platform.OS === 'android') {
-      if (__DEV__) {
-          API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-      } 
-  }
+  
 
     const handleBack = () => {
         navigation.navigate('home');

@@ -14,11 +14,11 @@ const Orders = ({navigation}) => {
 
     let API_BASE_URL = 'http://127.0.0.1:8080';
 
-//     if (Platform.OS === 'android') {
-//       if (__DEV__) {
-//           API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-//       } 
-//   }
+    if (Platform.OS === 'android') {
+      if (__DEV__) {
+          API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+      } 
+  }
 
     const user = useSelector((state) => state.auth.user);
     const userId = user.userId
@@ -59,7 +59,7 @@ const Orders = ({navigation}) => {
           const orders = response.data;
           console.log('orders', orders)
           if(orders.length > 0){
-            console.log('commande presente')
+            //console.log('commande presente')
             setHasOrder(true)
           } else {
             console.log('pas de commande')
@@ -243,7 +243,7 @@ const Orders = ({navigation}) => {
                 hasOrder ? (
                     <View style={{ flex:1,  alignItems: 'center', backgroundColor:colors.color3}}>
                     <View>
-                                <View style={{ flexDirection: 'row', alignItems: 'center', gap:70, marginTop:30 }}>
+                                <View style={{ flexDirection: 'row', alignItems: 'center', gap:70, marginTop:30, justifyContent:'center' }}>
                         <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1}}>Vos commandes</Text>
                         <TouchableOpacity onPress={handleBack} style={style.back}>
                             <Icon name="keyboard-arrow-left" size={30} color="#fff" />
