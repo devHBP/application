@@ -8,7 +8,9 @@ import { checkStockForSingleProduct } from '../CallApi/api.js';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import FooterProfile from '../components/FooterProfile';
 import ModaleOffre31 from '../components/ModaleOffre31';
-
+import ArrowLeft from '../SVG/ArrowLeft';
+import { colors} from '../styles/styles'
+import Svg, { Path } from 'react-native-svg';
 
 //fonctions
 import { decrementhandler } from '../Fonctions/fonctions'
@@ -108,16 +110,14 @@ const ProductDetails = ({navigation, route}) => {
     <View style={{...defaultStyle, padding:35}}>
         <View style={style.icons}>
        
-        <Icon name="arrow-back" size={30} color="#900" onPress={handleBack}/>
-        {/* <Icon name="shopping-cart" size={30} color="#000" onPress={handleNavigateToCart} style={style.badge_container}/>
-         <Badge visible={cart.length > 0} size={18} style={style.badge}>
-          {totalQuantity}
-        </Badge> */}
+        {/* <Icon name="arrow-back" size={30} color="#900" onPress={handleBack}/> */}
+      
+        <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{backgroundColor:'white', borderRadius:25}}>
+                    <ArrowLeft fill={colors.color1}/>
+                </TouchableOpacity>
         
       </View>
      
-
-
          <View style={style.container}>
 
             <View style={style.image_container}>
@@ -140,16 +140,28 @@ const ProductDetails = ({navigation, route}) => {
             <View style={style.qtyContainer}>
                              <TouchableOpacity
                               onPress={() => decrementhandler(product.productId, dispatch)}
-                                // onPress={decrementhandler}
-                            >
-                                <Icon name="remove" size={30} color="#000" />
+                              style={style.container_gray} >
+                                {/* <Icon name="remove" size={30} color="#000" /> */}
+                                <Svg width={7} height={4} viewBox="0 0 7 4">
+                                  <Path
+                                    d="M0.666748 3.8V0.733337H6.80008V3.8H0.666748Z"
+                                    fill="#273545"
+                                  />
+                                </Svg>
                             </TouchableOpacity>
-                            <Text style={style.qtyText}>{productQuantity}</Text>
+                            
+                            <View style={style.container_gray}> 
+                              <Text style={style.qtyText}>{productQuantity}</Text>
+                            </View>
                             <TouchableOpacity
                                 // onPress={incrementhandler}
                                  onPress={() => incrementhandler(product.productId, product.offre)}
+                                 style={{...style.container_gray, backgroundColor:colors.color2}}
                             >
-                                <Icon name="add" size={30} color="#000" />
+                                {/* <Icon name="add" size={30} color="#000" /> */}
+                                <Svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <Path d="M10 4.05197V6.48141H6.63702V9.86669H4.14375V6.48141H0.800049V4.05197H4.14375V0.666687H6.63702V4.05197H10Z" fill="#ECECEC"/>
+                                </Svg>
                             </TouchableOpacity>
 
                         </View>
@@ -170,7 +182,7 @@ const style = StyleSheet.create({
     },
     icons:{
         flexDirection:'row',
-        justifyContent:'space-between',
+        justifyContent:'flex-end',
         marginVertical:10
     },
     badge_container:{
@@ -201,14 +213,17 @@ const style = StyleSheet.create({
         marginVertical:10,
     },
     qtyText:{
-        backgroundColor: 'white',
-        height: 25,
-        width: 25,
-        textAlign: "center",
-        borderWidth: 1,
-        borderRadius: 5,
-        borderColor: 'black',
-        fontSize:18   
+      fontSize: 16,
+      paddingHorizontal: 10,
+      color:colors.color1,
+      textAlign:'center'  
+    },
+    container_gray:{
+      backgroundColor:'lightgray',
+      width:30, height:25,
+      flexDirection:'row',
+      justifyContent:'center',
+      alignItems:'center',
     },
 })
 
