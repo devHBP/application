@@ -19,6 +19,7 @@ import { fonts, colors} from '../styles/styles'
 import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import { style } from '../styles/formules'; 
+import ArrowLeft from '../SVG/ArrowLeft';
 
 import { getFamilyOfProduct } from '../CallApi/api';
 
@@ -525,9 +526,9 @@ useEffect(() => {
       <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical:30,paddingHorizontal:30, justifyContent:'space-between', width:"100%" }}>
          
          <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10, fontFamily:fonts.font1 }}>Votre Panier</Text>
-         <TouchableOpacity onPress={handleBack} style={{backgroundColor: colors.color1, borderRadius:25, justifyContent:'center'}}>
-           <Icon name="keyboard-arrow-left" size={26} color="white" />
-         </TouchableOpacity>
+         <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'white', borderRadius:25}}>
+            <ArrowLeft fill={colors.color1}/>
+        </TouchableOpacity>
        </View>
 
 
