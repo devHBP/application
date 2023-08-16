@@ -40,6 +40,7 @@ import PagePanini from './Screens/PagesSalees/PagePanini'
 import PagePainBagnat from './Screens/PagesSalees/PagePainBagnat'
 import PageQuiche from './Screens/PagesSalees/PageQuiche'
 import PageCroque from './Screens/PagesSalees/PageCroque'
+import Pwd from './Screens/Pwd'
 
 
 const Main = () => {
@@ -52,6 +53,7 @@ const Main = () => {
         screens: {
           success: 'success',
           // echec: 'echec',
+          pwd: 'pwd'
         },
       },
     };
@@ -98,6 +100,7 @@ const Main = () => {
                 {/* <Stack.Screen name='choixpaiement' component={ChoixPaiement}/> */}
                 {/* <Stack.Screen name='orderconfirm' component={OrderConfirmation}/> */}
                 <Stack.Screen name='success' component={SuccessPage}/>
+                <Stack.Screen name='pwd' component={Pwd}/>
                 <Stack.Screen name='cookies' component={Cookies}/>
                 <Stack.Screen name='donnees' component={Donnees}/>
                 <Stack.Screen name='mentions' component={Mentions}/>
