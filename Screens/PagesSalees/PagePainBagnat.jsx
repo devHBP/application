@@ -8,12 +8,22 @@ import { Button} from 'react-native-paper'
 import { useDispatch, useSelector } from 'react-redux';
 import FooterProfile from '../../components/FooterProfile';
 import { addToCart, decrementOrRemoveFromCart } from '../../reducers/cartSlice';
+import Svg, { Path } from 'react-native-svg';
+import ArrowLeft from '../../SVG/ArrowLeft';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 
 
 const PagePainBagnat = ({navigation}) => {
+
+  let API_BASE_URL = 'http://127.0.0.1:8080';
+
+  if (Platform.OS === 'android') {
+    if (__DEV__) {
+        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+    } 
+}
 
     const [products, setProducts] = useState([]); 
     const [selectedSandwich, setSelectedSandwich] = useState(null); 
@@ -65,7 +75,7 @@ const PagePainBagnat = ({navigation}) => {
         // Fonction pour récupérer les données de la base de données
         const fetchData = async () => {
           try {
-          const response = await axios.get('http://127.0.0.1:8080/getAllProducts');
+            const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
         
           const updatedProducts = response.data.map((product) => ({
             ...product,
@@ -188,9 +198,9 @@ const PagePainBagnat = ({navigation}) => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
              <Text style={styles.titleProduct}>Pain Bagnat</Text>
-            <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'white', borderRadius:25}}>
-                    <Icon name="keyboard-arrow-left" size={40} color="#000" style={{}}  />
-                </TouchableOpacity>
+             <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
+                    <ArrowLeft fill="white"/>
+              </TouchableOpacity>
         </View>
         
 
@@ -203,29 +213,37 @@ const PagePainBagnat = ({navigation}) => {
                 <View style={{marginHorizontal:20, flexDirection:'column', alignItems:'center'}} key={index}>
                     <Image
                     key={index}
-                    source={{ uri: `http://127.0.0.1:8080/${product.image}` }}
+                    source={{ uri: `${API_BASE_URL}/${product.image}` }}
                     style={styles.imageOptions}
                     />
                     <Text style={styles.libelle}>{product.libelle}</Text>
                     
                     {/* rajouter increment / decrement */}
-                    <View style={styles.qtyContainer}>
+                    <View style={{flexDirection:'row', gap:5}}>
                     <TouchableOpacity
                         onPress={() => decrementhandler(product.productId)}
-                        style={styles.decrement}
+                        style={styles.container_gray}
                     >
-                        <Icon name="remove" size={14} color="#000" />
+                      <Svg width={7} height={4} viewBox="0 0 7 4">
+                        <Path
+                          d="M0.666748 3.8V0.733337H6.80008V3.8H0.666748Z"
+                          fill="#273545"
+                        />
+                      </Svg>
                   </TouchableOpacity>
-                  <TouchableOpacity style={styles.qtyText}>
+                  <TouchableOpacity style={styles.container_gray}>
                       {/* <Text>{product.qty}</Text> */}
                       <Text>{getProductQtyInCart(product.productId)}</Text>
 
-                  </TouchableOpacity>          
-                    <TouchableOpacity
+                  </TouchableOpacity> 
+
+                  <TouchableOpacity
                         onPress={() => incrementHandler(product.productId)}
-                        style={styles.increment}
+                        style={{...styles.container_gray, backgroundColor:colors.color2}}
                     >
-                        <Icon name="add" size={14}  color="white" />
+                       <Svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <Path d="M10 4.05197V6.48141H6.63702V9.86669H4.14375V6.48141H0.800049V4.05197H4.14375V0.666687H6.63702V4.05197H10Z" fill="#ECECEC"/>
+                      </Svg>
                     </TouchableOpacity>
 
           </View>
@@ -283,14 +301,15 @@ const PagePainBagnat = ({navigation}) => {
           <View style={{margin:30, flexDirection:'column', justifyContent:'flex-start', gap:20}}>
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
             <TouchableOpacity style={{marginRight:10}} onPress={openFormulePainBagnat} activeOpacity={0.8}>
+            <View style={{width:320}}>
                     <Image
                             source={require('../../assets/Formule28.jpg')} 
-                            style={{ width: 305, height: 200, resizeMode:'center' }}
-                            />
+                            style={{ resizeMode:'cover',  width: 320, height: 200, }}                            />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Pain Bagnat</Text>
                         <Text style={styles.textFormule}>Un pain bagnat, un dessert et une boisson</Text>
                     </View>
+              </View>
                 </TouchableOpacity>
           </View>
         </View>
@@ -429,7 +448,14 @@ const styles = StyleSheet.create({
       fontSize:14,
       fontWeight: "700",
       fontFamily:fonts.font2
-     }
+     },
+     container_gray:{
+      backgroundColor:'lightgray',
+      width:30, height:25,
+      flexDirection:'row',
+      justifyContent:'center',
+      alignItems:'center',
+    },
   }); 
 
 export default PagePainBagnat

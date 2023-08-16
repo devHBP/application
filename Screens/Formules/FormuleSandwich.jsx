@@ -18,7 +18,13 @@ import ArrowLeft from '../../SVG/ArrowLeft';
 
 const FormuleSandwich = ({navigation}) => {
 
-  const baseUrl = 'http://127.0.0.1:8080';
+  let API_BASE_URL = 'http://127.0.0.1:8080';
+
+  if (Platform.OS === 'android') {
+    if (__DEV__) {
+        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+    } 
+}
 
     const [products, setProducts] = useState([]);
     const [ desserts, setDesserts] = useState([]);
@@ -230,7 +236,7 @@ const FormuleSandwich = ({navigation}) => {
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}>
                        <Image
-                          source={{ uri: `${baseUrl}/${product.image}` }}
+                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
                         />
                       <Text>{product.libelle}</Text>
@@ -272,7 +278,7 @@ const FormuleSandwich = ({navigation}) => {
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedSandwich || !dessertSwitch} >
                        <Image
-                          source={{ uri: `${baseUrl}/${product.image}` }}
+                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
                         />
                       <Text>{product.libelle}</Text>
@@ -307,7 +313,7 @@ const FormuleSandwich = ({navigation}) => {
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedSandwich || !dessertSwitch} >
                        <Image
-                          source={{ uri: `${baseUrl}/${product.image}` }}
+                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
                         />
                       <Text>{product.libelle}</Text>

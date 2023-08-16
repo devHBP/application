@@ -217,7 +217,7 @@ const ongletButtonHandler = (onglet) => {
           <View style={{ flexDirection:'row', gap:15, alignItems:'center',}}>
               
             <View>
-              <StorePicker />
+            <StorePicker />
             </View> 
             <View >
               <CustomDatePicker />
