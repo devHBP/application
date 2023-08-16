@@ -355,7 +355,7 @@ useEffect(() => {
           throw new Error('Erreur lors de la création de la commande');
         }
       }
-     //createOrder()
+     createOrder()
       } else {
           console.log('erreur ici', error)
       }
@@ -501,7 +501,8 @@ const itemsGroupedByFamily = groupedItemsArray.reduce((acc, group) => {
 useEffect(() => {
   if (orderInfo && paiement === 'online') {
     const submitOrder = async () => {
-      const response = await axios.post(`${API_BASE_URL}/checkout_session`, { orderInfo });
+      const response = await axios.post(`${API_BASE_URL}/checkout_session`, { orderInfo, platform: Platform.OS,
+        isDev: __DEV__ });
       const sessionUrl = response.data.session;
       const sessionId = response.data.id
       //console.log('data id', sessionId)
