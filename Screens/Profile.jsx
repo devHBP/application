@@ -150,7 +150,7 @@ const Profile =  ({navigation}) => {
       // setTime(null)
       // dispatch(logoutUser(selectedStore)); 
       dispatch(clearCart())
-      navigation.navigate('app')
+      navigation.navigate('login')
     }
     const handleCookies = () => {
       console.log('page cookies')
