@@ -14,6 +14,8 @@ import FooterProfile from '../components/FooterProfile';
 import Avatar from '../SVG/Avatar';
 //call Api
 import { modifyUser } from '../CallApi/api';
+import ArrowLeft from '../SVG/ArrowLeft';
+import Remove from '../SVG/Remove';
 
 //options des input
 const inputOptions = {
@@ -204,9 +206,9 @@ const Profile =  ({navigation}) => {
       <View style={{  marginBottom: 20}}> 
             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
                 <Text style={style.title}>Votre compte</Text>
-                <TouchableOpacity onPress={handleBack} style={style.back}>
-                  <Icon name="keyboard-arrow-left" size={30} color="#fff" />
-                </TouchableOpacity>
+                <TouchableOpacity  onPress={handleBack} activeOpacity={0.8} style={{backgroundColor:'white', borderRadius:25,}}>                           
+                  <ArrowLeft fill={colors.color1}/>
+                </TouchableOpacity>  
             </View>
             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:60,marginVertical:10}}>
               {/* <Avatar.Image size={60} source={require('../assets/avatar.png')} style={style.avatar}/> */}
@@ -267,7 +269,7 @@ const Profile =  ({navigation}) => {
        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
           <TextInput {...inputOptions}  onChangeText={setTelephone} value={telephone}  style={style.short_input} placeholder='N° téléphone'/>
           <TextInput {...inputOptions}  onChangeText={(value) => setCodepostal(value ? parseInt(value) : '')}   value={cp !== null ? cp.toString() : ''}
- style={style.short_input} placeholder='Code postal' />
+            style={style.short_input} placeholder='Code postal' />
        </View>
        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
        <TextInput {...inputOptions}  style={style.short_input} placeholder='Date de naissance'/>
@@ -386,8 +388,11 @@ const Profile =  ({navigation}) => {
               <View style={{flexDirection:'row', flexWrap:'wrap'}}>
               {selectedAllergies && selectedAllergies.length > 0 && selectedAllergies.map((allergy, index) => (
                   <View style={style.tag }key={index}>
-                    <Icon name="remove-circle" size={15} color="#000" onPress={() => removeSelectedAllergy(allergy)}/>
-                    <Text>   {allergy} </Text>
+                    <TouchableOpacity onPress={() => removeSelectedAllergy(allergy)}>
+                      <Remove />
+                    </TouchableOpacity>
+                   
+                    <Text>   {allergy}</Text>
                   </View>
                 ))}
               </View>
@@ -446,7 +451,10 @@ const Profile =  ({navigation}) => {
               <View style={{flexDirection:'row', flexWrap:'wrap'}}>
                 {selectedPreferences&& selectedPreferences.length > 0 && selectedPreferences.map((pref, index) => (
                   <View style={style.tag} key={index}>
-                    <Icon name="remove-circle" size={15} color="#000" onPress={() => removeSelectedPreference(pref)}/>
+                    {/* <Icon name="remove-circle" size={15} color="#000" onPress={() => removeSelectedPreference(pref)}/> */}
+                    <TouchableOpacity onPress={() => removeSelectedPreference(pref)}>
+                      <Remove />
+                    </TouchableOpacity>
                     <Text>  {pref} </Text>
                   </View>
                 ))}
@@ -594,7 +602,7 @@ const style = StyleSheet.create({
     color: colors.color2
   },
   back:{
-    backgroundColor: colors.color1,
+    backgroundColor: colors.color6,
     width:40,
     height:40,
     borderRadius:5,
