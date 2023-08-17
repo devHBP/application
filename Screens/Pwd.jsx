@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { Button } from 'react-native-paper' 
+import { View, Text,TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import axios from 'axios';
+import ArrowLeft from '../SVG/ArrowLeft';
+import { inputStyling, colors, fonts } from '../styles/styles'
+
+const inputOptions = {
+  style:inputStyling,
+  mode:"outlined",
+  outlineColor:'white',
+  borderRadius:5, 
+  marginTop:10,
+  marginBottom:30
+}
 
 const Pwd = ({ navigation }) => {
 
@@ -31,17 +43,46 @@ const Pwd = ({ navigation }) => {
       Alert.alert('Erreur', (error.response && error.response.data.message) || 'Quelque chose a mal tourné. Veuillez réessayer.');
     }
   };
+  const handleBack = () => {
+    navigation.navigate('login')
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Réinitialisation du mot de passe</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Adresse e-mail"
-        value={email}
-        onChangeText={setEmail}
-      />
-      <Button title="Réinitialiser le mot de passe" onPress={handleForgotPassword} />
+      <View style={{flexDirection:'row',  alignItems:'center',justifyContent:'space-between', width:"100%", position:'absolute', top:30, left:30 }}>
+            <View style={{width:"45%"}}>
+              <Text style={styles.title}>Changer le mot de passe</Text>
+            </View>
+            
+            <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:colors.color1, borderRadius:25}}>
+                    <ArrowLeft fill={colors.color6} />
+                </TouchableOpacity>
+        </View>
+
+        <View style={{ flex: 1,  justifyContent: 'center' }}>
+          <Text style={styles.label}>Votre e-mail</Text>
+          <TextInput
+              {...inputOptions} 
+              placeholder=" Adresse e-mail"
+              value={email}
+              onChangeText={setEmail}
+          />
+          {/* <Button title="Changer votre mot d epasse" onPress={handleForgotPassword} /> */}
+          <View style={{flexDirection:'column', alignItems:'flex-end'}}>
+          <Button
+                style={styles.btn} 
+                textColor={'white'} 
+                onPress={handleForgotPassword}
+                >
+            Changer votre mot de passe
+            </Button>
+            <TouchableOpacity onPress={() => navigation.navigate('login')}>
+                <Text style={styles.compte}>Vous avez deja un compte ?</Text>
+            </TouchableOpacity>
+          </View>
+          
+          
+        </View>
     </View>
   );
 };
@@ -49,12 +90,13 @@ const Pwd = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    justifyContent: 'center',
+    backgroundColor:colors.color1,
+    paddingHorizontal:30
   },
   title: {
-    fontSize: 20,
-    marginBottom: 20,
+    fontSize: 24,
+    fontFamily:fonts.font1,
+    color:colors.color6
   },
   input: {
     height: 40,
@@ -63,6 +105,23 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
   },
+  label:{
+    fontSize:14,
+    marginTop:10,
+   color:colors.color2
+   },
+   compte:{
+    textAlign:'center',
+    color:colors.color6,
+    marginVertical:10, 
+    textDecorationLine: 'underline',
+    fontSize:14
+   },
+   btn:{
+    backgroundColor:colors.color2,
+    borderRadius:5,
+    width:"65%"
+   }
 });
 
 export default Pwd;
