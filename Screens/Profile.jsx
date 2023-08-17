@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image,} from 'react-native'
-import { Button, TextInput, Avatar,  } from 'react-native-paper'
+import { Button, TextInput  } from 'react-native-paper'
 import React, { useEffect, useState} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector, useDispatch } from 'react-redux'
@@ -7,9 +7,11 @@ import { updateUser , updateSelectedStore,} from '../reducers/authSlice';
 import { addDate, addTime, clearCart, resetDateTime} from '../reducers/cartSlice';
 import { defaultStyle, inputStyling, colors, fonts } from '../styles/styles'
 import  Picker  from 'react-native-picker-select';
+import SelectDropdown from 'react-native-select-dropdown'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import axios from 'axios'
 import FooterProfile from '../components/FooterProfile';
+import Avatar from '../SVG/Avatar';
 //call Api
 import { modifyUser } from '../CallApi/api';
 
@@ -206,8 +208,11 @@ const Profile =  ({navigation}) => {
                   <Icon name="keyboard-arrow-left" size={30} color="#fff" />
                 </TouchableOpacity>
             </View>
-            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between',marginVertical:10}}>
-              <Avatar.Image size={60} source={require('../assets/avatar.png')} style={style.avatar}/>
+            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:60,marginVertical:10}}>
+              {/* <Avatar.Image size={60} source={require('../assets/avatar.png')} style={style.avatar}/> */}
+              <View style={{backgroundColor:colors.color1, padding:10, borderRadius:50, width:80, height:80, flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+                <Avatar />
+              </View>
               <View style={{width:"50%", flexDirection:'column', gap:10}}>
                 <Text style={{color:colors.color2}}>#UserId {user.userId}</Text>
                 <Text style={{fontSize:12}}>Ce code unique pour vous permet de vous identifier sur le réseau SUN</Text>
@@ -284,7 +289,7 @@ const Profile =  ({navigation}) => {
         <Text style={style.title_section}>Votre information du compte</Text>
         <View style={style.formulaire}>
         <Text style={style.label}>Votre restaurant favori</Text>
-        <Picker
+        {/* <Picker
           style={pickerSelectStyles}
               placeholder={{
                   label: "Modifier votre magasin"
@@ -317,37 +322,67 @@ const Profile =  ({navigation}) => {
                 label: store.nom_magasin,
                 value: store.nom_magasin,
               }))}
-            /> 
+            />  */}
+            <SelectDropdown
+              data={stores.map(store => store.nom_magasin)}  // Utilisez les noms des magasins comme données
+              onSelect={(selectedItem, index) => {
+                const selected = stores.find(store => store.nom_magasin === selectedItem);
+                      if (selected) {
+                              dispatch(updateSelectedStore(selected));
+                              dispatch(updateUser({ ...user, storeId: selected.storeId }));
+
+                              axios.put(`${API_BASE_URL}/updateOneUser/${user.userId}`, {storeId: selected.storeId})
+                                .then(response => {
+                                  // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
+                                  })
+                                  .catch(error => {
+                                    console.error('Erreur lors de la mise à jour du choix du magasin dans la base de données - erreur ici:', error);
+                                    });
+                      } else {
+                      console.log('pas de magasin sélectionné encore')
+                        }
+                    }}
+              buttonTextAfterSelection={(selectedItem, index) => {
+                // text represented after item is selected
+                // if data array is an array of objects then return selectedItem.property to render after item is selected
+                return selectedItem
+              }}
+              rowTextForSelection={(item, index) => {
+                // text represented for each item in dropdown
+                // if data array is an array of objects then return item.property to represent item in dropdown
+                return item
+              }}
+              buttonStyle={{backgroundColor:colors.color3, width:"100%", height:40, borderRadius:5}}
+              buttonTextStyle={{fontSize:12, fontWeight:700, color:colors.color1}}
+              defaultButtonText={selectedStore.nom_magasin}
+              />
 
         <Text style={style.label}>Vos préférences alimentaires</Text>
         <View style={{marginVertical:10}}>
             <View>
-              <Picker
-                style={pickerSelectStyles}
-                selectedValue={currentSelection}
-                
-                placeholder={{
-                  label: "Ajoutez une allergie alimentaire"
-                
-                }}
-                onValueChange={(value) => {
-                  if (value) {
-                    const selected = allergies.find((allergy) => allergy.nom_allergie === value);
-                    if (selected && !(selectedAllergies?.includes(selected.nom_allergie))) {
-                      setSelectedAllergies([...selectedAllergies, selected.nom_allergie]);
-                    } else {
-                      console.log('Allergie déjà sélectionnée ou pas d\'allergie sélectionnée encore');
+              
+            <SelectDropdown
+                data={sortedAllergies.map(allergy => allergy.nom_allergie)}  // Liste des allergies triées comme données
+                onSelect={(value) => {
+                    if (!selectedAllergies.includes(value)) {
+                        setSelectedAllergies([...selectedAllergies, value]);
                     }
-                  }
-                  setCurrentSelection(null); // Remettre à zéro la sélection actuelle
                 }}
                 items={sortedAllergies.map((allergy, index) => ({
-                  label: allergy.nom_allergie,
-                  value: allergy.nom_allergie,
+                    label: allergy.nom_allergie,
+                    value: allergy.nom_allergie,
                 }))}
-              />
+                buttonTextAfterSelection={(selectedItem, index) => {
+                    return 'Ajouter une allergie alimentaire';  // Texte à afficher après la sélection d'un élément
+                }}
+                rowTextForSelection={(item, index) => {
+                    return item;  // Texte représentant chaque élément dans le menu déroulant
+                }}
+                buttonStyle={{backgroundColor:colors.color3, width:"100%", height:40, borderRadius:5}}
+                buttonTextStyle={{fontSize:12, fontWeight:700, color:colors.color1}}
+                defaultButtonText={`Ajoutez une allergie alimentaire`}
+            />
               {/* affichage du tag */}
-           
               <View style={{flexDirection:'row', flexWrap:'wrap'}}>
               {selectedAllergies && selectedAllergies.length > 0 && selectedAllergies.map((allergy, index) => (
                   <View style={style.tag }key={index}>
@@ -362,7 +397,7 @@ const Profile =  ({navigation}) => {
         {/* picker preference alimentaires */}
         <View style={{marginVertical:10}}>
             <View>
-              <Picker
+              {/* <Picker
                 style={pickerSelectStyles}
                 selectedValue={currentSelection}
                 placeholder={{
@@ -384,10 +419,30 @@ const Profile =  ({navigation}) => {
                   label: pref.nom_preference,
                   value: pref.nom_preference,
                 }))}
-              />
-              {/* affichage du tag */}
-            
+              /> */}
 
+              <SelectDropdown
+                data={sortedPreferences.map(pref => pref.nom_preference)}  
+                onSelect={(value) => {
+                    if (!selectedPreferences.includes(value)) {
+                      setSelectedPreferences([...selectedPreferences, value]);
+                    }
+                }}
+                items={sortedPreferences.map((pref, index) => ({
+                    label: pref.nom_preference,
+                    value: pref.nom_preference,
+                }))}
+                buttonTextAfterSelection={(selectedItem, index) => {
+                    return `Ajoutez un choix alimentaire`;  
+                }}
+                rowTextForSelection={(item, index) => {
+                    return item;  
+                }}
+                buttonStyle={{backgroundColor:colors.color3, width:"100%", height:40, borderRadius:5}}
+                buttonTextStyle={{fontSize:12, fontWeight:700, color:colors.color1}}
+                defaultButtonText={`Ajoutez un choix alimentaire`}
+            />    
+              {/* affichage du tag */}
               <View style={{flexDirection:'row', flexWrap:'wrap'}}>
                 {selectedPreferences&& selectedPreferences.length > 0 && selectedPreferences.map((pref, index) => (
                   <View style={style.tag} key={index}>
