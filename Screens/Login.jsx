@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, TouchableOpacity} from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native'
 import React, {useState} from 'react'
-import { defaultStyle, inputStyling, colors } from '../styles/styles'
+import { inputStyling, colors, fonts } from '../styles/styles'
 import { Button, TextInput } from 'react-native-paper'
  import { useDispatch, useSelector} from 'react-redux'
  import { loginUser, updateSelectedStore } from '../reducers/authSlice';
@@ -93,30 +93,30 @@ const Login = ({navigation}) => {
               });
         }
     }
-    const handleBack = () => {
-        navigation.navigate('app');
-      };
     
   return (
-    <View style={defaultStyle}>
-        {/* <TouchableOpacity  onPress={() => navigation.navigate('signup') }>
-          <MaterialIcons name="arrow-back" />
-        </TouchableOpacity> */}
+   
       
       <View style={style.container}>
-      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', marginVertical:20}}>
-            <View>
-              <Text style={style.title}>Connexion</Text>
-              <Text style={style.pain}>Le pain du jour</Text>
-            </View>
-          <TouchableOpacity onPress={handleBack} style={style.back}>
-           <Icon name="keyboard-arrow-left" size={20} color="#fff" />
-         </TouchableOpacity>
-        </View>
+
+              <View style={{flexDirection:'row', justifyContent:'center', marginBottom:20}}>
+                <Image
+                  source={require("../assets/logo_pdj.png")} // Remplacez 'my-image' par le nom de votre image
+                  style={{ width: 140, height: 140, resizeMode:"contain" }} // Remplacez ces valeurs par les dimensions souhaitées
+                />
+              </View>
+              
+              <View style={{marginVertical:10}}>
+                <Text style={style.title1}>Connexion</Text>
+                <Text style={style.title2}>Connectez vous à votre compte</Text>
+              </View>
+             
+          
             <Text style={style.label}>Adresse e-mail</Text>
             <TextInput
                 {...inputOptions} 
-                // placeholder='Email' 
+                placeholder='exemple.mail@email.com' 
+                placeholderTextColor={colors.color1}
                 keyboardType='email-address'
                 value={email} 
                 onChangeText={setEmail}
@@ -125,7 +125,8 @@ const Login = ({navigation}) => {
             <Text style={style.label}>Mot de passe</Text> 
             <TextInput 
                 {...inputOptions} 
-                // placeholder='Mot de passe' 
+                placeholder='Mot de passe' 
+                placeholderTextColor={colors.color1}
                 secureTextEntry={true}
                 value={password} 
                 onChangeText={setPassword}
@@ -138,19 +139,18 @@ const Login = ({navigation}) => {
                 disabled={email === "" || password === ""}
                  onPress={submitHandler}
                 >
-                SE CONNECTER
+                Se connecter
             </Button>
 
-            <Text style ={{textAlign:'center'}}>Pas encore de compte ?</Text>
             <TouchableOpacity onPress={() => navigation.navigate('signup')}>
-                <Text style={style.signup}>S'enregistrer</Text>
+                <Text style={style.signup} >Vous n'avez pas encore de compte ?</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate('pwd')}>
-                <Text style={style.signup}>Mot de passe oublié ?</Text>
+                <Text style={{...style.signup, fontSize:12}}>Mot de passe oublié ?</Text>
             </TouchableOpacity>
 
-        </View>
+    
     </View>
   )
 }
@@ -159,25 +159,27 @@ const style = StyleSheet.create({
     container:{
         flex:1,
         padding:20,
+        paddingHorizontal:30,
         justifyContent:'center',
         //reajustement margin pour laisser de la place au footer
         // marginBottom:70,
-        backgroundColor:colors.color3,
-        borderRadius:10,
+        backgroundColor:colors.color1,
     },
     // title:{
     //     textAlign:'center',
     //     margin: 20,
     // },
-    title:{
+    title1:{
         marginVertical:5,
-        color:colors.color2,
-        fontSize:33,
-        fontWeight: "900",
+        color:colors.color6,
+        fontSize:32,
+        fontFamily:fonts.font1,
       },
-      pain:{
-        fontStyle:'italic',
-        fontSize:22,
+      title2:{
+        fontSize:18,
+        color:colors.color6,
+        fontFamily:fonts.font2,
+        fontWeight:'bold'
       },
       back:{
         backgroundColor: colors.color1,
@@ -190,21 +192,22 @@ const style = StyleSheet.create({
     btn: {
         backgroundColor: colors.color2,
         margin: 5,
-        padding: 6,
+        padding: 2,
         borderRadius:6,
-        marginHorizontal:40,
+        marginHorizontal:80,
         marginTop:40
       },
     signup:{
         textAlign:'center',
-        color:colors.color2,
-        fontWeight:"bold",
-        marginVertical:10
+        color:colors.color6,
+        marginVertical:10, 
+        textDecorationLine: 'underline',
+        fontSize:14
     },
     label:{
-        // marginLeft:20,
+       fontSize:14,
        marginTop:10,
-        color:colors.color2
+      color:colors.color2
       }
 })
 

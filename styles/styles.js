@@ -10,10 +10,10 @@ export const defaultStyle = StyleSheet.create({
 });
 
 export const inputStyling = StyleSheet.create({
-    height: 50,
+    height: 40,
     marginVertical: 5,
-    marginHorizontal: 20,
     backgroundColor:"white",
+    width:"100%"
     
   });
 
