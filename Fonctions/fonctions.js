@@ -1,5 +1,5 @@
 import { checkStockForSingleProduct } from '../CallApi/api.js';
-import { addToCart, decrementOrRemoveFromCart, addFreeProductToCart } from '../reducers/cartSlice.js'
+import { addToCart, decrementOrRemoveFromCart, addFreeProductToCart, removeFromCart , removeMultipleFromCart} from '../reducers/cartSlice.js'
 import Toast from 'react-native-toast-message';
 
 
@@ -10,7 +10,25 @@ export const decrementhandler = (id, dispatch) => {
     dispatch(decrementOrRemoveFromCart({ productId: productId, qty: 1 }));
   };
   
+  // export const removehandler = (id, dispatch) => {
+  //   // console.log("Decrementing product with ID:", id);
+  //   const productId = Array.isArray(id) ? id[0] : id;
+  
+  //     dispatch(removeFromCart({ productId: productId}));
+  //   };
 
+    export const removehandler = (ids, dispatch) => {
+      console.log('ids', ids)
+      if (Array.isArray(ids)) {
+          ids.forEach(id => {
+            dispatch(removeMultipleFromCart({ productIds: ids }));
+          });
+      } else {
+          dispatch(removeFromCart({ productId: ids }));
+      }
+  };
+
+  
   //fonctionne pour les produits individuals - pas pour les formule
 export  const incrementhandler = async (id, dispatch, cart, currentStock, offre) => {
       console.log({ id, dispatch, cart, currentStock, offre });

@@ -24,7 +24,7 @@ import ArrowLeft from '../SVG/ArrowLeft';
 import { getFamilyOfProduct } from '../CallApi/api';
 
 //fonctions
-import { decrementhandler } from '../Fonctions/fonctions'
+import { decrementhandler, removehandler } from '../Fonctions/fonctions'
 
 const Panier = ({navigation}) => {
 
@@ -51,7 +51,7 @@ const Panier = ({navigation}) => {
   //console.log('cart panier', cart)
   const user = useSelector((state) => state.auth.user)
   const selectedStore = useSelector(state => state.auth.selectedStore);
-  console.log('storecollab', selectedStore)
+  //console.log('storecollab', selectedStore)
    const cartTotal = useSelector((state) => state.cart.cartTotal)
 
   const selectedDateString = useSelector((state) => state.cart.date)
@@ -356,7 +356,7 @@ useEffect(() => {
           throw new Error('Erreur lors de la création de la commande');
         }
       }
-     //createOrder()
+     createOrder()
       } else {
           console.log('erreur ici', error)
       }
@@ -556,7 +556,7 @@ useEffect(() => {
                     
                     <View key={index}>
                       <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}}>
-                      <Text>{item.libelle}</Text>
+                     
                       <CardItemFormule
                         option1={item.option1}
                         option2={item.option2}
@@ -564,8 +564,10 @@ useEffect(() => {
                         prix_unitaire={item.prix}
                         incrementhandler={() => incrementhandler(item.productIds, item.offre)}
                         decrementhandler={() => decrementhandler(item.productIds, dispatch)}
+                        removehandler={() => removehandler(item.productIds, dispatch) }
                         image={item.formuleImage}
                         qty={item.qty}
+                        title={item.libelle}
                         // key={item.id}
                       />
                     </View> 
@@ -589,9 +591,10 @@ useEffect(() => {
                           <CartItem 
                                 libelle={group.items[0].libelle}
                                 prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
-                                qty={group.items.reduce((acc, item) => acc + item.qty, 0)} // Sum quantities for this offer
+                                qty={group.items.reduce((acc, item) => acc + item.qty, 0)} 
                                 incrementhandler={() => incrementhandler(group.items[0].productId, group.items[0].offre)}
                                 decrementhandler={() => decrementhandler(group.items[0].productId, dispatch)}
+                                removehandler={() => removehandler(group.items[0].productId, dispatch) }
                                 // image={group.items[0].image}
                                 index={index}
                                 isFree={group.items[0].isFree}
