@@ -53,7 +53,8 @@ const Main = () => {
         screens: {
           success: 'success',
           // echec: 'echec',
-          pwd: 'pwd'
+          pwd: 'pwd',
+          login:'login'
         },
       },
     };
