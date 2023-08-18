@@ -178,8 +178,8 @@ const style = StyleSheet.create({
       title2:{
         fontSize:18,
         color:colors.color6,
-        fontFamily:fonts.font2,
-        fontWeight:'bold'
+        fontFamily:fonts.font3,
+        fontWeight:"700"
       },
       back:{
         backgroundColor: colors.color1,
@@ -207,7 +207,9 @@ const style = StyleSheet.create({
     label:{
        fontSize:14,
        marginTop:10,
-      color:colors.color2
+       color:colors.color2,
+       fontFamily:fonts.font2,
+      fontWeight:"700"
       }
 })
 

@@ -30,7 +30,7 @@ export const colors = {
 };
 
 export const fonts = {
-    font1: "Postino",
+    font1: "Postino Italic",
     font2:"Montserrat Medium",
     font3:"Monserrat Bold"
    

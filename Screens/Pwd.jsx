@@ -32,6 +32,7 @@ const Pwd = ({ navigation }) => {
       const response = await axios.post(`${API_BASE_URL}/forgotPassword`, {
         email,
       });
+      console.log(email)
 
       if (response.status === 200) {
         Alert.alert('Succès', 'Vérifiez votre boîte de réception pour les instructions de réinitialisation du mot de passe.');
@@ -50,7 +51,7 @@ const Pwd = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={{flexDirection:'row',  alignItems:'center',justifyContent:'space-between', width:"100%", position:'absolute', top:30, left:30 }}>
-            <View style={{width:"45%"}}>
+            <View style={{width:"68%"}}>
               <Text style={styles.title}>Changer le mot de passe</Text>
             </View>
             
@@ -77,7 +78,7 @@ const Pwd = ({ navigation }) => {
             Changer votre mot de passe
             </Button>
             <TouchableOpacity onPress={() => navigation.navigate('login')}>
-                <Text style={styles.compte}>Vous avez deja un compte ?</Text>
+                <Text style={styles.compte}>Vous avez déjà un compte ?</Text>
             </TouchableOpacity>
           </View>
           
@@ -108,7 +109,9 @@ const styles = StyleSheet.create({
   label:{
     fontSize:14,
     marginTop:10,
-   color:colors.color2
+    color:colors.color2,
+    fontFamily:fonts.font2,
+    fontWeight:"700"
    },
    compte:{
     textAlign:'center',
