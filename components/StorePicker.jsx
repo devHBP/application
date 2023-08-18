@@ -16,9 +16,9 @@ const StorePicker = () => {
     const [stores, setStores] = useState([]);
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
-    console.log(user.role)
+    //console.log(user.role)
     const selectedStore = useSelector((state) => state.auth.selectedStore)
-    console.log('select', selectedStore)
+    //console.log('select', selectedStore)
 
     let API_BASE_URL = 'http://127.0.0.1:8080';
 

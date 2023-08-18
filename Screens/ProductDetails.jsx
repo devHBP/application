@@ -1,4 +1,4 @@
-import { View, TouchableOpacity, Image, Text, StyleSheet} from 'react-native'
+import { View, TouchableOpacity, Image, Text, StyleSheet, ScrollView} from 'react-native'
 import React, { useEffect, useState} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { defaultStyle} from '../styles/styles'
@@ -9,8 +9,10 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import FooterProfile from '../components/FooterProfile';
 import ModaleOffre31 from '../components/ModaleOffre31';
 import ArrowLeft from '../SVG/ArrowLeft';
-import { colors} from '../styles/styles'
+import { colors, fonts} from '../styles/styles'
 import Svg, { Path } from 'react-native-svg';
+import { style } from '../styles/formules'; 
+import { Button} from 'react-native-paper'
 
 //fonctions
 import { decrementhandler } from '../Fonctions/fonctions'
@@ -27,6 +29,9 @@ const ProductDetails = ({navigation, route}) => {
     const { product } = route.params;
     const [currentStock, setCurrentStock] = useState(product.stock);
     const [modalVisible, setModalVisible] = useState(false);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [productCount, setProductCount] = useState(0);
+
 
     // Effet de bord pour mettre à jour le stock
     useEffect(() => {
@@ -50,9 +55,13 @@ const ProductDetails = ({navigation, route}) => {
       }
       return total;
     }, 0);
-    console.log('prodQty', productQuantity)
+    //console.log('prodQty', productQuantity)
 
   
+    useEffect(() => {
+      const totalPrice = cart.reduce((acc, product) => acc + (product.qty * product.prix_unitaire), 0);
+      setTotalPrice(totalPrice);
+    }, [cart]);
 
     const handleBack = () => {
         navigation.navigate('home');
@@ -66,6 +75,9 @@ const ProductDetails = ({navigation, route}) => {
     }; 
     
     const incrementhandler = async () => {
+      // const foundProduct = cart.find(p => p.productId === product.productId);
+      setProductCount(productCount + 1);
+
       if (currentStock === 0){
         return Toast.show({
           type: 'error',
@@ -104,59 +116,59 @@ const ProductDetails = ({navigation, route}) => {
       }
     };
   
-     
+    const handleCart = () => {
+      navigation.navigate('panier')
+    }
   return (
     <>
-    <View style={{...defaultStyle, padding:35}}>
-        <View style={style.icons}>
-       
-        {/* <Icon name="arrow-back" size={30} color="#900" onPress={handleBack}/> */}
+    <View style={{flex:1}} >
+    <ScrollView>
       
-        <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{backgroundColor:'white', borderRadius:25}}>
-                    <ArrowLeft fill={colors.color1}/>
-                </TouchableOpacity>
-        
-      </View>
-     
-         <View style={style.container}>
-
-            <View style={style.image_container}>
-                <Image source={{ uri: `${API_BASE_URL}/${product.image}` }} style={{width: "100%", height:"100%", objectFit:'cover'}} />
-            </View>
-            
-            <View style={style.details}>
-                <Text>{product.libelle}</Text>
-                <Text>{product.prix_unitaire} euros</Text>
-                <Text style={{textAlign:'justify'}}>{product.description}</Text>
-            </View>
-
             <View>
-                {/* <Button 
-                buttonColor='lightgray' 
-                onPress={handleAddtoCart}
-            >Ajouter au panier</Button> */}
+                <Image source={{ uri: `${API_BASE_URL}/${product.image}` }} style={{width: "100%", height:300, resizeMode:'cover'}} />
+                <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
+                  <Text style={styles.titleProduct}>{product.libelle}</Text>
+                  <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:colors.color1, borderRadius:25}}>
+                      <ArrowLeft fill="white"/>
+                  </TouchableOpacity>
+                </View>   
+              </View>
+            <View style={styles.details}>
+               
+                {/* <Text>{product.prix_unitaire} euros</Text> */}
+                <Text>{product.descriptionProduit}</Text>
             </View>
+      </ScrollView>
+        <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
 
-            <View style={style.qtyContainer}>
-                             <TouchableOpacity
-                              onPress={() => decrementhandler(product.productId, dispatch)}
-                              style={style.container_gray} >
-                                {/* <Icon name="remove" size={30} color="#000" /> */}
-                                <Svg width={7} height={4} viewBox="0 0 7 4">
-                                  <Path
+    </View>
+
+   
+        <View style={{...style.menu, height:120,justifyContent:'center' }}>
+          
+                <View style={{flexDirection:'column', gap:20, }}>
+                  <View style={{ flexDirection:'row'}}>
+                      <Text style={{fontWeight:"bold"}}>Ajouter le produit au panier: </Text>
+                    <View style={styles.qtyContainer}>
+                                <TouchableOpacity
+                                  onPress={() => decrementhandler(product.productId, dispatch)}
+                                  style={styles.container_gray} >
+                                    {/* <Icon name="remove" size={30} color="#000" /> */}
+                                    <Svg width={7} height={4} viewBox="0 0 7 4">
+                                      <Path
                                     d="M0.666748 3.8V0.733337H6.80008V3.8H0.666748Z"
                                     fill="#273545"
                                   />
                                 </Svg>
                             </TouchableOpacity>
                             
-                            <View style={style.container_gray}> 
-                              <Text style={style.qtyText}>{productQuantity}</Text>
+                            <View style={styles.container_gray}> 
+                              <Text style={styles.qtyText}>{productQuantity}</Text>
                             </View>
                             <TouchableOpacity
                                 // onPress={incrementhandler}
                                  onPress={() => incrementhandler(product.productId, product.offre)}
-                                 style={{...style.container_gray, backgroundColor:colors.color2}}
+                                 style={{...styles.container_gray, backgroundColor:colors.color2}}
                             >
                                 {/* <Icon name="add" size={30} color="#000" /> */}
                                 <Svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -164,19 +176,41 @@ const ProductDetails = ({navigation, route}) => {
                                 </Svg>
                             </TouchableOpacity>
 
-                        </View>
+                      </View>
+                    </View>  
+
+                      <View  style={{flexDirection:'row', gap:10}}>
+                            <View>
+                                <View style={style.bandeauFormule}>
+                                <Text style={{ fontWeight:"bold"}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
+                                <Text>{totalPrice.toFixed(2)} €</Text>
+                              </View>
+                              <View style={style.bandeauFormule}>
+                                  <View style={{flexDirection:'row'}}>
+                                  <Text>Avec</Text><Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+                                  </View>
+                                  <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice*0.8).toFixed(2)}€</Text>
+                              </View>
+                            </View>
+
+                            <Button
+                              style={style.btn}
+                              textColor={'white'} 
+                              // disabled={!selectedProduct}
+                              onPress={handleCart}
+                              >Allez au panier</Button>
+                      </View>
+                      
+                </View>
+                
+            </View>
             
-        </View>
-
-        <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
-
-    </View>
     <FooterProfile/>
     </>
   )
 }
 
-const style = StyleSheet.create({
+const styles = StyleSheet.create({
     container:{
         marginVertical:20
     },
@@ -194,23 +228,24 @@ const style = StyleSheet.create({
         top: -8,
         right: 0,
     },
-    image_container:{
-        width:'100%',
-        height:'50%'
-    },
+    // image_container:{
+    //     width:'100%',
+    //     height:'50%'
+    // },
     details:{
-        marginVertical:10,
+        margin:30,
         flexDirection:'column',
         gap:10,
-        alignItems:'center'
+        alignItems:'flex-start'
     },
     qtyContainer:{
         flexDirection:'row',
         alignItems: "center",
         width: "40%",
-        justifyContent: "space-between",
+        justifyContent: "center",
         alignSelf: "center",
-        marginVertical:10,
+        gap:10
+        // marginVertical:10,
     },
     qtyText:{
       fontSize: 16,
@@ -225,7 +260,11 @@ const style = StyleSheet.create({
       justifyContent:'center',
       alignItems:'center',
     },
+    titleProduct:{ 
+      color: "white",
+      fontFamily:fonts.font1,
+      fontSize:24,
+      width:"80%"
+    }
 })
-
-
 export default ProductDetails
