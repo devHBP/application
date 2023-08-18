@@ -32,16 +32,16 @@ const Pwd = ({ navigation }) => {
       const response = await axios.post(`${API_BASE_URL}/forgotPassword`, {
         email,
       });
-      console.log(email)
+      //console.log(email)
 
       if (response.status === 200) {
         Alert.alert('Succès', 'Vérifiez votre boîte de réception pour les instructions de réinitialisation du mot de passe.');
         navigation.navigate('login')
       } else {
-        Alert.alert('Erreur', response.data.message || 'Quelque chose a mal tourné.');
+        Alert.alert('Erreur', response.data.message || 'Veuillez verifier si le bon email est renseigné');
       }
     } catch (error) {
-      Alert.alert('Erreur', (error.response && error.response.data.message) || 'Quelque chose a mal tourné. Veuillez réessayer.');
+      Alert.alert('Erreur', (error.response && error.response.data.message) || 'Veuillez verifier si le bon email est renseigné');
     }
   };
   const handleBack = () => {
