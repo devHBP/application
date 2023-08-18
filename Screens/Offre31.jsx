@@ -167,10 +167,12 @@ const handleCart = () => {
                 source={require('../assets/offre31.png')} 
                 style={ styles.pastilleOffre31}
                 />
-            <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
-                    {/* <Icon name="keyboard-arrow-left" size={40} color="#000" style={{}}  /> */}
-                    <ArrowLeft fill="white"/>
-                </TouchableOpacity>
+             <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
+                    <Text style={style.titleProduct}>Notre offre 3+1</Text>
+                    <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
+                      <ArrowLeft fill="white"/>
+                    </TouchableOpacity>
+                  </View>
         </View>
         <View style={{paddingHorizontal:30, paddingVertical:60}}>
             <Text style={style.title}>3 produits + 1 offert</Text>

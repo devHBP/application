@@ -12,6 +12,8 @@ import axios from 'axios'
 import { getFamilyProductDetails, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
+import LinearGradient from 'react-native-linear-gradient';
+
 
 
 const Solanid = ({navigation}) => {
@@ -146,10 +148,23 @@ const Solanid = ({navigation}) => {
                 source={require('../assets/halles_solanid.png')} 
                 style={{ ...styles.pastilleOffre31, transform: [{rotate: '15deg'}]}}
                 />
-           <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
-                    {/* <Icon name="keyboard-arrow-left" size={40} color="#000" style={{}}  /> */}
-                    <ArrowLeft fill="white" />
-                </TouchableOpacity>
+              
+                {/* <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:0, paddingHorizontal:30,paddingVertical:30,  backgroundColor:'pink'}}>
+                    <Text style={{...style.titleProduct, width:"90%"}}>Les produits des Halles Solanid</Text>
+                    <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
+                      <ArrowLeft fill="white"/>
+                    </TouchableOpacity>
+                  </View> */}
+                  <LinearGradient
+                  colors={['#273545', 'transparent']}
+                  style={{flexDirection:'row', justifyContent:'space-between', width:"100%", alignItems:'center', position:'absolute', top:0, paddingHorizontal:30, paddingVertical:30}}
+                >
+                  <Text style={{...style.titleProduct, width:"90%"}}>Les produits des Halles Solanid</Text>
+                  <TouchableOpacity onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
+                    <ArrowLeft fill="white"/>
+                  </TouchableOpacity>
+                </LinearGradient>
+           
         </View>
         <View style={{paddingHorizontal:30, paddingTop:50}}>
             <Text style={style.title}>Les halles Solanid</Text>

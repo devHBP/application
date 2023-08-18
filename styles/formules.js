@@ -49,7 +49,7 @@ const style = StyleSheet.create({
     bandeauFormule:{
       flexDirection:'row', 
       width:180, 
-      justifyContent:'space-between'
+      justifyContent:'space-between',
     },
    
     checkButton: {
@@ -75,6 +75,12 @@ const style = StyleSheet.create({
       fontSize:15,
       fontFamily:fonts.font2,
       fontWeight: "400"
+    },
+    titleProduct:{ 
+      color: "white",
+      fontFamily:fonts.font1,
+      fontSize:24,
+      width:"80%"
     }
   }
 )

@@ -211,9 +211,12 @@ const FormuleQuiche = ({navigation}) => {
                     source={require('../../assets/Formule22.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
-                <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
-                    <ArrowLeft fill="white"/>
-                </TouchableOpacity>
+                 <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
+                    <Text style={style.titleProduct}>Quiches</Text>
+                    <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
+                      <ArrowLeft fill="white"/>
+                    </TouchableOpacity>
+                  </View>
         </View>
         <View style={{padding:30}}>
             <Text style={style.title}>Quiches</Text>
