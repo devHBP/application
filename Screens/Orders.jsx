@@ -32,6 +32,9 @@ const Orders = ({navigation}) => {
     const [previousOrders, setPreviousOrders] = useState([]);
     const [ hasOrder, setHasOrder] = useState(false)
 
+    const [isDisabled, setDisabled] = useState(true); // bouton "renouveler"
+
+
     const handleBack = () => {
         navigation.navigate('home');
     };
@@ -45,6 +48,9 @@ const Orders = ({navigation}) => {
         }
     }
     const handleReorder = () => {
+        if(isDisabled){
+            return
+        }
         console.log('reorder')
     }
     //mise à jour des commandes si commande annulée
@@ -70,7 +76,7 @@ const Orders = ({navigation}) => {
             const productResponse = await axios.get(`${API_BASE_URL}/getOrderProducts/${order.orderId}`);
             const products = productResponse.data;
             const store = await getStoreById(order.storeId);
-            console.log(store)
+            //console.log(store)
             //console.log(products)
             return { ...order, products, store };
           }));
@@ -158,7 +164,11 @@ const Orders = ({navigation}) => {
                             <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                         </View>
                        <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
-                            <TouchableOpacity onPress={handleReorder} style={{...style.btnReorder,flexDirection:'row', gap:10, alignItems:'center',justifyContent:'center',  width:'35%', marginVertical:10 }}>
+                            <TouchableOpacity onPress={handleReorder}   style={[
+                                    style.btnReorder, 
+                                    { flexDirection:'row', gap:10, alignItems:'center' },
+                                    isDisabled ? { backgroundColor: colors.color3 } : { backgroundColor: colors.color2 }
+                                ]}>                      
                                 <Image
                                 source={require('../assets/reorder.png')} 
                                 style={{width:12, height:12}}
@@ -210,13 +220,17 @@ const Orders = ({navigation}) => {
                         
                         <Text>{item.status.charAt(0).toUpperCase() + item.status.substring(1)}</Text>
                         
-                        <View style={style.btnReorder}>
-                            <TouchableOpacity onPress={handleReorder} style={{flexDirection:'row', gap:10, alignItems:'center'}}>
+                        <View >
+                            <TouchableOpacity onPress={handleReorder}   style={[
+                                    style.btnReorder, 
+                                    { flexDirection:'row', gap:10, alignItems:'center' },
+                                    isDisabled ? { backgroundColor: colors.color3 } : { backgroundColor: colors.color2 }
+                                ]}>
                                 <Image
                                 source={require('../assets/reorder.png')} 
                                 style={{width:12, height:12}}
                                 />
-                                <Text style={{color:'white', fontSize:12}}>Renouveler</Text>
+                                <Text style={{color:'white', fontSize:12}}>Renouveler </Text>
                             </TouchableOpacity>
                             
                         </View>
@@ -236,12 +250,7 @@ const Orders = ({navigation}) => {
       )
     
   return (
-
-    
     <>
-    
-    
-        
             {
                 hasOrder ? (
                     <View style={{ flex:1,  alignItems: 'center', backgroundColor:colors.color3}}>
@@ -310,7 +319,7 @@ const style = StyleSheet.create({
         borderRadius:5,
         paddingHorizontal:5,
         paddingVertical:5,
-      }
+    }
 })
 
 export default Orders
