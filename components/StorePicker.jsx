@@ -7,6 +7,7 @@ import { updateSelectedStore, updateUser} from '../reducers/authSlice';
 import axios from 'axios'
 import { useSelector } from 'react-redux'
 import { fonts, colors} from '../styles/styles'
+import { styles } from '../styles/home'; 
 
 //import { pickerSelectStyles } from '../styles/home';
 
@@ -15,9 +16,9 @@ const StorePicker = () => {
     const [stores, setStores] = useState([]);
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
+    console.log(user.role)
     const selectedStore = useSelector((state) => state.auth.selectedStore)
-    const countries = ["Egypt", "Canada", "Australia", "Ireland"]
-
+    console.log('select', selectedStore)
 
     let API_BASE_URL = 'http://127.0.0.1:8080';
 
@@ -27,19 +28,62 @@ const StorePicker = () => {
       } 
   }
 
+  useEffect(() => {
+    if (user && user.role) {
+        allStores();
+    }
+}, [user.role]);
+
+  const ROLE_STORES = {
+    SUNcollaborateur: [3, 4, 5],  
+    client: [1, 2]      
+};
+    //1ere version -  que les clients
+    // const allStores = async () => {
+    //     try {
+           
+    //             const response = await axios.get(`${API_BASE_URL}/getAllStores`);
+    //             //console.log('all stores', response.data)
+    //             setStores(response.data);
+    //     } catch (error) {
+    //       console.error("Une erreur s'est produite, erreur stores :", error);
+    //     }
+    // };
+
     const allStores = async () => {
         try {
-          const response = await axios.get(`${API_BASE_URL}/getAllStores`);
-          //console.log('all stores', response.data)
-          setStores(response.data);
+            console.log('Role actuel de l\'utilisateur:', user.role); // Affichez le rôle actuel pour vérifier
+            const response = await axios.get(`${API_BASE_URL}/getAllStores`);
+            if (response.data && Array.isArray(response.data)) {
+                // Vérifier si ROLE_STORES[user.role] est défini
+                if (!ROLE_STORES[user.role]) {
+                    console.error("ROLE_STORES pour", user.role, "n'est pas défini");
+                    return; // Quitter la fonction tôt pour éviter d'autres erreurs
+                }
+                // Filtrer les stores en fonction du rôle de l'utilisateur
+                const filteredStores = response.data.filter(store => ROLE_STORES[user.role].includes(store.storeId));
+                console.log('filteredStores', filteredStores);
+                setStores(filteredStores);
+            } else {
+                console.error("Réponse inattendue de l'API.");
+            }
         } catch (error) {
-          console.error("Une erreur s'est produite, erreur stores :", error);
+            console.error("Une erreur s'est produite, erreur stores :", error);
         }
     };
-
-    useEffect(() => {
-        allStores();
-    }, []);
+    
+    function formatLabel(label) {
+        const splitLabel = label.split(' '); // Divisez le label par les espaces
+        if (splitLabel.length <= 1) return label; // Si c'est un seul mot, retournez-le tel quel
+    
+        const midPoint = Math.ceil(splitLabel.length / 2); 
+        const firstHalf = splitLabel.slice(0, midPoint).join(' ');
+        const secondHalf = splitLabel.slice(midPoint).join(' ');
+    
+        return `${firstHalf}\n${secondHalf}`; // Retournez les deux moitiés avec un saut de ligne entre elles
+    }
+    
+    
     
     return (
         <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
@@ -50,10 +94,13 @@ const StorePicker = () => {
                 />
                 <View >   
                     {
+                        user.role == 'SUNcollaborateur' && <Text style={{...styles.textPickerDate, textAlign:'center'}}>Livraison</Text>
+                    }
+                    {
                         Platform.OS === 'android' ? (
                            <SelectDropdown
 
-                           	data={stores.map(store => store.nom_magasin)}  // Utilisez les noms des magasins comme données
+                           	data={stores.map(store => store.nom_magasin)}  
                             onSelect={(selectedItem, index) => {
                                 const selected = stores.find(store => store.nom_magasin === selectedItem);
                                      if (selected) {
@@ -81,10 +128,13 @@ const StorePicker = () => {
                            		// if data array is an array of objects then return item.property to represent item in dropdown
                            		return item
                            	}}
-                           	buttonStyle={{backgroundColor:'transparent', width:140, height:30}}
-                           	buttonTextStyle={{fontSize:12, fontWeight:700, color:colors.color1}}
-                            defaultButtonText={selectedStore.nom_magasin}
+                           	buttonStyle={{backgroundColor:'transparent', width:160, height:30,padding:0,  }}
+                           	buttonTextStyle={{fontSize:10, fontWeight:700, color:colors.color2, padding:0}}
+                            // defaultButtonText={selectedStore.nom_magasin}
+                            defaultButtonText={selectedStore ? selectedStore.nom_magasin : "faites votre choix"}
 
+                            rowTextStyle={{fontSize:10}}
+                            // rowStyle={{width:20}}
                            />
 
                         )
@@ -118,11 +168,12 @@ const StorePicker = () => {
                                 label: store.nom_magasin,
                                 value: store.nom_magasin,
                             }))}
-                            // style={pickerSelectStyles}
+                             style={pickerSelectStyles}
                         /> 
                         )
                     
                     }
+                     {user.role == 'client' &&
                     <View style={{flexDirection:'row'}}>
                         <View >
                             <Text style={{fontSize:10, color:colors.color1}}>
@@ -130,7 +181,8 @@ const StorePicker = () => {
                             </Text>
                             <Text  style={{fontSize:10, color:colors.color1}}>{selectedStore.cp_magasin} {selectedStore.ville_magasin}</Text>
                         </View>
-                    </View>  
+                    </View> 
+                    } 
                 </View>
             </View>
         </View>
@@ -140,9 +192,9 @@ const StorePicker = () => {
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    fontSize: 20,
-    color: colors.color1,
-    fontWeight: "bold",
+    fontSize: 10,
+    color: colors.color2,
+    
   },
   inputAndroid: {
     fontSize: 18,

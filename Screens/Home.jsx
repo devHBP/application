@@ -213,8 +213,8 @@ const ongletButtonHandler = (onglet) => {
     </View>
    
       {/* test bandeau header */}
-      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
-          <View style={{ flexDirection:'row', gap:15, alignItems:'center',}}>
+      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:5}}>
+          <View style={{ flexDirection:'row', gap:10, alignItems:'center',}}>
               
             <View>
             <StorePicker />

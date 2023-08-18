@@ -144,12 +144,12 @@ const CustomDatePicker = () => {
                 minimumDate={new Date()}
                 
               /> 
-                 {role !== 'collaborateur' && (
+                 {role == 'client' && (
                 <TouchableOpacity onPress={() => setOpenTime(true)} >
                   <Text>{timeRedux ? <Text style={styles.picker}>{timeRedux}</Text> : "Choisissez votre heure"}</Text>
                   </TouchableOpacity>
                   )}
-                  {role !== 'collaborateur' && (
+                  {role === 'client' && (
                         <DatePicker
                           modal
                           open={openTime}

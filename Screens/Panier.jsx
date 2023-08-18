@@ -51,6 +51,7 @@ const Panier = ({navigation}) => {
   //console.log('cart panier', cart)
   const user = useSelector((state) => state.auth.user)
   const selectedStore = useSelector(state => state.auth.selectedStore);
+  console.log('storecollab', selectedStore)
    const cartTotal = useSelector((state) => state.cart.cartTotal)
 
   const selectedDateString = useSelector((state) => state.cart.date)
@@ -225,7 +226,7 @@ useEffect(() => {
 
   const handleLogout = () => {
     dispatch(logoutUser()); 
-    navigation.navigate('app')
+    navigation.navigate('login')
   }
 
 
@@ -355,7 +356,7 @@ useEffect(() => {
           throw new Error('Erreur lors de la création de la commande');
         }
       }
-     createOrder()
+     //createOrder()
       } else {
           console.log('erreur ici', error)
       }

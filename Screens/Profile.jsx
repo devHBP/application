@@ -38,6 +38,7 @@ const Profile =  ({navigation}) => {
   const [stores, setStores] = useState([]);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
+  console.log('role', user.role)
   const userId = user.userId
   const selectedStore = useSelector((state) => state.auth.selectedStore);
    //console.log('store', userStore)
@@ -67,15 +68,49 @@ const Profile =  ({navigation}) => {
     const handleBack = () => {
         navigation.navigate('home');
     };
+    useEffect(() => {
+      if (user && user.role) {
+          allStores();
+      }
+  }, [user.role]);
+  
+    const ROLE_STORES = {
+      SUNcollaborateur: [3, 4, 5],  
+      client: [1, 2]      
+  };
+
+    // const allStores = async () => {
+    //   try {
+    //     const response = await axios.get(`${API_BASE_URL}/getAllStores`);
+    //     setStores(response.data);
+    //   } catch (error) {
+    //     console.error("Une erreur s'est produite :", error);
+    //   }
+    // };
+
 
     const allStores = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/getAllStores`);
-        setStores(response.data);
+          console.log('Role actuel de l\'utilisateur:', user.role); // Affichez le rôle actuel pour vérifier
+          const response = await axios.get(`${API_BASE_URL}/getAllStores`);
+          if (response.data && Array.isArray(response.data)) {
+              // Vérifier si ROLE_STORES[user.role] est défini
+              if (!ROLE_STORES[user.role]) {
+                  console.error("ROLE_STORES pour", user.role, "n'est pas défini");
+                  return; // Quitter la fonction tôt pour éviter d'autres erreurs
+              }
+              // Filtrer les stores en fonction du rôle de l'utilisateur
+              const filteredStores = response.data.filter(store => ROLE_STORES[user.role].includes(store.storeId));
+              console.log('filteredStores', filteredStores);
+              setStores(filteredStores);
+          } else {
+              console.error("Réponse inattendue de l'API.");
+          }
       } catch (error) {
-        console.error("Une erreur s'est produite :", error);
+          console.error("Une erreur s'est produite, erreur stores :", error);
       }
-    };
+  };
+
     const getUserInfo = async(user) => {
       try {
         const response = await axios.get(`${API_BASE_URL}/getOne/${user.userId}`); // Remplacez par la bonne URL de l'API
@@ -290,7 +325,13 @@ const Profile =  ({navigation}) => {
 
         <Text style={style.title_section}>Votre information du compte</Text>
         <View style={style.formulaire}>
-        <Text style={style.label}>Votre restaurant favori</Text>
+          {
+            user.role === 'client' && <Text style={style.label}>Votre restaurant favori</Text>
+          }
+          {
+            user.role === 'SUNcollaborateur' && <Text style={style.label}>Votre point de livraison favori</Text>
+          }
+        
         {/* <Picker
           style={pickerSelectStyles}
               placeholder={{
