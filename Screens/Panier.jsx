@@ -20,6 +20,8 @@ import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import { style } from '../styles/formules'; 
 import ArrowLeft from '../SVG/ArrowLeft';
+import LottieView from 'lottie-react-native';
+
 
 import { getFamilyOfProduct } from '../CallApi/api';
 
@@ -46,6 +48,8 @@ const Panier = ({navigation}) => {
   const [checkoutSession, setCheckoutSession] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [productFamilies, setProductFamilies] = useState({});
+  const [ paiement, setPaiement] = useState('online')
+  const [loading, setLoading] = useState(false);
 
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
   //console.log('cart panier', cart)
@@ -57,7 +61,7 @@ const Panier = ({navigation}) => {
   const selectedDateString = useSelector((state) => state.cart.date)
   const selectedTime = useSelector((state) => state.cart.time)
   // const paiement = useSelector((state) => state.cart.paiement)
-  const paiement = "online"
+  // const paiement = "online"
   const numero_commande = useSelector((state) => state.order.numero_commande)
 
   const totalPrice = Number((cart.reduce((total, item) => {
@@ -110,7 +114,6 @@ const Panier = ({navigation}) => {
   const handleBack = () => {
     navigation.navigate('home');
   };
-
 
   const handleAcceptOffer = () => {
     const lastProductAdded = cart[cart.length - 1];
@@ -222,22 +225,14 @@ useEffect(() => {
   fetchFamilies();
 }, [cart]);
 
-
-
   const handleLogout = () => {
     dispatch(logoutUser()); 
     navigation.navigate('login')
   }
 
-
-  
-  const handleConfirm = async () => {
-    //console.log(cart)
-    // dispatch(updateCartTotal({
-    //   groupedItemsArray: groupedItemsArray,
-    //   formules: formules
-    // }));
-
+  const handleConfirm = async (newPaiement) => {
+   
+    setPaiement(newPaiement)
     const token = await AsyncStorage.getItem('userToken');
 
     axios.get(`${API_BASE_URL}/verifyToken`, {
@@ -267,7 +262,7 @@ useEffect(() => {
         storeId: selectedStore.storeId,
         slotId: null,
         promotionId: null,
-        paymentMethod: paiement,
+        paymentMethod: newPaiement,
         //plus utilisé
         //transforme mon array de productsIds en chaine de caractères
         //productIdsString: cartProductId.join(",")
@@ -522,133 +517,289 @@ useEffect(() => {
       }
     }, [paiement, sessionId]); 
 
+    useEffect(() => {
+      if (orderInfo && paiement === 'onsite') {
+        setLoading(true);
+        setTimeout(() => {
+          setLoading(false);
+          navigation.navigate('success');
+        }, 3000);  
+      }
+    }, [orderInfo, paiement]);
   return (
-    <>
-    <View style={{ flex:1, alignItems: 'center', backgroundColor: colors.color3,paddingVertical:15}}>
-      <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical:30,paddingHorizontal:30, justifyContent:'space-between', width:"100%" }}>
-         
-         <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10, fontFamily:fonts.font1 }}>Votre Panier</Text>
-         <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'white', borderRadius:25}}>
-            <ArrowLeft fill={colors.color1}/>
-        </TouchableOpacity>
-       </View>
+    // <>
+    // <View style={{ flex:1, alignItems: 'center', backgroundColor: colors.color3,paddingVertical:15}}>
 
-
-       {/* bandeau picker */}
-       <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-around', paddingHorizontal:10}}>
+ 
+    //         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical:30,paddingHorizontal:30, justifyContent:'space-between', width:"100%" }}>
               
-            <View>
-              <StorePicker />
-            </View> 
-            <View >
-              <CustomDatePicker />
-            </View>
-          
-        </View>
+    //           <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10, fontFamily:fonts.font1, color:colors.color1 }}>Votre Panier</Text>
+    //           <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'white', borderRadius:25}}>
+    //               <ArrowLeft fill={colors.color1}/>
+    //           </TouchableOpacity>
+    //         </View>
 
-          <ScrollView  style={{marginVertical:10,flex: 1,}}>
-            {/* - formules -  */}{
-              formules.length > 0 && <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>Formules</Text>
-            }
-              {formules.map((item, index) => {
-                if (item.type === 'formule'){
-                  return (
+
+    //         {/* bandeau picker */}
+    //         <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-around', paddingHorizontal:10}}>
                     
-                    <View key={index}>
-                      <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}}>
-                     
-                      <CardItemFormule
-                        option1={item.option1}
-                        option2={item.option2}
-                        option3={item.option3}
-                        prix_unitaire={item.prix}
-                        incrementhandler={() => incrementhandler(item.productIds, item.offre)}
-                        decrementhandler={() => decrementhandler(item.productIds, dispatch)}
-                        removehandler={() => removehandler(item.id, dispatch, 'formule')}
-                        image={item.formuleImage}
-                        qty={item.qty}
-                        title={item.libelle}
-                        // key={item.id}
-                      />
-                    </View> 
-                    </View>
+    //               <View>
+    //                 <StorePicker />
+    //               </View> 
+    //               <View >
+    //                 <CustomDatePicker />
+    //               </View>
                 
-                  );
-              }
-              })} 
-           {/* - produits seuls ou avec offre -  */}
-            {
-              Object.entries(itemsGroupedByFamily).map(([familyName, items], index) => {
-            // groupedItemsArray.map((group, index) => {
-              // if (group.items[0].type !== 'formule') {
-                  return (
-                      <View  key={index}>
-                        {/* ici le nom de famille */}
-                         <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>{familyName}</Text>
-                         {items.map((group, groupIndex) => (
-
-                        <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}} key={groupIndex}>
-                          <CartItem 
-                                libelle={group.items[0].libelle}
-                                prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
-                                qty={group.items.reduce((acc, item) => acc + item.qty, 0)} 
-                                incrementhandler={() => incrementhandler(group.items[0].productId, group.items[0].offre)}
-                                decrementhandler={() => decrementhandler(group.items[0].productId, dispatch)}
-                                removehandler={() => removehandler(group.items[0].productId, dispatch) }
-                                // image={group.items[0].image}
-                                index={index}
-                                isFree={group.items[0].isFree}
-                                freeCount={group.freeCount}
-                            />
-                        </View>
-                         
-                         ))} 
-                      </View>
-                  )
-              } )  
-            }    
-       </ScrollView>
+    //           </View>
         
-        {/* Promotions */}
-          <View style={{ flexDirection:'row', alignItems:'center', gap: 10, }}>
-              <TextInput
-                value={promoCode}
-                onChangeText={(value) => setPromoCode(value)}
-                placeholder="Code promo"
-                style={{ width: 150, marginVertical: 10, borderWidth: 1, borderColor: 'white', paddingHorizontal: 20, paddingVertical: 10 }}
-              />
-              <Icon name="done" size={20} color="#900" onPress={handleApplyDiscount} />
-              <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
-          </View>
-        </View>
+    //         <ScrollView  style={{marginVertical:10,flex: 1,}}>
+    //               {/* - formules -  */}{
+    //                 formules.length > 0 && <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>Formules</Text>
+    //               }
+    //                 {formules.map((item, index) => {
+    //                   if (item.type === 'formule'){
+    //                     return (
+                          
+    //                       <View key={index}>
+    //                         <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}}>
+                          
+    //                         <CardItemFormule
+    //                           option1={item.option1}
+    //                           option2={item.option2}
+    //                           option3={item.option3}
+    //                           prix_unitaire={item.prix}
+    //                           incrementhandler={() => incrementhandler(item.productIds, item.offre)}
+    //                           decrementhandler={() => decrementhandler(item.productIds, dispatch)}
+    //                           removehandler={() => removehandler(item.id, dispatch, 'formule')}
+    //                           image={item.formuleImage}
+    //                           qty={item.qty}
+    //                           title={item.libelle}
+    //                           // key={item.id}
+    //                         />
+    //                       </View> 
+    //                       </View>
+                      
+    //                     );
+    //                 }
+    //                 })} 
+    //             {/* - produits seuls ou avec offre -  */}
+    //               {
+    //                 Object.entries(itemsGroupedByFamily).map(([familyName, items], index) => {
+    //               // groupedItemsArray.map((group, index) => {
+    //                 // if (group.items[0].type !== 'formule') {
+    //                     return (
+    //                         <View  key={index}>
+    //                           {/* ici le nom de famille */}
+    //                           <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>{familyName}</Text>
+    //                           {items.map((group, groupIndex) => (
 
-        {/* bandeau selection commande */}
-          <View style={{...style.menu }}>
-            <View style={{flexDirection:'row', paddingHorizontal:30, justifyContent:'center', gap:10}}>
-              <View >
-                <Text style={{ fontWeight:"bold"}}>Votre total</Text>
-                <Text style={{color:colors.color2}}>Total Avec<Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/></Text>
-              </View>
-              <View style={{flexDirection:'column', justifyContent:'space-between'}}>
-                  <Text>{totalPrice.toFixed(2)}€</Text>
-                  <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice *0.8).toFixed(2)}€</Text>
-              </View>
-              <Button 
-                  buttonColor='lightgray' 
-                  onPress={handleConfirm}
-                  disabled={cart.length === 0}
-                  >
-                Valider votre commande
-              </Button>  
+    //                           <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}} key={groupIndex}>
+    //                             <CartItem 
+    //                                   libelle={group.items[0].libelle}
+    //                                   prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
+    //                                   qty={group.items.reduce((acc, item) => acc + item.qty, 0)} 
+    //                                   incrementhandler={() => incrementhandler(group.items[0].productId, group.items[0].offre)}
+    //                                   decrementhandler={() => decrementhandler(group.items[0].productId, dispatch)}
+    //                                   removehandler={() => removehandler(group.items[0].productId, dispatch) }
+    //                                   // image={group.items[0].image}
+    //                                   index={index}
+    //                                   isFree={group.items[0].isFree}
+    //                                   freeCount={group.freeCount}
+    //                               />
+    //                           </View>
+                              
+    //                           ))} 
+    //                         </View>
+    //                     )
+    //                 } )  
+    //               }    
+    //         </ScrollView>
+          
+                
               
-            </View>  
+    //           {/* Promotions */}
+    //             <View style={{ flexDirection:'row', alignItems:'center', gap: 10, }}>
+    //                 <TextInput
+    //                   value={promoCode}
+    //                   onChangeText={(value) => setPromoCode(value)}
+    //                   placeholder="Code promo"
+    //                   style={{ width: 150, marginVertical: 10, borderWidth: 1, borderColor: 'white', paddingHorizontal: 20, paddingVertical: 10 }}
+    //                 />
+    //                 <Icon name="done" size={20} color="#900" onPress={handleApplyDiscount} />
+    //                 <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
+    //             </View>
+    //           </View>
+
+    //           {/* bandeau selection commande */}
+    //             <View style={{...style.menu }}>
+    //               <View style={{flexDirection:'row', paddingHorizontal:30, justifyContent:'center', gap:10}}>
+    //                 <View >
+    //                   <Text style={{ fontWeight:"bold"}}>Votre total</Text>
+    //                   <Text style={{color:colors.color2}}>Total Avec<Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/></Text>
+    //                 </View>
+    //                 <View style={{flexDirection:'column', justifyContent:'space-between', alignItems:"flex-end"}}>
+    //                     <Text>{totalPrice.toFixed(2)}€</Text>
+    //                     <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice *0.8).toFixed(2)}€</Text>
+    //                 </View>
+
+    //                 </View>
+    //                 <View> 
+    //                   <TouchableOpacity 
+    //                     onPress={() =>  handleConfirm('onsite')}
+    //                       style={style.btnPaiement}
+    //                       >
+    //                         <Text style={{color:"white"}}> Sur place</Text>
+                      
+    //                   </TouchableOpacity>  
+    //                   <TouchableOpacity 
+    //                       onPress={() =>  handleConfirm('online')}
+    //                       style={{...style.btnPaiement, backgroundColor:colors.color3}}
+    //                       ><Text>En ligne</Text>
+    //                   </TouchableOpacity>
+    //                 </View>
+     
+    //                 {/* ici */}
+            
+    //       <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
+    //       <FooterProfile />
+
+    //       </View> 
+    // </>
+  
+      <>
+          <View style={{ flex: 1, alignItems: 'center', backgroundColor: colors.color3}}>
               
+              {loading ? (
+                  <LottieView 
+                      source={require('../assets/loaderpaiment.json')} 
+                      autoPlay 
+                      loop 
+                      style={{
+                        width: 300, 
+                        aspectRatio: 300 / 600,
+                        flexGrow: 1, 
+                        alignSelf: 'center',
+                      }} 
+                  />
+                  // <Text>Loader</Text>
+              ) : (
+                  <>
+                      <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 30, paddingHorizontal: 30, justifyContent: 'space-between', width: "100%" }}>
+                          <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10, fontFamily: fonts.font1, color: colors.color1 }}>Votre Panier</Text>
+                          <TouchableOpacity onPress={handleBack} activeOpacity={1} style={{ backgroundColor: 'white', borderRadius: 25 }}>
+                              <ArrowLeft fill={colors.color1} />
+                          </TouchableOpacity>
+                      </View>
+  
+                      <View style={{ width: "100%", height: 80, backgroundColor: 'white', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-around', paddingHorizontal: 10 }}>
+                          <View><StorePicker /></View>
+                          <View><CustomDatePicker /></View>
+                      </View>
+  
+                      <ScrollView style={{ marginVertical: 10, flex: 1 }}>
+                          {/* - formules - */}
+                          {formules.length > 0 && <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>Formules</Text>}
+                          {formules.map((item, index) => {
+                              if (item.type === 'formule') {
+                                  return (
+                                      <View key={index} style={{ backgroundColor: "white", borderRadius: 10, marginVertical: 5 }}>
+                                          <CardItemFormule
+                                              option1={item.option1}
+                                              option2={item.option2}
+                                              option3={item.option3}
+                                              prix_unitaire={item.prix}
+                                              incrementhandler={() => incrementhandler(item.productIds, item.offre)}
+                                              decrementhandler={() => decrementhandler(item.productIds, dispatch)}
+                                              removehandler={() => removehandler(item.id, dispatch, 'formule')}
+                                              image={item.formuleImage}
+                                              qty={item.qty}
+                                              title={item.libelle}
+                                              // key={item.id}
+                                            />
+                                      </View>
+                                  );
+                              }
+                          })}
+  
+                          {/* - produits seuls ou avec offre - */}
+                          {Object.entries(itemsGroupedByFamily).map(([familyName, items], index) => {
+                              return (
+                                  <View key={index}>
+                                      <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>{familyName}</Text>
+                                      {items.map((group, groupIndex) => (
+                                          <View key={groupIndex} style={{ backgroundColor: "white", borderRadius: 10, marginVertical: 5 }}>
+                                              <CartItem 
+                                                  libelle={group.items[0].libelle}
+                                                  prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
+                                                  qty={group.items.reduce((acc, item) => acc + item.qty, 0)} 
+                                                  incrementhandler={() => incrementhandler(group.items[0].productId, group.items[0].offre)}
+                                                  decrementhandler={() => decrementhandler(group.items[0].productId, dispatch)}
+                                                  removehandler={() => removehandler(group.items[0].productId, dispatch) }
+                                                  // image={group.items[0].image}
+                                                  index={index}
+                                                  isFree={group.items[0].isFree}
+                                                  freeCount={group.freeCount}
+                                              />
+                                          </View>
+                                      ))}
+                                  </View>
+                              );
+                          })}
+                      </ScrollView>
+  
+                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                          <TextInput
+                       value={promoCode}
+                      onChangeText={(value) => setPromoCode(value)}
+                       placeholder="Code promo"
+                       style={{ width: 150, marginVertical: 10, borderWidth: 1, borderColor: 'white', paddingHorizontal: 20, paddingVertical: 10 }}
+                    />
+                          <Icon name="done" size={20} color="#900" onPress={handleApplyDiscount} />
+                          <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
+                      </View>
+  
+                      <View style={{ ...style.menu }}>
+                          <View style={{ flexDirection: 'row', paddingHorizontal: 30, justifyContent: 'center', gap: 10 }}>
+                              <View>
+                                  <Text style={{ fontWeight: "bold" }}>Votre total</Text>
+                                  <Text style={{ color: colors.color2 }}>Total Avec<Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode: 'contain' }} /></Text>
+                              </View>
+                              <View style={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: "flex-end" }}>
+                                  <Text>{totalPrice.toFixed(2)}€</Text>
+                                  <Text style={{ color: colors.color2, fontWeight: "bold" }}>{(totalPrice * 0.8).toFixed(2)}€</Text>
+                              </View>
+                          </View>
+                          <View style={{gap:10}}>
+                              <TouchableOpacity onPress={() => handleConfirm('onsite')} style={style.btnPaiement}>
+                                <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-around'}}>
+                                  <Image
+                                      source={require('../assets/paiementsurplace.png')} 
+                                      style={{ width: 20, height: 20, resizeMode:'contain' }}
+                                  />
+                                  <Text style={{ color:colors.color6, fontFamily:fonts.font3}}> Sur place</Text>
+                                </View>
+                                  
+                              </TouchableOpacity>
+                              <TouchableOpacity onPress={() => handleConfirm('online')} style={{ ...style.btnPaiement, backgroundColor: colors.color3 }}>
+                              <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-around'}}>
+                                  <Image
+                                      source={require('../assets/paiementenligne.png')} 
+                                      style={{ width: 20, height: 20, resizeMode:'contain' }}
+                                  />
+                                  <Text style={{ color: colors.color1, fontFamily:fonts.font3}}> En ligne</Text>
+                                </View>
+                              </TouchableOpacity>
+                          </View>
+                      </View>
+  
+                      <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
+                      <FooterProfile />
+                  </>
+              )}
           </View>
-
-          <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
-
-          <FooterProfile />
-    </>
-  )
+      </>
+  );
+  
+  
 }
 export default Panier

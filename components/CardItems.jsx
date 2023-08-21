@@ -73,18 +73,15 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
           <Text style={styles.price}>{qty - freeCount}x {prix || prix_unitaire }€</Text>  
           </View>
       
-          <View style={styles.content}> 
-         
-          {/* <Text style={{color:colors.color9}}>{freeCount}x {libelle}</Text> */}
-          <Text style={{color:colors.color9}}>{isFree = 'true' && freeCount > 0 ? `${freeCount} x ${libelle}` : ''}</Text>
-          <Text style={{color:colors.color9}}> 
-            {/* {isFree = 'true' && freeCount > 0 ? `Vous avez ${freeCount} produit${freeCount > 1 ? 's' : ''} gratuit${freeCount > 1 ? 's' : ''}` : ''} */}
-            {isFree = 'true' && freeCount > 0 ? '+0€' : ''}
-
-          </Text>
-      
-        
-          
+          <View style={styles.content}>
+            {isFree = 'true' && freeCount > 0 && (
+              <>
+                <Text style={{ color: colors.color9 }}>
+                  {`${freeCount} x ${libelle}`}
+                </Text>
+                <Text style={{ color: colors.color9 }}>+0€</Text>
+              </>
+            )}
           </View>
     </View>
       

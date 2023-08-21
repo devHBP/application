@@ -6,6 +6,7 @@ const style = StyleSheet.create({
         fontFamily:fonts.font1,
         fontSize:20,
         paddingBottom:10,
+        color:colors.color1
     },
     choixTitle:{
         textAlign:'center',
@@ -23,7 +24,7 @@ const style = StyleSheet.create({
         borderRadius: 10,
     },
     menu:{
-        height:85,
+        height:110,
         backgroundColor: '#fff',
         padding: 10,
         elevation: 2, 
@@ -36,7 +37,8 @@ const style = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'space-between',
-        marginBottom:65
+        marginBottom:75,
+        width:"100%"
     },
     disabledCheckBox: {
       opacity: 0.2, 
@@ -81,6 +83,14 @@ const style = StyleSheet.create({
       fontFamily:fonts.font1,
       fontSize:24,
       width:"80%"
+    },
+    btnPaiement:{
+      backgroundColor:colors.color9,
+      paddingHorizontal:10,
+      paddingVertical:5,
+      borderRadius:5,
+      width:130,
+      height:35
     }
   }
 )
