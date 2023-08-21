@@ -1,7 +1,7 @@
 import {View, Text, Pressable, ScrollView , TouchableOpacity, Image } from 'react-native'
 import  Picker  from 'react-native-picker-select';
 import { fonts, colors} from '../styles/styles'
-import React, {useState, useEffect,  createRef, } from 'react'
+import React, {useState, useEffect,  createRef,useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {  updateUser} from '../reducers/authSlice';
 import ProductCard from '../components/ProductCard'
@@ -19,6 +19,8 @@ import Catalogue from '../components/Catalogue';
 import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import ArrowDown from '../SVG/ArrowDown';
+
+
 
 
 
@@ -41,6 +43,7 @@ const Home =  ({navigation}) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredProducts, setFilteredProducts] = useState(products); 
   const [ visible, setVisible] = useState(false)
+  const [positionsY, setPositionsY] = useState({});
   
   const user = useSelector((state) => state.auth.user);
   const cart = useSelector((state) => state.cart.cart);
@@ -154,31 +157,34 @@ const toggleVisibility = () => {
   setVisible(!visible)
 }
 
-const ongletPositions = {
-  'Promos': 250,
-  'Baguettes': 600,
-  'Viennoieries': 830,
-  'Formules': 1120,
-  'Produits salés': 1460,
-  'Pâtisseries': 1850,
-  'Pains spéciaux': 2100,
-  'Petits déjeuners': 2350,
-  'Boissons': 2700,
-  'Tarterie': 2960,
+//scroll ref pour les differents onglets
+const refs = {
+  'Promos': useRef(null),
+  'Baguettes': useRef(null),
+  'Viennoiseries': useRef(null),
+  'Formules': useRef(null),
+  'Produits Salés': useRef(null),
+  'Pâtisseries': useRef(null),
+  'Pains Spéciaux': useRef(null),
+  'Petits déjeuners': useRef(null),
+  'Boissons': useRef(null),
+  'Tarterie': useRef(null),
 };
 
-const onglets = Object.keys(ongletPositions);
-const ongletButtonHandler = (onglet) => {
-  setSelectedOnglet(onglet)
-  // Obtenir la position Y pour l'onglet sélectionné
-  const positionY = ongletPositions[onglet];
+const onglets = Object.keys(refs);
 
-  // Faire défiler jusqu'à la position Y
-  if (scrollViewRef.current) {
+const handleLayout = (onglet, event) => {
+  const { y } = event.nativeEvent.layout;
+  setPositionsY(prev => ({ ...prev, [onglet]: y }));
+};
+const ongletButtonHandler = (onglet) => {
+  setSelectedOnglet(onglet);
+  
+  const positionY = positionsY[onglet];
+  if (scrollViewRef.current && positionY !== undefined) {
     scrollViewRef.current.scrollTo({ x: 0, y: positionY, animated: true });
   }
-}
-
+};
   return (
     <>
     <ScrollView vertical={true} style={{ flex:1, paddingVertical:20}} ref={scrollViewRef}>
@@ -313,14 +319,19 @@ const ongletButtonHandler = (onglet) => {
       </View>
           
           {/* link - anti gaspi -  */}
-          <LinkOffres />
+          <View onLayout={(event) => handleLayout('Promos', event)}>
+           <LinkOffres />
+          </View>
+          
               
            {/* card products */}
           {/* <View style={style.cardScrollview}> */}
             {sortedCategories
               .filter(category => category === 'Baguettes')
               .map((category) => (
-              <React.Fragment key={category}>
+                <View key={category} onLayout={(event) => handleLayout('Baguettes', event)}>
+
+              {/* <React.Fragment key={category}> */}
                 <Text style={styles.categoryTitle}>{category}</Text>
 
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
@@ -351,14 +362,17 @@ const ongletButtonHandler = (onglet) => {
                 ))}
               
               </ScrollView>
-              </React.Fragment>
+              {/* </React.Fragment> */}
+              </View>
             ))}
           {/* </View > */}
 
             {sortedCategories
               .filter(category => category ===  'Viennoiseries')
               .map((category) => (
-              <React.Fragment key={category}>
+                <View key={category} onLayout={(event) => handleLayout('Viennoiseries', event)}>
+
+              {/* <React.Fragment key={category}> */}
                 <Text style={styles.categoryTitle}>{category}</Text>
 
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
@@ -389,20 +403,27 @@ const ongletButtonHandler = (onglet) => {
                 ))}
               
               </ScrollView>
-              </React.Fragment>
+              {/* </React.Fragment> */}
+              </View>
             ))}
 
           {/* Link page Formule */}
-          <FormulesSalees />
+          <View onLayout={(event) => handleLayout('Formules', event)}>
+            <FormulesSalees />
+          </View>
 
           {/* envie de salé */}
-         <EnvieSalee />
+       
+         <View onLayout={(event) => handleLayout('Produits Salés', event)}>
+          <EnvieSalee />
+        </View>
 
             {/* patisseries */}
             {sortedCategories
               .filter(category => category ===  'Pâtisseries')
               .map((category) => (
-              <React.Fragment key={category}>
+                <View key={category} onLayout={(event) => handleLayout('Pâtisseries', event)}>
+              {/* <React.Fragment key={category}> */}
                 <Text style={styles.categoryTitle}>{category}</Text>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
                 {groupedAndSortedProducts[category]
@@ -431,14 +452,17 @@ const ongletButtonHandler = (onglet) => {
                   </View>
                 ))}
               </ScrollView>
-              </React.Fragment>
+              {/* </React.Fragment> */}
+               </View>
             ))}
 
             {/* pains speciaux */}
             {sortedCategories
               .filter(category => category ===  'Boules et Pains Spéciaux')
               .map((category) => (
-              <React.Fragment key={category}>
+                <View key={category} onLayout={(event) => handleLayout('Pains Spéciaux', event)}>
+
+              {/* <React.Fragment key={category}> */}
                 <Text style={styles.categoryTitle}>{category}</Text>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
                 {groupedAndSortedProducts[category]
@@ -467,18 +491,24 @@ const ongletButtonHandler = (onglet) => {
                   </View>
                 ))}
               </ScrollView>
-              </React.Fragment>
+              {/* </React.Fragment> */}
+              </View>
             ))}
 
 
             {/* formules petits dejeuners */}
+            
+            <View onLayout={(event) => handleLayout('Petits déjeuners', event)}>
             <FormulesPetitDejeuner />
+            </View>
 
             {/* boissons */}
             {sortedCategories
               .filter(category => category ===  'Boissons')
               .map((category) => (
-              <React.Fragment key={category}>
+                <View key={category} onLayout={(event) => handleLayout('Boissons', event)}>
+
+              {/* <React.Fragment key={category}> */}
                 <Text style={styles.categoryTitle}>{category}</Text>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
                 {groupedAndSortedProducts[category]
@@ -507,11 +537,14 @@ const ongletButtonHandler = (onglet) => {
                   </View>
                 ))}
               </ScrollView>
-              </React.Fragment>
+              {/* </React.Fragment> */}
+              </View>
             ))}
 
             {/* catalogue */}
-            <Catalogue />
+            <View onLayout={(event) => handleLayout('Tarterie', event)}>
+              <Catalogue />
+            </View>
 
           {/* <TouchableOpacity onPress={scrollToTop} >
              <Icon name="arrow-upward" size={30} style={styles.scrollTop}   />
