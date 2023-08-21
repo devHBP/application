@@ -101,31 +101,19 @@ const cartSlice = createSlice({
       }
     },
     removeFromCart: (state, action) => {
-        // const productId = action.payload;
-        console.log("Removing one product:", action.payload.productId);
-
-        const productId = action.payload.productId;
-        state.cart = state.cart.filter((item) => item.productId !== productId);
-      },
-      removeMultipleFromCart: (state, action) => {
-        const productIdsToRemove = action.payload.productIds;
-        console.log("Removing several products:", action.payload.productIds);
-    
-        state.cart = state.cart.filter(formule => {
-            let shouldKeepFormule = false; // assume we're going to remove the formule
-    
-            // Check each option in the formule
-            ['option1', 'option2', 'option3'].forEach(option => {
-                if (formule[option] && !productIdsToRemove.includes(formule[option].productId)) {
-                    shouldKeepFormule = true; // this formule contains an option we want to keep
-                }
-            });
-    
-            return shouldKeepFormule; // only keep the formule if it contains an option we want
-        });
+      console.log('cart avant suppression', state.cart);
+      console.log("Removing one product:", action.payload.productId);
+      const productId = action.payload.productId;
+      state.cart = state.cart.filter((item) => !item.productId || item.productId !== productId);
+      console.log('cart apres suppression', state.cart);
     },
     
-    
+  removeMultipleFromCart: (state, action) => {
+      const formuleId = action.payload.formuleId;
+      console.log("Removing formule:", formuleId);
+      state.cart = state.cart.filter((item) => !(item.type === 'formule' && item.id === formuleId));
+  },  
+  
     updateCart(state, action) {
         state.cart = action.payload;
       },

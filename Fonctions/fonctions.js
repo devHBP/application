@@ -17,16 +17,36 @@ export const decrementhandler = (id, dispatch) => {
   //     dispatch(removeFromCart({ productId: productId}));
   //   };
 
-    export const removehandler = (ids, dispatch) => {
-      console.log('ids', ids)
-      if (Array.isArray(ids)) {
-          ids.forEach(id => {
-            dispatch(removeMultipleFromCart({ productIds: ids }));
+//   export const removehandler = (ids, dispatch, type) => {
+//     console.log('ids', ids);
+//     if (type === "formule") {
+//         // Supprimez la formule complète en utilisant son ID unique.
+//         dispatch(removeMultipleFromCart({ formuleId: ids }));
+//     } else  {
+//         // Supprimez le produit individuel en utilisant son ID.
+//         dispatch(removeFromCart({ productId: ids }));
+//     }
+// };
+
+
+export const removehandler = (id, dispatch, type = 'product') => { 
+  console.log('id', id);
+  if (type === 'formule') {
+    console.log('cest une formule')
+      dispatch(removeMultipleFromCart({ formuleId: id })); 
+  } else {
+    console.log('cest un produit seul')
+      if (Array.isArray(id)) { 
+        console.log('on est ici')
+          id.forEach(productId => { 
+              dispatch(removeFromCart({ productId }));
           });
       } else {
-          dispatch(removeFromCart({ productId: ids }));
+        console.log('on est la')
+          dispatch(removeFromCart({ productId: id })); 
       }
-  };
+  }
+};
 
   
   //fonctionne pour les produits individuals - pas pour les formule

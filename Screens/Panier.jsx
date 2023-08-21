@@ -564,7 +564,7 @@ useEffect(() => {
                         prix_unitaire={item.prix}
                         incrementhandler={() => incrementhandler(item.productIds, item.offre)}
                         decrementhandler={() => decrementhandler(item.productIds, dispatch)}
-                        removehandler={() => removehandler(item.productIds, dispatch) }
+                        removehandler={() => removehandler(item.id, dispatch, 'formule')}
                         image={item.formuleImage}
                         qty={item.qty}
                         title={item.libelle}
