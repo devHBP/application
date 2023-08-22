@@ -59,7 +59,7 @@ const Login = ({navigation}) => {
 
 
             //  console.log('2- selected store id', selectedStoreId)
-
+            // navigation.navigate('loaderhome')
             axios.get(`${API_BASE_URL}/getOneStore/${selectedStoreId}`)
             //axios.get(`http://10.0.2.2:8080/getOneStore/${selectedStoreId}`)
                 .then(storeResponse => {
@@ -70,6 +70,15 @@ const Login = ({navigation}) => {
                      dispatch(loginUser(user))
         
                     navigation.navigate('home')
+                  //   setTimeout(() => {
+                  //     navigation.navigate('home');
+                  //     Toast.show({
+                  //         type: 'success',
+                  //         text1: `Connexion ok`,
+                  //         text2: `Bienvenue ${user.firstname} ${user.lastname}`
+                  //     });
+                  // }, 5000);  
+              
 
                     //setEmail('');
                     //setPassword('');
@@ -143,7 +152,7 @@ const Login = ({navigation}) => {
             </Button>
 
             <TouchableOpacity onPress={() => navigation.navigate('signup')}>
-                <Text style={style.signup} >Vous n'avez pas encore de compte ?</Text>
+                <Text style={style.signup}>Vous n'avez pas encore de compte ?</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate('pwd')}>

@@ -19,7 +19,7 @@ import Catalogue from '../components/Catalogue';
 import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import ArrowDown from '../SVG/ArrowDown';
-
+import LoaderHome from './LoaderHome';
 
 
 
@@ -44,6 +44,8 @@ const Home =  ({navigation}) => {
   const [filteredProducts, setFilteredProducts] = useState(products); 
   const [ visible, setVisible] = useState(false)
   const [positionsY, setPositionsY] = useState({});
+  const [isLoading, setIsLoading] = useState(true); 
+
   
   const user = useSelector((state) => state.auth.user);
   const cart = useSelector((state) => state.cart.cart);
@@ -86,6 +88,7 @@ const Home =  ({navigation}) => {
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true)
       try {
       const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
       //const response = await axios.get('http://10.0.2.2:8080/getAllProducts');
@@ -98,9 +101,15 @@ const Home =  ({navigation}) => {
       setProducts(updatedProducts);
       setCategories([...new Set(updatedProducts.map((product) => product.categorie)), 'Tous']);
       //setCategories(updatedProducts.map((product) => product.categorie));
+
+      setTimeout(() => {
+        setIsLoading(false); // Fin du chargement après la pause
+      }, 5000);
+
       } catch (error) {
         console.error('Une erreur s\'est produite, error products :', error);
-      }
+        setIsLoading(false)
+      } 
     };
     fetchData(); // Appel de la fonction fetchData lors du montage du composant
   }, []);
@@ -187,7 +196,14 @@ const ongletButtonHandler = (onglet) => {
 };
   return (
     <>
-    <ScrollView vertical={true} style={{ flex:1, paddingVertical:20}} ref={scrollViewRef}>
+    <View style={{flex:1}}>
+    {isLoading ? (
+        // Affichez votre Loader ici
+        <LoaderHome />
+      ) : (
+      <View View style={{flex:1}}>
+
+        <ScrollView vertical={true} style={{ flex:1, paddingVertical:20}} ref={scrollViewRef}>
    
     <View >
 
@@ -557,7 +573,13 @@ const ongletButtonHandler = (onglet) => {
           </View>
           
      </ScrollView>
-  <FooterProfile />
+     <FooterProfile />
+     </View>
+      )}
+    
+    </View>
+    
+  
   
  </>
   )

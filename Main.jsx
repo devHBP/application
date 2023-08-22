@@ -41,6 +41,7 @@ import PagePainBagnat from './Screens/PagesSalees/PagePainBagnat'
 import PageQuiche from './Screens/PagesSalees/PageQuiche'
 import PageCroque from './Screens/PagesSalees/PageCroque'
 import Pwd from './Screens/Pwd'
+import LoaderHome from './Screens/LoaderHome'
 
 
 const Main = () => {
@@ -67,6 +68,7 @@ const Main = () => {
                 <Stack.Screen name='signup' component={Signup}/>
                 <Stack.Screen name="stores" component={Stores}/>
                 <Stack.Screen name='home' component={Home}/>
+                <Stack.Screen name='loaderhome' component={LoaderHome}/>
                     {/*  Formules  */}
                     <Stack.Screen name='formulesandwich' component={FormuleSandwich}/>
                     <Stack.Screen name='formulepoke' component={FormulePoke}/>
