@@ -254,7 +254,7 @@ const Signup = ({navigation}) => {
               setOpen(false);
           }}
       />
-12
+
       </View>
 
       {/* numero client SUN */}

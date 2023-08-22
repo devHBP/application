@@ -70,24 +70,8 @@ const Login = ({navigation}) => {
                      dispatch(loginUser(user))
         
                     navigation.navigate('home')
-                  //   setTimeout(() => {
-                  //     navigation.navigate('home');
-                  //     Toast.show({
-                  //         type: 'success',
-                  //         text1: `Connexion ok`,
-                  //         text2: `Bienvenue ${user.firstname} ${user.lastname}`
-                  //     });
-                  // }, 5000);  
-              
-
-                    //setEmail('');
-                    //setPassword('');
-                    return Toast.show({
-                        type: 'success',
-                        text1: `Connexion ok`,
-                        text2: `Bienvenue ${user.firstname} ${user.lastname}`
-                      });
-                })
+                 
+                 })
                 .catch(error => {
                      console.error('Erreur lors de la récupération des informations du magasin:', error);
                 });

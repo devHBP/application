@@ -5,6 +5,8 @@ import { defaultStyle} from '../styles/styles'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSelectedStore } from '../reducers/authSlice';
+import {Toast} from 'react-native-toast-message/lib/src/Toast';
+
 
 let API_BASE_URL = 'http://127.0.0.1:8080';
 
@@ -56,6 +58,11 @@ const Stores = ({navigation}) => {
         .then((response) => {
           console.log('User updated:', response.data);
           navigation.navigate('login');
+          return Toast.show({
+            type: 'success',
+            text1: `Inscription validée`,
+            text2: `Vous pouvez vous connectez maintenant ` 
+          });
         })
         .catch((error) => {
           console.error('Erreur lors de la mise à jour de l\'utilisateur:', error);

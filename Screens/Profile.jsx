@@ -282,7 +282,6 @@ const Profile =  ({navigation}) => {
           }
         </TouchableOpacity>
         <Text style={{ marginRight: 10 }}>M.</Text>
-
         <TouchableOpacity 
           style={style.radioButtonOut}
           onPress={() => { setGenre('nbinaire'); }}>

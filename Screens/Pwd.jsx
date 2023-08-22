@@ -56,7 +56,8 @@ const Pwd = ({ navigation }) => {
             </View>
             
             <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:colors.color1, borderRadius:25}}>
-                    <ArrowLeft fill={colors.color6} />
+                    <ArrowLeft fill={colors.color6} style={{ width: '100%', height: '100%' }}/>
+                    
                 </TouchableOpacity>
         </View>
 

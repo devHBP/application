@@ -747,7 +747,7 @@ useEffect(() => {
                           })}
                       </ScrollView>
   
-                      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
+                      {/* <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                           <TextInput
                        value={promoCode}
                       onChangeText={(value) => setPromoCode(value)}
@@ -756,7 +756,7 @@ useEffect(() => {
                     />
                           <Icon name="done" size={20} color="#900" onPress={handleApplyDiscount} />
                           <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
-                      </View>
+                      </View> */}
   
                       <View style={{ ...style.menu }}>
                           <View style={{ flexDirection: 'row', paddingHorizontal: 30, justifyContent: 'center', gap: 10 }}>

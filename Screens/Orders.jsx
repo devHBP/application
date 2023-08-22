@@ -140,13 +140,13 @@ const Orders = ({navigation}) => {
                                     <TextTicker
                                         style={{ color:colors.color1, fontWeight:"bold"}}
                                         duration={10000} // durée en ms pour un aller-retour (peut être modifié selon vos besoins)
-                                        shouldAnimateTreshold={40}
+                                      
                                         repeatSpacer={50} // espace entre chaque répétition
                                         marqueeDelay={1000} // délai avant que l'animation ne commence
-                                        
                                     >
                                         {item.store && item.store.nom_magasin}
                                     </TextTicker>
+                                    {/* <Text>{item.store && item.store.nom_magasin}</Text> */}
                                     <Text style={{color:colors.color5, fontSize:10, width:100}}>{formatDate(item.createdAt)}</Text>
                                     </View>
                                      
@@ -272,7 +272,7 @@ const Orders = ({navigation}) => {
                 hasOrder ? (
                     <View style={{ flex:1,  alignItems: 'center', backgroundColor:colors.color3}}>
                     <View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap:90, marginHorizontal:30, marginVertical:20, justifyContent:'space-between' }}>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap:90, marginHorizontal:30, marginTop:40, justifyContent:'space-between' }}>
                                  <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1, color:colors.color1}}>Vos commandes</Text>
                             
                                 <TouchableOpacity  onPress={handleBack} activeOpacity={0.8} style={{backgroundColor:'white', borderRadius:25,}}>                           
