@@ -7,6 +7,8 @@ import { Button } from 'react-native-paper'
 import axios from 'axios'
 import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
+import TextTicker from 'react-native-text-ticker'
+
 
 //call Api
 import { getStoreById } from '../CallApi/api';
@@ -125,7 +127,7 @@ const Orders = ({navigation}) => {
                     }}
                     activeOpacity={1}
                 >
-                    <View style={{flexDirection:'row',justifyContent:'center', width:"100%", alignItems: 'center', gap:20}}>
+                    <View style={{flexDirection:'row',justifyContent:'center', width:"100%", alignItems: 'center', gap:20, height:70}}>
                         <View style={{flexDirection:'column', justifyContent:'flex-start'}}>
                             <Text style={{color:colors.color1, fontWeight:"bold"}}>{item.status.charAt(0).toUpperCase() + item.status.substring(1)}</Text>
                             <Text style={{color:colors.color5, fontSize:10}}>OrderID: {item.orderId}</Text>
@@ -134,8 +136,22 @@ const Orders = ({navigation}) => {
                                 borderRightWidth: 1,
                                 borderColor: colors.color4,
                                 paddingHorizontal:10}}>
-                            <Text style={{color:colors.color1, fontWeight:"bold"}}>{item.store && item.store.nom_magasin}</Text>
-                            <Text style={{color:colors.color5, fontSize:10}}>{formatDate(item.createdAt)}</Text>
+                                    <View style={{width:100}}>
+                                    <TextTicker
+                                        style={{ color:colors.color1, fontWeight:"bold"}}
+                                        duration={10000} // durée en ms pour un aller-retour (peut être modifié selon vos besoins)
+                                        shouldAnimateTreshold={40}
+                                        repeatSpacer={50} // espace entre chaque répétition
+                                        marqueeDelay={1000} // délai avant que l'animation ne commence
+                                        
+                                    >
+                                        {item.store && item.store.nom_magasin}
+                                    </TextTicker>
+                                    <Text style={{color:colors.color5, fontSize:10, width:100}}>{formatDate(item.createdAt)}</Text>
+                                    </View>
+                                     
+                            {/* <Text style={{color:colors.color1, fontWeight:"bold"}}>{item.store && item.store.nom_magasin}</Text> */}
+                            
                         </View>
                         <View style={{flexDirection:'column', justifyContent:'flex-start'}}>
                             <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
@@ -163,7 +179,7 @@ const Orders = ({navigation}) => {
                             <Text style={{fontSize:14, fontWeight: "600"}}>Votre total:</Text>
                             <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                         </View>
-                       <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
+                       {/* <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
                             <TouchableOpacity onPress={handleReorder}   style={[
                                     style.btnReorder, 
                                     { flexDirection:'row', gap:10, alignItems:'center' },
@@ -175,7 +191,7 @@ const Orders = ({navigation}) => {
                                 />
                                 <Text style={{color:'white', fontSize:12}}>Renouveler</Text>
                             </TouchableOpacity>
-                       </View>
+                       </View> */}
                     </View>
                 )}
             </View>
@@ -184,11 +200,11 @@ const Orders = ({navigation}) => {
     //derniere commande
     const renderLastOrder = (item, index) => {
         return (
-            <View style={{ borderBottomWidth: 1, borderBottomColor: '#ccc' }}>
+            <View >
                 <Text style={{paddingLeft:30,  marginVertical:20, fontFamily:fonts.font3, fontWeight: "600", color:colors.color1, fontSize:16}}>Votre derniere commande</Text>
-                <View style={{backgroundColor:colors.color4, height:'auto', paddingHorizontal:30}}>
+                <View style={{backgroundColor:colors.color6, padding:20, marginHorizontal:20, borderRadius:10}}>
                     <View
-                        style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, alignItems:'center', gap:10 }}
+                        style={{ flexDirection: 'row', justifyContent: 'space-between',  alignItems:'center', }}
                     >
                         <View>
                             <Text style={{color:colors.color5, fontSize:10}}>OrderID: {item.orderId}</Text>
@@ -200,10 +216,11 @@ const Orders = ({navigation}) => {
                         
                     </View>
 
-                    <View style={{ flex:1, marginVertical:10,}}>
+                    <View >
+                        <Text style={{marginVertical:20, color:colors.color2, fontFamily:fonts.font2, fontWeight:"700"}}>Details de la commande</Text>
                     {item.products && item.products.map(product => {
                         return (
-                            <View key={product.productId} style={{marginVertical:10}}>
+                            <View key={product.productId}>
                                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
                                     <Text>{product.quantity}x {product.libelle}</Text>
                                     <Text>{product.prix_unitaire || product.prix_formule}€</Text>
@@ -211,16 +228,16 @@ const Orders = ({navigation}) => {
                             </View>
                         );
                     })}
-                    <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+                    <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>
                         <Text style={{fontSize:14, fontWeight: "600"}}>Votre total:</Text>
                         <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                     </View>
                    
-                    <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%", marginVertical:20}}>
+                    {/* <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%", marginVertical:20}}> */}
                         
-                        <Text>{item.status.charAt(0).toUpperCase() + item.status.substring(1)}</Text>
+                        {/* <Text>{item.status.charAt(0).toUpperCase() + item.status.substring(1)}</Text> */}
                         
-                        <View >
+                        {/* <View >
                             <TouchableOpacity onPress={handleReorder}   style={[
                                     style.btnReorder, 
                                     { flexDirection:'row', gap:10, alignItems:'center' },
@@ -233,8 +250,8 @@ const Orders = ({navigation}) => {
                                 <Text style={{color:'white', fontSize:12}}>Renouveler </Text>
                             </TouchableOpacity>
                             
-                        </View>
-                    </View>
+                        </View> */}
+                    {/* </View> */}
                     
                 </View>
                 </View>
@@ -245,7 +262,7 @@ const Orders = ({navigation}) => {
     const ListHeader = ({ lastOrder }) => (
         <View>
           {lastOrder && renderLastOrder(lastOrder)}
-          <Text style={{ paddingHorizontal: 30, marginVertical: 10, fontFamily: fonts.font3, fontWeight: "600", color: colors.color1, fontSize: 16 }}>Vos commandes antérieures</Text>
+          <Text style={{ paddingHorizontal: 30, marginTop: 30,marginBottom:10,  fontFamily: fonts.font3, fontWeight: "600", color: colors.color1, fontSize: 16 }}>Vos commandes antérieures</Text>
         </View>
       )
     
@@ -255,14 +272,14 @@ const Orders = ({navigation}) => {
                 hasOrder ? (
                     <View style={{ flex:1,  alignItems: 'center', backgroundColor:colors.color3}}>
                     <View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap:90, marginTop:30, justifyContent:'center' }}>
-                                 <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1}}>Vos commandes</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap:90, marginHorizontal:30, marginVertical:20, justifyContent:'space-between' }}>
+                                 <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1, color:colors.color1}}>Vos commandes</Text>
                             
                                 <TouchableOpacity  onPress={handleBack} activeOpacity={0.8} style={{backgroundColor:'white', borderRadius:25,}}>                           
                                     <ArrowLeft fill={colors.color1}/>
                                 </TouchableOpacity>     
                             </View>
-                            <View style={{flex:1, width:"100%"}}>
+                            <View >
                                         <FlatList
                                             data={previousOrders}
                                             renderItem={({ item, index }) => renderOrder(item, index)}
