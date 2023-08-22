@@ -254,8 +254,7 @@ const Signup = ({navigation}) => {
               setOpen(false);
           }}
       />
-      {/* {error.date ? <Text style={{color: 'red', textAlign:'center'}}>{error.date}</Text> : null} */}
-
+12
       </View>
 
       {/* numero client SUN */}
