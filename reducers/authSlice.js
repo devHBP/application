@@ -10,6 +10,8 @@ const initialState = {
     genre:'',
     telephone:'',
     cp:'',
+    date_naissance:'',
+    idSUN:'',
     allergies:[],
     preferences_alimentaires:[]
     // Autres champs utilisateur

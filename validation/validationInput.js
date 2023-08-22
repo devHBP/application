@@ -39,3 +39,42 @@ export const validateEmail = (value) => {
         return ""
     }
 };
+
+export const validatePostalCode = (value) => {
+  // regex qui correspond à une structure de code postal de 5 chiffres
+  const postalCodeRegex = /^[0-9]{5}$/;
+  if (!value.match(postalCodeRegex)) {
+    return "Code postal non valide";
+  }
+  return "";
+};
+
+export const validateGenre = (value) => {
+  const allowedValues = ['femme', 'homme', 'nbinaire'];
+  if (!value) {
+      return "Le genre est obligatoire";
+  } else if (!allowedValues.includes(value)) {
+      return "Valeur de genre non valide";
+  } else {
+      return "";
+  }
+}
+
+export const validateDateOfBirth = (date) => {
+  if (!date) {
+      return "La date de naissance est obligatoire";
+  } else if (date > new Date()) {
+      return "La date de naissance ne peut pas être dans le futur";
+  } else {
+      return "";
+  }
+}
+
+export const validateIdSun = (value) => {
+  // regex qui correspond à une structure d' idSun de 5 chiffres
+  const idSunRegex = /^[0-9]{5}$/;
+  if (!value.match(idSunRegex)) {
+    return "IdSun non valide";
+  }
+  return "";
+};
