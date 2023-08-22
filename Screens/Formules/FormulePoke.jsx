@@ -16,6 +16,7 @@ import { checkStockForSingleProduct } from '../../CallApi/api.js';
 //fonctions
 import { checkProductAvailability } from '../../Fonctions/fonctions';
 import ArrowLeft from '../../SVG/ArrowLeft';
+import ProductCard from '../../components/ProductCard';
 
 const FormulePoke = ({navigation}) => {
 
@@ -252,14 +253,31 @@ const FormulePoke = ({navigation}) => {
         <View>
             <Text style={style.choixTitle}>Votre choix de Poke Bowl</Text>
             <ScrollView horizontal={true} style={style.scrollProduct}>
-                {products.map((product) => (
+                {products.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
-                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}>
-                       <Image
+                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}} key={index}>
+                       {/* <Image
                           source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
                         />
-                      <Text>{product.libelle}</Text>
+                      <Text>{product.libelle}</Text> */}
+
+                      <View style={{width:180, marginLeft:10}} key={index}>
+                      <ProductCard
+                        libelle={product.libelle}
+                        key={product.productId}
+                        id={product.productId}
+                        index={index}
+                        image={product.image}
+                        prix={product.prix_unitaire}
+                        prixSUN={product.prix_remise_collaborateur}
+                        qty={product.qty}
+                        stock={product.stock}
+                        offre={product.offre}
+                        showButtons={false} 
+
+                      />
+                      </View>
                         {/* <CheckBox
                           disabled={false}
                           value={selectedSandwich?.productId === product.productId}
@@ -293,15 +311,30 @@ const FormulePoke = ({navigation}) => {
            
           </View>
             <ScrollView horizontal={true} style={style.scrollProduct}>
-                {desserts.map((product) => (
+                {desserts.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedSandwich || !dessertSwitch} >
-                       <Image
+                       {/* <Image
                           source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
                         />
-                      <Text>{product.libelle}</Text>
+                      <Text>{product.libelle}</Text> */}
+                      <View style={{width:180, marginLeft:10}} key={index}>
+                      <ProductCard
+                        libelle={product.libelle}
+                        key={product.productId}
+                        id={product.productId}
+                        index={index}
+                        image={product.image}
+                        prix={product.prix_unitaire}
+                        prixSUN={product.prix_remise_collaborateur}
+                        qty={product.qty}
+                        stock={product.stock}
+                        offre={product.offre}
+                        showButtons={false} 
+                      />
+                      </View>
                         {/* <CheckBox
                           value={selectedDessert?.productId === product.productId}
                           onValueChange={() => handleDessert(product)}
@@ -328,15 +361,30 @@ const FormulePoke = ({navigation}) => {
               <Text style={{fontSize:12}}>(pour 2€ en +)</Text>
           </View>
             <ScrollView horizontal={true} style={style.scrollProduct}>
-                {boissons.map((product) => (
+                {boissons.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedSandwich || !dessertSwitch} >
-                       <Image
+                       {/* <Image
                           source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
                         />
-                      <Text>{product.libelle}</Text>
+                      <Text>{product.libelle}</Text> */}
+                      <View style={{width:180, marginLeft:10}} key={index}>
+                      <ProductCard
+                        libelle={product.libelle}
+                        key={product.productId}
+                        id={product.productId}
+                        index={index}
+                        image={product.image}
+                        prix={product.prix_unitaire}
+                        prixSUN={product.prix_remise_collaborateur}
+                        qty={product.qty}
+                        stock={product.stock}
+                        offre={product.offre}
+                        showButtons={false} 
+                      />
+                      </View>
                       <TouchableOpacity
                         style={[
                           style.checkButton,

@@ -20,11 +20,12 @@ import {decrementhandler } from '../Fonctions/fonctions'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
-const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) => {
+const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, showButtons = true   }) => {
 
   // Déclaration de l'état du stock
   const [currentStock, setCurrentStock] = useState(stock);
   const [modalVisible, setModalVisible] = useState(false);
+
 
   // Effet de bord pour mettre à jour le stock
   useEffect(() => {
@@ -34,6 +35,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN  }) =
     };
 
     fetchStock();
+
     
   }, [id,]);
 
@@ -152,8 +154,8 @@ const incrementhandler = async () => {
           <View style={style.qtyContainer}>
               <TouchableOpacity
                   onPress={() => decrementhandler(id, dispatch)}
-                  style={style.decrement}
-              >
+                  style={showButtons ? style.decrement : {...style.decrement, opacity: 0, height: 0, width: 0}}
+                  >
                   {/* <Icon name="remove" size={16} color="#000" /> */}
                   <View>
                     <Svg width={7} height={4} viewBox="0 0 7 4">
@@ -167,7 +169,8 @@ const incrementhandler = async () => {
              </TouchableOpacity>
             {/* <Text style={style.qtyText}>{cart[index].qty}</Text> */}
              <TouchableOpacity
-                  style={style.qtyText}
+                  style={showButtons ? style.qtyText : {...style.qtyText, opacity: 0, height: 0, width: 0}}
+
               >
                 <Text>{productQuantity}</Text>
                  {/* <Text >{product ? product.qty : 0}</Text> */}
@@ -177,7 +180,7 @@ const incrementhandler = async () => {
                   // onPress={() => incrementhandler(id, dispatch, cart, currentStock, offre)}
 
                   onPress={incrementhandler}
-                  style={style.increment}
+                  style={showButtons ? style.increment : {...style.increment, opacity: 0, height: 0, width: 0}}
               >
                   {/* <Icon name="add" size={16}  color="white" /> */}
                   {/* <Image
@@ -208,7 +211,7 @@ const incrementhandler = async () => {
                     height:40,
                     backgroundColor:'white',
                     paddingVertical:5,
-                    width:"80%"
+                    width:"60%"
                     }}
                 >
                     {/* <Text
@@ -253,6 +256,8 @@ const incrementhandler = async () => {
                       </Text> */}
                       
                 </View>
+                <View style={{width: 1, backgroundColor: colors.color3, marginVertical: 5}} /> 
+
                 <View style={{
                     flexDirection: "column",
                     justifyContent: "center",

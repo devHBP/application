@@ -11,6 +11,7 @@ import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
 import FooterProfile from '../../components/FooterProfile';
 import ArrowLeft from '../../SVG/ArrowLeft';
+import ProductCard from '../../components/ProductCard';
 
 const FormulePainBagnat = ({navigation}) => {
 
@@ -62,7 +63,7 @@ const FormulePainBagnat = ({navigation}) => {
         //les desserts - par id
         const getOneProduct = async () => {
             try {
-                const productIds = [];
+                const productIds = [88,89];
                 const productPromises = productIds.map((productId) => fetchOneProduct(productId));
                 const desserts = await Promise.all(productPromises);
                 //console.log(desserts)
@@ -94,7 +95,7 @@ const FormulePainBagnat = ({navigation}) => {
        //les boissons - par id
        const fetchBoissons = async () => {
         try {
-            const productIds = []; 
+            const productIds = [90]; 
             const productPromises = productIds.map((productId) => fetchOneProduct(productId));
             const boissons = await Promise.all(productPromises);
             //console.log(desserts)
@@ -132,7 +133,7 @@ const FormulePainBagnat = ({navigation}) => {
       Toast.show({
           type: 'error',
           text1: 'Attention',
-          text2: 'Veuillez sélectionner un sandwich',
+          text2: 'Veuillez sélectionner un pain bagnat',
       });
       return;
     }
@@ -149,7 +150,7 @@ const FormulePainBagnat = ({navigation}) => {
       Toast.show({
           type: 'error',
           text1: 'Attention',
-          text2: 'Veuillez sélectionner un sandwich',
+          text2: 'Veuillez sélectionner un pain bagnat',
       });
       return;
     }
@@ -228,19 +229,29 @@ const FormulePainBagnat = ({navigation}) => {
         <View>
             <Text style={style.choixTitle}>Votre choix de pain bagnat</Text>
             <ScrollView horizontal={true} style={style.scrollProduct}>
-                {products.map((product) => (
+                {products.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}>
-                       <Image
+                       {/* <Image
                           source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
                         />
-                      <Text>{product.libelle}</Text>
-                        {/* <CheckBox
-                          disabled={false}
-                          value={selectedSandwich?.productId === product.productId}
-                          onValueChange={() => handleSandwich(product)}
-                        /> */}
+                      <Text>{product.libelle}</Text> */}
+                      <View style={{width:180, marginLeft:10}} key={index}>
+                      <ProductCard
+                        libelle={product.libelle}
+                        key={product.productId}
+                        id={product.productId}
+                        index={index}
+                        image={product.image}
+                        prix={product.prix_unitaire}
+                        prixSUN={product.prix_remise_collaborateur}
+                        qty={product.qty}
+                        stock={product.stock}
+                        offre={product.offre}
+                        showButtons={false} 
+                      />
+                      </View>
                       <TouchableOpacity
                         style={[
                           style.checkButton,
@@ -260,28 +271,33 @@ const FormulePainBagnat = ({navigation}) => {
           <View style={{...style.choixTitle,flexDirection:'row', gap:10, justifyContent:'center', alignItems:'center'}}>
               <Text style={style.choixTitle}>Les desserts  </Text>
               <Text style={{fontSize:12}}>(pour 2€ en +)</Text>
-              {/* <Switch
-                  value={dessertSwitch}
-                  onValueChange={handleSwitchToggle}
-                  thumbColor={dessertSwitch ? colors.color3 : '#f4f3f4'}
-                  trackColor={{ false: 'red', true: colors.color9 }}
-                /> */}
            
           </View>
             <ScrollView horizontal={true} style={style.scrollProduct}>
-                {desserts.map((product) => (
+                {desserts.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedSandwich || !dessertSwitch} >
-                       <Image
+                       {/* <Image
                           source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
                         />
-                      <Text>{product.libelle}</Text>
-                        {/* <CheckBox
-                          value={selectedDessert?.productId === product.productId}
-                          onValueChange={() => handleDessert(product)}
-                        /> */}
+                      <Text>{product.libelle}</Text> */}
+                       <View style={{width:180, marginLeft:10}} key={index}>
+                      <ProductCard
+                        libelle={product.libelle}
+                        key={product.productId}
+                        id={product.productId}
+                        index={index}
+                        image={product.image}
+                        prix={product.prix_unitaire}
+                        prixSUN={product.prix_remise_collaborateur}
+                        qty={product.qty}
+                        stock={product.stock}
+                        offre={product.offre}
+                        showButtons={false} 
+                      />
+                      </View>
                          <TouchableOpacity
                         style={[
                           style.checkButton,
@@ -304,15 +320,30 @@ const FormulePainBagnat = ({navigation}) => {
               <Text style={{fontSize:12}}>(pour 2€ en +)</Text>
           </View>
             <ScrollView horizontal={true} style={style.scrollProduct}>
-                {boissons.map((product) => (
+                {boissons.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedSandwich || !dessertSwitch} >
-                       <Image
+                       {/* <Image
                           source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
                         />
-                      <Text>{product.libelle}</Text>
+                      <Text>{product.libelle}</Text> */}
+                      <View style={{width:180, marginLeft:10}} key={index}>
+                      <ProductCard
+                        libelle={product.libelle}
+                        key={product.productId}
+                        id={product.productId}
+                        index={index}
+                        image={product.image}
+                        prix={product.prix_unitaire}
+                        prixSUN={product.prix_remise_collaborateur}
+                        qty={product.qty}
+                        stock={product.stock}
+                        offre={product.offre}
+                        showButtons={false} 
+                      />
+                      </View>
                       <TouchableOpacity
                         style={[
                           style.checkButton,

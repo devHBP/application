@@ -15,7 +15,7 @@ const style = StyleSheet.create({
         backgroundColor:colors.color3,
     },
     scrollProduct:{
-        height:200,
+        height:280,
         paddingHorizontal:20
     },
     sandwichImage: {
@@ -37,7 +37,7 @@ const style = StyleSheet.create({
         flexDirection:'row',
         alignItems:'center',
         justifyContent:'space-between',
-        marginBottom:75,
+        marginBottom:65,
         width:"100%"
     },
     disabledCheckBox: {
