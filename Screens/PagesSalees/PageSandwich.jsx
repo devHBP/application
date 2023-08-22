@@ -2,6 +2,7 @@ import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'rea
 import React, { useEffect, useState} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { style } from '../../styles/formules'; 
+import { styles } from '../../styles/produits'
 import axios from 'axios'
 import { fonts, colors} from '../../styles/styles'
 import { Button} from 'react-native-paper'
@@ -11,6 +12,7 @@ import { addToCart, decrementOrRemoveFromCart } from '../../reducers/cartSlice';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Svg, { Path } from 'react-native-svg';
 import ArrowLeft from '../../SVG/ArrowLeft';
+import ProductCard from '../../components/ProductCard';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 
@@ -36,17 +38,30 @@ const PageSandwich = ({navigation}) => {
     const dispatch = useDispatch();
 
     const cart = useSelector(state => state.cart.cart);
-    console.log(cart)
     
     const getProductQtyInCart = (productId) => {
       const productInCart = cart.find(item => item.productId === productId);
       return productInCart ? productInCart.qty : 0;
     };
 
+    // useEffect(() => {
+    //   const totalPrice = sandwichs.reduce((acc, product) => acc + (product.qty * product.prix_unitaire), 0);
+    //   setTotalPrice(totalPrice);
+    // }, [sandwichs]);
+
     useEffect(() => {
-      const totalPrice = sandwichs.reduce((acc, product) => acc + (product.qty * product.prix_unitaire), 0);
+      const totalPrice = sandwichs.reduce((acc, product) => {
+        const qtyInCart = getProductQtyInCart(product.productId); 
+        return acc + (qtyInCart * product.prix_unitaire);
+      }, 0);
       setTotalPrice(totalPrice);
-    }, [sandwichs]);
+    }, [sandwichs, cart]);
+
+    useEffect(() => {
+      const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
+      setProductCount(totalCount);
+    }, [cart]);
+    
 
     useEffect(() => {
       const fetchStock = async () => {
@@ -100,93 +115,93 @@ const PageSandwich = ({navigation}) => {
       }, []);
     
     //increment
-    const incrementHandler = async (productId) => {
-      const product = sandwichs.find(p => p.productId === productId);
-      setProductCount(productCount + 1);
-      if (!product) {
-        console.error(`Product with ID ${productId} not found.`);
-        return;
-      }
+    // const incrementHandler = async (productId) => {
+    //   const product = sandwichs.find(p => p.productId === productId);
+    //   setProductCount(productCount + 1);
+    //   if (!product) {
+    //     console.error(`Product with ID ${productId} not found.`);
+    //     return;
+    //   }
 
-      const { libelle, image, prix_unitaire, offre} = product; // Déstructurez le produit
-      //console.log(product.productId);
+    //   const { libelle, image, prix_unitaire, offre} = product; // Déstructurez le produit
+    //   //console.log(product.productId);
 
-      const productStock = stock.find(item => item.productId === product.productId);
+    //   const productStock = stock.find(item => item.productId === product.productId);
       
-      // Obtenir la quantité en stock pour ce produit
-      const productQuantity = productStock ? productStock.quantite : 0;
-      console.log(`The quantity in stock for product ${productId} is ${productQuantity}`);
+    //   // Obtenir la quantité en stock pour ce produit
+    //   const productQuantity = productStock ? productStock.quantite : 0;
+    //   console.log(`The quantity in stock for product ${productId} is ${productQuantity}`);
 
-      //si plus de stock
-      if(productQuantity === 0){
-        return Toast.show({
-          type: 'error',
-          text1: `Victime de son succès`,
-          text2: 'Plus de stock disponible' 
-        });
-      }
-      try{
-        const stockAvailable = await checkStockForSingleProduct(product.productId);
-        console.log(stockAvailable)
+    //   //si plus de stock
+    //   if(productQuantity === 0){
+    //     return Toast.show({
+    //       type: 'error',
+    //       text1: `Victime de son succès`,
+    //       text2: 'Plus de stock disponible' 
+    //     });
+    //   }
+    //   try{
+    //     const stockAvailable = await checkStockForSingleProduct(product.productId);
+    //     console.log(stockAvailable)
 
-        const remainingStock = stockAvailable[0].quantite - product.qty;
-        console.log(remainingStock)
+    //     const remainingStock = stockAvailable[0].quantite - product.qty;
+    //     console.log(remainingStock)
 
-        if (stockAvailable.length > 0 && remainingStock > 0) {
-          console.log(`Ajout au panier: ${product.libelle}, prix: ${product.prix_unitaire}, quantité: 1`);
-          dispatch(addToCart({ productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix_unitaire, qty: 1 , offre: product.offre}));
+    //     if (stockAvailable.length > 0 && remainingStock > 0) {
+    //       console.log(`Ajout au panier: ${product.libelle}, prix: ${product.prix_unitaire}, quantité: 1`);
+    //       dispatch(addToCart({ productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix_unitaire, qty: 1 , offre: product.offre}));
   
-          setSandwichs((prevSandwichs) =>
-          prevSandwichs.map((product) =>
-            product.productId === productId ? { ...product, qty: product.qty + 1 } : product
-          )
-        );
-          if (product.offre && product.offre.startsWith('offre31')) {
-            const updatedCart = [...cart, { productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix, qty: 1 , offre: product.offre}];
-            const sameOfferProducts = updatedCart.filter((item) => item.offre === product.offre);
-            const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
+    //       setSandwichs((prevSandwichs) =>
+    //       prevSandwichs.map((product) =>
+    //         product.productId === productId ? { ...product, qty: product.qty + 1 } : product
+    //       )
+    //     );
+    //       if (product.offre && product.offre.startsWith('offre31')) {
+    //         const updatedCart = [...cart, { productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix, qty: 1 , offre: product.offre}];
+    //         const sameOfferProducts = updatedCart.filter((item) => item.offre === product.offre);
+    //         const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
             
-            if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
-              setModalVisible(true);
+    //         if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
+    //           setModalVisible(true);
 
-            }
-          }
-        } else {
-          return Toast.show({
-            type: 'error',
-            text1: `Victime de son succès`,
-            text2: `Quantité maximale: ${stockAvailable[0].quantite}` 
-          });
-        }
+    //         }
+    //       }
+    //     } else {
+    //       return Toast.show({
+    //         type: 'error',
+    //         text1: `Victime de son succès`,
+    //         text2: `Quantité maximale: ${stockAvailable[0].quantite}` 
+    //       });
+    //     }
         
-      }catch (error) {
-        console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
-      }
-    };
+    //   }catch (error) {
+    //     console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
+    //   }
+    // };
 
-    const decrementhandler = async (productId) => {
-      const product = sandwichs.find(p => p.productId === productId);
-      setProductCount(productCount - 1);
+  //   const decrementhandler = async (productId) => {
+  //     const product = sandwichs.find(p => p.productId === productId);
+  //     setProductCount(productCount - 1);
 
-      if (!product) {
-        console.error(`Product with ID ${productId} not found.`);
-        return;
-      }
+  //     if (!product) {
+  //       console.error(`Product with ID ${productId} not found.`);
+  //       return;
+  //     }
   
-      if (product.qty <= 0) {
-        console.error(`Product with ID ${productId} already has a quantity of 0.`);
-        return;
-      }
+  //     if (product.qty <= 0) {
+  //       console.error(`Product with ID ${productId} already has a quantity of 0.`);
+  //       return;
+  //     }
   
-      dispatch(decrementOrRemoveFromCart({ productId: product.productId}));
+  //     dispatch(decrementOrRemoveFromCart({ productId: product.productId}));
   
-      setSandwichs((prevSandwichs) =>
-        prevSandwichs.map((product) =>
-          product.productId === productId ? { ...product, qty: product.qty - 1 } : product
-        )
-      );
+  //     setSandwichs((prevSandwichs) =>
+  //       prevSandwichs.map((product) =>
+  //         product.productId === productId ? { ...product, qty: product.qty - 1 } : product
+  //       )
+  //     );
      
-  };
+  // };
 
     const openFormuleSandwich = () => {
       navigation.navigate('formulesandwich')
@@ -194,6 +209,15 @@ const PageSandwich = ({navigation}) => {
   const handleCart = () => {
     navigation.navigate('panier')
   }
+
+  //pour capitaliser la premiere lettre
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
+const capitalizeIngredients = (ingredients) => {
+    return ingredients.split(', ').map(capitalizeFirstLetter).join(',  ');
+}
+
 
   return (
     <View style={{marginBottom:150}} >
@@ -212,68 +236,84 @@ const PageSandwich = ({navigation}) => {
         
 
         {/* les options */}
-        <View style={{marginHorizontal:30, marginVertical:20}}>
+        <View style={{marginHorizontal:20, marginVertical:20}}>
             <Text style={styles.titleOptions}>Les options</Text>
             <ScrollView horizontal={true} style={{marginVertical:20}}>
             {sandwichs.map((product, index) => (
                 <TouchableOpacity key={index} onPress={() => setSelectedProduct(product)}>
-                <View style={{marginHorizontal:20, flexDirection:'column', alignItems:'center'}} key={index}>
-                    <Image
+                  
+                    {/* <Image
                     key={index}
                     source={{ uri: `${API_BASE_URL}/${product.image}` }}
                     style={styles.imageOptions}
                     />
-                    <Text style={styles.libelle}>{product.libelle}</Text>
-                    
-                    {/* rajouter increment / decrement */}
-                    <View style={{flexDirection:'row', gap:5}}>
-                    <TouchableOpacity
-                        onPress={() => decrementhandler(product.productId)}
-                        style={styles.container_gray}
-                    >
-                      <Svg width={7} height={4} viewBox="0 0 7 4">
-                        <Path
-                          d="M0.666748 3.8V0.733337H6.80008V3.8H0.666748Z"
-                          fill="#273545"
-                        />
-                      </Svg>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity style={styles.container_gray}>
-                      {/* <Text>{product.qty}</Text> */}
-                      <Text>{getProductQtyInCart(product.productId)}</Text>
-
-                  </TouchableOpacity>          
-
-                    <TouchableOpacity
-                        onPress={() => incrementHandler(product.productId)}
-                        style={{...styles.container_gray, backgroundColor:colors.color2}}
-                    >
-                       <Svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <Path d="M10 4.05197V6.48141H6.63702V9.86669H4.14375V6.48141H0.800049V4.05197H4.14375V0.666687H6.63702V4.05197H10Z" fill="#ECECEC"/>
-                      </Svg>
+                    <Text style={styles.libelle}>{product.libelle}</Text> */}
+                    <View style={{width:180, marginLeft:10}} key={index}>
+                      <ProductCard
+                        libelle={product.libelle}
+                        key={product.productId}
+                        id={product.productId}
+                        index={index}
+                        image={product.image}
+                        prix={product.prix_unitaire}
+                        prixSUN={product.prix_remise_collaborateur}
+                        qty={product.qty}
+                        stock={product.stock}
+                        offre={product.offre}
+                      />
+                    </View>
+                
+                  {/* <View style={{flexDirection:'row', gap:5}}>
+                      <TouchableOpacity
+                          onPress={() => decrementhandler(product.productId)}
+                          style={styles.container_gray}
+                      >
+                        <Svg width={7} height={4} viewBox="0 0 7 4">
+                          <Path
+                            d="M0.666748 3.8V0.733337H6.80008V3.8H0.666748Z"
+                            fill="#273545"
+                          />
+                        </Svg>
                     </TouchableOpacity>
 
-          </View>
-                </View>
+                    <TouchableOpacity style={styles.container_gray}>
+                        <Text>{getProductQtyInCart(product.productId)}</Text>
+                    </TouchableOpacity>          
+
+                      <TouchableOpacity
+                          onPress={() => incrementHandler(product.productId)}
+                          style={{...styles.container_gray, backgroundColor:colors.color2}}
+                      >
+                        <Svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <Path d="M10 4.05197V6.48141H6.63702V9.86669H4.14375V6.48141H0.800049V4.05197H4.14375V0.666687H6.63702V4.05197H10Z" fill="#ECECEC"/>
+                        </Svg>
+                      </TouchableOpacity>
+                    </View>
+                 */}
                 </TouchableOpacity>
             ))}
             </ScrollView >
-           <Text>{selectedProduct && selectedProduct.descriptionProduit}</Text>
+           {/* <Text>{selectedProduct && selectedProduct.descriptionProduit}</Text> */}
+          <Text style={{marginHorizontal:10}}>
+            {selectedProduct ? selectedProduct.descriptionProduit : "Sélectionnez un produit pour avoir sa description"}
+          </Text>
+
         </View>
 
 
         {/* les ingredients */}
         <View style={{marginHorizontal:30}}>
             <Text style={styles.titleOptions}>Ingrédients</Text>
-            {/* nom libelle du sandwich cliqué */}
-            {selectedProduct && selectedProduct.ingredients && (
+            <Text style={styles.libelle}>{selectedProduct ? selectedProduct.libelle : ""}</Text> 
+            {/* {selectedProduct && selectedProduct.ingredients && ( */}
         <View style={styles.ingredients}>
-          <Text style={styles.listeIngredients}>
-            {selectedProduct.ingredients}
-          </Text>
-        </View>
-      )}
+        <Text style={styles.listeIngredients}>
+        {selectedProduct ? capitalizeIngredients(selectedProduct.ingredients) : "Veuillez sélectionner un produit pour voir ses ingrédients."}
+          {/* {selectedProduct ? selectedProduct.ingredients : "Veuillez sélectionner un produit pour voir ses ingrédients."} */}
+        </Text>
+      </View>
+      
+      
             {/* {selectedProduct && <Text>{selectedProduct.description}</Text>} */}
             {
                 selectedProduct && 
@@ -352,119 +392,5 @@ const PageSandwich = ({navigation}) => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-    titleProduct:{
-        color:'white',
-        fontFamily:fonts.font1,
-        fontSize:24,
-        position:'absolute',
-        top:30,
-        left:20
-    },
-    titleOptions:{
-        fontSize:20,
-        fontWeight: "600",
-        fontFamily:fonts.font2
-    },
-    imageOptions:{
-        width: 128, 
-        height: 88, 
-        borderRadius:6
-    },
-    libelle:{
-        fontSize:12,
-        fontFamily: fonts.font2,
-        fontWeight: "400",
-        textAlign:'center',
-        paddingVertical:5
-    },
-    sousTexte:{
-        // fontFamily:fonts.font2,
-        fontSize:14,
-        fontWeight: "400"
-    },
-    ingredients:{
-        backgroundColor:'white',
-        borderRadius:10,
-        padding:10,
-        marginVertical:10
-    },
-    listeIngredients:{
-        fontSize:13,
-        fontFamily:fonts.font2
-    },
-    description:{
-        flexDirection:'row',
-        alignItems:'center',
-        gap:5,
-        backgroundColor:'white',
-        width:"85%",
-        paddingHorizontal:19,
-        paddingVertical:5,
-        height:60,
-        borderRadius:10,
-        marginBottom:10
-    },
-    qtyContainer:{
-      flexDirection:'row',
-      gap:5
-    },
-    decrement:{
-      backgroundColor:colors.color3,
-      flexDirection:'row',
-      alignItems:'center'
-    },
-    qtyText:{
-      backgroundColor:colors.color3,
-      paddingHorizontal: 5
-    },
-    increment:{
-      backgroundColor:colors.color2,
-      flexDirection:'row',
-      alignItems:'center'
-    },
-    bandeau:{
-      backgroundColor:colors.color6,
-      paddingVertical:10
-    },
-    textBandeau:{
-      paddingLeft:30,
-      fontFamily:fonts.font3,
-      fontWeight: "600",
-      fontSize:20
-    },
-    titleFormule: {
-      color:colors.color2,
-      fontSize:20,
-      fontWeight: "bold",
-     },
-     textFormule:{
-       color:colors.color1,
-       fontSize:14,
-       fontWeight: "500",
-       width:250
-     },
-     cardTitle:{
-       backgroundColor:'white',
-       height:57,
-       borderBottomLeftRadius:10,
-       borderBottomRightRadius:10,
-       justifyContent:'center',
-       paddingHorizontal:10
-     },
-     texteFormule:{
-      fontSize:14,
-      fontWeight: "700",
-      fontFamily:fonts.font2
-     },
-     container_gray:{
-      backgroundColor:'lightgray',
-      width:30, height:25,
-      flexDirection:'row',
-      justifyContent:'center',
-      alignItems:'center',
-    },
-  }); 
 
 export default PageSandwich

@@ -2,6 +2,7 @@ import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'rea
 import React, { useEffect, useState} from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import { style } from '../../styles/formules'; 
+import { styles } from '../../styles/produits'
 import axios from 'axios'
 import { fonts, colors} from '../../styles/styles'
 import { Button} from 'react-native-paper'
@@ -13,6 +14,7 @@ import Svg, { Path } from 'react-native-svg';
 import ArrowLeft from '../../SVG/ArrowLeft';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
+import ProductCard from '../../components/ProductCard';
 
 
 const PageQuiche = ({navigation}) => {
@@ -26,7 +28,7 @@ const PageQuiche = ({navigation}) => {
 }
 
     const [products, setProducts] = useState([]); 
-    const [selectedSandwich, setSelectedSandwich] = useState(null); 
+    const [selectedProduct, setSelectedProduct] = useState(null); 
     const [stock, setStock] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [productCount, setProductCount] = useState(0);
@@ -42,9 +44,17 @@ const PageQuiche = ({navigation}) => {
     };
 
     useEffect(() => {
-      const totalPrice = products.reduce((acc, product) => acc + (product.qty * product.prix_unitaire), 0);
+      const totalPrice = products.reduce((acc, product) => {
+        const qtyInCart = getProductQtyInCart(product.productId); 
+        return acc + (qtyInCart * product.prix_unitaire);
+      }, 0);
       setTotalPrice(totalPrice);
-    }, [products]);
+    }, [products, cart]);
+    
+    useEffect(() => {
+      const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
+      setProductCount(totalCount);
+    }, [cart]);
 
     useEffect(() => {
       const fetchStock = async () => {
@@ -94,99 +104,108 @@ const PageQuiche = ({navigation}) => {
       }, []);
     
     //increment
-    const incrementHandler = async (productId) => {
-      const product = products.find(p => p.productId === productId);
-      setProductCount(productCount + 1);
+    // const incrementHandler = async (productId) => {
+    //   const product = products.find(p => p.productId === productId);
+    //   setProductCount(productCount + 1);
 
-      if (!product) {
-        console.error(`Product with ID ${productId} not found.`);
-        return;
-      }
+    //   if (!product) {
+    //     console.error(`Product with ID ${productId} not found.`);
+    //     return;
+    //   }
 
-      const { libelle, image, prix_unitaire, offre} = product; // Déstructurez le produit
-      //console.log(product.productId);
+    //   const { libelle, image, prix_unitaire, offre} = product; // Déstructurez le produit
+    //   //console.log(product.productId);
 
-      const productStock = stock.find(item => item.productId === product.productId);
+    //   const productStock = stock.find(item => item.productId === product.productId);
       
-      // Obtenir la quantité en stock pour ce produit
-      const productQuantity = productStock ? productStock.quantite : 0;
-      console.log(`The quantity in stock for product ${productId} is ${productQuantity}`);
+    //   // Obtenir la quantité en stock pour ce produit
+    //   const productQuantity = productStock ? productStock.quantite : 0;
+    //   console.log(`The quantity in stock for product ${productId} is ${productQuantity}`);
 
-      //si plus de stock
-      if(productQuantity === 0){
-        return Toast.show({
-          type: 'error',
-          text1: `Victime de son succès`,
-          text2: 'Plus de stock disponible' 
-        });
-      }
-      try{
-        const stockAvailable = await checkStockForSingleProduct(product.productId);
-        console.log(stockAvailable)
+    //   //si plus de stock
+    //   if(productQuantity === 0){
+    //     return Toast.show({
+    //       type: 'error',
+    //       text1: `Victime de son succès`,
+    //       text2: 'Plus de stock disponible' 
+    //     });
+    //   }
+    //   try{
+    //     const stockAvailable = await checkStockForSingleProduct(product.productId);
+    //     console.log(stockAvailable)
 
-        const remainingStock = stockAvailable[0].quantite - product.qty;
-        console.log(remainingStock)
+    //     const remainingStock = stockAvailable[0].quantite - product.qty;
+    //     console.log(remainingStock)
 
-        if (stockAvailable.length > 0 && remainingStock > 0) {
-          console.log(`Ajout au panier: ${product.libelle}, prix: ${product.prix_unitaire}, quantité: 1`);
-          dispatch(addToCart({ productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix_unitaire, qty: 1 , offre: product.offre}));
+    //     if (stockAvailable.length > 0 && remainingStock > 0) {
+    //       console.log(`Ajout au panier: ${product.libelle}, prix: ${product.prix_unitaire}, quantité: 1`);
+    //       dispatch(addToCart({ productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix_unitaire, qty: 1 , offre: product.offre}));
   
-          setProducts((prevProducts) =>
-          prevProducts.map((product) =>
-            product.productId === productId ? { ...product, qty: product.qty + 1 } : product
-          )
-        );
-          if (product.offre && product.offre.startsWith('offre31')) {
-            const updatedCart = [...cart, { productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix, qty: 1 , offre: product.offre}];
-            const sameOfferProducts = updatedCart.filter((item) => item.offre === product.offre);
-            const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
+    //       setProducts((prevProducts) =>
+    //       prevProducts.map((product) =>
+    //         product.productId === productId ? { ...product, qty: product.qty + 1 } : product
+    //       )
+    //     );
+    //       if (product.offre && product.offre.startsWith('offre31')) {
+    //         const updatedCart = [...cart, { productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix, qty: 1 , offre: product.offre}];
+    //         const sameOfferProducts = updatedCart.filter((item) => item.offre === product.offre);
+    //         const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
             
-            if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
-              setModalVisible(true);
+    //         if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
+    //           setModalVisible(true);
 
-            }
-          }
-        } else {
-          return Toast.show({
-            type: 'error',
-            text1: `Victime de son succès`,
-            text2: `Quantité maximale: ${stockAvailable[0].quantite}` 
-          });
-        }
+    //         }
+    //       }
+    //     } else {
+    //       return Toast.show({
+    //         type: 'error',
+    //         text1: `Victime de son succès`,
+    //         text2: `Quantité maximale: ${stockAvailable[0].quantite}` 
+    //       });
+    //     }
         
-      }catch (error) {
-        console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
-      }
-    };
+    //   }catch (error) {
+    //     console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
+    //   }
+    // };
 
-    const decrementhandler = async (productId) => {
-      const product = products.find(p => p.productId === productId);
-      setProductCount(productCount - 1);
-      if (!product) {
-        console.error(`Product with ID ${productId} not found.`);
-        return;
-      }
+  //   const decrementhandler = async (productId) => {
+  //     const product = products.find(p => p.productId === productId);
+  //     setProductCount(productCount - 1);
+  //     if (!product) {
+  //       console.error(`Product with ID ${productId} not found.`);
+  //       return;
+  //     }
   
-      if (product.qty <= 0) {
-        console.error(`Product with ID ${productId} already has a quantity of 0.`);
-        return;
-      }
+  //     if (product.qty <= 0) {
+  //       console.error(`Product with ID ${productId} already has a quantity of 0.`);
+  //       return;
+  //     }
   
-      dispatch(decrementOrRemoveFromCart({ productId: product.productId}));
+  //     dispatch(decrementOrRemoveFromCart({ productId: product.productId}));
   
-      setProducts(prevProducts =>
-        prevProducts.map((product) =>
-          product.productId === productId ? { ...product, qty: product.qty - 1 } : product
-        )
-      );
+  //     setProducts(prevProducts =>
+  //       prevProducts.map((product) =>
+  //         product.productId === productId ? { ...product, qty: product.qty - 1 } : product
+  //       )
+  //     );
       
-  };
+  // };
 
     const openFormuleQuiche = () => {
       navigation.navigate('formulequiche')
   }
   const handleCart = () => {
     navigation.navigate('panier')
+  }
+
+
+    //pour capitaliser la premiere lettre
+    const capitalizeFirstLetter = (string) => {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+  const capitalizeIngredients = (ingredients) => {
+      return ingredients.split(', ').map(capitalizeFirstLetter).join(',  ');
   }
 
   return (
@@ -209,8 +228,8 @@ const PageQuiche = ({navigation}) => {
             <Text style={styles.titleOptions}>Les options</Text>
             <ScrollView horizontal={true} style={{marginVertical:20}}>
             {products.map((product, index) => (
-                <TouchableOpacity key={index} onPress={() => setSelectedSandwich(product)}>
-                <View style={{marginHorizontal:20, flexDirection:'column', alignItems:'center'}} key={index}>
+                <TouchableOpacity key={index} onPress={() => setSelectedProduct(product)}>
+                {/* <View style={{marginHorizontal:20, flexDirection:'column', alignItems:'center'}} key={index}>
                     <Image
                     key={index}
                     source={{ uri: `${API_BASE_URL}/${product.image}` }}
@@ -218,7 +237,6 @@ const PageQuiche = ({navigation}) => {
                     />
                     <Text style={styles.libelle}>{product.libelle}</Text>
                     
-                    {/* rajouter increment / decrement */}
                     <View style={{flexDirection:'row', gap:5}}>
                     <TouchableOpacity
                         onPress={() => decrementhandler(product.productId)}
@@ -232,7 +250,6 @@ const PageQuiche = ({navigation}) => {
                       </Svg>
                   </TouchableOpacity>
                   <TouchableOpacity style={styles.container_gray}>
-                      {/* <Text>{product.qty}</Text> */}
                       <Text>{getProductQtyInCart(product.productId)}</Text>
 
                   </TouchableOpacity> 
@@ -247,30 +264,48 @@ const PageQuiche = ({navigation}) => {
                     </TouchableOpacity>
 
           </View>
-                </View>
+                </View> */}
+                <View style={{width:180, marginLeft:10}} key={index}>
+                      <ProductCard
+                        libelle={product.libelle}
+                        key={product.productId}
+                        id={product.productId}
+                        index={index}
+                        image={product.image}
+                        prix={product.prix_unitaire}
+                        prixSUN={product.prix_remise_collaborateur}
+                        qty={product.qty}
+                        stock={product.stock}
+                        offre={product.offre}
+                      />
+                    </View>
                 </TouchableOpacity>
             ))}
             </ScrollView >
-           <Text>{selectedSandwich && selectedSandwich.descriptionProduit}</Text>
-        </View>
+            <Text style={{marginHorizontal:10}}>
+          {selectedProduct ? selectedProduct.descriptionProduit : "Sélectionnez un produit pour avoir sa description"}
+          </Text>  
+      </View>
 
 
         {/* les ingredients */}
-        <View style={{marginHorizontal:30, marginBottom:20}}>
+       <View style={{marginHorizontal:30}}>
             <Text style={styles.titleOptions}>Ingrédients</Text>
-            {/* nom libelle du sandwich cliqué */}
-            {selectedSandwich && selectedSandwich.ingredients && (
+            <Text style={styles.libelle}>{selectedProduct ? selectedProduct.libelle : ""}</Text> 
+            {/* {selectedProduct && selectedProduct.ingredients && ( */}
         <View style={styles.ingredients}>
-          <Text style={styles.listeIngredients}>
-            {selectedSandwich.ingredients}
-          </Text>
-        </View>
-      )}
-            {/* {selectedSandwich && <Text>{selectedSandwich.description}</Text>} */}
+        <Text style={styles.listeIngredients}>
+        {selectedProduct ? capitalizeIngredients(selectedProduct.ingredients) : "Veuillez sélectionner un produit pour voir ses ingrédients."}
+          {/* {selectedProduct ? selectedProduct.ingredients : "Veuillez sélectionner un produit pour voir ses ingrédients."} */}
+        </Text>
+      </View>
+
+
+            {/* {selectedProduct && <Text>{selectedProduct.description}</Text>} */}
             {
-                selectedSandwich && 
-                selectedSandwich.description && 
-                selectedSandwich.description.toLowerCase().includes('halal') && 
+                selectedProduct && 
+                selectedProduct.description && 
+                selectedProduct.description.toLowerCase().includes('halal') && 
                 <View style={styles.description}>
                     <Image
                     source={require('../../assets/halal.png')}
@@ -280,9 +315,9 @@ const PageQuiche = ({navigation}) => {
                 </View>
             }
             {
-                selectedSandwich && 
-                selectedSandwich.description && 
-                selectedSandwich.description.toLowerCase().includes('vegan') && 
+                selectedProduct && 
+                selectedProduct.description && 
+                selectedProduct.description.toLowerCase().includes('vegan') && 
                 <View style={styles.description}>
                     <Image
                     source={require('../../assets/vegan.png')}
@@ -344,119 +379,5 @@ const PageQuiche = ({navigation}) => {
     </View>
   )
 }
-
-const styles = StyleSheet.create({
-    titleProduct:{
-        color:'white',
-        fontFamily:fonts.font1,
-        fontSize:24,
-        position:'absolute',
-        top:30,
-        left:20
-    },
-    titleOptions:{
-        fontSize:20,
-        fontWeight: "600",
-        fontFamily:fonts.font2
-    },
-    imageOptions:{
-        width: 128, 
-        height: 88, 
-        borderRadius:6
-    },
-    libelle:{
-        fontSize:12,
-        fontFamily: fonts.font2,
-        fontWeight: "400",
-        textAlign:'center',
-        paddingVertical:5
-    },
-    sousTexte:{
-        // fontFamily:fonts.font2,
-        fontSize:14,
-        fontWeight: "400"
-    },
-    ingredients:{
-        backgroundColor:'white',
-        borderRadius:10,
-        padding:10,
-        marginVertical:10
-    },
-    listeIngredients:{
-        fontSize:13,
-        fontFamily:fonts.font2
-    },
-    description:{
-        flexDirection:'row',
-        alignItems:'center',
-        gap:5,
-        backgroundColor:'white',
-        width:"85%",
-        paddingHorizontal:19,
-        paddingVertical:5,
-        height:60,
-        borderRadius:10,
-        marginBottom:10
-    },
-    qtyContainer:{
-      flexDirection:'row',
-      gap:5
-    },
-    decrement:{
-      backgroundColor:colors.color3,
-      flexDirection:'row',
-      alignItems:'center'
-    },
-    qtyText:{
-      backgroundColor:colors.color3,
-      paddingHorizontal: 5
-    },
-    increment:{
-      backgroundColor:colors.color2,
-      flexDirection:'row',
-      alignItems:'center'
-    },
-    bandeau:{
-      backgroundColor:colors.color6,
-      paddingVertical:10
-    },
-    textBandeau:{
-      paddingLeft:30,
-      fontFamily:fonts.font3,
-      fontWeight: "600",
-      fontSize:20
-    },
-    titleFormule: {
-      color:colors.color2,
-      fontSize:20,
-      fontWeight: "bold",
-     },
-     textFormule:{
-       color:colors.color1,
-       fontSize:14,
-       fontWeight: "500",
-       width:250
-     },
-     cardTitle:{
-       backgroundColor:'white',
-       height:57,
-       borderBottomLeftRadius:10,
-       borderBottomRightRadius:10,
-       justifyContent:'center',
-       paddingHorizontal:10
-     },
-     texteFormule:{
-      fontSize:14,
-      fontWeight: "700",
-      fontFamily:fonts.font2
-     },
-     container_gray:{
-      backgroundColor:'lightgray',
-      width:30, height:25,
-      flexDirection:'row',
-      justifyContent:'center',
-      alignItems:'center',
-    },
-  }); 
 
 export default PageQuiche
