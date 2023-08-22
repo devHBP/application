@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Modal } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native'
 import React, { useEffect} from 'react'
 import { defaultStyle, colors, fonts} from '../styles/styles'
 import { Button } from 'react-native-paper'
@@ -74,7 +74,7 @@ const SuccessPage = ({navigation}) => {
                     visible={modalVisible}
                     onRequestClose={closeRatingModal}>
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ width: '90%', height: '60%', backgroundColor: 'white', padding: 20, borderRadius: 10, alignItems: 'center', borderColor:'lightgray', borderWidth:1, justifyContent:'center',gap:10 }}>
+                        <View style={{ width: '90%', height: '70%', backgroundColor: 'white', padding: 20, borderRadius: 10, alignItems: 'center', borderColor:'lightgray', borderWidth:1, justifyContent:'center',gap:10 }}>
                             <TouchableOpacity onPress={closeRatingModal} style={{ position:'absolute', top:0, right:10 }}>
                                 <Text style={{ fontSize: 36 }}>&times;</Text>
                             </TouchableOpacity>
@@ -85,8 +85,22 @@ const SuccessPage = ({navigation}) => {
                                     onFinishRating={(rating) => console.log("Rating selected - ", rating)}
                                     style={{ paddingVertical: 10 }}
                                 />
-                         
-                            
+                                <TextInput
+                                    multiline={true}
+                                    numberOfLines={10}
+                                    placeholder="Laissez-nous vos suggestions..."
+                                    style={{ borderColor: 'gray', borderWidth: 1, width: '100%', padding: 10, marginTop: 10, height:100 }}
+                                />
+                                <TouchableOpacity 
+                                    style={style.submitButton}
+                                    onPress={() => {
+                                        console.log("Envoyer les données au serveur");
+                                        closeRatingModal();
+                                    }}
+                                                        >
+                            <Text style={style.submitButtonText}>Envoyer</Text>
+                        </TouchableOpacity>
+                                                    
                         </View>
                     </View>
                 </Modal>
@@ -145,6 +159,20 @@ const style = StyleSheet.create({
     alignItems: 'center',
     marginTop: 10,
 },
+submitButton: {
+    backgroundColor: colors.color9,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    marginTop: 20,
+    width: '80%',
+    alignItems: 'center'
+},
+submitButtonText: {
+    color: colors.color6,
+    fontSize: 16
+}
+
 
 })
 
