@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, Image, Animated } from 'react-native'
 import React, { useEffect, useRef } from 'react'
 import { colors, fonts } from '../styles/styles'
 
-const LoaderHome = () => {
+ const LoaderHome = () => {
   const rotateValue = useRef(new Animated.Value(0)).current; // Initial value for rotation: 0
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const LoaderHome = () => {
     outputRange: ['0deg', '360deg'],
   });
 
-  return (
+   return (
     <View style={style.container}>
       <Animated.Image
         source={require("../assets/logo_pdj.png")} // Remplacez 'logo_pdj' par le nom de votre image
@@ -36,9 +36,10 @@ const LoaderHome = () => {
           transform: [{ rotate: rotation }]  // Applique la transformation de rotation ici
         }}
       />
-    </View>
-  );
-}
+     </View>
+
+   );
+ }
 
 const style = StyleSheet.create({
     container: {
@@ -49,4 +50,4 @@ const style = StyleSheet.create({
     }
 });
 
-export default LoaderHome;
+ export default LoaderHome;
