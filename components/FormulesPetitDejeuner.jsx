@@ -18,7 +18,7 @@ const FormulesSalees = () => {
     }
   
   return (
-    <View style={{marginLeft:30, marginVertical:30}}>
+    <View style={{marginLeft:30, marginTop:10}}>
 
         <View style={{flexDirection:'row', alignItems:'center'}}>
         <Text style={styles.text1formule}>Les formules du</Text>

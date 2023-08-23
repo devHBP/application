@@ -39,7 +39,7 @@ const FormulesSalees = () => {
     }
   
   return (
-    <View style={{marginLeft:30, marginVertical:30}}>
+    <View style={{marginLeft:30, marginVertical:10}}>
               <Text style={styles.text1formule}>Notre sélection de</Text>
               <Text style={styles.text2formule}>snack <Text style={styles.text1formule}>et </Text>formules</Text>
               

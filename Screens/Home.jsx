@@ -20,8 +20,7 @@ import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import ArrowDown from '../SVG/ArrowDown';
 import LoaderHome from './LoaderHome';
-
-
+import StickyParallaxHeader from 'react-native-sticky-parallax-header';
 
 
 const Home =  ({navigation}) => {
@@ -203,12 +202,12 @@ const ongletButtonHandler = (onglet) => {
       ) : (
       <View View style={{flex:1}}>
 
-        <ScrollView vertical={true} style={{ flex:1, paddingVertical:20}} ref={scrollViewRef}>
+    <ScrollView vertical={true} style={{ flex:1, paddingVertical:20}} ref={scrollViewRef} stickyHeaderIndices={[1]}>
    
     <View >
 
     <View style={styles.bandeau}>
-      
+   
         <View style={{flexDirection:'row'}}>
         {
           user && 
@@ -232,9 +231,11 @@ const ongletButtonHandler = (onglet) => {
           </View>
         }
         </View>  
+       
     </View>
-   
-      {/* test bandeau header */}
+    
+        {/* je veux rendre ce composant sticky */}
+      {/*  bandeau header */}
       <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:5}}>
           <View style={{ flexDirection:'row', gap:10, alignItems:'center',}}>
               
@@ -247,13 +248,7 @@ const ongletButtonHandler = (onglet) => {
 
             <View style={{backgroundColor:'white'}}> 
               <TouchableOpacity  onPress={toggleVisibility} activeOpacity={1} >
-                  {/* <Icon name="keyboard-arrow-down" size={28} color="#FFF"  /> */}
-                  {/* <Image
-                    source={require('../assets/arrow_down.png')} // Remplacez 'my-image' par le nom de votre image
-                    style={{ width: 30, height: 30, resizeMode:'cover' }} // Remplacez ces valeurs par les dimensions souhaitées
-                  /> */}
                 <ArrowDown />
-
               </TouchableOpacity>
           </View>
           </View>
@@ -300,6 +295,8 @@ const ongletButtonHandler = (onglet) => {
       </View> */}
 
       {/* onglet ancres */}
+  
+
       <View style={styles.categories} >
 
         <ScrollView horizontal showsHorizontalScrollIndicator={false} >
@@ -333,9 +330,9 @@ const ongletButtonHandler = (onglet) => {
         }
         </ScrollView>
       </View>
-          
+
           {/* link - anti gaspi -  */}
-          <View onLayout={(event) => handleLayout('Promos', event)}>
+          <View onLayout={(event) => handleLayout('Promos', event)} style={styles.paddingProduct}>
            <LinkOffres />
           </View>
           
@@ -345,7 +342,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category === 'Baguettes')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Baguettes', event)}>
+                <View key={category} onLayout={(event) => handleLayout('Baguettes', event)} style={styles.paddingProduct}>
 
               {/* <React.Fragment key={category}> */}
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -386,7 +383,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category ===  'Viennoiseries')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Viennoiseries', event)}>
+                <View key={category} onLayout={(event) => handleLayout('Viennoiseries', event)} style={styles.paddingProduct}>
 
               {/* <React.Fragment key={category}> */}
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -424,13 +421,13 @@ const ongletButtonHandler = (onglet) => {
             ))}
 
           {/* Link page Formule */}
-          <View onLayout={(event) => handleLayout('Formules', event)}>
+          <View onLayout={(event) => handleLayout('Formules', event)} style={styles.paddingProduct}>
             <FormulesSalees />
           </View>
 
           {/* envie de salé */}
        
-         <View onLayout={(event) => handleLayout('Produits Salés', event)}>
+         <View onLayout={(event) => handleLayout('Produits Salés', event)} style={styles.paddingProduct}>
           <EnvieSalee />
         </View>
 
@@ -438,7 +435,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category ===  'Pâtisseries')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Pâtisseries', event)}>
+                <View key={category} onLayout={(event) => handleLayout('Pâtisseries', event)} style={styles.paddingProduct}>
               {/* <React.Fragment key={category}> */}
                 <Text style={styles.categoryTitle}>{category}</Text>
                 <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
@@ -476,7 +473,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category ===  'Boules et Pains Spéciaux')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Pains Spéciaux', event)}>
+                <View key={category} onLayout={(event) => handleLayout('Pains Spéciaux', event)} style={styles.paddingProduct}>
 
               {/* <React.Fragment key={category}> */}
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -514,7 +511,7 @@ const ongletButtonHandler = (onglet) => {
 
             {/* formules petits dejeuners */}
             
-            <View onLayout={(event) => handleLayout('Petits déjeuners', event)}>
+            <View onLayout={(event) => handleLayout('Petits déjeuners', event)} style={styles.paddingProduct}>
             <FormulesPetitDejeuner />
             </View>
 
@@ -522,7 +519,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category ===  'Boissons')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Boissons', event)}>
+                <View key={category} onLayout={(event) => handleLayout('Boissons', event)} style={styles.paddingProduct}>
 
               {/* <React.Fragment key={category}> */}
                 <Text style={styles.categoryTitle}>{category}</Text>
@@ -558,7 +555,7 @@ const ongletButtonHandler = (onglet) => {
             ))}
 
             {/* catalogue */}
-            <View onLayout={(event) => handleLayout('Tarterie', event)}>
+            <View onLayout={(event) => handleLayout('Tarterie', event)} style={styles.paddingProduct}>
               <Catalogue />
             </View>
 
