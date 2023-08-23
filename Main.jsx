@@ -42,8 +42,6 @@ import PageQuiche from './Screens/PagesSalees/PageQuiche'
 import PageCroque from './Screens/PagesSalees/PageCroque'
 import Pwd from './Screens/Pwd'
 import LoaderHome from './Screens/LoaderHome'
-import TestSticky from './Screens/TestSticky'
-
 
 const Main = () => {
 
@@ -70,8 +68,6 @@ const Main = () => {
                 <Stack.Screen name="stores" component={Stores}/>
                 <Stack.Screen name='home' component={Home}/>
                 <Stack.Screen name='loaderhome' component={LoaderHome}/>
-                {/*  test sticky */}
-                <Stack.Screen name='test' component={TestSticky}/>
                     {/*  Formules  */}
                     <Stack.Screen name='formulesandwich' component={FormuleSandwich}/>
                     <Stack.Screen name='formulepoke' component={FormulePoke}/>

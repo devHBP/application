@@ -20,7 +20,6 @@ import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import ArrowDown from '../SVG/ArrowDown';
 import LoaderHome from './LoaderHome';
-import StickyParallaxHeader from 'react-native-sticky-parallax-header';
 
 
 const Home =  ({navigation}) => {
