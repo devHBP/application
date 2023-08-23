@@ -358,12 +358,17 @@ useEffect(() => {
     })
     .catch(error => {
     console.log('erreur', error)
-    handleLogout()
     return Toast.show({
-      type: 'error',
-      text1: 'Session expirée',
-      text2: 'Veuillez vous reconnecter'
-    });
+         type: 'error',
+         text1: 'Date de livraison manquante',
+         text2: 'Veuillez renseigner une date'
+       });
+    // handleLogout()
+    // return Toast.show({
+    //   type: 'error',
+    //   text1: 'Session expirée',
+    //   text2: 'Veuillez vous reconnecter'
+    // });
       // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
     });  
 }
