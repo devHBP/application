@@ -111,6 +111,9 @@ const CustomDatePicker = () => {
         </TouchableOpacity> 
         </View>
                <DatePicker
+                cancelText= "Annuler"
+                confirmText="Confirmer"
+                locale="fr"
                 modal
                 open={openDate}
                 date={date ? new Date() : new Date()}

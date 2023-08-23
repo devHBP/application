@@ -169,6 +169,7 @@ const StorePicker = () => {
                                 value: store.nom_magasin,
                             }))}
                              style={pickerSelectStyles}
+                             doneText='OK'
                         /> 
                         )
                     
