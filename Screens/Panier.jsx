@@ -701,7 +701,7 @@ useEffect(() => {
                           <View><CustomDatePicker /></View>
                       </View>
   
-                      <ScrollView style={{ marginVertical: 10, flex: 1 }}>
+                      <ScrollView style={{ marginVertical: 10, flex: 1 }} showsVerticalScrollIndicator={false}>
                           {/* - formules - */}
                           {formules.length > 0 && <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>Formules</Text>}
                           {formules.map((item, index) => {
