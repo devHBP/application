@@ -1,6 +1,7 @@
 import { StyleSheet } from 'react-native';
 import { colors, fonts } from '../styles/styles'
 
+const headerSectionHeight = 250;
 
 const styles = StyleSheet.create({
   bandeau: {
@@ -37,7 +38,7 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: 'center',
     marginVertical: 20,
-    marginLeft: 30
+    marginLeft: 30,
   },
   btn_categorie: {
     borderRadius: 6,
@@ -219,7 +220,11 @@ const styles = StyleSheet.create({
     fontSize:15,
     color:colors.color1,
     fontFamily:fonts.font2
-  }
+  },
+  paddingProduct:{
+    paddingTop:40
+  },
+  
 });
 
 
