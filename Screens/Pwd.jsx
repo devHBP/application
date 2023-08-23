@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
    btn:{
     backgroundColor:colors.color2,
     borderRadius:5,
-    width:"65%"
+    width:"75%"
    }
 });
 
