@@ -1,14 +1,51 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native'
 import React from 'react'
 import { fonts, colors} from '../styles/styles'
 import { Button } from 'react-native-paper';
+import axios from 'axios';
+import RNFS from 'react-native-fs';
+import { byteLength, fromByteArray, toByteArray } from 'base64-js';
+
 
 
 const Catalogue = () => {
 
-  const handleUpload = () => {
-    console.log('test')
+  // const handleUpload = () => {
+  //   console.log('test')
+  // }
+
+  let API_BASE_URL = 'http://127.0.0.1:8080';
+
+  if (Platform.OS === 'android') {
+    if (__DEV__) {
+        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
+    } 
+}
+
+ const handleUpload = async () => {
+    const url = `${API_BASE_URL}/download`;
+    const dest = RNFS.DocumentDirectoryPath + 'Catalogue.pdf';
+
+    
+    try {
+      const response = await axios.get(url, { responseType: 'arraybuffer' });
+      //console.log('status', response.status)
+      if (response.status === 200) {
+          const base64Data = fromByteArray(new Uint8Array(response.data));
+          await RNFS.writeFile(dest, base64Data, 'base64'); 
+          //console.log('Fichier téléchargé avec succès à:', dest);
+          Alert.alert('Succès', 'Catalogue téléchargé');
+
+      } else {
+          //console.error('Erreur lors du téléchargement:', response.status);
+          Alert.alert('Erreur', 'Erreur de chargement');
+      }
+  } catch (error) {
+      //console.error('Erreur lors du téléchargement du fichier:', error.message);
+      Alert.alert('Erreur', 'Erreur lors du chargement');
   }
+}
+
   return (
     <View style={styles.container}>
       <View style={styles.container_image}>
