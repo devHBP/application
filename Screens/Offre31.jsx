@@ -13,6 +13,7 @@ import { getFamilyProductDetails, checkStockForSingleProduct } from '../CallApi/
 import FooterProfile from '../components/FooterProfile';
 import ModalePageOffre31 from '../components/ModalePageOffre';
 import ArrowLeft from '../SVG/ArrowLeft';
+import ProductCard from '../components/ProductCard';
 
 
 const Offre31 = ({navigation}) => {
@@ -174,13 +175,13 @@ const handleCart = () => {
                     </TouchableOpacity>
                   </View>
         </View>
-        <View style={{paddingHorizontal:30, paddingVertical:60}}>
+        <View style={{paddingHorizontal:30, paddingTop:60, paddingBottom:30}}>
             <Text style={style.title}>3 produits + 1 offert</Text>
             <Text style={styles.texteOffre}>Pour l'achat de 3 produits de cette catégorie, vous aurez droit à 1 produit du même type gratuit</Text>
         </View>
         {/* choix produits*/}
         <ScrollView>
-        <View style={{ gap: 20 }}>
+        <View style={{ gap: 10 }}>
           {Object.values(
             offre31Products.reduce((groups, product) => {
               const { id_famille_produit } = product;
@@ -195,16 +196,31 @@ const handleCart = () => {
             }, {})
           ).map((group) => (
             <View key={group.id_famille_produit}>
-              <Text style={{marginLeft:30, marginVertical:10}}>{familyProductDetails[group.id_famille_produit]}</Text>
+              <Text style={{marginLeft:30, marginVertical:10, color:colors.color1, fontFamily:fonts.font2, fontWeight:"700"}}>{familyProductDetails[group.id_famille_produit]}</Text>
               <ScrollView >
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center' }}>
-                {group.products.map((product) => (
-                  <View key={product.libelle} style={{ gap: 10, flexDirection: 'column', justifyContent: 'center', alignItems: 'center', margin: 10 }}>
-                    <Image
+                {group.products.map((product, index) => (
+                  <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
+                    {/* <Image
                       source={{ uri: `${API_BASE_URL}/${product.image}` }}
                       style={style.sandwichImage}
                     />
-                    <Text>{product.libelle}</Text>
+                    <Text>{product.libelle}</Text> */}
+                    <View style={{width:170, marginVertical:10}} key={index}>
+                      <ProductCard
+                        libelle={product.libelle}
+                        key={product.productId}
+                        id={product.productId}
+                        index={index}
+                        image={product.image}
+                        prix={product.prix_unitaire}
+                        prixSUN={product.prix_remise_collaborateur}
+                        qty={product.qty}
+                        stock={product.stock}
+                        offre={product.offre}
+                        showButtons={false} 
+                      />
+                      </View>
                     <TouchableOpacity
                   style={[
                     style.checkButton,
