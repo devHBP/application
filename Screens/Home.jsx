@@ -20,6 +20,8 @@ import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import ArrowDown from '../SVG/ArrowDown';
 import LoaderHome from './LoaderHome';
+import SearchModal from '../components/SearchModal';
+import ArrowLeft from '../SVG/ArrowLeft';
 
 
 const Home =  ({navigation}) => {
@@ -43,6 +45,7 @@ const Home =  ({navigation}) => {
   const [ visible, setVisible] = useState(false)
   const [positionsY, setPositionsY] = useState({});
   const [isLoading, setIsLoading] = useState(true); 
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   
   const user = useSelector((state) => state.auth.user);
@@ -130,22 +133,36 @@ const handleProductPress = (product) => {
   navigation.navigate('details', { product });
 };
 
-//search via searchbar
+//search
 const handleSearch = (query) => {
   setSearchQuery(query);
 
-  if (query) {
-    const filtered = products.filter((product) =>
-      product.libelle ? product.libelle.toLowerCase().includes(query.toLowerCase()) : false
-    );
-    setFilteredProducts(filtered);
-  } else {
-    setFilteredProducts(products);
-  }
+  
+  const filtered = products.filter((product) =>
+    product.libelle ? product.libelle.toLowerCase().includes(query.toLowerCase()) : false
+  );
+
+  setFilteredProducts(filtered);
+  // if (query.length >= 2) {
+  //   setIsModalVisible(true);
+  // } else if (query.length === 0) {
+  //   setIsModalVisible(false);
+  // }
+  
+  
+};
+
+const handleSelectProduct = (product) => {
+  // Ici, mettez en place ce que vous voulez faire une fois qu'un produit est sélectionné.
+  // Par exemple, ajoutez-le à un panier ou affichez des détails.
+  setIsModalVisible(false);
+  navigation.navigate('details', { product });
 };
 
 //classement par catégories
-const groupedAndSortedProducts = filteredProducts.reduce((acc, cur) => {
+// const groupedAndSortedProducts = filteredProducts.reduce((acc, cur) => {
+
+const groupedAndSortedProducts = products.reduce((acc, cur) => {
   (acc[cur.categorie] = acc[cur.categorie] || []).push(cur);
   return acc;
 }, {});
@@ -192,11 +209,12 @@ const ongletButtonHandler = (onglet) => {
     scrollViewRef.current.scrollTo({ x: 0, y: positionY, animated: true });
   }
 };
+//fin scroll onglets
   return (
     <>
     <View style={{flex:1}}>
     {isLoading ? (
-        // Affichez votre Loader ici
+
         <LoaderHome />
       ) : (
       <View View style={{flex:1}}>
@@ -210,14 +228,14 @@ const ongletButtonHandler = (onglet) => {
         <View style={{flexDirection:'row'}}>
         {
           user && 
-          <View style={{paddingVertical:20, flexDirection:'row', alignItems:'center', justifyContent:'center', width:"100%"}}>
+          <View style={{paddingVertical:20, flexDirection:'row', alignItems:'center', justifyContent:'space-around', width:"100%"}}>
             <View >
-              <Text style={{fontFamily:fonts.font1, fontSize:32, color:colors.color1, paddingLeft:50}}>Bonjour </Text>
-              <Text style={{fontSize:18, fontFamily:fonts.font2, color:colors.color1, paddingLeft:50}}>{user.firstname}</Text>
+              <Text style={{fontFamily:fonts.font1, fontSize:32, color:colors.color1}}>Bonjour </Text>
+              <Text style={{fontSize:18, fontFamily:fonts.font2, color:colors.color1}}>{user.firstname}</Text>
             </View>
               
                {/* SearchBar */}
-              <SearchBar
+              {/* <SearchBar
               placeholder="Une petite faim ?"
               onChangeText={handleSearch}
               value={searchQuery}
@@ -226,14 +244,31 @@ const ongletButtonHandler = (onglet) => {
               inputStyle={{fontSize:12, }}
               placeholderTextColor={colors.color2}
               searchIcon={{ size: 20, color: colors.color2, margin:0 }} 
-            />
+            /> */}
+            <TouchableOpacity  onPress={() => setIsModalVisible(true)} activeOpacity={0.8} style={{backgroundColor:colors.color3, borderRadius:50, width:50, height:50, justifyContent: 'center', 
+                 alignItems: 'center', }}>                           
+                <Image
+                  source={require('../assets/search.png')} // Remplacez 'my-image' par le nom de votre image
+                  style={{ width: 30, height: 30, resizeMode:'cover' }} // Remplacez ces valeurs par les dimensions souhaitées
+                />
+                </TouchableOpacity> 
+                
+                <SearchModal
+                  isVisible={isModalVisible}
+                  products={filteredProducts}
+                  onSelectProduct={handleSelectProduct}
+                  onClose={() => setIsModalVisible(false)}
+                  handleSearch={handleSearch} // Ajoutez cette ligne
+                  searchQuery={searchQuery}   // Et celle-ci
+                />
+               
+                
           </View>
         }
         </View>  
        
     </View>
     
-        {/* je veux rendre ce composant sticky */}
       {/*  bandeau header */}
       <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:5}}>
           <View style={{ flexDirection:'row', gap:10, alignItems:'center',}}>
