@@ -169,7 +169,7 @@ const Solanid = ({navigation}) => {
         </View>
         <View style={{paddingHorizontal:30, paddingTop:50}}>
             <Text style={style.title}>Les halles Solanid</Text>
-            <Text style={styles.texteOffre}>Texte pour les produits les halles Solanid</Text>
+            <Text style={styles.texteOffre}>Découvrez les pokébowls et la mousse au chocolat faites maison par Les Halles Solanid</Text>
         </View>
         {/* choix produits*/}
         <View>

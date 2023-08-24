@@ -52,7 +52,7 @@ const StorePicker = () => {
 
     const allStores = async () => {
         try {
-            console.log('Role actuel de l\'utilisateur:', user.role); // Affichez le rôle actuel pour vérifier
+            //console.log('Role actuel de l\'utilisateur:', user.role); // Affichez le rôle actuel pour vérifier
             const response = await axios.get(`${API_BASE_URL}/getAllStores`);
             if (response.data && Array.isArray(response.data)) {
                 // Vérifier si ROLE_STORES[user.role] est défini
@@ -62,7 +62,7 @@ const StorePicker = () => {
                 }
                 // Filtrer les stores en fonction du rôle de l'utilisateur
                 const filteredStores = response.data.filter(store => ROLE_STORES[user.role].includes(store.storeId));
-                console.log('filteredStores', filteredStores);
+                //console.log('filteredStores', filteredStores);
                 setStores(filteredStores);
             } else {
                 console.error("Réponse inattendue de l'API.");

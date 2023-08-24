@@ -54,6 +54,7 @@ const Panier = ({navigation}) => {
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
   //console.log('cart panier', cart)
   const user = useSelector((state) => state.auth.user)
+  //console.log('role', user.role)
   const selectedStore = useSelector(state => state.auth.selectedStore);
   //console.log('storecollab', selectedStore)
    const cartTotal = useSelector((state) => state.cart.cartTotal)
@@ -64,7 +65,7 @@ const Panier = ({navigation}) => {
   // const paiement = "online"
   const numero_commande = useSelector((state) => state.order.numero_commande)
 
-  const totalPrice = Number((cart.reduce((total, item) => {
+  let totalPrice = Number((cart.reduce((total, item) => {
     const prix = item.prix || item.prix_unitaire; // Utilisez la propriété "prix" si elle existe, sinon utilisez "prix_unitaire"
     return total + item.qty * prix;
   }, 0)).toFixed(2));
@@ -225,10 +226,6 @@ useEffect(() => {
   fetchFamilies();
 }, [cart]);
 
-  const handleLogout = () => {
-    dispatch(logoutUser()); 
-    navigation.navigate('login')
-  }
 
   const handleConfirm = async (newPaiement) => {
    
@@ -251,8 +248,12 @@ useEffect(() => {
       const [day, month, year] = selectedDateString.split("/").map(Number);
       const formattedDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
       const dateForDatabase = formattedDate.toISOString();
+
+      //prix Sun si collaborateur
+      totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
       
       const orderData = {
+        userRole: user.role, 
         firstname_client: user.firstname,
         lastname_client: user.lastname,
         prix_total: totalPrice,
@@ -333,8 +334,10 @@ useEffect(() => {
           const numero_commande = response.data.numero_commande
           //console.log('num', response)
           dispatch(setNumeroCommande(numero_commande));
+          let userRole = user.role
 
           setOrderInfo({
+            userRole,
             cart,
             user,
             selectedStore,

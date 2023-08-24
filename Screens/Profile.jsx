@@ -38,7 +38,7 @@ const Profile =  ({navigation}) => {
   const [stores, setStores] = useState([]);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  console.log('role', user.role)
+  //console.log('role', user.role)
   const userId = user.userId
   const selectedStore = useSelector((state) => state.auth.selectedStore);
    //console.log('store', userStore)
@@ -91,7 +91,7 @@ const Profile =  ({navigation}) => {
 
     const allStores = async () => {
       try {
-          console.log('Role actuel de l\'utilisateur:', user.role); // Affichez le rôle actuel pour vérifier
+          //console.log('Role actuel de l\'utilisateur:', user.role); // Affichez le rôle actuel pour vérifier
           const response = await axios.get(`${API_BASE_URL}/getAllStores`);
           if (response.data && Array.isArray(response.data)) {
               // Vérifier si ROLE_STORES[user.role] est défini
