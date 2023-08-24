@@ -11,6 +11,10 @@ import { Rating } from 'react-native-ratings';
 
 const SuccessPage = ({navigation}) => {
 
+    const user = useSelector((state) => state.auth.user)
+    const role = user.role
+    console.log('role', role)
+
     const [modalVisible, setModalVisible] = React.useState(false);
 
     const openRatingModal = () => {
@@ -46,7 +50,12 @@ const SuccessPage = ({navigation}) => {
                   <Text>Merci d'avoir commandé chez nous ! </Text>
               </View>
               <View style={style.centeredText}>
-                  <Text style={{textAlign:'center'}}>Vous recevrez un message quand la commande sera prête à être récupérée </Text>
+                {
+                    role === 'SUNcollaborateur' 
+                    ? <Text style={{textAlign:'center'}}>Votre commande arrivera demain dans la matinée via la tournée du camion</Text>
+                    : <Text style={{textAlign:'center'}}>Vous recevrez un message quand la commande sera prête à être récupérée </Text>
+                }
+                  
               </View>
             </View>
         <View style={style.contentWrapper}>
