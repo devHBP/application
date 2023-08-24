@@ -84,16 +84,18 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
     borderTopWidth: 0,
     borderBottomWidth: 0,
-    width: "55%",
+    width: "100%",
     paddingHorizontal: 0,
     marginHorizontal: 0
   },
   searchBarInputContainer: {
     backgroundColor: '#e0e0e0',
     borderRadius: 25,
-    width: "80%",
+    width: "100%",
     padding: 0,
-    margin: 0
+    margin: 0, 
+    flexDirection:'row',
+    justifyContent:'center'
 
   },
   scrollTop: {
@@ -219,7 +221,8 @@ const styles = StyleSheet.create({
   texteOffre:{
     fontSize:15,
     color:colors.color1,
-    fontFamily:fonts.font2
+    fontFamily:fonts.font2, 
+    marginVertical:5
   },
   paddingProduct:{
     paddingTop:40
