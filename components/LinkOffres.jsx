@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView , Modal, Image} from 'react-native'
 import React, { useState, useEffect} from 'react'
 import { styles} from '../styles/home'; 
-import PopUp from '../components/PopUp';
 import popupData from '../Datas/datas.json';
 import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
@@ -20,10 +19,10 @@ const LinkOffres = ({}) => {
 
     const [solanidProductNames, setSolanidProductNames] = useState([]);
     const [offre31ProductNames, setoffre31ProductNames] = useState([])
+    const [isModalVisible, setIsModalVisible] = useState(false);
 
 
     useEffect(() => {
-        // Fonction pour récupérer les données de la base de données
         const fetchData = async () => {
           try {
           const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
@@ -41,27 +40,22 @@ const LinkOffres = ({}) => {
         // produits solanid
         const solanidProducts = updatedProducts.filter(product => product.reference_fournisseur === "Solanid");
         const solanidProductNames = solanidProducts.map(product => product.libelle);
-        setSolanidProductNames(solanidProductNames);
-        
-          
+        setSolanidProductNames(solanidProductNames);    
           } catch (error) {
             console.error('Une erreur s\'est produite, error products :', error);
           }
         };
-        fetchData(); // Appel de la fonction fetchData lors du montage du composant
+        fetchData(); 
       }, []);
 
-    const [modalVisible, setModalVisible] = useState(false);
-    const [currentPopupData, setCurrentPopupData] = useState({});
 
     const handlePress = (popupData) => {
-        setCurrentPopupData(popupData);
-        setModalVisible(true);
+        setIsModalVisible(true);
       }
       
       const handleClose = () => {
-        setModalVisible(false);
-      }
+        setIsModalVisible(false)
+            }
 
       const handleHallesSolanid = () => {
         console.log(solanidProductNames)
@@ -72,6 +66,7 @@ const LinkOffres = ({}) => {
         console.log(offre31ProductNames)
         navigation.navigate('offre31')
       }
+
   return (
     <View >
      <ScrollView horizontal={true} style={{marginVertical:10, marginLeft:30}}>
@@ -167,19 +162,45 @@ const LinkOffres = ({}) => {
         
         </TouchableOpacity>
 
-        {/* popup modale */}
+        {/* popup modale SUN*/}
         <Modal
-        animationType="fade"
-        transparent={true}
-        visible={modalVisible}
-        >
-            <PopUp onClose={handleClose} title={currentPopupData.title} text={currentPopupData.text} image={currentPopupData.image}/>
-
+          animationType="fade"
+          transparent={true}
+          visible={isModalVisible}
+          onRequestClose={handleClose}>
+           
+          <TouchableOpacity style={{flex: 1, justifyContent: 'center', alignItems: 'center'}} activeOpacity={1}  onPress={handleClose}>
+            <View 
+               onStartShouldSetResponder={() => true}  // capture le toucher évitant la propagation
+                style={modalStyle}>
+              <TouchableOpacity onPress={handleClose} style={{ alignItems: 'center', position:'absolute', top:0, right:10, zIndex:99}}>
+                <Text style={{ fontSize: 36}}>&times;</Text>
+              </TouchableOpacity>
+              <Image
+                source={require('../assets/popupSUN.jpg')}
+                style={{ width:"100%", height:"100%", resizeMode:'contain', zIndex:1}}
+            />
+            </View>
+            </TouchableOpacity>  
         </Modal>
 
         </ScrollView>
     </View>
   )
 }
+
+const modalStyle = {
+  width: '74%',
+  height:"90%",
+  backgroundColor: 'white',
+  borderRadius: 10,
+  // Ombre pour iOS
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 3 },
+  shadowOpacity: 0.5,
+  shadowRadius: 5,
+  // Ombre pour Android
+  elevation: 5,
+};
 
 export default LinkOffres
