@@ -50,24 +50,23 @@ const Pwd = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={{flexDirection:'row',  alignItems:'center',justifyContent:'space-between', width:"100%", position:'absolute', top:30, left:30 }}>
-            <View style={{width:"68%"}}>
-              <Text style={styles.title}>Changer le mot de passe</Text>
+      <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10, marginTop:50}}>
+                <View style={{width:"68%"}}>
+                <Text style={styles.title}>Changer le mot de passe</Text>
+                </View>
+                <TouchableOpacity  onPress={handleBack} activeOpacity={0.8} style={{backgroundColor:colors.color1, borderRadius:25,}}>                           
+                  <ArrowLeft fill={colors.color6}/>
+                </TouchableOpacity>  
             </View>
-            
-            <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:colors.color1, borderRadius:25}}>
-                    <ArrowLeft fill={colors.color6} style={{ width: '100%', height: '100%' }}/>
-                    
-                </TouchableOpacity>
-        </View>
 
         <View style={{ flex: 1,  justifyContent: 'center' }}>
           <Text style={styles.label}>Votre e-mail</Text>
           <TextInput
               {...inputOptions} 
-              placeholder=" Adresse e-mail"
+              placeholder="exemple.mail@email.com"
               value={email}
               onChangeText={setEmail}
+              placeholderTextColor={colors.color3}
           />
           {/* <Button title="Changer votre mot d epasse" onPress={handleForgotPassword} /> */}
           <View style={{flexDirection:'column', alignItems:'flex-end'}}>
