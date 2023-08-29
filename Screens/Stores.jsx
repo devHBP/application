@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Button} from 'react-native-paper' 
 import { defaultStyle} from '../styles/styles'
 import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSelectedStore } from '../reducers/authSlice';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import ArrowLeft from '../SVG/ArrowLeft';
+import { fonts, colors} from '../styles/styles'
 
-
-let API_BASE_URL = 'http://127.0.0.1:8080';
-
-if (Platform.OS === 'android') {
-  if (__DEV__) {
-      API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-  } 
-}
 
 const Stores = ({navigation}) => {
+  
+  const API_BASE_URL_IOS = API_BASE_URL;
+
+  if (__DEV__) {
+    if (Platform.OS === 'android') {
+        API_BASE_URL = API_BASE_URL_ANDROID;
+    } else if (Platform.OS === 'ios') {
+        API_BASE_URL = API_BASE_URL_IOS;  
+    }
+  }
+  
   const [selectedStore, setSelectedStore] = useState(null);
   const [stores, setStores] = useState([]);
 
@@ -70,36 +76,62 @@ const Stores = ({navigation}) => {
     }
     
   }
+  const handleBack = () => {
+    navigation.navigate('home')
+  }
 
- 
 
   return (
     <View style={defaultStyle}>
         <View style={style.container}>
 
-            <Text>Veuillez choisir votre lieu de click and collect </Text>
-
-            {stores.map(store => (
+       <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
+            <Text style={style.title}>Votre point de livraison </Text>
+            <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
+                      <ArrowLeft fill="white"/>
+                    </TouchableOpacity>
+            </View>
+            
+            
+    <View style={{ width:"85%",marginTop:100, flex:1}}>
+    {selectedStore !== null && (
+                <View style={style.selection}>
+                    <Text style={{color:colors.color2, fontFamily:fonts.font2, paddingVertical:5}}>Votre établissement de livraison :</Text>
+                    <View  style={style.touchable}>
+                    <Text style={style.text} >{selectedStore.nom_magasin}</Text>
+                    {
+                    selectedStore.adresse_magasin && <Text style={style.text}>{selectedStore.adresse_magasin}</Text>
+                    }
+                    </View>
+                    <View style={{ paddingVertical:15}}>
+                      <Text style={{ color:colors.color3, fontSize:11}}>En choisissant cet établissement, vous indiquez au camion de la tournée où déposer votre commande</Text>
+                    </View>
+                    
+                    
+                </View>
+                
+            )}
+      <ScrollView style={{flexDirection:'column', paddingTop:20,borderTopWidth:1, borderBottomWidth:1, borderColor:colors.color5 }}>
+      { stores.map(store => (
                 <TouchableOpacity
                 key={store.storeId}
                 style={style.touchable}
                 onPress={() => handleStoreSelection(store)}
                 >
                 <Text style={style.text}>{store.nom_magasin}</Text>
-                <Text style={style.text}>{store.adresse_magasin}</Text>
+                {
+                  store.adresse_magasin && <Text style={style.text}>{store.adresse_magasin}</Text>
+                }
+                
                 </TouchableOpacity>
             ))}
             
-            {selectedStore !== null && (
-                <View style={style.selection}>
-                    <Text>Vous avez sélectionné le magasin :</Text>
-                    <Text>{selectedStore.nom_magasin}</Text>
-                    <Text>{selectedStore.adresse_magasin}</Text>
-                </View>
-                
-            )}
-
-            <Button
+      </ScrollView>
+ 
+    </View>
+            
+    <View style={{flexDirection:'column', alignItems:'flex-end', width:"100%"}}>
+    <Button
                         style={style.btn} 
                         textColor={'white'} 
                         disabled={selectedStore === "" }
@@ -107,8 +139,16 @@ const Stores = ({navigation}) => {
                             submitHandler()
                         }}
                         >
-                    VALIDER
+                    Créer son compte
             </Button>
+            
+    </View>
+    {/* <View style={{flexDirection:'column', alignItems:'flex-end', width:"100%"}}>
+    </View> */}
+    <TouchableOpacity onPress={() => navigation.navigate('login')}>
+    <Text style={{  marginHorizontal: 40, textDecorationLine:'underline', color:colors.color3}}>Vous avez déjà un compte ?</Text>
+            </TouchableOpacity>
+            
 
         </View>
         
@@ -119,30 +159,43 @@ const Stores = ({navigation}) => {
 
 const style = StyleSheet.create({
 container: {
+    flex:1, 
     height:"100%",
     justifyContent:'center', 
     alignItems:'center',
     gap: 20,
+    backgroundColor:colors.color1,
+    paddingVertical:10
 },
 touchable:{
-    backgroundColor:'gray',
+    backgroundColor:colors.color3,
     paddingVertical:15,
     paddingHorizontal:25,
     borderRadius:15,
-    alignItems:'center',
-    justifyContent:'center'
+    // alignItems:'center',
+    justifyContent:'center',
+    marginVertical:5
 },
 text:{
-    color:'white'
+    color:colors.color1,
+    textAlign:'left'
 },
 btn: {
-    backgroundColor: 'red',
-    margin: 20,
-    padding: 6,
+    backgroundColor:colors.color9,
+    marginHorizontal: 40,
+    marginTop:5,
+    width:200,
+    borderRadius:5
   },
 selection: {
-    justifyContent:'center', 
-    alignItems:'center'
+    //justifyContent:'center', 
+   // alignItems:'center'
+},
+title:{
+  color: "white",
+      fontFamily:fonts.font1,
+      fontSize:24,
+      width:"80%"
 }
 })
 
