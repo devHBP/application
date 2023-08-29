@@ -14,16 +14,21 @@ import FooterProfile from '../components/FooterProfile';
 import ModalePageOffre31 from '../components/ModalePageOffre';
 import ArrowLeft from '../SVG/ArrowLeft';
 import ProductCard from '../components/ProductCard';
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+
 
 
 const Offre31 = ({navigation}) => {
 
-  let API_BASE_URL = 'http://127.0.0.1:8080';
+  const API_BASE_URL_IOS = API_BASE_URL;
 
+
+if (__DEV__) {
   if (Platform.OS === 'android') {
-    if (__DEV__) {
-        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-    } 
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  
+  }
 }
 
   const [offre31Products, setOffre31ProductNames] = useState([]);

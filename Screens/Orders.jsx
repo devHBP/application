@@ -9,21 +9,26 @@ import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
 import TextTicker from 'react-native-text-ticker'
 
+import {API_BASE_URL, API_BASE_URL_ANDROID} from '@env';
+
+
 
 //call Api
 import { getStoreById } from '../CallApi/api';
 import ArrowDown from '../SVG/ArrowDown';
 
 const Orders = ({navigation}) => {
+  //pour les test
+  const API_BASE_URL_IOS = API_BASE_URL;
 
-    let API_BASE_URL = 'http://127.0.0.1:8080';
 
-    if (Platform.OS === 'android') {
-      if (__DEV__) {
-          API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-      } 
+if (__DEV__) {
+  if (Platform.OS === 'android') {
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  
   }
-
+}
     const user = useSelector((state) => state.auth.user);
     const userId = user.userId
     const [store, setStore] = useState(null); 
@@ -33,7 +38,6 @@ const Orders = ({navigation}) => {
     const [lastOrder, setLastOrder] = useState(null);
     const [previousOrders, setPreviousOrders] = useState([]);
     const [ hasOrder, setHasOrder] = useState(false)
-
     const [isDisabled, setDisabled] = useState(true); // bouton "renouveler"
 
 
@@ -63,38 +67,61 @@ const Orders = ({navigation}) => {
       }, [cancelledOrder]);
     
       //recupérer toutes les commandes du user
-      const allMyOrders = async () => {
-        try {
-          const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}`);
-          const orders = response.data;
-          console.log('orders', orders)
-          if(orders.length > 0){
-            //console.log('commande presente')
-            setHasOrder(true)
-          } else {
-            console.log('pas de commande')
-          }
-          const ordersWithDetails = await Promise.all(orders.map(async order => {
-            const productResponse = await axios.get(`${API_BASE_URL}/getOrderProducts/${order.orderId}`);
-            const products = productResponse.data;
-            const store = await getStoreById(order.storeId);
-            //console.log(store)
-            //console.log(products)
-            return { ...order, products, store };
-          }));
+    //   const allMyOrders = async () => {
+    //     try {
+    //       const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}`);
+    //       const orders = response.data;
+    //       //console.log('orders', orders)
+    //       if(orders.length > 0){
+    //         //console.log('commande presente')
+    //         setHasOrder(true)
+    //       } else {
+    //         console.log('pas de commande')
+    //       }
+    //       const ordersWithDetails = await Promise.all(orders.map(async order => {
+    //         const productResponse = await axios.get(`${API_BASE_URL}/getOrderProducts/${order.orderId}`);
+    //         const products = productResponse.data;
+    //         const store = await getStoreById(order.storeId);
+    //         //console.log(store)
+    //         //console.log(products)
+    //         return { ...order, products, store };
+    //       }));
       
           
-          //setOrders(ordersWithDetails);
-          //setOrders(ordersWithDetails.sort((a, b) => new Date(b.orderId) - new Date(a.orderId)));
-          const sortedOrders = ordersWithDetails.sort((a, b) => new Date(b.orderId) - new Date(a.orderId));
+    //       //setOrders(ordersWithDetails);
+    //       //setOrders(ordersWithDetails.sort((a, b) => new Date(b.orderId) - new Date(a.orderId)));
+    //       const sortedOrders = ordersWithDetails.sort((a, b) => new Date(b.orderId) - new Date(a.orderId));
+    //       setLastOrder(sortedOrders[0]);
+    //       setPreviousOrders(sortedOrders.slice(1));
+          
+    //     } catch (error) {
+    //       console.error("Une erreur s'est produite :", error);
+    //     }
+    //   };
+    
+    const allMyOrders = async () => {
+        try {
+          const response = await axios.get(`${API_BASE_URL}/ordersOfUserWithProducts/${userId}`);
+          const ordersWithDetails = response.data;
+            console.log(response.data)
+            if(ordersWithDetails.length > 0){
+                setHasOrder(true)
+            }
+
+            const enrichedOrdersWithStore = await Promise.all(ordersWithDetails.map(async order => {
+                const store = await getStoreById(order.storeId);
+                return { ...order, store };
+              }));
+
+          const sortedOrders = enrichedOrdersWithStore.sort((a, b) => new Date(b.orderId) - new Date(a.orderId));
           setLastOrder(sortedOrders[0]);
           setPreviousOrders(sortedOrders.slice(1));
-          
+      
         } catch (error) {
           console.error("Une erreur s'est produite :", error);
         }
       };
-    
+      
       useEffect(() => {
         allMyOrders();
       }, []);
@@ -114,6 +141,7 @@ const Orders = ({navigation}) => {
 
     //autres commandes
     const renderOrder = (item, index, lastOrder = false) => {
+
         return (
             <View style={lastOrder ? style.lastOrderContainer : { borderBottomWidth: 1, borderBottomColor: '#ccc', backgroundColor:colors.color6, marginVertical:5}}>
                 <TouchableOpacity

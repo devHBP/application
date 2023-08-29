@@ -16,6 +16,7 @@ import Avatar from '../SVG/Avatar';
 import { modifyUser } from '../CallApi/api';
 import ArrowLeft from '../SVG/ArrowLeft';
 import Remove from '../SVG/Remove';
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
 
 //options des input
 const inputOptions = {
@@ -27,14 +28,16 @@ const inputOptions = {
 
 const Profile =  ({navigation}) => {
 
-  let API_BASE_URL = 'http://127.0.0.1:8080';
+  const API_BASE_URL_IOS = API_BASE_URL;
 
-  if (Platform.OS === 'android') {
-    if (__DEV__) {
-        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-    } 
-}
 
+  if (__DEV__) {
+    if (Platform.OS === 'android') {
+        API_BASE_URL = API_BASE_URL_ANDROID;
+    } else if (Platform.OS === 'ios') {
+        API_BASE_URL = API_BASE_URL_IOS;  
+    }
+  }
   const [stores, setStores] = useState([]);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
@@ -101,7 +104,7 @@ const Profile =  ({navigation}) => {
               }
               // Filtrer les stores en fonction du rôle de l'utilisateur
               const filteredStores = response.data.filter(store => ROLE_STORES[user.role].includes(store.storeId));
-              console.log('filteredStores', filteredStores);
+              //console.log('filteredStores', filteredStores);
               setStores(filteredStores);
           } else {
               console.error("Réponse inattendue de l'API.");

@@ -61,13 +61,13 @@ const Main = () => {
 
       return (
         <NavigationContainer linking={linking}>
-            <Stack.Navigator initialRouteName='login' screenOptions={{headerShown:false}}>
+            <Stack.Navigator initialRouteName='stores' screenOptions={{headerShown:false}}>
                 {/* <Stack.Screen name='app' component={App}/> */}
                 <Stack.Screen name='login' component={Login}/>
                 <Stack.Screen name='signup' component={Signup}/>
                 <Stack.Screen name="stores" component={Stores}/>
                 <Stack.Screen name='home' component={Home}/>
-                <Stack.Screen name='loaderhome' component={LoaderHome}/>
+                {/* <Stack.Screen name='loaderhome' component={LoaderHome}/> */}
                     {/*  Formules  */}
                     <Stack.Screen name='formulesandwich' component={FormuleSandwich}/>
                     <Stack.Screen name='formulepoke' component={FormulePoke}/>

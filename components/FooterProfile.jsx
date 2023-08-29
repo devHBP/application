@@ -8,16 +8,24 @@ import { useSelector} from 'react-redux'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import Home from '../SVG/Home'
+import Orders from '../SVG/Orders'
+import Cart from '../SVG/Cart'
+import Profile from '../SVG/Profile'
 
 const FooterProfile = () => {
+ //pour les test
+ const API_BASE_URL_IOS = API_BASE_URL;
 
-  let API_BASE_URL = 'http://127.0.0.1:8080';
 
-  if (Platform.OS === 'android') {
-    if (__DEV__) {
-        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-    } 
-}
+ if (__DEV__) {
+   if (Platform.OS === 'android') {
+       API_BASE_URL = API_BASE_URL_ANDROID;
+   } else if (Platform.OS === 'ios') {
+       API_BASE_URL = API_BASE_URL_IOS;  // Vous devez définir cette variable
+   }
+ }
 
   //on utilise ici useNavigation et non pas navigation car le footer n'est pas dans la pile de screens
   const navigation = useNavigation()
@@ -144,10 +152,11 @@ const FooterProfile = () => {
       {/* <Icon name="shopping-cart" size={30} color="#000" style={style.icon} onPress={openCart}/> */}
 
       <TouchableOpacity onPress={openHome}>
-      <Image
+        <Home />
+      {/* <Image
          source={require('../assets/home.png')} // Remplacez 'my-image' par le nom de votre image
          style={{ width: 28, height: 30, resizeMode:'contain' }} // Remplacez ces valeurs par les dimensions souhaitées
-      />
+      /> */}
       </TouchableOpacity> 
        
       <View style={style.badgeContainer}>
@@ -156,11 +165,12 @@ const FooterProfile = () => {
         <Badge size={16} style={{...style.badge, backgroundColor: badgeColor}}></Badge>
       )}
       <TouchableOpacity onPress={openOrders}>
-        <Image
+        {/* <Image
           source={require('../assets/commande.png')} // Remplacez 'my-image' par le nom de votre image
           style={{ width: 23, height: 28, resizeMode:'stretch' }}
            // Remplacez ces valeurs par les dimensions souhaitées
-        />
+        /> */}
+        <Orders />
       </TouchableOpacity>
       </View>
 
@@ -169,18 +179,20 @@ const FooterProfile = () => {
             {totalQuantity}
           </Badge>
         <TouchableOpacity onPress={openCart}>
-        <Image
+        {/* <Image
           source={require('../assets/panier.png')} // Remplacez 'my-image' par le nom de votre image
           style={{ width: 25, height: 28, resizeMode:'stretch'  }} // Remplacez ces valeurs par les dimensions souhaitées
-        />
+        /> */}
+        <Cart />
       </TouchableOpacity>
       </View>
 
       <TouchableOpacity onPress={openProfile}>
-      <Image
+      {/* <Image
          source={require('../assets/profile.png')} // Remplacez 'my-image' par le nom de votre image
          style={{ width: 20, height: 27, resizeMode:'contain' }} // Remplacez ces valeurs par les dimensions souhaitées
-      />
+      /> */}
+      <Profile />
       </TouchableOpacity>
     </View>
   )
@@ -205,14 +217,14 @@ const style = StyleSheet.create({
     },
     badge: {
       position: 'absolute',
-      top: -10,
-      right: -10,  
+      top: -5,
+      right: -5,  
       zIndex:99
      },
      badgeCart: {
       position: 'absolute',
-      top: -10,
-      right: -10,  
+      top: -5,
+      right: -5,  
       zIndex:99,
       backgroundColor:colors.color2
      },

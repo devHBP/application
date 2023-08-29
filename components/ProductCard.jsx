@@ -8,7 +8,8 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { defaultStyle, fonts, colors} from '../styles/styles'
 import ModaleOffre31 from '../components/ModaleOffre31';
 import Svg, { Path } from 'react-native-svg';
-
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import FastImage from 'react-native-fast-image'
 
 
 //call API
@@ -50,15 +51,16 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, show
   }, 0);
     //console.log(productQuantity)
 
-    // const baseUrl = 'http://127.0.0.1:8080';
+    //pour les test
+  const API_BASE_URL_IOS = API_BASE_URL;
 
 
-    let API_BASE_URL = 'http://127.0.0.1:8080';
-
+  if (__DEV__) {
     if (Platform.OS === 'android') {
-      if (__DEV__) {
-          API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-      } 
+        API_BASE_URL = API_BASE_URL_ANDROID;
+    } else if (Platform.OS === 'ios') {
+        API_BASE_URL = API_BASE_URL_IOS;  // Vous devez définir cette variable
+    }
   }
 
 
@@ -126,7 +128,7 @@ const incrementhandler = async () => {
     <View style={style.card_container}>
          <View style={style.image_container}>
          
-          <Image 
+          {/* <Image 
               // source={image.uri}
               source={{ uri: `${API_BASE_URL}/${image}` }}
               style={{
@@ -137,7 +139,16 @@ const incrementhandler = async () => {
                       // borderTopRightRadius:10,
                       }}
               
-          />
+          /> */}
+          <FastImage
+            style={{ width: "100%", height: 140 }}
+            source={{
+                uri: `${API_BASE_URL}/${image}` ,
+                // headers: { Authorization: 'someAuthToken' },
+                priority: FastImage.priority.high,
+            }}
+            resizeMode={FastImage.resizeMode.cover}
+        />
           {currentStock === 0 && (
             <View style={style.overlay} />
             )}

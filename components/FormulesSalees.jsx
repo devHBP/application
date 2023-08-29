@@ -2,6 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { styles} from '../styles/home'; 
 import { useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 const FormulesSalees = () => {
 
@@ -51,6 +52,14 @@ const FormulesSalees = () => {
                             source={require('../assets/Formule26.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
+                            {/* <FastImage
+                            style={{ width: 315, height: 200,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule26.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                    resizeMode={FastImage.resizeMode.cover}
+                /> */}
                    <Image
                             source={require('../assets/halles_solanid.png')} 
                             style={styles.pastilleSolanid}
@@ -68,6 +77,14 @@ const FormulesSalees = () => {
                             source={require('../assets/Formule36.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
+                 {/* <FastImage
+                            style={{ width: 315, height: 200,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule36.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                    resizeMode={FastImage.resizeMode.cover}
+                /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Sandwichs</Text>
                         <Text style={styles.textFormule}>Un sandwich, un dessert et une boisson</Text>
@@ -80,6 +97,15 @@ const FormulesSalees = () => {
                             source={require('../assets/Formule25.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
+                    {/* <FastImage
+                            style={{ width: 315, height: 200,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule25.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
+                            
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Salades</Text>
                         <Text style={styles.textFormule}>Une salade, un dessert et une boisson</Text>
@@ -92,6 +118,14 @@ const FormulesSalees = () => {
                             source={require('../assets/Formule2.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
+                    {/* <FastImage
+                            style={{ width: 315, height: 200,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule2.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Pizzas</Text>
                         <Text style={styles.textFormule}>Une pizza, un dessert et une boisson</Text>
@@ -104,6 +138,14 @@ const FormulesSalees = () => {
                             source={require('../assets/Formule32.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
+                {/* <FastImage
+                            style={{ width: 315, height: 200,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule32.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Wraps</Text>
                         <Text style={styles.textFormule}>Un wrap, un dessert et une boisson</Text>
@@ -116,6 +158,14 @@ const FormulesSalees = () => {
                             source={require('../assets/Formule28.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
+                    {/* <FastImage
+                            style={{ width: 315, height: 200,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule28.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Pains Bagnats</Text>
                         <Text style={styles.textFormule}>Un pain bagnat, un dessert et une boisson</Text>
@@ -128,6 +178,14 @@ const FormulesSalees = () => {
                             source={require('../assets/Formule27.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
+                    {/* <FastImage
+                            style={{ width: 315, height: 200,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule27.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Burgers</Text>
                         <Text style={styles.textFormule}>Un burger, un dessert et une boisson</Text>
@@ -140,6 +198,14 @@ const FormulesSalees = () => {
                             source={require('../assets/Formule16.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
+                    {/* <FastImage
+                            style={{ width: 315, height: 200,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule16.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Croques</Text>
                         <Text style={styles.textFormule}>Un croque, un dessert et une boisson</Text>
@@ -152,6 +218,14 @@ const FormulesSalees = () => {
                             source={require('../assets/Formule55.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
+                    {/* <FastImage
+                            style={{ width: 315, height: 200,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule55.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Paninis</Text>
                         <Text style={styles.textFormule}>Un panini, un dessert et une boisson</Text>
@@ -164,6 +238,14 @@ const FormulesSalees = () => {
                             source={require('../assets/Formule22.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
+                    {/* <FastImage
+                            style={{ width: 315, height: 200,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule22.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Quiches</Text>
                         <Text style={styles.textFormule}>Un panini, un dessert et une boisson</Text>

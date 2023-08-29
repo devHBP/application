@@ -10,6 +10,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
 import FooterProfile from '../../components/FooterProfile';
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
 
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
@@ -21,19 +22,22 @@ import ProductCard from '../../components/ProductCard';
 
 const FormuleCroques = ({navigation}) => {
 
-  let API_BASE_URL = 'http://127.0.0.1:8080';
+   //pour les test
+   const API_BASE_URL_IOS = API_BASE_URL;
 
-  if (Platform.OS === 'android') {
-    if (__DEV__) {
-        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-    } 
-}
 
+   if (__DEV__) {
+     if (Platform.OS === 'android') {
+         API_BASE_URL = API_BASE_URL_ANDROID;
+     } else if (Platform.OS === 'ios') {
+         API_BASE_URL = API_BASE_URL_IOS;  
+     }
+   }
     const [products, setProducts] = useState([]);
     const [ desserts, setDesserts] = useState([]);
     const [ boissons, setBoissons] = useState([]);
     const [dessertSwitch, setDessertSwitch] = useState(true);
-    const [selectedSandwich, setSelectedSandwich] = useState(null);
+    const [selectedProduct, setSelectedProduct] = useState(null);
     const [selectedDessert, setSelectedDessert] = useState(null);
     const [selectedBoisson, setSelectedBoisson] = useState(null);
     const [prix, setTotalPrice] = useState(0);
@@ -43,7 +47,6 @@ const FormuleCroques = ({navigation}) => {
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
-    //console.log('cart', cart)
 
     const handleBack = () => {
         navigation.navigate('home')
@@ -117,29 +120,21 @@ const FormuleCroques = ({navigation}) => {
         
       }, []);
 
-    //   const handleSwitchToggle = () => {
-    //     setDessertSwitch(!dessertSwitch);
-    //     if (dessertSwitch) { // If the switch is being turned off
-    //         setSelectedDessert(null); // Deselect the dessert
-    //     }
-    // };
-      
-
     const handleSandwich = async  (product) => {
 
       await checkProductAvailability(product, checkStockForSingleProduct, cart);
 
 
-      if (selectedSandwich?.productId === product.productId) {
-          setSelectedSandwich(null); 
+      if (selectedProduct?.productId === product.productId) {
+          setSelectedProduct(null); 
           setProductIds(productIds.filter(productId => productId !== product.productId));
       } else {
-          setSelectedSandwich(product); 
+          setSelectedProduct(product); 
           setProductIds([...productIds, product.productId]);
       }
   }
   const handleDessert = (product) => {
-    if(!selectedSandwich ) {
+    if(!selectedProduct ) {
       Toast.show({
           type: 'error',
           text1: 'Attention',
@@ -156,7 +151,7 @@ const FormuleCroques = ({navigation}) => {
     }
   }
   const handleBoisson = (product) => {
-    if(!selectedSandwich ) {
+    if(!selectedProduct ) {
       Toast.show({
           type: 'error',
           text1: 'Attention',
@@ -177,13 +172,13 @@ const FormuleCroques = ({navigation}) => {
 
       useEffect(() => {
         calculateTotalPrice();
-      }, [selectedSandwich, selectedDessert,selectedBoisson, dessertSwitch]);
+      }, [selectedProduct, selectedDessert,selectedBoisson, dessertSwitch]);
       
       const calculateTotalPrice = () => {
         let prix = 0;
         
-        if (selectedSandwich) {
-          prix += parseFloat(selectedSandwich.prix_unitaire) || 0;
+        if (selectedProduct) {
+          prix += parseFloat(selectedProduct.prix_unitaire) || 0;
         }
       
         if (selectedDessert) {
@@ -199,8 +194,9 @@ const FormuleCroques = ({navigation}) => {
 
     const handleFormuleSelection = () => {
       const formule = {
+        id: `formule-${Date.now()}`,
         type: 'formule',
-        option1: selectedSandwich,
+        option1: selectedProduct,
         option2: selectedDessert ? selectedDessert : null,
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
@@ -209,7 +205,7 @@ const FormuleCroques = ({navigation}) => {
         productIds: productIds,
         qty: 1,
       }
-      console.log('formule', formule);
+      //console.log('formule', formule);
       dispatch(addToCart(formule));
       navigation.navigate('panier')
     }
@@ -265,11 +261,11 @@ const FormuleCroques = ({navigation}) => {
                       <TouchableOpacity
                         style={[
                           style.checkButton,
-                          selectedSandwich?.productId === product.productId
+                          selectedProduct?.productId === product.productId
                         ]}
                         onPress={() => handleSandwich(product)}
                       >
-                        {selectedSandwich?.productId === product.productId && <View style={style.checkInnerCircle} />}
+                        {selectedProduct?.productId === product.productId && <View style={style.checkInnerCircle} />}
                       </TouchableOpacity>
                     </TouchableOpacity>
                   </View>    
@@ -287,7 +283,7 @@ const FormuleCroques = ({navigation}) => {
                 {desserts.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
-                     disabled={!selectedSandwich || !dessertSwitch} >
+                     disabled={!selectedProduct || !dessertSwitch} >
                        {/* <Image
                           source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
@@ -333,7 +329,7 @@ const FormuleCroques = ({navigation}) => {
                 {boissons.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
-                     disabled={!selectedSandwich || !dessertSwitch} >
+                     disabled={!selectedProduct || !dessertSwitch} >
                        {/* <Image
                           source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
@@ -375,19 +371,19 @@ const FormuleCroques = ({navigation}) => {
         <View>
           <View style={style.bandeauFormule}>
           <Text style={{ fontWeight:"bold"}}>Prix de la formule</Text>
-          {selectedSandwich && typeof prix === 'number' && <Text>{prix.toFixed(2)} €</Text>}
+          {selectedProduct && typeof prix === 'number' && <Text>{prix.toFixed(2)} €</Text>}
           </View>
           <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
             <Text>Avec</Text><Image source={require('../../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
-          {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:"bold"}}>{(prix*0.8).toFixed(2)} €</Text>}
+          {selectedProduct && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:"bold"}}>{(prix*0.8).toFixed(2)} €</Text>}
           </View>
         </View>
       <Button
                 style={style.btn}
                 textColor={'white'} 
-                disabled={!selectedSandwich}
+                disabled={!selectedProduct}
                 onPress={handleFormuleSelection}
                 >Choisir cette formule</Button>
     </View>

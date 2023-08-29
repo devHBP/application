@@ -4,16 +4,23 @@ import { styles} from '../styles/home';
 import popupData from '../Datas/datas.json';
 import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import FastImage from 'react-native-fast-image';
+
 
 const LinkOffres = ({}) => {
 
-  let API_BASE_URL = 'http://127.0.0.1:8080';
+   //pour les test
+   const API_BASE_URL_IOS = API_BASE_URL;
 
-  if (Platform.OS === 'android') {
-    if (__DEV__) {
-        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-    } 
-}
+
+   if (__DEV__) {
+     if (Platform.OS === 'android') {
+         API_BASE_URL = API_BASE_URL_ANDROID;
+     } else if (Platform.OS === 'ios') {
+         API_BASE_URL = API_BASE_URL_IOS;  // Vous devez définir cette variable
+     }
+   }
 
     const navigation = useNavigation();
 
@@ -79,6 +86,15 @@ const LinkOffres = ({}) => {
                 source={require('../assets/antigaspi.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
                 />
+          
+         {/* <FastImage
+          style={{ width: 315, height: 200, borderTopLeftRadius:10, borderTopRightRadius:10  }}
+          source={{
+            uri: `${API_BASE_URL}/Images/antigaspi.jpg`,
+              priority: FastImage.priority.high,
+          }}
+          resizeMode={FastImage.resizeMode.cover}
+      /> */}
         <View style={styles.container_offre_antigaspi}>
             <View style={styles.text_antigaspi}>
             <Text style={styles.texte_offre} >L'offre </Text>
@@ -102,6 +118,15 @@ const LinkOffres = ({}) => {
                 source={require('../assets/Croissant_offre31.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
                 />
+
+      {/* <FastImage
+                style={{ width: 315, height: 200, borderTopLeftRadius:10, borderTopRightRadius:10  }}
+                source={{
+                  uri: `${API_BASE_URL}/Images/Croissant_offre31.jpg`,
+                    priority: FastImage.priority.high,
+                }}
+          resizeMode={FastImage.resizeMode.cover}
+      /> */}
         <View style={styles.container_offre_antigaspi}>
             <View style={styles.text_offre31}>
             <Text style={styles.texte_offre31} >Profitez d'un produit</Text>
@@ -120,10 +145,18 @@ const LinkOffres = ({}) => {
 
         {/* collaboration Les Halles Solanid */}
         <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={handleHallesSolanid}>
-        <Image
+        {/* <Image
                 source={require('../assets/fond_halles.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
-                />
+                /> */}
+                <FastImage
+                style={{ width: 315, height: 200, borderTopLeftRadius:10, borderTopRightRadius:10  }}
+                source={{
+                  uri: `${API_BASE_URL}/Images/fond_halles.jpg`,
+                    priority: FastImage.priority.high,
+                }}
+                resizeMode={FastImage.resizeMode.cover}
+            />
         <View style={styles.container_offre_antigaspi}>
             <View style={styles.text_offre31}>
             <Text style={styles.texte_offre31} >Un repas sain avec</Text>
@@ -134,6 +167,7 @@ const LinkOffres = ({}) => {
                 source={require('../assets/halles_solanid.png')}
                 style={{ width:60, resizeMode:'contain'}}
             />
+            
             
             </View>
         </View>
@@ -146,6 +180,14 @@ const LinkOffres = ({}) => {
                 source={require('../assets/fond_halles.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
                 />
+        {/* <FastImage
+                style={{ width: 315, height: 200, borderTopLeftRadius:10, borderTopRightRadius:10  }}
+                source={{
+                  uri: `${API_BASE_URL}/Images/fond_halles.jpg`,
+                    priority: FastImage.priority.high,
+                }}
+                resizeMode={FastImage.resizeMode.cover}
+            /> */}
         <View style={styles.container_offre_antigaspi}>
             <View style={styles.text_offre31}>
             <Text style={styles.texte_offre31} >  Découvrez</Text>

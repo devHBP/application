@@ -23,15 +23,21 @@ import LoaderHome from './LoaderHome';
 import SearchModal from '../components/SearchModal';
 import ArrowLeft from '../SVG/ArrowLeft';
 
+import {API_BASE_URL, API_BASE_URL_ANDROID} from '@env';
+import Search from '../SVG/Search';
 
 const Home =  ({navigation}) => {
+ 
+  //pour les test
+  const API_BASE_URL_IOS = API_BASE_URL;
 
-  let API_BASE_URL = 'http://127.0.0.1:8080';
 
+if (__DEV__) {
   if (Platform.OS === 'android') {
-    if (__DEV__) {
-        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-    } 
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  
+  }
 }
 
   const [stores, setStores] = useState([]);
@@ -247,10 +253,11 @@ const ongletButtonHandler = (onglet) => {
             /> */}
             <TouchableOpacity  onPress={() => setIsModalVisible(true)} activeOpacity={0.8} style={{backgroundColor:colors.color3, borderRadius:50, width:50, height:50, justifyContent: 'center', 
                  alignItems: 'center', }}>                           
-                <Image
+                {/* <Image
                   source={require('../assets/search.png')} // Remplacez 'my-image' par le nom de votre image
                   style={{ width: 30, height: 30, resizeMode:'cover' }} // Remplacez ces valeurs par les dimensions souhaitées
-                />
+                /> */}
+                <Search />
                 </TouchableOpacity> 
                 
                 <SearchModal

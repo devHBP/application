@@ -9,10 +9,21 @@ import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
 
 const FormulePetitDejeuner = ({navigation}) => {
 
-  const baseUrl = 'http://127.0.0.1:8080';
+   //pour les test
+   const API_BASE_URL_IOS = API_BASE_URL;
+
+
+   if (__DEV__) {
+     if (Platform.OS === 'android') {
+         API_BASE_URL = API_BASE_URL_ANDROID;
+     } else if (Platform.OS === 'ios') {
+         API_BASE_URL = API_BASE_URL_IOS;  
+     }
+   }
 
     const [products, setProducts] = useState([]);
     const [ desserts, setDesserts] = useState([]);
@@ -221,7 +232,7 @@ const FormulePetitDejeuner = ({navigation}) => {
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}>
                        <Image
-                          source={{ uri: `${baseUrl}/${product.image}` }}
+                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
                           style={style.sandwichImage}
                         />
                       <Text>{product.libelle}</Text>

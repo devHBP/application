@@ -2,6 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
 import React from 'react'
 import { styles} from '../styles/home'; 
 import { useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
 
 const EnvieSalee = () => {
 
@@ -43,6 +44,14 @@ const EnvieSalee = () => {
                             source={require('../assets/Formule36.jpg')} 
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
                             />
+                    {/* <FastImage
+                            style={{ width: 200, height: 234,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule36.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                    resizeMode={FastImage.resizeMode.cover}
+                /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Sandwichs</Text>
                     </View>
@@ -56,6 +65,14 @@ const EnvieSalee = () => {
                         source={require('../assets/Formule2.jpg')} 
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
                     />
+                    {/* <FastImage
+                            style={{ width: 200, height: 85,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule2.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Pizzas</Text>
                     </View>
@@ -65,6 +82,14 @@ const EnvieSalee = () => {
                         source={require('../assets/Formule32.jpg')} 
                         style={{ width: 200, height: 80, resizeMode:'cover' }}
                     />
+                    {/* <FastImage
+                            style={{ width: 200, height: 80,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule32.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Wraps</Text>
                     </View>
@@ -78,6 +103,14 @@ const EnvieSalee = () => {
                             source={require('../assets/Formule26.jpg')} 
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
                             />
+                    {/* <FastImage
+                            style={{ width: 200, height: 234,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule26.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Salades</Text>
                     </View>
@@ -90,6 +123,14 @@ const EnvieSalee = () => {
                         source={require('../assets/Formule27.jpg')} 
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
                     />
+                    {/* <FastImage
+                            style={{ width: 200, height: 85,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule27.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Burgers</Text>
                     </View>
@@ -101,6 +142,14 @@ const EnvieSalee = () => {
                         source={require('../assets/Formule55.jpg')} 
                         style={{ width: 200, height: 80, resizeMode:'cover' }}
                     />
+                    {/* <FastImage
+                            style={{ width: 200, height: 80,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule55.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Paninis</Text>
                     </View>
@@ -113,6 +162,14 @@ const EnvieSalee = () => {
                             source={require('../assets/Formule28.jpg')} 
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
                             />
+                    {/* <FastImage
+                            style={{ width: 200, height: 234,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule28.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Pains Bagnats</Text>
                     </View>
@@ -126,6 +183,14 @@ const EnvieSalee = () => {
                         source={require('../assets/Formule22.jpg')} 
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
                     />
+                {/* <FastImage
+                            style={{ width: 200, height: 85,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule22.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Quiches</Text>
                     </View>
@@ -135,6 +200,14 @@ const EnvieSalee = () => {
                         source={require('../assets/Formule16.jpg')} 
                         style={{ width: 200, height: 80, resizeMode:'cover' }}
                     />
+                    {/* <FastImage
+                            style={{ width: 200, height: 80,  }}
+                            source={{
+                            uri: `${API_BASE_URL}/Images/Formule16.jpg`,
+                                priority: FastImage.priority.high,
+                            }}
+                            resizeMode={FastImage.resizeMode.cover}
+                    /> */}
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Croques</Text>
                     </View>

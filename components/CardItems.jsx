@@ -3,16 +3,22 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { fonts, colors} from '../styles/styles'
 import Svg, { Path } from 'react-native-svg';
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+
 
 const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty, prix_unitaire, isFree, freeCount, removehandler }) => {
 
-  let API_BASE_URL = 'http://127.0.0.1:8080';
+ //pour les test
+ const API_BASE_URL_IOS = API_BASE_URL;
 
-  if (Platform.OS === 'android') {
-    if (__DEV__) {
-        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-    } 
-}
+
+ if (__DEV__) {
+   if (Platform.OS === 'android') {
+       API_BASE_URL = API_BASE_URL_ANDROID;
+   } else if (Platform.OS === 'ios') {
+       API_BASE_URL = API_BASE_URL_IOS;  // Vous devez définir cette variable
+   }
+ }
     //console.log('prix_unitaire', prix)
 
   return (

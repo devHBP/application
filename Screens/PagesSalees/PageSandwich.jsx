@@ -15,18 +15,23 @@ import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
 
 //fonctions
 // import { decrementhandler } from '../../Fonctions/fonctions'
 
 const PageSandwich = ({navigation}) => {
 
-  let API_BASE_URL = 'http://127.0.0.1:8080';
+  //pour les test
+  const API_BASE_URL_IOS = API_BASE_URL;
 
+
+if (__DEV__) {
   if (Platform.OS === 'android') {
-    if (__DEV__) {
-        API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-    } 
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  
+  }
 }
 
     const [sandwichs, setSandwichs] = useState([]); // Ajoutez cette ligne

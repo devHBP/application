@@ -11,6 +11,9 @@ import { styles } from '../styles/home';
 
 //import { pickerSelectStyles } from '../styles/home';
 
+import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import Location from '../SVG/Location';
+
 const StorePicker = () => {
 
     const [stores, setStores] = useState([]);
@@ -20,13 +23,17 @@ const StorePicker = () => {
     const selectedStore = useSelector((state) => state.auth.selectedStore)
     //console.log('select', selectedStore)
 
-    let API_BASE_URL = 'http://127.0.0.1:8080';
+  //pour les test
+  const API_BASE_URL_IOS = API_BASE_URL;
 
-    if (Platform.OS === 'android') {
-      if (__DEV__) {
-          API_BASE_URL = 'http://10.0.2.2:8080'; // Adresse pour l'émulateur Android en mode développement
-      } 
+
+if (__DEV__) {
+  if (Platform.OS === 'android') {
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  // Vous devez définir cette variable
   }
+}
 
   useEffect(() => {
     if (user && user.role) {
@@ -88,10 +95,11 @@ const StorePicker = () => {
     return (
         <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
             <View style={{ flexDirection:'row', gap:5, alignItems:'center', }}>
-                <Image
+                {/* <Image
                     source={require('../assets/store.png')} 
                     style={{ width: 24, height: 25, resizeMode:'contain' }}
-                />
+                /> */}
+                <Location />
                 <View >   
                     {
                         user.role == 'SUNcollaborateur' && <Text style={{...styles.textPickerDate, textAlign:'center'}}>Livraison</Text>
