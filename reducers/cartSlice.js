@@ -101,16 +101,16 @@ const cartSlice = createSlice({
       }
     },
     removeFromCart: (state, action) => {
-      console.log('cart avant suppression', state.cart);
-      console.log("Removing one product:", action.payload.productId);
+      //console.log('cart avant suppression', state.cart);
+      //console.log("Removing one product:", action.payload.productId);
       const productId = action.payload.productId;
       state.cart = state.cart.filter((item) => !item.productId || item.productId !== productId);
-      console.log('cart apres suppression', state.cart);
+      //console.log('cart apres suppression', state.cart);
     },
     
   removeMultipleFromCart: (state, action) => {
       const formuleId = action.payload.formuleId;
-      console.log("Removing formule:", formuleId);
+      //console.log("Removing formule:", formuleId);
       state.cart = state.cart.filter((item) => !(item.type === 'formule' && item.id === formuleId));
   },  
   
