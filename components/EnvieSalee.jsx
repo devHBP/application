@@ -11,6 +11,9 @@ const EnvieSalee = () => {
     const openPageSandwich = () => {
         navigation.navigate('sandwich')
     }
+    const openPagePizza = () => {
+        navigation.navigate('pizza')
+    }
     const openPageWrap = () => {
         navigation.navigate('wrap')
     }
@@ -60,7 +63,7 @@ const EnvieSalee = () => {
             {/* Wraps et pizza */}
             <TouchableOpacity style={{marginRight:10, flexDirection:'column', gap:12}}  activeOpacity={0.8}>
                 
-                <TouchableOpacity>
+                <TouchableOpacity onPress={openPagePizza}>
                     <Image
                         source={require('../assets/Formule2.jpg')} 
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
