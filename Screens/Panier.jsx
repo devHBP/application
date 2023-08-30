@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios'
 import { updateCart, addToCart, addFreeProductToCart, updateCartTotal } from '../reducers/cartSlice';
 import { logoutUser} from '../reducers/authSlice';
-import { setNumeroCommande, setProducts } from '../reducers/orderSlice';
+import { setNumeroCommande, setProducts, setOrderId } from '../reducers/orderSlice';
 import CartItem from '../components/CardItems';
 import CardItemFormule from '../components/CardItemsFormule';
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -352,6 +352,9 @@ useEffect(() => {
           });
 
           console.log('response createOrder', response.data)
+          const orderId = response.data.orderId;
+          dispatch(setOrderId(orderId)); 
+
           return response.data;
         } catch (error) {
           console.error(error);
@@ -693,7 +696,6 @@ useEffect(() => {
                         alignSelf: 'center',
                       }} 
                   />
-                  // <Text>Loader</Text>
               ) : (
                   <>
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 30, paddingHorizontal: 30, justifyContent: 'space-between', width: "100%" }}>
