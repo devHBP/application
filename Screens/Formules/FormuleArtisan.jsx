@@ -10,14 +10,11 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
 import FooterProfile from '../../components/FooterProfile';
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 const FormuleArtisan = ({navigation}) => {
 
-  //pour les test
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
+ //pour les test
 if (__DEV__) {
   if (Platform.OS === 'android') {
       API_BASE_URL = API_BASE_URL_ANDROID;
@@ -344,12 +341,14 @@ if (__DEV__) {
           {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:"bold"}}>{(prix*0.8).toFixed(2)} €</Text>}
           </View>
         </View>
-      <Button
-                style={style.btn}
-                textColor={'white'} 
-                disabled={!selectedSandwich}
-                onPress={handleFormuleSelection}
-                >Choisir cette formule</Button>
+        <TouchableOpacity style={[
+        style.btn, 
+        !selectedSandwich ? style.disabledBtn : {}]}  
+        onPress={handleFormuleSelection} 
+        disabled={!selectedSandwich}
+        activeOpacity={selectedSandwich ? 0.2 : 0.8}>
+            <Text style={{color:colors.color6}}>Choisir cette formule</Text>
+      </TouchableOpacity>
     </View>
     <FooterProfile />
     </View> 

@@ -10,7 +10,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
 import FooterProfile from '../../components/FooterProfile';
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
@@ -23,16 +23,13 @@ import ProductCard from '../../components/ProductCard';
 const FormuleCroques = ({navigation}) => {
 
    //pour les test
-   const API_BASE_URL_IOS = API_BASE_URL;
-
-
-   if (__DEV__) {
-     if (Platform.OS === 'android') {
-         API_BASE_URL = API_BASE_URL_ANDROID;
-     } else if (Platform.OS === 'ios') {
-         API_BASE_URL = API_BASE_URL_IOS;  
-     }
-   }
+if (__DEV__) {
+  if (Platform.OS === 'android') {
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  
+  }
+}
     const [products, setProducts] = useState([]);
     const [ desserts, setDesserts] = useState([]);
     const [ boissons, setBoissons] = useState([]);
@@ -380,12 +377,14 @@ const FormuleCroques = ({navigation}) => {
           {selectedProduct && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:"bold"}}>{(prix*0.8).toFixed(2)} €</Text>}
           </View>
         </View>
-      <Button
-                style={style.btn}
-                textColor={'white'} 
-                disabled={!selectedProduct}
-                onPress={handleFormuleSelection}
-                >Choisir cette formule</Button>
+        <TouchableOpacity style={[
+        style.btn, 
+        !selectedProduct ? style.disabledBtn : {}]}  
+        onPress={handleFormuleSelection} 
+        disabled={!selectedProduct}
+        activeOpacity={selectedProduct ? 0.2 : 0.8}>
+            <Text style={{color:colors.color6}}>Choisir cette formule</Text>
+      </TouchableOpacity>
     </View>
     <FooterProfile />
     </View> 
