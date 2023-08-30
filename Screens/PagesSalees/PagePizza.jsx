@@ -38,7 +38,7 @@ const PagePizza = ({navigation}) => {
     const [totalPrice, setTotalPrice] = useState(0);
     const [productCount, setProductCount] = useState(0);
     const grandesIDs = [95]; 
-    const petitesIDs = [93]; 
+    const petitesIDs = [93, 96]; 
     const [selectedButton, setSelectedButton] = useState('petites');  
 
 
@@ -48,24 +48,33 @@ const PagePizza = ({navigation}) => {
 
     const cart = useSelector(state => state.cart.cart);
    
-    
-    const getProductQtyInCart = (productId) => {
-      const productInCart = cart.find(item => item.productId === productId);
-      return productInCart ? productInCart.qty : 0;
-    };
 
-  useEffect(() => {
-      const totalPrice = products.reduce((acc, product) => {
-        const qtyInCart = getProductQtyInCart(product.productId); 
-        return acc + (qtyInCart * product.prix_unitaire);
-      }, 0);
-      setTotalPrice(totalPrice);
-    }, [products, cart]);
-    
     useEffect(() => {
-      const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
-      setProductCount(totalCount);
-    }, [cart]);
+      //je filtre sur les produits "Pizza"
+      const shouldIncludeProduct = (product) => {
+          return product.libelle.includes("Pizza"); // C'est un exemple, adaptez selon vos besoins
+      };
+  
+      // Filtrez d'abord les produits du panier
+      const relevantProducts = cart.filter(shouldIncludeProduct);
+  
+      // Puis calculez le prix total pour ces produits
+      const totalPrice = relevantProducts.reduce((acc, product) => {
+          if(product.isFree) {
+              return acc;
+          }
+          return acc + (product.qty * parseFloat(product.prix_unitaire));
+      }, 0);
+  
+      setTotalPrice(totalPrice);
+  }, [products, cart]);
+  
+    
+    
+    
+    
+    console.log('cart', cart)
+    console.log('totalProce', totalPrice)
 
     useEffect(() => {
       const fetchStock = async () => {

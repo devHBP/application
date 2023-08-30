@@ -2,7 +2,8 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   cart: [],
-  cartTotal: {}
+  cartTotal: {},
+  freeProducts: [], 
 };
 
 const cartSlice = createSlice({
@@ -38,6 +39,18 @@ const cartSlice = createSlice({
             state.cart.push(product);
           }
       } 
+      //pour les pizzas
+      else if (product.offre && product.offre.startsWith('offre31_')) {
+        state.cart.push({ ...product, qty: 1, isFree: false });
+        
+        const sameOfferProducts = state.cart.filter(item => item.offre === product.offre);
+        
+        if (sameOfferProducts.length % 4 === 0) {
+            // Marquez la dernière pizza de cette offre comme gratuite
+            sameOfferProducts[sameOfferProducts.length - 1].isFree = true;
+            sameOfferProducts[sameOfferProducts.length - 1].prix_unitaire = 0;
+        }
+    }
       // Pour les autres produits
       else {
           const existingProductIndex = state.cart.findIndex(
@@ -49,9 +62,9 @@ const cartSlice = createSlice({
           } else {
             state.cart.push({ ...product, qty: 1, isFree: false,});
           }
+          
       }
   },
-  
 
     addFreeProductToCart: (state, action) => {
       const product = action.payload;
@@ -59,6 +72,29 @@ const cartSlice = createSlice({
       if (product.offre && product.offre.startsWith('offre31')) {
         state.cart.push({ ...product, prix_unitaire: 0, qty: 1, isFree: true});
       }
+    },
+
+    makeLastSmallPizzaFree: (state, action) => {
+      //console.log('jeneleve le prix dune pizza')
+      const lastPizzaIndex = state.cart.length - 1;
+  if (lastPizzaIndex !== -1) {
+    const lastPizza = state.cart[lastPizzaIndex];
+    if (lastPizza.offre && lastPizza.offre.startsWith('offre31_Petite')) {
+      lastPizza.prix_unitaire = 0;
+      lastPizza.isFree = true;
+    }
+  }
+    },
+    makeLastBigPizzaFree: (state, action) => {
+      //console.log('jeneleve le prix dune pizza')
+      const lastPizzaIndex = state.cart.length - 1;
+  if (lastPizzaIndex !== -1) {
+    const lastPizza = state.cart[lastPizzaIndex];
+    if (lastPizza.offre && lastPizza.offre.startsWith('offre31_Grande')) {
+      lastPizza.prix_unitaire = 0;
+      lastPizza.isFree = true;
+    }
+  }
     },
     
     //   decrementOrRemoveFromCart: (state, action) => {
@@ -148,6 +184,6 @@ const cartSlice = createSlice({
 },
 });
 
-export const { addToCart, removeFromCart, updateCart, clearCart, addDate, clearDate,
-addTime,resetDateTime,clearTime, addPaiement, decrementOrRemoveFromCart, addFreeProductToCart, incrementProductQty, updateCartTotal, removeMultipleFromCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, updateCart, clearCart, addDate, clearDate,addTime,resetDateTime,clearTime,
+   addPaiement, decrementOrRemoveFromCart, addFreeProductToCart, incrementProductQty, updateCartTotal, removeMultipleFromCart, makeLastSmallPizzaFree, makeLastBigPizzaFree } = cartSlice.actions;
 export default cartSlice.reducer;

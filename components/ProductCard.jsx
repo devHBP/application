@@ -2,7 +2,7 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, TouchableHighli
 import TextTicker from 'react-native-text-ticker'
 import React, { useState, useEffect} from 'react'
 import { Button } from 'react-native-paper'
-import { addToCart,addFreeProductToCart, decrementOrRemoveFromCart } from '../reducers/cartSlice';
+import { addToCart,addFreeProductToCart, decrementOrRemoveFromCart, makeLastSmallPizzaFree, makeLastBigPizzaFree } from '../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { defaultStyle, fonts, colors} from '../styles/styles'
@@ -40,6 +40,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, show
     
   }, [id,]);
 
+
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
     const product = cart.find((item) => item.productId === id);
@@ -50,6 +51,12 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, show
       return total;
   }, 0);
     //console.log(productQuantity)
+
+    useEffect(() => {
+      const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
+      //console.log(totalCount)
+      //console.log(cart)
+    }, [cart]);
 
     //pour les test
   const API_BASE_URL_IOS = API_BASE_URL;
@@ -86,11 +93,55 @@ const incrementhandler = async () => {
   const remainingStock = stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
 
 
-    if (stockAvailable.length > 0 && remainingStock > 0) {
-      // The stock is sufficient, add the product to the cart
-      dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre,}));
+  if (stockAvailable.length > 0 && remainingStock > 0) {
 
-      if (offre && offre.startsWith('offre31')) {
+
+    const newProduct = { 
+      productId: id, 
+      libelle, 
+      image, 
+      prix_unitaire: prix, 
+      qty: 1, 
+      offre: offre,
+      isFree: false,
+      lastAdded: false  
+    };
+    dispatch(addToCart(newProduct));
+
+    // dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre, isFree: false}));
+
+    // Maintenant, récupérons à nouveau les produits du panier avec la même offre, en tenant compte de la nouvelle pizza
+    const updatedCart = [...cart, { productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre, isFree: false }];
+
+
+    if (offre && offre.startsWith('offre31_Petite')) {
+
+    const sameOfferProducts = updatedCart.filter((item) => item.offre && item.offre.startsWith('offre31_Petite'));
+  
+    // Calculez la quantité totale pour cette offre spécifique APRÈS avoir ajouté la nouvelle pizza
+    const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
+  
+    // Si la quantité totale est un multiple de 4, rendez la dernière pizza ajoutée gratuite
+    if (totalQuantity % 4 === 0) {
+      dispatch(makeLastSmallPizzaFree());
+    }
+
+  }
+  else  if (offre && offre.startsWith('offre31_Grande') ){
+
+    const sameOfferProducts = updatedCart.filter((item) => item.offre && item.offre.startsWith('offre31_Grande'));
+  
+    // Calculez la quantité totale pour cette offre spécifique APRÈS avoir ajouté la nouvelle pizza
+    const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
+  
+    // Si la quantité totale est un multiple de 4, rendez la dernière pizza ajoutée gratuite
+    if (totalQuantity % 4 === 0) {
+      dispatch(makeLastBigPizzaFree());
+    }
+
+  }
+     else if (offre && offre.startsWith('offre31')) {
+        console.log('offre 31')
         // Get a version of the cart that includes the new product
         const updatedCart = [...cart, { productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre}];
     
@@ -106,10 +157,11 @@ const incrementhandler = async () => {
           //MODALE 4E produit
           setModalVisible(true);  
         
-        }
-    }
+        }}
+        
     
-    } else {
+    } 
+    else {
       // The stock is insufficient
       //console.log(`Le stock est insuffisant pour ajouter la quantité spécifiée.,Quantités max: ${stockAvailable[0].quantite}`);
       return Toast.show({
