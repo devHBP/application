@@ -113,4 +113,9 @@ export const styles = StyleSheet.create({
       justifyContent:'center',
       alignItems:'center',
     },
+    touchable:{
+      backgroundColor:'lightgray',
+      paddingVertical:10, paddingHorizontal:20,
+      borderRadius:20
+    }
   });  

@@ -46,7 +46,16 @@ const style = StyleSheet.create({
     btn:{
       backgroundColor:colors.color2,
       height:40,
-      width:150,
+      width:160,
+      borderRadius:5,
+      flexDirection:'row',
+      justifyContent:'center',
+      alignItems:'center',
+      // paddingHorizontal:10,
+      // textAlign:'center'
+    },
+    disabledBtn:{
+      backgroundColor:colors.color3,
     },
     bandeauFormule:{
       flexDirection:'row', 
