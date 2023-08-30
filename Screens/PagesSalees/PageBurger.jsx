@@ -41,8 +41,7 @@ const PageBurger = ({navigation}) => {
     const dispatch = useDispatch();
 
     const cart = useSelector(state => state.cart.cart);
-   
-    
+    console.log('cart page burger', cart)
     const getProductQtyInCart = (productId) => {
       const productInCart = cart.find(item => item.productId === productId);
       return productInCart ? productInCart.qty : 0;
