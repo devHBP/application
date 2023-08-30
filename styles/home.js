@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     color:colors.color1,
     fontFamily:fonts.font3,
     fontWeight: "700",
-    fontSize:18,
+    fontSize:16,
   },
   pickerNoDate:{
     fontSize:12,
@@ -124,14 +124,14 @@ const styles = StyleSheet.create({
     paddingHorizontal:10
   },
   bordersPicker: {
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: colors.color4,
-    height: 40,
+    // borderLeftWidth: 1,
+    // borderRightWidth: 1,
+    // borderColor: colors.color4,
+    height: 35,
     justifyContent: 'center',
     alignItems: 'center',
     width: "100%",
-    paddingHorizontal: 5
+    paddingHorizontal: 0
   },
   text1formule:{
     fontFamily:fonts.font2,

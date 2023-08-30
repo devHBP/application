@@ -101,7 +101,7 @@ if (__DEV__) {
       {/* // Selection Jour  */}
       <TouchableOpacity onPress={() => setOpenDate(true)}  style={styles.bordersPicker}>
          {/* <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text>  */}
-            <Text style={styles.textPickerDate}>Pour quel jour ?</Text>
+            <Text style={styles.textPickerDate}>Pour quel jour</Text>
             <Text>
             {date ? 
           
@@ -112,7 +112,7 @@ if (__DEV__) {
                   <Text style={styles.pickerNoDate}>jj/mm/aaaa</Text>
             )}
             </Text>
-            <Text style={{fontSize:10, color:colors.color2}}>Status</Text>
+            {/* <Text style={{fontSize:10, color:colors.color2}}>Status</Text> */}
         </TouchableOpacity> 
         </View>
                <DatePicker

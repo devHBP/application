@@ -182,6 +182,7 @@ if (__DEV__) {
                         )
                     
                     }
+
                      {user.role == 'client' &&
                     <View style={{flexDirection:'row'}}>
                         <View >
