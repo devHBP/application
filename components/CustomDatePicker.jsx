@@ -8,23 +8,21 @@ import {  updateUser} from '../reducers/authSlice';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { addDate, addTime} from '../reducers/cartSlice';
 import axios from 'axios'
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 
 
 const CustomDatePicker = () => {
 
-  //pour les test
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
-if (__DEV__) {
+ //pour les test
+ if (__DEV__) {
   if (Platform.OS === 'android') {
       API_BASE_URL = API_BASE_URL_ANDROID;
   } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  // Vous devez définir cette variable
+      API_BASE_URL = API_BASE_URL_IOS;  
   }
 }
+  
 
     const dateRedux = useSelector((state) => state.cart.date)
     

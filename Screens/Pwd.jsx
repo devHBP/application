@@ -4,7 +4,7 @@ import { View, Text,TextInput, StyleSheet, Alert, TouchableOpacity } from 'react
 import axios from 'axios';
 import ArrowLeft from '../SVG/ArrowLeft';
 import { inputStyling, colors, fonts } from '../styles/styles'
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 const inputOptions = {
   style:inputStyling,
@@ -17,16 +17,15 @@ const inputOptions = {
 
 const Pwd = ({ navigation }) => {
 
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
-  if (__DEV__) {
-    if (Platform.OS === 'android') {
-        API_BASE_URL = API_BASE_URL_ANDROID;
-    } else if (Platform.OS === 'ios') {
-        API_BASE_URL = API_BASE_URL_IOS;  
-    }
+ 
+ //pour les test
+ if (__DEV__) {
+  if (Platform.OS === 'android') {
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  
   }
+}
   const [email, setEmail] = useState('');
 
   const handleForgotPassword = async () => {

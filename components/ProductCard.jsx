@@ -180,7 +180,7 @@ const incrementhandler = async () => {
     <View style={style.card_container}>
          <View style={style.image_container}>
          
-          {/* <Image 
+          <Image 
               // source={image.uri}
               source={{ uri: `${API_BASE_URL}/${image}` }}
               style={{
@@ -191,8 +191,8 @@ const incrementhandler = async () => {
                       // borderTopRightRadius:10,
                       }}
               
-          /> */}
-          <FastImage
+          />
+          {/* <FastImage
             style={{ width: "100%", height: 140 }}
             source={{
                 uri: `${API_BASE_URL}/${image}` ,
@@ -200,7 +200,7 @@ const incrementhandler = async () => {
                 priority: FastImage.priority.high,
             }}
             resizeMode={FastImage.resizeMode.cover}
-        />
+        /> */}
           {currentStock === 0 && (
             <View style={style.overlay} />
             )}

@@ -4,23 +4,20 @@ import { styles} from '../styles/home';
 import popupData from '../Datas/datas.json';
 import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image';
 
 
 const LinkOffres = ({}) => {
 
    //pour les test
-   const API_BASE_URL_IOS = API_BASE_URL;
-
-
-   if (__DEV__) {
-     if (Platform.OS === 'android') {
-         API_BASE_URL = API_BASE_URL_ANDROID;
-     } else if (Platform.OS === 'ios') {
-         API_BASE_URL = API_BASE_URL_IOS;  // Vous devez définir cette variable
-     }
-   }
+if (__DEV__) {
+  if (Platform.OS === 'android') {
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  
+  }
+}
 
     const navigation = useNavigation();
 

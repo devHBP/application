@@ -23,16 +23,13 @@ import LoaderHome from './LoaderHome';
 import SearchModal from '../components/SearchModal';
 import ArrowLeft from '../SVG/ArrowLeft';
 
-import {API_BASE_URL, API_BASE_URL_ANDROID} from '@env';
+import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Search from '../SVG/Search';
 
 const Home =  ({navigation}) => {
- 
-  //pour les test
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
-if (__DEV__) {
+  
+ //pour les test
+ if (__DEV__) {
   if (Platform.OS === 'android') {
       API_BASE_URL = API_BASE_URL_ANDROID;
   } else if (Platform.OS === 'ios') {
@@ -278,14 +275,18 @@ const ongletButtonHandler = (onglet) => {
     
       {/*  bandeau header */}
       <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:5}}>
-          <View style={{ flexDirection:'row', gap:10, alignItems:'center',}}>
+          <View style={{ flexDirection:'row', gap:20, alignItems:'center',justifyContent:'center', width:"100%"}}>
               
             <View>
             <StorePicker />
             </View> 
+
             <View >
               <CustomDatePicker />
             </View>
+
+            <View style={{width: 2, backgroundColor: colors.color2, marginVertical: 5}} /> 
+
 
             <View style={{backgroundColor:'white'}}> 
               <TouchableOpacity  onPress={toggleVisibility} activeOpacity={1} >
@@ -551,11 +552,12 @@ const ongletButtonHandler = (onglet) => {
 
 
             {/* formules petits dejeuners */}
-            
+            {user.role == 'client' &&
             <View onLayout={(event) => handleLayout('Petits déjeuners', event)} style={styles.paddingProduct}>
             <FormulesPetitDejeuner />
             </View>
-
+            }
+            
             {/* boissons */}
             {sortedCategories
               .filter(category => category ===  'Boissons')
@@ -594,6 +596,7 @@ const ongletButtonHandler = (onglet) => {
               {/* </React.Fragment> */}
               </View>
             ))}
+                
 
             {/* catalogue */}
             <View onLayout={(event) => handleLayout('Tarterie', event)} style={styles.paddingProduct}>

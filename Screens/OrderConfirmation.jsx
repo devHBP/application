@@ -10,20 +10,19 @@ import axios from 'axios';
 import { WebView } from 'react-native-webview';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 const OrderConfirmation = ({navigation}) => {
 
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
-if (__DEV__) {
+ //pour les test
+ if (__DEV__) {
   if (Platform.OS === 'android') {
       API_BASE_URL = API_BASE_URL_ANDROID;
   } else if (Platform.OS === 'ios') {
       API_BASE_URL = API_BASE_URL_IOS;  
   }
 }
+  
 
   const dispatch = useDispatch()
   const webViewRef = useRef(null);

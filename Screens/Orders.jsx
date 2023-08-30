@@ -10,7 +10,7 @@ import ArrowLeft from '../SVG/ArrowLeft';
 import TextTicker from 'react-native-text-ticker'
 import LottieView from 'lottie-react-native';
 
-import {API_BASE_URL, API_BASE_URL_ANDROID} from '@env';
+import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 
 
 
@@ -20,16 +20,14 @@ import ArrowDown from '../SVG/ArrowDown';
 
 const Orders = ({navigation}) => {
   //pour les test
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
-if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
+  if (__DEV__) {
+    if (Platform.OS === 'android') {
+        API_BASE_URL = API_BASE_URL_ANDROID;
+    } else if (Platform.OS === 'ios') {
+        API_BASE_URL = API_BASE_URL_IOS;  
+    }
   }
-}
+  
     const user = useSelector((state) => state.auth.user);
     const userId = user.userId
     const [store, setStore] = useState(null); 

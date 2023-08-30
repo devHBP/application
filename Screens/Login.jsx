@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 
 import axios from 'axios'
@@ -22,17 +22,14 @@ const inputOptions = {
 
 const Login = ({navigation}) => {
 
-  //pour les test
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
-if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
+    //pour les test
+    if (__DEV__) {
+      if (Platform.OS === 'android') {
+          API_BASE_URL = API_BASE_URL_ANDROID;
+      } else if (Platform.OS === 'ios') {
+          API_BASE_URL = API_BASE_URL_IOS;  
+      }
+    }
 
      const dispatch = useDispatch()
      const selectedStoreRedux = useSelector(state => state.auth.selectedStore);

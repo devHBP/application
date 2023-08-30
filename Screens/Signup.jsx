@@ -10,7 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from 'react-native-date-picker';
 import { validateLastName, validateFirstName, validateEmail, validatePassword, validatePostalCode, validateGenre, validateDateOfBirth, validateIdSun} from '../validation/validationInput'
 import ArrowLeft from '../SVG/ArrowLeft'
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 const inputOptions = {
     style:inputStyling,
@@ -21,9 +21,7 @@ const inputOptions = {
 
 const Signup = ({navigation}) => {
 
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
+ //pour les test
 if (__DEV__) {
   if (Platform.OS === 'android') {
       API_BASE_URL = API_BASE_URL_ANDROID;

@@ -13,23 +13,22 @@ import { colors, fonts} from '../styles/styles'
 import Svg, { Path } from 'react-native-svg';
 import { style } from '../styles/formules'; 
 import { Button} from 'react-native-paper'
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 //fonctions
 import { decrementhandler } from '../Fonctions/fonctions'
 
 const ProductDetails = ({navigation, route}) => {
 
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
-  if (__DEV__) {
-    if (Platform.OS === 'android') {
-        API_BASE_URL = API_BASE_URL_ANDROID;
-    } else if (Platform.OS === 'ios') {
-        API_BASE_URL = API_BASE_URL_IOS;  
-    }
+  
+ //pour les test
+ if (__DEV__) {
+  if (Platform.OS === 'android') {
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  
   }
+}
     const { product } = route.params;
     const [currentStock, setCurrentStock] = useState(product.stock);
     const [modalVisible, setModalVisible] = useState(false);

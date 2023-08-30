@@ -8,7 +8,7 @@ import { useSelector} from 'react-redux'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import Home from '../SVG/Home'
 import Orders from '../SVG/Orders'
 import Cart from '../SVG/Cart'
@@ -16,17 +16,15 @@ import Profile from '../SVG/Profile'
 
 const FooterProfile = () => {
  //pour les test
- const API_BASE_URL_IOS = API_BASE_URL;
-
-
  if (__DEV__) {
-   if (Platform.OS === 'android') {
-       API_BASE_URL = API_BASE_URL_ANDROID;
-   } else if (Platform.OS === 'ios') {
-       API_BASE_URL = API_BASE_URL_IOS;  // Vous devez définir cette variable
-   }
- }
+  if (Platform.OS === 'android') {
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  
+  }
+}
 
+  
   //on utilise ici useNavigation et non pas navigation car le footer n'est pas dans la pile de screens
   const navigation = useNavigation()
 

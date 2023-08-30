@@ -11,7 +11,7 @@ import { styles } from '../styles/home';
 
 //import { pickerSelectStyles } from '../styles/home';
 
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import Location from '../SVG/Location';
 
 const StorePicker = () => {
@@ -23,17 +23,15 @@ const StorePicker = () => {
     const selectedStore = useSelector((state) => state.auth.selectedStore)
     //console.log('select', selectedStore)
 
-  //pour les test
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
+ //pour les test
 if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  // Vous devez définir cette variable
+    if (Platform.OS === 'android') {
+        API_BASE_URL = API_BASE_URL_ANDROID;
+    } else if (Platform.OS === 'ios') {
+        API_BASE_URL = API_BASE_URL_IOS;  
+    }
   }
-}
+  
 
   useEffect(() => {
     if (user && user.role) {
@@ -41,7 +39,11 @@ if (__DEV__) {
     }
 }, [user.role]);
 
-  const ROLE_STORES = {
+//   const ROLE_STORES = {
+//     SUNcollaborateur: [1],  
+       
+// };
+const ROLE_STORES = {
     SUNcollaborateur: [3, 4, 5],  
     client: [1, 2]      
 };

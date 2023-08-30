@@ -5,23 +5,22 @@ import { useSelector, useDispatch } from 'react-redux';
 import { clearCart} from '../reducers/cartSlice';
 import FooterProfile from '../components/FooterProfile';
 import { Rating } from 'react-native-ratings';
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import axios from 'axios';
 
 
 
 const SuccessPage = ({navigation}) => {
     
-    const API_BASE_URL_IOS = API_BASE_URL;
-
-
-    if (__DEV__) {
-      if (Platform.OS === 'android') {
-          API_BASE_URL = API_BASE_URL_ANDROID;
-      } else if (Platform.OS === 'ios') {
-          API_BASE_URL = API_BASE_URL_IOS;  
-      }
+   
+ //pour les test
+ if (__DEV__) {
+    if (Platform.OS === 'android') {
+        API_BASE_URL = API_BASE_URL_ANDROID;
+    } else if (Platform.OS === 'ios') {
+        API_BASE_URL = API_BASE_URL_IOS;  
     }
+  }
     const user = useSelector((state) => state.auth.user)
     const order = useSelector((state) => state.order.orderId)
     //console.log('order', order)

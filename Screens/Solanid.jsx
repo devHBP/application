@@ -14,14 +14,13 @@ import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
 import LinearGradient from 'react-native-linear-gradient';
 import ProductCard from '../components/ProductCard';
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 const Solanid = ({navigation}) => {
 
-  const API_BASE_URL_IOS = API_BASE_URL;
 
-
-if (__DEV__) {
+ //pour les test
+ if (__DEV__) {
   if (Platform.OS === 'android') {
       API_BASE_URL = API_BASE_URL_ANDROID;
   } else if (Platform.OS === 'ios') {

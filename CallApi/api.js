@@ -1,10 +1,8 @@
 import axios from 'axios';
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 
-const API_BASE_URL_IOS = API_BASE_URL;
-
-
+//pour les test
 if (__DEV__) {
   if (Platform.OS === 'android') {
       API_BASE_URL = API_BASE_URL_ANDROID;
