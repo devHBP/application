@@ -8,6 +8,7 @@ import axios from 'axios'
 import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
 import TextTicker from 'react-native-text-ticker'
+import LottieView from 'lottie-react-native';
 
 import {API_BASE_URL, API_BASE_URL_ANDROID} from '@env';
 
@@ -38,7 +39,9 @@ if (__DEV__) {
     const [lastOrder, setLastOrder] = useState(null);
     const [previousOrders, setPreviousOrders] = useState([]);
     const [ hasOrder, setHasOrder] = useState(false)
-    const [isDisabled, setDisabled] = useState(true); // bouton "renouveler"
+    const [isDisabled, setDisabled] = useState(true); 
+    const [loading, setLoading] = useState(true);
+
 
 
     const handleBack = () => {
@@ -116,7 +119,9 @@ if (__DEV__) {
           const sortedOrders = enrichedOrdersWithStore.sort((a, b) => new Date(b.orderId) - new Date(a.orderId));
           setLastOrder(sortedOrders[0]);
           setPreviousOrders(sortedOrders.slice(1));
-      
+          setTimeout(() => {
+            setLoading(false);
+          }, 2000); 
         } catch (error) {
           console.error("Une erreur s'est produite :", error);
         }
@@ -297,8 +302,25 @@ if (__DEV__) {
   return (
     <>
             {
-                hasOrder ? (
-                    <View style={{ flex:1,  alignItems: 'center', backgroundColor:colors.color3}}>
+                
+                    loading ? 
+
+                    (
+                        <LottieView 
+                            source={require('../assets/loaderpaiment.json')} 
+                            autoPlay 
+                            loop 
+                            style={{
+                                width: 300, 
+                                aspectRatio: 300 / 600,
+                                flexGrow: 1, 
+                                alignSelf: 'center',
+                            }} 
+                        />
+                    ) :
+                
+                (hasOrder ? (
+                    <View style={{ alignItems: 'center', backgroundColor:colors.color3}}>
                     <View>
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap:90, marginHorizontal:30, marginTop:40, justifyContent:'space-between' }}>
                                  <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1, color:colors.color1}}>Vos commandes</Text>
@@ -307,7 +329,7 @@ if (__DEV__) {
                                     <ArrowLeft fill={colors.color1}/>
                                 </TouchableOpacity>     
                             </View>
-                            <View >
+                            <View style={{marginBottom:300}}>
                                         <FlatList
                                             data={previousOrders}
                                             renderItem={({ item, index }) => renderOrder(item, index)}
@@ -336,6 +358,8 @@ if (__DEV__) {
                     </View>
                     </View>
                 )
+                )
+            
             }
         
     <FooterProfile />
