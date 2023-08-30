@@ -44,9 +44,9 @@ if (__DEV__) {
   const [date, setDate] = useState(new Date());
   const [open, setOpen] = useState(false)
   const [formattedDate, setFormattedDate] = useState('');
-  const [idSUN, setIdSun] = useState('')
+  const [idSUN, setIdSun] = useState("")
 
-  const [error, setError] = useState({lastname: '', firstname: '', email: '', password: '', cp:'', genre:'', date:'', idSUN:''});
+  const [error, setError] = useState({lastname: '', firstname: '', email: '', password: '', cp:'', genre:'', date:'', idSUN:""});
 
   const  submitHandler = () => {
 
@@ -60,16 +60,17 @@ if (__DEV__) {
       cp: parseInt(cp, 10),
       genre,
       date_naissance: date.toISOString(),
-      idSUN
+      idSUN, 
     }
+    console.log('clientData', clientData)
     //appel axios post pour s'enregister
     axios.post(`${API_BASE_URL}/signup`, clientData)
     .then(response => {
       //console.log('client data', clientData)
-       //console.log('response.data', response.data)
+       console.log('response.data', response.data)
       const userId = response.data.id
       const user = { userId:userId ,firstname, lastname, email, password, cp, genre,date: date.toISOString(), idSUN}; 
-       
+       console.log('user', user)
       dispatch(registerUser(user)); 
       
        navigation.navigate('stores')
@@ -80,7 +81,7 @@ if (__DEV__) {
       });
     })
     .catch(function (error) {
-    //console.log('erreur signup',error);
+    console.log('erreur signup',error);
     if (error.response && error.response.status === 400) {
       console.log(error.response.data.error);
       Toast.show({
@@ -88,7 +89,10 @@ if (__DEV__) {
         text1: `Erreur d'inscription`,
         text2: error.response.data.error[0].message 
       });
+     
+
     }
+    console.error("Erreur générale:", error);
     //console.log(clientData)
     });
   }
@@ -241,6 +245,9 @@ if (__DEV__) {
           onTouchStart={() => setOpen(true)}  // Ouvre le date picker lorsque le champ est touché
       />
       <DatePicker
+          cancelText= "Annuler"
+          confirmText="Confirmer"
+          locale="fr"
           modal
           mode='date'
           minimumDate={new Date(1900, 0, 1)}  // 1 Janvier 1900
@@ -271,7 +278,7 @@ if (__DEV__) {
           value={idSUN}
           onChangeText={(value) => {
             setIdSun(value);
-            setError({...error, idSUN: validateIdSun(value)});
+           setError({...error, idSUN: validateIdSun(value)});
 
           }}
           style={inputOptions.style}
