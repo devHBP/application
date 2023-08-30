@@ -15,22 +15,19 @@ import ArrowLeft from '../../SVG/ArrowLeft';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import ProductCard from '../../components/ProductCard';
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 
 const PageBurger = ({navigation}) => {
 
    //pour les test
-   const API_BASE_URL_IOS = API_BASE_URL;
-
-
-   if (__DEV__) {
-     if (Platform.OS === 'android') {
-         API_BASE_URL = API_BASE_URL_ANDROID;
-     } else if (Platform.OS === 'ios') {
-         API_BASE_URL = API_BASE_URL_IOS;  
-     }
-   }
+if (__DEV__) {
+  if (Platform.OS === 'android') {
+      API_BASE_URL = API_BASE_URL_ANDROID;
+  } else if (Platform.OS === 'ios') {
+      API_BASE_URL = API_BASE_URL_IOS;  
+  }
+}
 
     const [products, setProducts] = useState([]); 
     const [selectedProduct, setSelectedProduct] = useState(null); 
@@ -358,7 +355,7 @@ const PageBurger = ({navigation}) => {
         {/* redirection vers formule*/}
 
        
-        <View style={{...style.menu, marginBottom:65}}>
+        <View style={{...style.menu, marginBottom:40, paddingBottom:40}}>
                 <View>
                 <View style={style.bandeauFormule}>
                     <Text style={{ fontWeight:"bold"}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>

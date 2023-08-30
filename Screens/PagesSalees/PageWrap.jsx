@@ -15,17 +15,14 @@ import ArrowLeft from '../../SVG/ArrowLeft';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import ProductCard from '../../components/ProductCard';
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 //fonctions
 // import { decrementhandler } from '../../Fonctions/fonctions'
 
 const PageWrap = ({navigation}) => {
 
-  //pour les test
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
+ //pour les test
 if (__DEV__) {
   if (Platform.OS === 'android') {
       API_BASE_URL = API_BASE_URL_ANDROID;
@@ -362,7 +359,7 @@ const capitalizeIngredients = (ingredients) => {
         {/* redirection vers formule*/}
 
        
-        <View style={{...style.menu, marginBottom:65}}>
+        <View style={{...style.menu, marginBottom:40, paddingBottom:40}}>
                 <View>
                 <View style={style.bandeauFormule}>
                     <Text style={{ fontWeight:"bold"}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
