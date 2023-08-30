@@ -28,10 +28,10 @@ const Stores = ({navigation}) => {
 
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
-  //console.log('user dans Stores', user)
+  console.log('user dans Stores', user)
   //modif userId <= id
   const userId = useSelector(state => state.auth.user.userId)
-   //console.log('userId dans stores', userId),
+
 
   useEffect(() => {
     // Récupérer les magasins depuis la base de données
