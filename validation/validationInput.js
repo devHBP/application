@@ -71,6 +71,8 @@ export const validateDateOfBirth = (date) => {
 }
 
 export const validateIdSun = (value) => {
+  if (value === "") return "";
+
   // regex qui correspond à une structure d' idSun de 5 chiffres
   const idSunRegex = /^[0-9]{5}$/;
   if (!value.match(idSunRegex)) {
