@@ -1,18 +1,19 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch, TouchableHighlight } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import { fonts, colors} from '../../styles/styles'
-import CheckBox from '@react-native-community/checkbox';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { Button, RadioButton} from 'react-native-paper'
-import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
+import {  addToCart} from '../../reducers/cartSlice';
+import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import { style } from '../../styles/formules'; 
 import FooterProfile from '../../components/FooterProfile';
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+
+
 
 const FormulePizzas = ({navigation}) => {
 
@@ -46,13 +47,18 @@ if (__DEV__) {
     const handleBack = () => {
         navigation.navigate('home')
       }
+  
+    
 
       useEffect(() => {
         //les sandwichs - categorie
         const fetchProducts = async () => {
           try {
-            const category = 'Pizzas'; 
-            const products = await getProductsByCategory(category);
+            // const category = 'Pizzas'; 
+            //on choisit les petites pizzas pour les formules
+            const productIds = [93];
+            const productPromises = productIds.map((productId) => fetchOneProduct(productId));
+            const products = await Promise.all(productPromises);
             // products.forEach((product) => {
             //     console.log(product.libelle, product.prix_unitaire);
             //   });
@@ -206,7 +212,7 @@ if (__DEV__) {
       <ScrollView>
         <View>
             <Image
-                    source={require('../../assets/Formule36.jpg')} 
+                    source={require('../../assets/Formule2.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
 
@@ -224,7 +230,7 @@ if (__DEV__) {
         </View>
         {/* choix sandwich */}
         <View>
-            <Text style={style.choixTitle}>Votre choix de pizzas</Text>
+            <Text style={style.choixTitle}>Votre choix de petites pizzas</Text>
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {products.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
