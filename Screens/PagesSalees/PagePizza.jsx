@@ -69,12 +69,6 @@ const PagePizza = ({navigation}) => {
       setTotalPrice(totalPrice);
   }, [products, cart]);
   
-    
-    
-    
-    
-    console.log('cart', cart)
-    console.log('totalProce', totalPrice)
 
     useEffect(() => {
       const fetchStock = async () => {
@@ -258,6 +252,10 @@ const filterPetites = () => {
              <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
                     <ArrowLeft fill="white"/>
               </TouchableOpacity>
+
+              <View style={{...styles.ingredients, position:'absolute', bottom:0, left:0, right:0, marginHorizontal:40, marginBottom:10}}>
+                <Text style={{textAlign:'center'}}>Choisissez 4 Pizzas, Payez-en que 3 ! </Text>
+              </View>
         </View>
         
 
