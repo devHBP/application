@@ -40,6 +40,9 @@ const style = StyleSheet.create({
         marginBottom:65,
         width:"100%"
     },
+    androidMenu:{
+      height:140,
+    },
     disabledCheckBox: {
       opacity: 0.2, 
     },

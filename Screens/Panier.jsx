@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity,ScrollView, TextInput, Modal, StyleSheet, Linking, Image } from 'react-native'
+import { View, Text, TouchableOpacity,ScrollView, TextInput, Modal, StyleSheet, Linking, Image, Platform } from 'react-native'
 import React, { useState, useEffect, useRef} from 'react'
 import { Button } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux';
@@ -771,7 +771,7 @@ useEffect(() => {
                           <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
                       </View> */}
   
-                      <View style={{ ...style.menu }}>
+  <                   View style={[style.menu, Platform.OS === 'android' && style.androidMenu]}>
                           <View style={{ flexDirection: 'row', paddingHorizontal: 30, justifyContent: 'center', gap: 10 }}>
                               <View>
                                   <Text style={{ fontWeight: "bold" }}>Votre total</Text>

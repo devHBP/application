@@ -217,7 +217,7 @@ if (__DEV__) {
               </TouchableOpacity>
               <Image
                 source={require('../assets/popupSUN.jpg')}
-                style={{ width:"100%", height:"100%", resizeMode:'contain', zIndex:1}}
+                style={{ width:"100%", height:"100%", resizeMode:'cover', zIndex:1}}
             />
             </View>
             </TouchableOpacity>  

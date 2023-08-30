@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
 import { colors, fonts } from '../styles/styles'
 
 const headerSectionHeight = 250;
@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
   },
   btn_categorie: {
     borderRadius: 6,
-    height: 40,
+    height: Platform.OS === 'android' ? 50 : 40,
     marginVertical: 5,
     marginRight: 10,
     paddingVertical: 11,
