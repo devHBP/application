@@ -42,6 +42,7 @@ import PageQuiche from './Screens/PagesSalees/PageQuiche'
 import PageCroque from './Screens/PagesSalees/PageCroque'
 import Pwd from './Screens/Pwd'
 import LoaderHome from './Screens/LoaderHome'
+import PagePizza from './Screens/PagesSalees/PagePizza'
 
 const Main = () => {
 
@@ -61,7 +62,7 @@ const Main = () => {
 
       return (
         <NavigationContainer linking={linking}>
-            <Stack.Navigator initialRouteName='stores' screenOptions={{headerShown:false}}>
+            <Stack.Navigator initialRouteName='login' screenOptions={{headerShown:false}}>
                 {/* <Stack.Screen name='app' component={App}/> */}
                 <Stack.Screen name='login' component={Login}/>
                 <Stack.Screen name='signup' component={Signup}/>
@@ -81,6 +82,7 @@ const Main = () => {
                     <Stack.Screen name='formulequiche' component={FormuleQuiche}/>
                     {/* Pages salées */}
                     <Stack.Screen name='sandwich' component={PageSandwich}/>
+                    <Stack.Screen name='pizza' component={PagePizza}/>
                     <Stack.Screen name='wrap' component={PageWrap}/>
                     <Stack.Screen name='salade' component={PageSalade}/>
                     <Stack.Screen name='burger' component={PageBurger}/>
