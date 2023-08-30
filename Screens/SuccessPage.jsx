@@ -1,12 +1,12 @@
 import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native'
 import React, { useEffect} from 'react'
-import { defaultStyle, colors, fonts} from '../styles/styles'
-import { Button } from 'react-native-paper'
+import {  colors, fonts} from '../styles/styles'
 import { useSelector, useDispatch } from 'react-redux';
 import { clearCart} from '../reducers/cartSlice';
 import FooterProfile from '../components/FooterProfile';
 import { Rating } from 'react-native-ratings';
 import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import axios from 'axios';
 
 
 
@@ -23,13 +23,40 @@ const SuccessPage = ({navigation}) => {
       }
     }
     const user = useSelector((state) => state.auth.user)
+    const order = useSelector((state) => state.order.orderId)
+    //console.log('order', order)
     const role = user.role
-    console.log('role', role)
+    //console.log('user', user)
+    //console.log('role', role)
 
     const [modalVisible, setModalVisible] = React.useState(false);
+    const [ratingValue, setRatingValue] = React.useState(5);
+    const [commentValue, setCommentValue] = React.useState("");
+
 
     const openRatingModal = () => {
         setModalVisible(true);
+        
+    }
+    const sendReviews = async () => {
+        const reviewData = {
+            orderId: order, // Vous devez obtenir cela probablement via un useSelector
+            user: `${user.firstname} ${user.lastname}`,
+            rating: ratingValue,
+            comment: commentValue,
+        };
+        //console.log('review',reviewData)
+       
+        try {
+            const response = await axios.post(`${API_BASE_URL}/reviews`, reviewData);
+            
+            if(response.status === 200 || response.status === 201) {
+                //console.log('Review successfully submitted:', response.data);
+                setModalVisible(false);
+            }
+        } catch (error) {
+            console.error('Error submitting review:', error);
+        }
     }
 
     const closeRatingModal = () => {
@@ -48,7 +75,6 @@ const SuccessPage = ({navigation}) => {
   }, [cart, dispatch]);
 
     const submitHandler = async () => {
-
         navigation.navigate('home')
     }
 
@@ -71,13 +97,6 @@ const SuccessPage = ({navigation}) => {
             </View>
         <View style={style.contentWrapper}>
             
-            {/* <View style={style.ratingContainer}>
-              <Rating
-                  startingValue={5}
-                  onFinishRating={(rating) => console.log("Rating selected - ", rating)}
-                  style={{ paddingVertical: 10 }}
-              />
-          </View> */}
             <View style={style.centeredButton}>
             <TouchableOpacity onPress={openRatingModal} style={style.btnBack} >
                         <Text style={style.textBtnBack}>Donner son avis</Text>
@@ -90,11 +109,11 @@ const SuccessPage = ({navigation}) => {
 
         <Modal
                     animationType="slide"
-                    transparent={true}
+                    transparent={false}
                     visible={modalVisible}
                     onRequestClose={closeRatingModal}>
-                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <View style={{ width: '90%', height: '70%', backgroundColor: 'white', padding: 20, borderRadius: 10, alignItems: 'center', borderColor:'lightgray', borderWidth:1, justifyContent:'center',gap:10 }}>
+                    <View style={{ flex: 1, alignItems: 'center',justifyContent:'center', marginVertical:40 }}>
+                        <View style={{ width: '90%', height: '80%', backgroundColor: 'white', padding: 20, borderRadius: 10, alignItems: 'center', borderColor:'lightgray', borderWidth:1, justifyContent:'center',gap:10 }}>
                             <TouchableOpacity onPress={closeRatingModal} style={{ position:'absolute', top:0, right:10 }}>
                                 <Text style={{ fontSize: 36 }}>&times;</Text>
                             </TouchableOpacity>
@@ -102,25 +121,24 @@ const SuccessPage = ({navigation}) => {
                                 <Text>Comment s'est déroulée votre expérience d'achat ?</Text>
                                 <Rating
                                     startingValue={5}
-                                    onFinishRating={(rating) => console.log("Rating selected - ", rating)}
+                                    onFinishRating={(rating) => setRatingValue(rating)}
                                     style={{ paddingVertical: 10 }}
                                 />
+                                
                                 <TextInput
-                                    multiline={true}
-                                    numberOfLines={10}
+                                    numberOfLines={1}
                                     placeholder="Laissez-nous vos suggestions..."
-                                    style={{ borderColor: 'gray', borderWidth: 1, width: '100%', padding: 10, marginTop: 10, height:100 }}
+                                    style={{ borderColor: 'gray', borderWidth: 1, width: '100%', padding: 10, marginTop: 10, height:50 }}
+                                    onChangeText={(text) => setCommentValue(text)}
+
                                 />
+                                
                                 <TouchableOpacity 
                                     style={style.submitButton}
-                                    onPress={() => {
-                                        console.log("Envoyer les données au serveur");
-                                        closeRatingModal();
-                                    }}
-                                                        >
+                                    onPress={sendReviews}
+                                >
                             <Text style={style.submitButtonText}>Envoyer</Text>
-                        </TouchableOpacity>
-                                                    
+                        </TouchableOpacity>                 
                         </View>
                     </View>
                 </Modal>
@@ -186,7 +204,7 @@ submitButton: {
     borderRadius: 5,
     marginTop: 20,
     width: '80%',
-    alignItems: 'center'
+    alignItems: 'center',
 },
 submitButtonText: {
     color: colors.color6,
