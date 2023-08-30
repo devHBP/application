@@ -49,7 +49,7 @@ const FormulesSalees = () => {
                 {/* Poke Bowl */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePoke} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule26.jpg')} 
+                            source={require('../assets/PokeSaumon.jpg')} 
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                             {/* <FastImage
