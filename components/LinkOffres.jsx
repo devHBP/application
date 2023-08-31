@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ScrollView , Modal, Image} from 'react-native'
+import { View, Text, TouchableOpacity, ScrollView , Modal, Image, Linking} from 'react-native'
 import React, { useState, useEffect} from 'react'
 import { styles} from '../styles/home'; 
 import popupData from '../Datas/datas.json';
@@ -18,6 +18,18 @@ if (__DEV__) {
       API_BASE_URL = API_BASE_URL_IOS;  
   }
 }
+
+const openURL = (url) => {
+  Linking.canOpenURL(url)
+    .then((supported) => {
+      if (!supported) {
+        console.log("Can't handle URL: " + url);
+      } else {
+        return Linking.openURL(url);
+      }
+    })
+    .catch((err) => console.error('An error occurred', err));
+};
 
     const navigation = useNavigation();
 
@@ -142,18 +154,18 @@ if (__DEV__) {
 
         {/* collaboration Les Halles Solanid */}
         <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={handleHallesSolanid}>
-        {/* <Image
+        <Image
                 source={require('../assets/fond_halles.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
-                /> */}
-                <FastImage
+                />
+                {/* <FastImage
                 style={{ width: 315, height: 200, borderTopLeftRadius:10, borderTopRightRadius:10  }}
                 source={{
                   uri: `${API_BASE_URL}/Images/fond_halles.jpg`,
                     priority: FastImage.priority.high,
                 }}
                 resizeMode={FastImage.resizeMode.cover}
-            />
+            /> */}
         <View style={styles.container_offre_antigaspi}>
             <View style={styles.text_offre31}>
             <Text style={styles.texte_offre31} >Un repas sain avec</Text>
@@ -215,10 +227,13 @@ if (__DEV__) {
               <TouchableOpacity onPress={handleClose} style={{ alignItems: 'center', position:'absolute', top:0, right:10, zIndex:99}}>
                 <Text style={{ fontSize: 36}}>&times;</Text>
               </TouchableOpacity>
-              <Image
-                source={require('../assets/popupSUN.jpg')}
-                style={{ width:"100%", height:"100%", resizeMode:'cover', zIndex:1}}
-            />
+              <TouchableOpacity onPress={() => openURL('https://www.start-union.fr')}>
+                <Image
+                  source={require('../assets/popupSUN.jpg')}
+                  style={{ width:"100%", height:"100%", resizeMode:'cover', zIndex:1}}
+              />
+              </TouchableOpacity>
+              
             </View>
             </TouchableOpacity>  
         </Modal>
