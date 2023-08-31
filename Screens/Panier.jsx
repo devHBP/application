@@ -387,7 +387,7 @@ const checkPaymentStatus = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/paiementStatus?sessionId=${sessionId}`);
     const { status, transactionId, method } = response.data;
-    c//onsole.log('response PaiementStatus', response.data)
+    //console.log('response PaiementStatus', response.data)
      // retour : response data {"status": "paid", "transactionId": "pi_3NOFjcGnFAjiWNhK0KP6l8Nl"}
    
     if (status === 'paid') {
