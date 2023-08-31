@@ -12,6 +12,7 @@
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1B726F162AA0886800368DBD /* logoPDJ.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B726F152AA0886800368DBD /* logoPDJ.png */; };
 		1B9D501E2A4C1BFC00519F43 /* Montserrat ExtraBold 800.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B9D4FFC2A4C1BFB00519F43 /* Montserrat ExtraBold 800.ttf */; };
 		1B9D501F2A4C1BFC00519F43 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B9D4FFD2A4C1BFB00519F43 /* Fontisto.ttf */; };
 		1B9D50202A4C1BFC00519F43 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B9D4FFE2A4C1BFB00519F43 /* Octicons.ttf */; };
@@ -75,6 +76,7 @@
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = MyappReactNative/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MyappReactNative/main.m; sourceTree = "<group>"; };
 		19F6CBCC0A4E27FBF8BF4A61 /* libPods-MyappReactNative-MyappReactNativeTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-MyappReactNative-MyappReactNativeTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		1B726F152AA0886800368DBD /* logoPDJ.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoPDJ.png; path = ../../assets/logoPDJ.png; sourceTree = "<group>"; };
 		1B9D4FFC2A4C1BFB00519F43 /* Montserrat ExtraBold 800.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat ExtraBold 800.ttf"; sourceTree = "<group>"; };
 		1B9D4FFD2A4C1BFB00519F43 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		1B9D4FFE2A4C1BFB00519F43 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 		13B07FAE1A68108700A75B9A /* MyappReactNative */ = {
 			isa = PBXGroup;
 			children = (
+				1B726F142AA0884600368DBD /* Assets */,
 				1B9D4FFB2A4C1BFB00519F43 /* Fonts */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.mm */,
@@ -197,6 +200,14 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 			);
 			name = MyappReactNative;
+			sourceTree = "<group>";
+		};
+		1B726F142AA0884600368DBD /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				1B726F152AA0886800368DBD /* logoPDJ.png */,
+			);
+			path = Assets;
 			sourceTree = "<group>";
 		};
 		1B9D4FFB2A4C1BFB00519F43 /* Fonts */ = {
@@ -449,6 +460,7 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				1B9D50262A4C1BFC00519F43 /* FontAwesome5_Brands.ttf in Resources */,
 				1B9D50342A4C1BFC00519F43 /* Montserrat Thin 250.ttf in Resources */,
+				1B726F162AA0886800368DBD /* logoPDJ.png in Resources */,
 				1B9D50242A4C1BFC00519F43 /* Montserrat ExtraLight 275.ttf in Resources */,
 				1B9D502E2A4C1BFC00519F43 /* FontAwesome5_Regular.ttf in Resources */,
 				1B9D501F2A4C1BFC00519F43 /* Fontisto.ttf in Resources */,
