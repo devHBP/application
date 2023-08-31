@@ -253,6 +253,17 @@ useEffect(() => {
 
       //prix Sun si collaborateur
       totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
+
+      //paiement supérieur à 50cts
+      if (totalPrice < 0.50) {
+        //console.log('en dessous de 1euros')
+        return Toast.show({
+          type: 'error',
+          text1: `Montant inférieur à 50 centimes`,
+          text2: `N'hésitez pas à ajouter des articles ` 
+        });
+       
+    }
       
       const orderData = {
         userRole: user.role, 
