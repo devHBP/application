@@ -1,4 +1,4 @@
-import {View, Text, Pressable, ScrollView , TouchableOpacity, Image } from 'react-native'
+import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Modal, Button } from 'react-native'
 import  Picker  from 'react-native-picker-select';
 import { fonts, colors} from '../styles/styles'
 import React, {useState, useEffect,  createRef,useRef } from 'react'
@@ -49,6 +49,7 @@ const Home =  ({navigation}) => {
   const [positionsY, setPositionsY] = useState({});
   const [isLoading, setIsLoading] = useState(true); 
   const [isModalVisible, setIsModalVisible] = useState(false);
+
 
   
   const user = useSelector((state) => state.auth.user);
@@ -146,12 +147,6 @@ const handleSearch = (query) => {
   );
 
   setFilteredProducts(filtered);
-  // if (query.length >= 2) {
-  //   setIsModalVisible(true);
-  // } else if (query.length === 0) {
-  //   setIsModalVisible(false);
-  // }
-  
   
 };
 
@@ -220,6 +215,7 @@ const ongletButtonHandler = (onglet) => {
 
         <LoaderHome />
       ) : (
+        
       <View View style={{flex:1}}>
 
     <ScrollView vertical={true} style={{ flex:1, paddingVertical:20}} ref={scrollViewRef} stickyHeaderIndices={[1]}>

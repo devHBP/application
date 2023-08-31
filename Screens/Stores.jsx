@@ -32,17 +32,41 @@ const Stores = ({navigation}) => {
   const userId = useSelector(state => state.auth.user.userId)
 
 
+  // //Tous les magasins
+  // useEffect(() => {
+  //   // Récupérer les magasins depuis la base de données
+  //   axios.get(`${API_BASE_URL}/getAllStores`)
+  //     .then(response => {
+  //       setStores(response.data);
+  //       // console.log('stores', response.data)
+  //     })
+  //     .catch(error => {
+  //       console.error('Erreur lors de la récupération des magasins:', error);
+  //     });
+  // }, []);
+
+  //FILTRE pour les clients = ne voient que les boulangeries crées
   useEffect(() => {
+    const desiredStoreIds = [1];  
+   
     // Récupérer les magasins depuis la base de données
     axios.get(`${API_BASE_URL}/getAllStores`)
       .then(response => {
-        setStores(response.data);
-        // console.log('stores', response.data)
+        
+        const filteredStores = response.data.filter(store => desiredStoreIds.includes(store.storeId));
+        Toast.show({
+          type: 'error',
+          text1: `L'application n'est pas encore finalisée`,
+          text2: `Les magasins ne sont pas encore disponibles`
+        });
+        setStores(filteredStores);
+        // console.log('stores', filteredStores)
       })
       .catch(error => {
         console.error('Erreur lors de la récupération des magasins:', error);
       });
   }, []);
+
 
   const handleStoreSelection = (store) => {
     setSelectedStore(store);
@@ -51,10 +75,17 @@ const Stores = ({navigation}) => {
   };
 
   const  submitHandler = () => {
-    // console.log('store validé', selectedStore)
+    console.log('store validé', selectedStore)
     // console.log('user après validation', user);
     //update du user
-    if (selectedStore && user) {
+   if (selectedStore === null){
+    Toast.show({
+      type: 'error',
+      text1: `Veuillez sélectionné un magasin`,
+      text2: ``,
+    });
+   }
+     if (selectedStore && user) {
       const updatedUser = { ...user, storeId: selectedStore.storeId };
       console.log('update user',updatedUser)
 
@@ -85,7 +116,7 @@ const Stores = ({navigation}) => {
         <View style={style.container}>
 
        <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-            <Text style={style.title}>Votre point de livraison </Text>
+            <Text style={style.title}>Votre point de collecte</Text>
             <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
@@ -95,7 +126,7 @@ const Stores = ({navigation}) => {
     <View style={{ width:"85%",marginTop:100, flex:1}}>
     {selectedStore !== null && (
                 <View style={style.selection}>
-                    <Text style={{color:colors.color2, fontFamily:fonts.font2, paddingVertical:5}}>Votre établissement de livraison :</Text>
+                    <Text style={{color:colors.color2, fontFamily:fonts.font2, paddingVertical:5}}>Votre établissement de collecte :</Text>
                     <View  style={style.touchable}>
                     <Text style={style.text} >{selectedStore.nom_magasin}</Text>
                     {
@@ -103,7 +134,7 @@ const Stores = ({navigation}) => {
                     }
                     </View>
                     <View style={{ paddingVertical:15}}>
-                      <Text style={{ color:colors.color3, fontSize:11}}>En choisissant cet établissement, vous indiquez au camion de la tournée où déposer votre commande</Text>
+                      <Text style={{ color:colors.color3, fontSize:11}}>En choisissant cet établissement, vous indiquez votre point de retrait poue le click adn collect</Text>
                     </View>
                     
                     

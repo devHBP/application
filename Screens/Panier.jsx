@@ -52,6 +52,7 @@ const Panier = ({navigation}) => {
   const [productFamilies, setProductFamilies] = useState({});
   const [ paiement, setPaiement] = useState('online')
   const [loading, setLoading] = useState(false);
+  const [showModalClient, setShowModalClient] = useState(false);
 
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
   //console.log('cart panier', cart)
@@ -230,6 +231,14 @@ useEffect(() => {
 
 
   const handleConfirm = async (newPaiement) => {
+
+    if (user.role === 'client' ) {
+      return Toast.show({
+        type: 'error',
+        text1: `Le Click and collect n'est pas disponible`,
+        text2: `Nous vous préviendrons très vite par email` 
+      });
+    }
    
     setPaiement(newPaiement)
     const token = await AsyncStorage.getItem('userToken');
@@ -709,6 +718,8 @@ useEffect(() => {
               ) : (
                   <>
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 30, paddingHorizontal: 30, justifyContent: 'space-between', width: "100%" }}>
+
+
                           <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10, fontFamily: fonts.font1, color: colors.color1 }}>Votre Panier</Text>
                           <TouchableOpacity onPress={handleBack} activeOpacity={1} style={{ backgroundColor: 'white', borderRadius: 25 }}>
                               <ArrowLeft fill={colors.color1} />
@@ -815,8 +826,8 @@ useEffect(() => {
                               </TouchableOpacity>
                           </View>
                       </View>
-  
                       <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
+                      
                       <FooterProfile />
                   </>
               )}
