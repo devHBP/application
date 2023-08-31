@@ -369,7 +369,7 @@ const incrementhandler = async () => {
                             textAlign:'center'
                             }}
                         >
-                            {prixSUN}€
+                            {(prix*0.80).toFixed(2)}€
                       </Text>
                 </View>
                        
