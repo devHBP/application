@@ -3,7 +3,6 @@ import React, { useEffect, useState} from 'react'
 import { fonts, colors} from '../styles/styles'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector} from 'react-redux'
-import { Button } from 'react-native-paper'
 import axios from 'axios'
 import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
@@ -30,8 +29,6 @@ const Orders = ({navigation}) => {
   
     const user = useSelector((state) => state.auth.user);
     const userId = user.userId
-    const [store, setStore] = useState(null); 
-    // const [orders, setOrders] = useState([]);
     const [expandedOrderIds, setExpandedOrderIds] = useState([]);
     const [cancelledOrder, setCancelledOrder] = useState(null);
     const [lastOrder, setLastOrder] = useState(null);
@@ -67,44 +64,12 @@ const Orders = ({navigation}) => {
         }
       }, [cancelledOrder]);
     
-      //recupérer toutes les commandes du user
-    //   const allMyOrders = async () => {
-    //     try {
-    //       const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}`);
-    //       const orders = response.data;
-    //       //console.log('orders', orders)
-    //       if(orders.length > 0){
-    //         //console.log('commande presente')
-    //         setHasOrder(true)
-    //       } else {
-    //         console.log('pas de commande')
-    //       }
-    //       const ordersWithDetails = await Promise.all(orders.map(async order => {
-    //         const productResponse = await axios.get(`${API_BASE_URL}/getOrderProducts/${order.orderId}`);
-    //         const products = productResponse.data;
-    //         const store = await getStoreById(order.storeId);
-    //         //console.log(store)
-    //         //console.log(products)
-    //         return { ...order, products, store };
-    //       }));
-      
-          
-    //       //setOrders(ordersWithDetails);
-    //       //setOrders(ordersWithDetails.sort((a, b) => new Date(b.orderId) - new Date(a.orderId)));
-    //       const sortedOrders = ordersWithDetails.sort((a, b) => new Date(b.orderId) - new Date(a.orderId));
-    //       setLastOrder(sortedOrders[0]);
-    //       setPreviousOrders(sortedOrders.slice(1));
-          
-    //     } catch (error) {
-    //       console.error("Une erreur s'est produite :", error);
-    //     }
-    //   };
     
     const allMyOrders = async () => {
         try {
           const response = await axios.get(`${API_BASE_URL}/ordersOfUserWithProducts/${userId}`);
           const ordersWithDetails = response.data;
-            console.log(response.data)
+            //console.log(response.data)
             if(ordersWithDetails.length > 0){
                 setHasOrder(true)
             }
@@ -139,7 +104,6 @@ const Orders = ({navigation}) => {
         // return `${day}-${month}-${year} ${hours}:${minutes}`;
         return `${day}/${month}/${year} `;
     };
-
    
 
     //autres commandes
@@ -170,26 +134,21 @@ const Orders = ({navigation}) => {
                                     <View style={{width:100}}>
                                     <TextTicker
                                         style={{ color:colors.color1, fontWeight:"bold"}}
-                                        duration={10000} // durée en ms pour un aller-retour (peut être modifié selon vos besoins)
-                                      
-                                        repeatSpacer={50} // espace entre chaque répétition
-                                        marqueeDelay={1000} // délai avant que l'animation ne commence
+                                        duration={10000} 
+                                        repeatSpacer={50} 
+                                        marqueeDelay={1000} 
                                     >
                                         {item.store && item.store.nom_magasin}
                                     </TextTicker>
-                                    {/* <Text>{item.store && item.store.nom_magasin}</Text> */}
                                     <Text style={{color:colors.color5, fontSize:10, width:100}}>{formatDate(item.createdAt)}</Text>
                                     </View>
-                                     
-                            {/* <Text style={{color:colors.color1, fontWeight:"bold"}}>{item.store && item.store.nom_magasin}</Text> */}
-                            
+                                                                 
                         </View>
                         <View style={{flexDirection:'column', justifyContent:'flex-start'}}>
                             <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                             <Text style={{color:colors.color5, fontSize:10}}>{item.productIds.split(",").length}x Articles</Text>
                         </View>
                         <View style={{backgroundColor:'white', borderRadius:25, justifyContent:'center'}}> 
-                            {/* <Icon name={expandedOrderIds.includes(item.orderId) ? 'keyboard-arrow-up' : 'keyboard-arrow-down'} size={28} color={colors.color4}  /> */}
                             <ArrowDown />
                         </View>
                     </View>
@@ -210,19 +169,7 @@ const Orders = ({navigation}) => {
                             <Text style={{fontSize:14, fontWeight: "600"}}>Votre total:</Text>
                             <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                         </View>
-                       {/* <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
-                            <TouchableOpacity onPress={handleReorder}   style={[
-                                    style.btnReorder, 
-                                    { flexDirection:'row', gap:10, alignItems:'center' },
-                                    isDisabled ? { backgroundColor: colors.color3 } : { backgroundColor: colors.color2 }
-                                ]}>                      
-                                <Image
-                                source={require('../assets/reorder.png')} 
-                                style={{width:12, height:12}}
-                                />
-                                <Text style={{color:'white', fontSize:12}}>Renouveler</Text>
-                            </TouchableOpacity>
-                       </View> */}
+                       
                     </View>
                 )}
             </View>
@@ -264,26 +211,7 @@ const Orders = ({navigation}) => {
                         <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                     </View>
                    
-                    {/* <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', width:"100%", marginVertical:20}}> */}
-                        
-                        {/* <Text>{item.status.charAt(0).toUpperCase() + item.status.substring(1)}</Text> */}
-                        
-                        {/* <View >
-                            <TouchableOpacity onPress={handleReorder}   style={[
-                                    style.btnReorder, 
-                                    { flexDirection:'row', gap:10, alignItems:'center' },
-                                    isDisabled ? { backgroundColor: colors.color3 } : { backgroundColor: colors.color2 }
-                                ]}>
-                                <Image
-                                source={require('../assets/reorder.png')} 
-                                style={{width:12, height:12}}
-                                />
-                                <Text style={{color:'white', fontSize:12}}>Renouveler </Text>
-                            </TouchableOpacity>
-                            
-                        </View> */}
-                    {/* </View> */}
-                    
+                   
                 </View>
                 </View>
             </View>

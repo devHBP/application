@@ -1,10 +1,8 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch, TouchableHighlight } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import { fonts, colors} from '../../styles/styles'
 import CheckBox from '@react-native-community/checkbox';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import { Button, RadioButton} from 'react-native-paper'
 import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
@@ -39,12 +37,9 @@ if (__DEV__) {
     const [selectedBoisson, setSelectedBoisson] = useState(null);
     const [prix, setTotalPrice] = useState(0);
     const [productIds, setProductIds] = useState([]);
-    //const [qty, setQty] = useState(1); 
-
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
-    //console.log('cart', cart)
 
     const handleBack = () => {
         navigation.navigate('home')
@@ -73,10 +68,6 @@ if (__DEV__) {
                 const productIds = [88,89];
                 const productPromises = productIds.map((productId) => fetchOneProduct(productId));
                 const desserts = await Promise.all(productPromises);
-                //console.log(desserts)
-                    // desserts.forEach((product) => {
-                    // console.log(product.libelle, product.prix_formule);
-                    // });
                 setDesserts(desserts)
             } catch (error) {
               console.error('Une erreur s\'est produite lors de la récupération du produit:', error);
@@ -105,10 +96,6 @@ if (__DEV__) {
             const productIds = [90]; 
             const productPromises = productIds.map((productId) => fetchOneProduct(productId));
             const boissons = await Promise.all(productPromises);
-            //console.log(desserts)
-                // boissons.forEach((boisson) => {
-                // console.log(boisson.libelle, boisson.prix_formule);
-                // });
                 setBoissons(boissons)
         } catch (error) {
           console.error('Une erreur s\'est produite lors de la récupération du produit:', error);
@@ -117,14 +104,6 @@ if (__DEV__) {
       fetchBoissons()
         
       }, []);
-
-    //   const handleSwitchToggle = () => {
-    //     setDessertSwitch(!dessertSwitch);
-    //     if (dessertSwitch) { // If the switch is being turned off
-    //         setSelectedDessert(null); // Deselect the dessert
-    //     }
-    // };
-      
 
     const handleSandwich = async (product) => {
 
@@ -210,7 +189,6 @@ if (__DEV__) {
         productIds: productIds,
         qty: 1,
       }
-      //console.log('formule', formule);
       dispatch(addToCart(formule));
       navigation.navigate('panier')
     }
@@ -233,21 +211,16 @@ if (__DEV__) {
         </View>
         <View style={{padding:30}}>
             <Text style={style.title}>Burger</Text>
-            <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa sunt accusantium cum veniam sequi molestiae! Qui, perferendis ab magni enim veritatis
-            oluptates, quis earum?</Text>
+            <Text>"Un Burger gourmand avec une touche artisanale. Viande tendre, pain moelleux, pour les amateurs de classiques."</Text>
         </View>
-        {/* choix sandwich */}
+        {/* choix burger */}
         <View>
             <Text style={style.choixTitle}>Votre choix de burger</Text>
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {products.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}>
-                       {/* <Image
-                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                          style={style.sandwichImage}
-                        />
-                      <Text>{product.libelle}</Text> */}
+                       
                         <View style={{width:180, marginLeft:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}
@@ -288,11 +261,7 @@ if (__DEV__) {
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedProduct || !dessertSwitch} >
-                       {/* <Image
-                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                          style={style.sandwichImage}
-                        />
-                      <Text>{product.libelle}</Text> */}
+                       
                         <View style={{width:180, marginLeft:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}
@@ -334,11 +303,7 @@ if (__DEV__) {
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedProduct || !dessertSwitch} >
-                       {/* <Image
-                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                          style={style.sandwichImage}
-                        />
-                      <Text>{product.libelle}</Text> */}
+                       
                       <View style={{width:180, marginLeft:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}

@@ -1,9 +1,7 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import { fonts, colors} from '../../styles/styles'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import { Button, } from 'react-native-paper'
 import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
@@ -39,12 +37,9 @@ if (__DEV__) {
     const [selectedBoisson, setSelectedBoisson] = useState(null);
     const [prix, setTotalPrice] = useState(0);
     const [productIds, setProductIds] = useState([]);
-    //const [qty, setQty] = useState(1); 
-
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
-    //console.log('cart', cart)
     const handleBack = () => {
         navigation.navigate('home')
       }
@@ -55,9 +50,6 @@ if (__DEV__) {
           try {
             const category = 'Poke Bowls'; 
             const products = await getProductsByCategory(category);
-            // products.forEach((product) => {
-            //     console.log(product.libelle, product.prix_unitaire);
-            //   });
               setProducts(products)
           } catch (error) {
             console.error('Une erreur s\'est produite lors de la récupération des produits:', error);
@@ -72,10 +64,6 @@ if (__DEV__) {
                 const productIds = [88, 89];
                 const productPromises = productIds.map((productId) => fetchOneProduct(productId));
                 const desserts = await Promise.all(productPromises);
-                //console.log(desserts)
-                    // desserts.forEach((product) => {
-                    // console.log(product.libelle, product.prix_formule);
-                    // });
                 setDesserts(desserts)
             } catch (error) {
               console.error('Une erreur s\'est produite lors de la récupération du produit:', error);
@@ -104,10 +92,6 @@ if (__DEV__) {
             const productIds = [90]; 
             const productPromises = productIds.map((productId) => fetchOneProduct(productId));
             const boissons = await Promise.all(productPromises);
-            //console.log(desserts)
-                // boissons.forEach((boisson) => {
-                // console.log(boisson.libelle, boisson.prix_formule);
-                // });
                 setBoissons(boissons)
         } catch (error) {
           console.error('Une erreur s\'est produite lors de la récupération du produit:', error);
@@ -244,8 +228,7 @@ if (__DEV__) {
         </View>
         <View style={{padding:30}}>
             <Text style={style.title}>Poke Bowl</Text>
-            <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa sunt accusantium cum veniam sequi molestiae! Qui, perferendis ab magni enim veritatis
-            oluptates, quis earum?</Text>
+            <Text>"Notre Poke Bowl combine fraîcheur et équilibre. Des ingrédients simples et de qualité pour une pause déjeuner saine."</Text>
         </View>
         {/* choix sandwich */}
         <View>
@@ -254,11 +237,6 @@ if (__DEV__) {
                 {products.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}} key={index}>
-                       {/* <Image
-                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                          style={style.sandwichImage}
-                        />
-                      <Text>{product.libelle}</Text> */}
 
                       <View style={{width:180, marginLeft:10}} key={index}>
                       <ProductCard
@@ -276,11 +254,7 @@ if (__DEV__) {
 
                       />
                       </View>
-                        {/* <CheckBox
-                          disabled={false}
-                          value={selectedProduct?.productId === product.productId}
-                          onValueChange={() => handleSandwich(product)}
-                        /> */}
+                       
                       <TouchableOpacity
                         style={[
                           style.checkButton,
@@ -300,24 +274,14 @@ if (__DEV__) {
           <View style={{...style.choixTitle,flexDirection:'row', gap:10, justifyContent:'center', alignItems:'center'}}>
               <Text style={style.choixTitle}>Les desserts  </Text>
               <Text style={{fontSize:12}}>(pour 2€ en +)</Text>
-              {/* <Switch
-                  value={dessertSwitch}
-                  onValueChange={handleSwitchToggle}
-                  thumbColor={dessertSwitch ? colors.color3 : '#f4f3f4'}
-                  trackColor={{ false: 'red', true: colors.color9 }}
-                /> */}
-           
+             
           </View>
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {desserts.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
-                     disabled={!selectedProduct || !dessertSwitch} >
-                       {/* <Image
-                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                          style={style.sandwichImage}
-                        />
-                      <Text>{product.libelle}</Text> */}
+                     disabled={!selectedProduct} >
+                      
                       <View style={{width:180, marginLeft:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}
@@ -333,10 +297,7 @@ if (__DEV__) {
                         showButtons={false} 
                       />
                       </View>
-                        {/* <CheckBox
-                          value={selectedDessert?.productId === product.productId}
-                          onValueChange={() => handleDessert(product)}
-                        /> */}
+                        
                          <TouchableOpacity
                         style={[
                           style.checkButton,
@@ -362,12 +323,8 @@ if (__DEV__) {
                 {boissons.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
-                     disabled={!selectedProduct || !dessertSwitch} >
-                       {/* <Image
-                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                          style={style.sandwichImage}
-                        />
-                      <Text>{product.libelle}</Text> */}
+                     disabled={!selectedProduct} >
+                      
                       <View style={{width:180, marginLeft:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}

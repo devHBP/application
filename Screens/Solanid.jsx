@@ -1,6 +1,5 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch, TouchableHighlight } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import { fonts, colors} from '../styles/styles'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { Button, RadioButton} from 'react-native-paper'
@@ -36,7 +35,6 @@ const Solanid = ({navigation}) => {
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
-    //console.log('cart', cart)
 
     const handleBack = () => {
         navigation.navigate('home')
@@ -53,12 +51,9 @@ const Solanid = ({navigation}) => {
               qty: 0, 
 
             }));
-            //console.log('upd', updatedProducts)
           //produits offre 3+1
           const solanidProducts = updatedProducts.filter(product => product.reference_fournisseur === "Solanid");
           const solanidProductNames = solanidProducts.map(product => product.libelle)
-          //console.log(solanidProductNames)
-
     
           setSolanidProductNames(solanidProducts)
 
@@ -77,7 +72,6 @@ const Solanid = ({navigation}) => {
               const responses = await Promise.all(
                 familyProductIds.map((id) => getFamilyProductDetails(id))
               );
-              //console.log('responses', responses)
               const familleProductDetailsMap = {};
               responses.forEach((famille) => {
                 if (famille) {
@@ -107,10 +101,8 @@ const Solanid = ({navigation}) => {
         const cartQty = cart.reduce((sum, cartItem) => {
           return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
         }, 0);
-        console.log('qty in cart', cartQty)
         const remainingStock = productStock[0]?.quantite - cartQty || 0;
 
-        console.log('remain', remainingStock)
         if ( remainingStock > 0) {
            
             dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire, qty: 1 , offre: selectedProduct.offre}));
@@ -150,12 +142,6 @@ const Solanid = ({navigation}) => {
                 style={{ ...styles.pastilleOffre31, transform: [{rotate: '15deg'}]}}
                 />
               
-                {/* <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:0, paddingHorizontal:30,paddingVertical:30,  backgroundColor:'pink'}}>
-                    <Text style={{...style.titleProduct, width:"90%"}}>Les produits des Halles Solanid</Text>
-                    <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
-                      <ArrowLeft fill="white"/>
-                    </TouchableOpacity>
-                  </View> */}
                   <LinearGradient
                   colors={['#273545', 'transparent']}
                   style={{flexDirection:'row', justifyContent:'space-between', width:"100%", alignItems:'center', position:'absolute', top:0, paddingHorizontal:30, paddingVertical:30}}
@@ -196,11 +182,7 @@ const Solanid = ({navigation}) => {
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center' }}>
             {group.products.map((product, index) => (
                   <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
-                  {/* <Image
-                  source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                  style={style.sandwichImage}
-                />
-                <Text>{product.libelle}</Text> */}
+                  
                 <View style={{width:170, marginVertical:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}

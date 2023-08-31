@@ -1,7 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-  // user: null,
   user: {
     firstname: '',
     lastname: '',
@@ -14,7 +13,6 @@ const initialState = {
     idSUN:'',
     allergies:[],
     preferences_alimentaires:[]
-    // Autres champs utilisateur
   },
   selectedStore: '',
 };
@@ -34,10 +32,7 @@ const authSlice = createSlice({
       };
     },
     logoutUser: (state, action) => {
-      // state.user = null;
-      // state.user = {
-      //   ...state.user,
-      // };
+      
       state.user = {
         firstname: '',
         lastname: '',
@@ -46,9 +41,7 @@ const authSlice = createSlice({
       };
     },
     updateSelectedStore: (state, action) => {
-      // state.selectedStore = action.payload;
       state.selectedStore = action.payload
-      // state.user.id_magasin = action.payload.id_magasin;
 
     },
     updateUser: (state, action) => {

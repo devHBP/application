@@ -1,7 +1,5 @@
 import { View, TouchableOpacity, Image, Text, StyleSheet, ScrollView} from 'react-native'
 import React, { useEffect, useState} from 'react'
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import { defaultStyle} from '../styles/styles'
 import { useSelector, useDispatch } from 'react-redux'
 import {  addToCart, addFreeProductToCart} from '../reducers/cartSlice';
 import { checkStockForSingleProduct } from '../CallApi/api.js';
@@ -58,7 +56,6 @@ const ProductDetails = ({navigation, route}) => {
       }
       return total;
     }, 0);
-    //console.log('prodQty', productQuantity)
 
   
     useEffect(() => {
@@ -72,11 +69,9 @@ const ProductDetails = ({navigation, route}) => {
      
     const handleAcceptOffer = () => { 
       dispatch(addFreeProductToCart(product));
-      //console.log('cart', cart)
     }; 
     
     const incrementhandler = async () => {
-      // const foundProduct = cart.find(p => p.productId === product.productId);
       setProductCount(productCount + 1);
 
       if (currentStock === 0){
@@ -92,7 +87,6 @@ const ProductDetails = ({navigation, route}) => {
         const remainingStock = stockAvailable[0].quantite - productQuantity;
   
         if (stockAvailable.length > 0 && remainingStock > 0) {
-          //console.log(`Ajout au panier: ${product.libelle}, prix: ${product.prix_unitaire}, quantité: 1`);
           dispatch(addToCart({ productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix_unitaire, qty: 1 , offre: product.offre}));
   
           if (product.offre && product.offre.startsWith('offre31')) {
@@ -185,7 +179,6 @@ const ProductDetails = ({navigation, route}) => {
                                 <TouchableOpacity
                                   onPress={() => decrementhandler(product.productId, dispatch)}
                                   style={styles.container_gray} >
-                                    {/* <Icon name="remove" size={30} color="#000" /> */}
                                     <Svg width={7} height={4} viewBox="0 0 7 4">
                                       <Path
                                     d="M0.666748 3.8V0.733337H6.80008V3.8H0.666748Z"
@@ -198,11 +191,9 @@ const ProductDetails = ({navigation, route}) => {
                               <Text style={styles.qtyText}>{productQuantity}</Text>
                             </View>
                             <TouchableOpacity
-                                // onPress={incrementhandler}
                                  onPress={() => incrementhandler(product.productId, product.offre)}
                                  style={{...styles.container_gray, backgroundColor:colors.color2}}
                             >
-                                {/* <Icon name="add" size={30} color="#000" /> */}
                                 <Svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                                   <Path d="M10 4.05197V6.48141H6.63702V9.86669H4.14375V6.48141H0.800049V4.05197H4.14375V0.666687H6.63702V4.05197H10Z" fill="#ECECEC"/>
                                 </Svg>

@@ -1,12 +1,10 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image,} from 'react-native'
 import { Button, TextInput  } from 'react-native-paper'
 import React, { useEffect, useState} from 'react'
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import { useSelector, useDispatch } from 'react-redux'
 import { updateUser , updateSelectedStore,} from '../reducers/authSlice';
 import { addDate, addTime, clearCart, resetDateTime} from '../reducers/cartSlice';
 import { defaultStyle, inputStyling, colors, fonts } from '../styles/styles'
-import  Picker  from 'react-native-picker-select';
 import SelectDropdown from 'react-native-select-dropdown'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import axios from 'axios'
@@ -40,11 +38,8 @@ const Profile =  ({navigation}) => {
   const [stores, setStores] = useState([]);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
-  //console.log('role', user.role)
   const userId = user.userId
   const selectedStore = useSelector((state) => state.auth.selectedStore);
-   //console.log('store', userStore)
-     // Initialisation des états locaux pour les champs du formulaire
      const [firstname, setFirstname] = useState('');
      const [lastname, setLastname] = useState('');
      const [adresse, setAdresse] = useState('');
@@ -81,19 +76,8 @@ const Profile =  ({navigation}) => {
       client: [1, 2]      
   };
 
-    // const allStores = async () => {
-    //   try {
-    //     const response = await axios.get(`${API_BASE_URL}/getAllStores`);
-    //     setStores(response.data);
-    //   } catch (error) {
-    //     console.error("Une erreur s'est produite :", error);
-    //   }
-    // };
-
-
     const allStores = async () => {
       try {
-          //console.log('Role actuel de l\'utilisateur:', user.role); // Affichez le rôle actuel pour vérifier
           const response = await axios.get(`${API_BASE_URL}/getAllStores`);
           if (response.data && Array.isArray(response.data)) {
               // Vérifier si ROLE_STORES[user.role] est défini
@@ -115,9 +99,8 @@ const Profile =  ({navigation}) => {
 
     const getUserInfo = async(user) => {
       try {
-        const response = await axios.get(`${API_BASE_URL}/getOne/${user.userId}`); // Remplacez par la bonne URL de l'API
+        const response = await axios.get(`${API_BASE_URL}/getOne/${user.userId}`); 
         const userData = response.data;
-        //console.log('userData', userData)
          setFirstname(userData.firstname);
          setLastname(userData.lastname);
          setEmail(userData.email);
@@ -136,9 +119,6 @@ const Profile =  ({navigation}) => {
       getUserInfo(user)
     }, [user]);
 
-  
-
-    //ajouter le genre
     const handleSubmit = async  () => {
       dispatch(updateUser({
         firstname,
@@ -151,7 +131,7 @@ const Profile =  ({navigation}) => {
         allergies:selectedAllergies,
         preferences_alimentaires:selectedPreferences,
       }));
-      console.log(user)
+      //console.log(user)
 
       const updatedUser = {
         firstname,
@@ -167,8 +147,8 @@ const Profile =  ({navigation}) => {
   
       try {
         const newUser = await modifyUser(user.userId, updatedUser);
-        console.log('new user', newUser);
-        console.log('updateuser', updatedUser)
+        //console.log('new user', newUser);
+        //console.log('updateuser', updatedUser)
         return Toast.show({
           type: 'success',
           text1: `Modifications enregistrées`,
@@ -181,11 +161,6 @@ const Profile =  ({navigation}) => {
     };
 
     const handleLogout = () => {
-      //code de la page Home
-      // dispatch(resetDateTime())
-      // setDate(null)
-      // setTime(null)
-      // dispatch(logoutUser(selectedStore)); 
       dispatch(clearCart())
       navigation.navigate('login')
     }
@@ -208,12 +183,15 @@ const Profile =  ({navigation}) => {
     { nom_allergie: 'Lait' },
     { nom_allergie: 'Gluten' },
     { nom_allergie: 'Oeufs' },
-    // Ajoutez autant d'allergies que nécessaire
+    { nom_allergie: 'Poissons' },
+    { nom_allergie: 'Crustacés' },
+    { nom_allergie: 'Soja' },
   ];
   const preferences = [
     { nom_preference: 'Vegan' },
     { nom_preference: 'Vegetarien' },
     { nom_preference: 'Halal' },
+    { nom_preference: 'Casher' }
   ];
 
   const sortedAllergies = [...allergies].slice(0).sort((a, b) => a.nom_allergie.localeCompare(b.nom_allergie));

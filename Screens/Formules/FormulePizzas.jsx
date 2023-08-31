@@ -2,7 +2,6 @@ import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, } from 're
 import React, { useEffect, useState } from 'react'
 import { fonts, colors} from '../../styles/styles'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import { Button, RadioButton} from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import {  addToCart} from '../../reducers/cartSlice';
@@ -46,19 +45,14 @@ if (__DEV__) {
       }
   
     
-
       useEffect(() => {
         //les sandwichs - categorie
         const fetchProducts = async () => {
           try {
-            // const category = 'Pizzas'; 
             //on choisit les petites pizzas pour les formules
             const productIds = [93];
             const productPromises = productIds.map((productId) => fetchOneProduct(productId));
             const products = await Promise.all(productPromises);
-            // products.forEach((product) => {
-            //     console.log(product.libelle, product.prix_unitaire);
-            //   });
               setProducts(products)
           } catch (error) {
             console.error('Une erreur s\'est produite lors de la récupération des produits:', error);
@@ -73,10 +67,6 @@ if (__DEV__) {
                 const productIds = [88,89];
                 const productPromises = productIds.map((productId) => fetchOneProduct(productId));
                 const desserts = await Promise.all(productPromises);
-                //console.log(desserts)
-                    // desserts.forEach((product) => {
-                    // console.log(product.libelle, product.prix_formule);
-                    // });
                 setDesserts(desserts)
             } catch (error) {
               console.error('Une erreur s\'est produite lors de la récupération du produit:', error);
@@ -105,10 +95,6 @@ if (__DEV__) {
             const productIds = [90]; 
             const productPromises = productIds.map((productId) => fetchOneProduct(productId));
             const boissons = await Promise.all(productPromises);
-            //console.log(desserts)
-                // boissons.forEach((boisson) => {
-                // console.log(boisson.libelle, boisson.prix_formule);
-                // });
                 setBoissons(boissons)
         } catch (error) {
           console.error('Une erreur s\'est produite lors de la récupération du produit:', error);
@@ -199,7 +185,6 @@ if (__DEV__) {
         productIds: productIds,
         qty: 1,
       }
-      //console.log('formule', formule);
       dispatch(addToCart(formule));
       navigation.navigate('panier')
     }
@@ -222,8 +207,7 @@ if (__DEV__) {
         </View>
         <View style={{padding:30}}>
             <Text style={style.title}>Pizzas</Text>
-            <Text>Lorem ipsum dolor sit amet consectetur adipisicing elit. Culpa sunt accusantium cum veniam sequi molestiae! Qui, perferendis ab magni enim veritatis
-            oluptates, quis earum?</Text>
+            <Text>"Découvrez notre Pizza croustillante, garnie avec soin. Un plaisir simple à partager."</Text>
         </View>
         {/* choix sandwich */}
         <View>
@@ -232,11 +216,7 @@ if (__DEV__) {
                 {products.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}>
-                       {/* <Image
-                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                          style={style.sandwichImage}
-                        />
-                      <Text>{product.libelle}</Text> */}
+                       
                       <View style={{width:180, marginLeft:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}
@@ -273,12 +253,6 @@ if (__DEV__) {
           <View style={{...style.choixTitle,flexDirection:'row', gap:10, justifyContent:'center', alignItems:'center'}}>
               <Text style={style.choixTitle}>Les desserts  </Text>
               <Text style={{fontSize:12}}>(pour 2€ en +)</Text>
-              {/* <Switch
-                  value={dessertSwitch}
-                  onValueChange={handleSwitchToggle}
-                  thumbColor={dessertSwitch ? colors.color3 : '#f4f3f4'}
-                  trackColor={{ false: 'red', true: colors.color9 }}
-                /> */}
            
           </View>
             <ScrollView horizontal={true} style={style.scrollProduct}>
@@ -286,11 +260,7 @@ if (__DEV__) {
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedProduct || !dessertSwitch} >
-                       {/* <Image
-                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                          style={style.sandwichImage}
-                        />
-                      <Text>{product.libelle}</Text> */}
+                       
                       <View style={{width:180, marginLeft:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}
@@ -333,11 +303,7 @@ if (__DEV__) {
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      disabled={!selectedProduct || !dessertSwitch} >
-                       {/* <Image
-                          source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                          style={style.sandwichImage}
-                        />
-                      <Text>{product.libelle}</Text> */}
+                       
                       <View style={{width:180, marginLeft:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}

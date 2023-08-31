@@ -30,19 +30,14 @@ export const decrementhandler = (id, dispatch) => {
 
 
 export const removehandler = (id, dispatch, type = 'product') => { 
-  console.log('id', id);
   if (type === 'formule') {
-    console.log('cest une formule')
       dispatch(removeMultipleFromCart({ formuleId: id })); 
   } else {
-    console.log('cest un produit seul')
       if (Array.isArray(id)) { 
-        console.log('on est ici')
           id.forEach(productId => { 
               dispatch(removeFromCart({ productId }));
           });
       } else {
-        console.log('on est la')
           dispatch(removeFromCart({ productId: id })); 
       }
   }
@@ -51,7 +46,6 @@ export const removehandler = (id, dispatch, type = 'product') => {
   
   //fonctionne pour les produits individuals - pas pour les formule
 export  const incrementhandler = async (id, dispatch, cart, currentStock, offre) => {
-      console.log({ id, dispatch, cart, currentStock, offre });
 
     if (currentStock === 0){
       return Toast.show({

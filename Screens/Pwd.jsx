@@ -33,7 +33,6 @@ const Pwd = ({ navigation }) => {
       const response = await axios.post(`${API_BASE_URL}/forgotPassword`, {
         email,
       });
-      //console.log(email)
 
       if (response.status === 200) {
         Alert.alert('Succès', 'Vérifiez votre boîte de réception pour les instructions de réinitialisation du mot de passe.');
@@ -69,7 +68,6 @@ const Pwd = ({ navigation }) => {
               onChangeText={setEmail}
               placeholderTextColor={colors.color3}
           />
-          {/* <Button title="Changer votre mot d epasse" onPress={handleForgotPassword} /> */}
           <View style={{flexDirection:'column', alignItems:'flex-end'}}>
           <Button
                 style={styles.btn} 

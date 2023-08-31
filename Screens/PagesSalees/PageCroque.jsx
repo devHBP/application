@@ -1,6 +1,5 @@
 import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native'
 import React, { useEffect, useState} from 'react'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import { style } from '../../styles/formules'; 
 import { styles } from '../../styles/produits'
 import axios from 'axios'
@@ -9,8 +8,6 @@ import { Button} from 'react-native-paper'
 import { useDispatch, useSelector } from 'react-redux';
 import FooterProfile from '../../components/FooterProfile';
 import { addToCart, decrementOrRemoveFromCart } from '../../reducers/cartSlice';
-import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import Svg, { Path } from 'react-native-svg';
 import ArrowLeft from '../../SVG/ArrowLeft';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
@@ -84,7 +81,6 @@ if (__DEV__) {
         navigation.navigate('home')
       }
       useEffect(() => {
-        // Fonction pour récupérer les données de la base de données
         const fetchData = async () => {
           try {
             const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
@@ -105,94 +101,6 @@ if (__DEV__) {
         fetchData(); 
       }, []);
     
-    //increment
-    // const incrementHandler = async (productId) => {
-    //   const product = products.find(p => p.productId === productId);
-    //   setProductCount(productCount + 1);
-
-    //   if (!product) {
-    //     console.error(`Product with ID ${productId} not found.`);
-    //     return;
-    //   }
-
-    //   const { libelle, image, prix_unitaire, offre} = product; // Déstructurez le produit
-    //   //console.log(product.productId);
-
-    //   const productStock = stock.find(item => item.productId === product.productId);
-      
-    //   // Obtenir la quantité en stock pour ce produit
-    //   const productQuantity = productStock ? productStock.quantite : 0;
-    //   console.log(`The quantity in stock for product ${productId} is ${productQuantity}`);
-
-    //   //si plus de stock
-    //   if(productQuantity === 0){
-    //     return Toast.show({
-    //       type: 'error',
-    //       text1: `Victime de son succès`,
-    //       text2: 'Plus de stock disponible' 
-    //     });
-    //   }
-    //   try{
-    //     const stockAvailable = await checkStockForSingleProduct(product.productId);
-    //     console.log(stockAvailable)
-
-    //     const remainingStock = stockAvailable[0].quantite - product.qty;
-    //     console.log(remainingStock)
-
-    //     if (stockAvailable.length > 0 && remainingStock > 0) {
-    //       console.log(`Ajout au panier: ${product.libelle}, prix: ${product.prix_unitaire}, quantité: 1`);
-    //       dispatch(addToCart({ productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix_unitaire, qty: 1 , offre: product.offre}));
-  
-    //       setProducts((prevProducts) =>
-    //       prevProducts.map((product) =>
-    //         product.productId === productId ? { ...product, qty: product.qty + 1 } : product
-    //       )
-    //     );
-    //       if (product.offre && product.offre.startsWith('offre31')) {
-    //         const updatedCart = [...cart, { productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix, qty: 1 , offre: product.offre}];
-    //         const sameOfferProducts = updatedCart.filter((item) => item.offre === product.offre);
-    //         const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
-            
-    //         if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
-    //           setModalVisible(true);
-
-    //         }
-    //       }
-    //     } else {
-    //       return Toast.show({
-    //         type: 'error',
-    //         text1: `Victime de son succès`,
-    //         text2: `Quantité maximale: ${stockAvailable[0].quantite}` 
-    //       });
-    //     }
-        
-    //   }catch (error) {
-    //     console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
-    //   }
-    // };
-
-  //   const decrementhandler = async (productId) => {
-  //     const product = products.find(p => p.productId === productId);
-  //     setProductCount(productCount - 1);
-  //     if (!product) {
-  //       console.error(`Product with ID ${productId} not found.`);
-  //       return;
-  //     }
-  
-  //     if (product.qty <= 0) {
-  //       console.error(`Product with ID ${productId} already has a quantity of 0.`);
-  //       return;
-  //     }
-  
-  //     dispatch(decrementOrRemoveFromCart({ productId: product.productId}));
-  
-  //     setProducts(prevProducts =>
-  //       prevProducts.map((product) =>
-  //         product.productId === productId ? { ...product, qty: product.qty - 1 } : product
-  //       )
-  //     );
-      
-  // };
 
     const openFormuleCroque = () => {
       navigation.navigate('formulecroque')
@@ -230,42 +138,7 @@ if (__DEV__) {
             <ScrollView horizontal={true} style={{marginVertical:20}}>
             {products.map((product, index) => (
                 <TouchableOpacity key={index} onPress={() => setSelectedProduct(product)}>
-                {/* <View style={{marginHorizontal:20, flexDirection:'column', alignItems:'center'}} key={index}>
-                    <Image
-                    key={index}
-                    source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                    style={styles.imageOptions}
-                    />
-                    <Text style={styles.libelle}>{product.libelle}</Text>
-                    
-                    <View style={{flexDirection:'row', gap:5}}>
-                    <TouchableOpacity
-                        onPress={() => decrementhandler(product.productId)}
-                        style={styles.container_gray}
-                    >
-                      <Svg width={7} height={4} viewBox="0 0 7 4">
-                        <Path
-                          d="M0.666748 3.8V0.733337H6.80008V3.8H0.666748Z"
-                          fill="#273545"
-                        />
-                      </Svg>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={styles.container_gray}>
-                      <Text>{getProductQtyInCart(product.productId)}</Text>
-
-                  </TouchableOpacity> 
-
-                  <TouchableOpacity
-                        onPress={() => incrementHandler(product.productId)}
-                        style={{...styles.container_gray, backgroundColor:colors.color2}}
-                    >
-                       <Svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
-                          <Path d="M10 4.05197V6.48141H6.63702V9.86669H4.14375V6.48141H0.800049V4.05197H4.14375V0.666687H6.63702V4.05197H10Z" fill="#ECECEC"/>
-                      </Svg>
-                    </TouchableOpacity>
-
-          </View>
-                </View> */}
+               
                 <View style={{width:180, marginLeft:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}
@@ -355,8 +228,6 @@ if (__DEV__) {
         </ScrollView>
 
         {/* redirection vers formule*/}
-
-       
         <View style={{...style.menu, marginBottom:40, paddingBottom:40}}>
                 <View>
                 <View style={style.bandeauFormule}>

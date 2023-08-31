@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import React, { useState} from 'react'
 import { Button, TextInput } from 'react-native-paper' 
 import axios from 'axios'
-import { defaultStyle, inputStyling, fonts, colors } from '../styles/styles'
+import {  inputStyling, fonts, colors } from '../styles/styles'
 import { registerUser } from '../reducers/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
@@ -64,7 +64,6 @@ if (__DEV__) {
     //appel axios post pour s'enregister
     axios.post(`${API_BASE_URL}/signup`, clientData)
     .then(response => {
-      //console.log('client data', clientData)
        console.log('response.data', response.data)
       const userId = response.data.id
       const user = { userId:userId ,firstname, lastname, email, password, cp, genre,date: date.toISOString(), idSUN}; 
@@ -91,7 +90,6 @@ if (__DEV__) {
 
     }
     console.error("Erreur générale:", error);
-    //console.log(clientData)
     });
   }
 
@@ -122,7 +120,6 @@ if (__DEV__) {
         placeholder='exemple.mail@email.com'
         keyboardType='email-address'
         value={email}
-        // onChangeText={setEmail}
         onChangeText={(value) => {
           setEmail(value);
           setError({...error, email: validateEmail(value)});
@@ -138,7 +135,6 @@ if (__DEV__) {
         placeholder='Mot de passe'
         secureTextEntry={true}
         value={password}
-        // onChangeText={setPassword}
         onChangeText={(value) => {
           setPassword(value);
           setError({...error, password: validatePassword(value)});
@@ -185,14 +181,12 @@ if (__DEV__) {
         <Text style={style.texteGenre}>Non-binaire</Text>
       </View>
 
-      {/* Nom */}
-      {/* <Text style={style.label}>Nom</Text> */}
+     {/* Nom */}
       <TextInput 
        {...inputOptions}
         placeholder='Nom'
         keyboardType='default'
         value={lastname}
-        // onChangeText={setLastName}
         onChangeText={(value) => {
           setLastName(value);
           setError({...error, lastname: validateLastName(value)});
@@ -201,14 +195,12 @@ if (__DEV__) {
       />
       {/* {error.lastname ? <Text style={{color: 'red', textAlign:'center'}}>{error.lastname}</Text> : null} */}
 
-      {/* Prenom */}
-      {/* <Text style={style.label}>Prénom</Text> */}
+     {/* Prenom */}
       <TextInput 
         {...inputOptions}
         placeholder='Prénom'
         keyboardType='default'
         value={firstname}
-        // onChangeText={setFirstName}
         onChangeText={(value) => {
           setFirstName(value);
           setError({...error, firstname: validateFirstName(value)});
@@ -218,13 +210,11 @@ if (__DEV__) {
       {/* {error.firstname ? <Text style={{color: 'red', textAlign:'center'}}>{error.firstname}</Text> : null} */}
 
         {/* code postal */}
-        {/* <Text style={style.label}>Code postal</Text> */}
         <TextInput 
         {...inputOptions}
         placeholder='Code postal'
         keyboardType='numeric'
         value={cp}
-        // onChangeText={setPassword}
         onChangeText={(value) => {
           setCodePostal(value);
           setError({...error, cp: validatePostalCode(value)});
@@ -234,7 +224,6 @@ if (__DEV__) {
       {/* {error.cp ? <Text style={{color: 'red', textAlign:'center'}}>{error.cp}</Text> : null} */}
 
       {/* date de naissance */}
-      {/* <Text style={style.label}>Date de naissance</Text> */}
       <TextInput 
           {...inputOptions}
           value={formattedDate}

@@ -1,8 +1,6 @@
 import { View, Text, TouchableOpacity,ScrollView, TextInput, Modal, StyleSheet, Linking, Image, Platform } from 'react-native'
 import React, { useState, useEffect, useRef} from 'react'
-import { Button } from 'react-native-paper'
 import { useSelector, useDispatch } from 'react-redux';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import axios from 'axios'
 import { updateCart, addToCart, addFreeProductToCart, updateCartTotal } from '../reducers/cartSlice';
 import { logoutUser} from '../reducers/authSlice';
@@ -44,7 +42,6 @@ const Panier = ({navigation}) => {
   const dispatch = useDispatch()
   const webViewRef = useRef(null);
   const [promoCode, setPromoCode] = useState('');
-  //const [currentStock, setCurrentStock] = useState(product.stock);
   const [modalVisible, setModalVisible] = useState(false);
   const [orderInfo, setOrderInfo] = useState(null);
   const [checkoutSession, setCheckoutSession] = useState(null);
@@ -52,20 +49,14 @@ const Panier = ({navigation}) => {
   const [productFamilies, setProductFamilies] = useState({});
   const [ paiement, setPaiement] = useState('online')
   const [loading, setLoading] = useState(false);
-  const [showModalClient, setShowModalClient] = useState(false);
 
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
-  //console.log('cart panier', cart)
   const user = useSelector((state) => state.auth.user)
-  //console.log('role', user.role)
   const selectedStore = useSelector(state => state.auth.selectedStore);
-  //console.log('storecollab', selectedStore)
    const cartTotal = useSelector((state) => state.cart.cartTotal)
 
   const selectedDateString = useSelector((state) => state.cart.date)
   const selectedTime = useSelector((state) => state.cart.time)
-  // const paiement = useSelector((state) => state.cart.paiement)
-  // const paiement = "online"
   const numero_commande = useSelector((state) => state.order.numero_commande)
 
   let totalPrice = Number((cart.reduce((total, item) => {
@@ -110,10 +101,7 @@ const Panier = ({navigation}) => {
     }
   
     return accumulator;
-  }, []);
-  
-  //console.log('produit fusionné page panier', aggregatedCartItems);
-  
+  }, []);  
 
   const handleBack = () => {
     navigation.navigate('home');
@@ -130,12 +118,10 @@ const Panier = ({navigation}) => {
   };
 
 const incrementhandler = async (productIds, offre) => {
-  //console.log({ id, dispatch, cart, offre });
   const id = Array.isArray(productIds) ? productIds[0] : productIds; // Si productIds est un tableau, prenez le premier élément. Sinon, prenez productIds tel quel.
 
   // const productInCart = cart.find((item) => item.productId === id);
   const productInCart = cart.find((item) => Array.isArray(item.productIds) ? item.productIds[0] === id : item.productId === id);
-
 
   try {
     if (productInCart.type === 'formule') {
@@ -156,7 +142,6 @@ const incrementhandler = async (productIds, offre) => {
     } else {
       const stockAvailable = await checkStockForSingleProduct(id);
 
-      // Calculate the remaining stock after accounting for the items in the cart
       const remainingStock = stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
 
       if (stockAvailable.length > 0 && remainingStock > 0) {
@@ -197,8 +182,9 @@ const incrementhandler = async (productIds, offre) => {
 useEffect(() => {
   const fetchFamilies = async () => {
     const productIds = cart.map(item => {
+      //formule separement
       if (item.type === 'formule') {
-        return null;  // Nous traiterons les formules séparément
+        return null;  
       }
       return item.productId;
     }).filter(id => id !== null); 
@@ -347,14 +333,13 @@ useEffect(() => {
 
                         })()
       };
-    console.log('orderdata', orderData) 
+    //console.log('orderdata', orderData) 
 
       const createOrder = async () => {
-        console.log(dateForDatabase) 
+        //console.log(dateForDatabase) 
         try {
           const response =  await axios.post(`${API_BASE_URL}/createorder`, orderData);
           const numero_commande = response.data.numero_commande
-          //console.log('num', response)
           dispatch(setNumeroCommande(numero_commande));
           let userRole = user.role
 
@@ -369,10 +354,10 @@ useEffect(() => {
             paiement
           });
 
-          console.log('response createOrder', response.data)
+          //console.log('response createOrder', response.data)
           const orderId = response.data.orderId;
           dispatch(setOrderId(orderId)); 
-          console.log('resp data', response.data)
+          //console.log('resp data', response.data)
           return response.data;
         } catch (error) {
           console.error(error);
@@ -380,25 +365,19 @@ useEffect(() => {
         }
       }
      createOrder()
-     console.log('commande créé')
+     //console.log('commande créé')
       } else {
           console.log('erreur ici', error)
       }
     })
     .catch(error => {
-    console.log('erreur', error)
+    //console.log('erreur', error)
     return Toast.show({
          type: 'error',
          text1: 'Date de livraison manquante',
          text2: 'Veuillez renseigner une date'
        });
-    // handleLogout()
-    // return Toast.show({
-    //   type: 'error',
-    //   text1: 'Session expirée',
-    //   text2: 'Veuillez vous reconnecter'
-    // });
-      // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
+    
     });  
 }
 
@@ -408,7 +387,7 @@ const checkPaymentStatus = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/paiementStatus?sessionId=${sessionId}`);
     const { status, transactionId, method } = response.data;
-    console.log('response PaiementStatus', response.data)
+    c//onsole.log('response PaiementStatus', response.data)
      // retour : response data {"status": "paid", "transactionId": "pi_3NOFjcGnFAjiWNhK0KP6l8Nl"}
    
     if (status === 'paid') {
@@ -421,15 +400,13 @@ const checkPaymentStatus = async () => {
       };
   
       const updateResponse = await axios.post(`${API_BASE_URL}/createPaiement`, paymentData);
-      console.log('Response createPaiement:', updateResponse.data);
-      //console.log('paymentId', updateResponse.data.paymentId)
+      //console.log('Response createPaiement:', updateResponse.data);
       const paymentId = updateResponse.data.paymentId
 
       const updateData = { numero_commande, status, paymentId}
-      //console.log('updData', updateData)
 
       const response = await axios.post(`${API_BASE_URL}/updateOrder`, updateData);
-      console.log('response updateOrder', response.data)
+      //console.log('response updateOrder', response.data)
       navigation.navigate('success')
     }
     
@@ -448,21 +425,15 @@ const checkPaymentStatus = async () => {
     axios.get(`${API_BASE_URL}/promocodes/${promoCode}`)
     .then(response => {
       const data = response.data;
-      //console.log('data', data)
+      
       if (data && data.active) {
         const percentage = data.percentage;
 
-        // const updatedCart = cart.map(item => ({
-        //   ...item,
-        //   originalPrice: item.prix,
-        //   prix: item.prix - (item.prix * percentage / 100)
-        // }));
         const updatedCart = cart.map(item => ({
           ...item,
           originalPrice: item.prix_unitaire,
           prix_unitaire: item.prix_unitaire - (item.prix_unitaire * percentage / 100)
         }));
-        //console.log('upd', updatedCart)
 
         dispatch(updateCart(updatedCart));
         setPromoCode('');
@@ -535,7 +506,6 @@ useEffect(() => {
         isDev: __DEV__ });
       const sessionUrl = response.data.session;
       const sessionId = response.data.id
-      //console.log('data id', sessionId)
       setSessionId(sessionId);
       const stripeCheckoutUrl = `${sessionUrl}`;
       setCheckoutSession(stripeCheckoutUrl);
@@ -561,145 +531,7 @@ useEffect(() => {
       }
     }, [orderInfo, paiement]);
   return (
-    // <>
-    // <View style={{ flex:1, alignItems: 'center', backgroundColor: colors.color3,paddingVertical:15}}>
-
- 
-    //         <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical:30,paddingHorizontal:30, justifyContent:'space-between', width:"100%" }}>
-              
-    //           <Text style={{ fontSize: 20, fontWeight: "bold", marginLeft: 10, fontFamily:fonts.font1, color:colors.color1 }}>Votre Panier</Text>
-    //           <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'white', borderRadius:25}}>
-    //               <ArrowLeft fill={colors.color1}/>
-    //           </TouchableOpacity>
-    //         </View>
-
-
-    //         {/* bandeau picker */}
-    //         <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-around', paddingHorizontal:10}}>
-                    
-    //               <View>
-    //                 <StorePicker />
-    //               </View> 
-    //               <View >
-    //                 <CustomDatePicker />
-    //               </View>
-                
-    //           </View>
-        
-    //         <ScrollView  style={{marginVertical:10,flex: 1,}}>
-    //               {/* - formules -  */}{
-    //                 formules.length > 0 && <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>Formules</Text>
-    //               }
-    //                 {formules.map((item, index) => {
-    //                   if (item.type === 'formule'){
-    //                     return (
-                          
-    //                       <View key={index}>
-    //                         <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}}>
-                          
-    //                         <CardItemFormule
-    //                           option1={item.option1}
-    //                           option2={item.option2}
-    //                           option3={item.option3}
-    //                           prix_unitaire={item.prix}
-    //                           incrementhandler={() => incrementhandler(item.productIds, item.offre)}
-    //                           decrementhandler={() => decrementhandler(item.productIds, dispatch)}
-    //                           removehandler={() => removehandler(item.id, dispatch, 'formule')}
-    //                           image={item.formuleImage}
-    //                           qty={item.qty}
-    //                           title={item.libelle}
-    //                           // key={item.id}
-    //                         />
-    //                       </View> 
-    //                       </View>
-                      
-    //                     );
-    //                 }
-    //                 })} 
-    //             {/* - produits seuls ou avec offre -  */}
-    //               {
-    //                 Object.entries(itemsGroupedByFamily).map(([familyName, items], index) => {
-    //               // groupedItemsArray.map((group, index) => {
-    //                 // if (group.items[0].type !== 'formule') {
-    //                     return (
-    //                         <View  key={index}>
-    //                           {/* ici le nom de famille */}
-    //                           <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>{familyName}</Text>
-    //                           {items.map((group, groupIndex) => (
-
-    //                           <View style={{backgroundColor:"white", borderRadius:10, marginVertical:5}} key={groupIndex}>
-    //                             <CartItem 
-    //                                   libelle={group.items[0].libelle}
-    //                                   prix_unitaire={group.items[0].prix || group.items[0].prix_unitaire}
-    //                                   qty={group.items.reduce((acc, item) => acc + item.qty, 0)} 
-    //                                   incrementhandler={() => incrementhandler(group.items[0].productId, group.items[0].offre)}
-    //                                   decrementhandler={() => decrementhandler(group.items[0].productId, dispatch)}
-    //                                   removehandler={() => removehandler(group.items[0].productId, dispatch) }
-    //                                   // image={group.items[0].image}
-    //                                   index={index}
-    //                                   isFree={group.items[0].isFree}
-    //                                   freeCount={group.freeCount}
-    //                               />
-    //                           </View>
-                              
-    //                           ))} 
-    //                         </View>
-    //                     )
-    //                 } )  
-    //               }    
-    //         </ScrollView>
-          
-                
-              
-    //           {/* Promotions */}
-    //             <View style={{ flexDirection:'row', alignItems:'center', gap: 10, }}>
-    //                 <TextInput
-    //                   value={promoCode}
-    //                   onChangeText={(value) => setPromoCode(value)}
-    //                   placeholder="Code promo"
-    //                   style={{ width: 150, marginVertical: 10, borderWidth: 1, borderColor: 'white', paddingHorizontal: 20, paddingVertical: 10 }}
-    //                 />
-    //                 <Icon name="done" size={20} color="#900" onPress={handleApplyDiscount} />
-    //                 <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
-    //             </View>
-    //           </View>
-
-    //           {/* bandeau selection commande */}
-    //             <View style={{...style.menu }}>
-    //               <View style={{flexDirection:'row', paddingHorizontal:30, justifyContent:'center', gap:10}}>
-    //                 <View >
-    //                   <Text style={{ fontWeight:"bold"}}>Votre total</Text>
-    //                   <Text style={{color:colors.color2}}>Total Avec<Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/></Text>
-    //                 </View>
-    //                 <View style={{flexDirection:'column', justifyContent:'space-between', alignItems:"flex-end"}}>
-    //                     <Text>{totalPrice.toFixed(2)}€</Text>
-    //                     <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice *0.8).toFixed(2)}€</Text>
-    //                 </View>
-
-    //                 </View>
-    //                 <View> 
-    //                   <TouchableOpacity 
-    //                     onPress={() =>  handleConfirm('onsite')}
-    //                       style={style.btnPaiement}
-    //                       >
-    //                         <Text style={{color:"white"}}> Sur place</Text>
-                      
-    //                   </TouchableOpacity>  
-    //                   <TouchableOpacity 
-    //                       onPress={() =>  handleConfirm('online')}
-    //                       style={{...style.btnPaiement, backgroundColor:colors.color3}}
-    //                       ><Text>En ligne</Text>
-    //                   </TouchableOpacity>
-    //                 </View>
-     
-    //                 {/* ici */}
-            
-    //       <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
-    //       <FooterProfile />
-
-    //       </View> 
-    // </>
-  
+   
       <>
           <View style={{ flex: 1, alignItems: 'center', backgroundColor: colors.color3}}>
               

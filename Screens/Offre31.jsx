@@ -36,18 +36,17 @@ const Offre31 = ({navigation}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
 
-  const familyProductIds = [12, 14]; 
+  //pensez à mettre toutes les familles
+  const familyProductIds = [12, 14, 19]; 
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
-    //console.log('cart', cart)
 
     const handleBack = () => {
         navigation.navigate('home')
       }
 
       useEffect(() => {
-        //les produits ayant une offre 3+1
           const fetchData = async () => {
             try {
             const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
@@ -84,6 +83,7 @@ const Offre31 = ({navigation}) => {
               }
             });
             setFamilyProductDetails(familleProductDetailsMap);
+            console.log(familleProductDetailsMap)
           } catch (error) {
             console.error(
               "Une erreur s'est produite lors de la récupération des familles de produits:",
@@ -97,17 +97,15 @@ const Offre31 = ({navigation}) => {
 
   useEffect(() => {
     if (selectedProduct) {
-      setTotalPrice(selectedProduct.prix_unitaire * 3);  // Multiplié par 3 car vous achetez 3 produits
+      setTotalPrice(selectedProduct.prix_unitaire * 3);  
     }
   }, [selectedProduct]);
 
   const handleProduct = (product) => {
     setSelectedProduct(product)
-    //console.log(product)
 }
       
 const handleAcceptOffer = async () => {
-  console.log('modale')
    //verifier le stock
 try {
   const productStock = await checkStockForSingleProduct(selectedProduct.productId);
@@ -115,7 +113,6 @@ try {
   const cartQty = cart.reduce((sum, cartItem) => {
     return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
   }, 0);
-  console.log('qty in cart', cartQty)
   const remainingStock = productStock[0]?.quantite - cartQty || 0;
 
   if ( remainingStock >= 4){
@@ -147,8 +144,6 @@ try {
     });
   } 
 
-  
-  
 }
 catch (error) {
   console.error("Une erreur s'est produite lors de la vérification du stock :", error);
@@ -205,11 +200,7 @@ const handleCart = () => {
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center' }}>
                 {group.products.map((product, index) => (
                   <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
-                    {/* <Image
-                      source={{ uri: `${API_BASE_URL}/${product.image}` }}
-                      style={style.sandwichImage}
-                    />
-                    <Text>{product.libelle}</Text> */}
+                    
                     <View style={{width:170, marginVertical:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}

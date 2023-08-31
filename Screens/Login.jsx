@@ -33,7 +33,6 @@ const Login = ({navigation}) => {
 
      const dispatch = useDispatch()
      const selectedStoreRedux = useSelector(state => state.auth.selectedStore);
-    // console.log('1- selected store in login', selectedStoreRedux)
    
 
      const [email, setEmail] = useState("")
@@ -49,28 +48,19 @@ const Login = ({navigation}) => {
         try{
 
             const res = await axios.post(`${API_BASE_URL}/login`, clientData)
-            //const res = await axios.post('http://10.0.2.2:8080/login', clientData)
             const user = res.data.user
-
-
             const token = res.data.token;
-            //console.log('token login', token)
+
             await AsyncStorage.setItem('userToken', token);
 
             const selectedStoreId = user.storeId;
 
-
-            //  console.log('2- selected store id', selectedStoreId)
-            // navigation.navigate('loaderhome')
             axios.get(`${API_BASE_URL}/getOneStore/${selectedStoreId}`)
-            //axios.get(`http://10.0.2.2:8080/getOneStore/${selectedStoreId}`)
                 .then(storeResponse => {
+
                     const selectedStore = storeResponse.data;
-
-
                      dispatch(updateSelectedStore(selectedStore));
                      dispatch(loginUser(user))
-        
                     navigation.navigate('home')
                  
                  })
@@ -96,8 +86,8 @@ const Login = ({navigation}) => {
 
               <View style={{flexDirection:'row', justifyContent:'center', marginBottom:20}}>
                 <Image
-                  source={require("../assets/logo_pdj.png")} // Remplacez 'my-image' par le nom de votre image
-                  style={{ width: 140, height: 140, resizeMode:"contain" }} // Remplacez ces valeurs par les dimensions souhaitées
+                  source={require("../assets/logo_pdj.png")} 
+                  style={{ width: 140, height: 140, resizeMode:"contain" }} 
                 />
               </View>
               
