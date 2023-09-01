@@ -30,7 +30,7 @@ const Login = ({navigation}) => {
           API_BASE_URL = API_BASE_URL_IOS;  
       }
     }
-
+    //console.log(API_BASE_URL)
      const dispatch = useDispatch()
      const selectedStoreRedux = useSelector(state => state.auth.selectedStore);
    
@@ -44,10 +44,11 @@ const Login = ({navigation}) => {
             email,
             password
         }
-
+        //console.log('client', clientData)
         try{
 
             const res = await axios.post(`${API_BASE_URL}/login`, clientData)
+            console.log('res', res)
             const user = res.data.user
             const token = res.data.token;
 
