@@ -127,3 +127,26 @@ export const getFamilyOfProduct = async (id) => {
     return null;
   }
 };
+
+//recupérer la liste des desserts
+export const fetchDessertIds = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/getDessertIds/ids`);
+    //console.log('ids', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching dessert IDs:', error);
+  }
+}
+
+//recupérer la liste des boissons
+export const fetchBoissonIds = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/getBoissonIds/ids`);
+    //console.log('ids', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching boisson IDs:', error);
+  }
+}
+

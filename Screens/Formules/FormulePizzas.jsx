@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { fonts, colors} from '../../styles/styles'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { useSelector, useDispatch } from 'react-redux'
-import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
+import { getProductsByCategory, fetchOneProduct, fetchDessertIds, fetchBoissonIds } from '../../CallApi/api.js'
 import {  addToCart} from '../../reducers/cartSlice';
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import { style } from '../../styles/formules'; 
@@ -62,17 +62,22 @@ if (__DEV__) {
         fetchProducts();
 
         //les desserts - par id
-        const getOneProduct = async () => {
-            try {
-                const productIds = [88,89];
-                const productPromises = productIds.map((productId) => fetchOneProduct(productId));
-                const desserts = await Promise.all(productPromises);
-                setDesserts(desserts)
-            } catch (error) {
-              console.error('Une erreur s\'est produite lors de la récupération du produit:', error);
-            }
-          };
-         getOneProduct()
+        const getDessertDetails = async () => {
+          try {
+            // Récupération des IDs
+            const response = await fetchDessertIds();
+            //console.log('response', response);
+          
+            // // Récupération des détails pour chaque ID
+             const productPromises = response.map((productId) => fetchOneProduct(productId));
+             const desserts = await Promise.all(productPromises);
+        
+            setDesserts(desserts);
+          } catch (error) {
+            console.error("Une erreur s'est produite lors de la récupération du produit:", error);
+          }
+        };
+        getDessertDetails();
 
          //les boisssons - par catégories
       //    const fetchBoissons = async () => {
@@ -90,17 +95,22 @@ if (__DEV__) {
       //  fetchBoissons()
 
        //les boissons - par id
-       const fetchBoissons = async () => {
+       const getBoissonDetails = async () => {
         try {
-            const productIds = [90]; 
-            const productPromises = productIds.map((productId) => fetchOneProduct(productId));
-            const boissons = await Promise.all(productPromises);
-                setBoissons(boissons)
+          // Récupération des IDs
+          const response = await fetchBoissonIds();
+          //console.log('response', response);
+        
+          // // Récupération des détails pour chaque ID
+           const productPromises = response.map((productId) => fetchOneProduct(productId));
+           const boissons = await Promise.all(productPromises);
+      
+          setBoissons(boissons);
         } catch (error) {
-          console.error('Une erreur s\'est produite lors de la récupération du produit:', error);
+          console.error("Une erreur s'est produite lors de la récupération du produit:", error);
         }
       };
-      fetchBoissons()
+      getBoissonDetails();
         
       }, []);
       
@@ -230,7 +240,7 @@ if (__DEV__) {
                         stock={product.stock}
                         offre={product.offre}
                         showButtons={false} 
-
+                        showPromo={false}
                       />
                       </View>
                        
@@ -274,7 +284,7 @@ if (__DEV__) {
                         stock={product.stock}
                         offre={product.offre}
                         showButtons={false} 
-
+                        showPromo={false}
                       />
                       </View>
                          <TouchableOpacity
@@ -317,7 +327,7 @@ if (__DEV__) {
                         stock={product.stock}
                         offre={product.offre}
                         showButtons={false} 
-
+                        showPromo={false}
                       />
                       </View>
                       <TouchableOpacity
