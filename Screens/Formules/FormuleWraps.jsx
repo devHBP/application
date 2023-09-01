@@ -63,8 +63,8 @@ if (__DEV__) {
             // // Récupération des détails pour chaque ID
              const productPromises = response.map((productId) => fetchOneProduct(productId));
              const desserts = await Promise.all(productPromises);
-        
-            setDesserts(desserts);
+             const updtatedDesserts = desserts.filter(product => product.clickandcollect ===  true);
+            setDesserts(updtatedDesserts);
           } catch (error) {
             console.error("Une erreur s'est produite lors de la récupération du produit:", error);
           }
@@ -91,13 +91,14 @@ if (__DEV__) {
         try {
           // Récupération des IDs
           const response = await fetchBoissonIds();
-          //.log('response', response);
+          //console.log('response', response);
         
           // // Récupération des détails pour chaque ID
            const productPromises = response.map((productId) => fetchOneProduct(productId));
            const boissons = await Promise.all(productPromises);
-      
-          setBoissons(boissons);
+           const updatedBoissons = boissons.filter(product => product.clickandcollect ===  true);
+
+          setBoissons(updatedBoissons);
         } catch (error) {
           console.error("Une erreur s'est produite lors de la récupération du produit:", error);
         }

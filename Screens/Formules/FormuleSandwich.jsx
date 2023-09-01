@@ -72,7 +72,7 @@ if (__DEV__) {
         //     }
         //   };
         //  getOneProduct()
-         const getDessertDetails = async () => {
+        const getDessertDetails = async () => {
           try {
             // Récupération des IDs
             const response = await fetchDessertIds();
@@ -81,14 +81,13 @@ if (__DEV__) {
             // // Récupération des détails pour chaque ID
              const productPromises = response.map((productId) => fetchOneProduct(productId));
              const desserts = await Promise.all(productPromises);
-        
-            setDesserts(desserts);
+             const updtatedDesserts = desserts.filter(product => product.clickandcollect ===  true);
+            setDesserts(updtatedDesserts);
           } catch (error) {
             console.error("Une erreur s'est produite lors de la récupération du produit:", error);
           }
         };
         getDessertDetails();
-        
 
          //les boisssons - par catégories
       //    const fetchBoissons = async () => {
@@ -115,8 +114,9 @@ if (__DEV__) {
           // // Récupération des détails pour chaque ID
            const productPromises = response.map((productId) => fetchOneProduct(productId));
            const boissons = await Promise.all(productPromises);
-      
-          setBoissons(boissons);
+           const updatedBoissons = boissons.filter(product => product.clickandcollect ===  true);
+
+          setBoissons(updatedBoissons);
         } catch (error) {
           console.error("Une erreur s'est produite lors de la récupération du produit:", error);
         }
