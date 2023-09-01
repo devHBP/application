@@ -71,10 +71,10 @@ const Profile =  ({navigation}) => {
       }
   }, [user.role]);
   
-    const ROLE_STORES = {
-      SUNcollaborateur: [3, 4, 5],  
-      client: [1, 2]      
-  };
+  const ROLE_STORES = {
+    SUNcollaborateur: [3,4,5],  
+    client: [1, 2]      
+};
 
     const allStores = async () => {
       try {
