@@ -51,6 +51,7 @@ const Antigaspi = ({navigation}) => {
               qty: 0, 
 
             }));
+            console.log('upd', updatedProducts)
           //produits ayant la valeur "clickandcollect" à true et "antigaspi" à true
           const clickProducts = updatedProducts.filter(product => product.antigaspi === true && product.clickandcollect === true);
           const clickProductNames = clickProducts.map(product => product.libelle)
@@ -183,6 +184,7 @@ const Antigaspi = ({navigation}) => {
                   <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
                   
                 <View style={{width:170, marginVertical:10}} key={index}>
+                  <Text>{product.stockantigaspi} produits restants</Text>
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
