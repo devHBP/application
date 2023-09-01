@@ -44,7 +44,7 @@ if (__DEV__) {
        
 // };
 const ROLE_STORES = {
-    SUNcollaborateur: [3, 4, 5],  
+    SUNcollaborateur: [3,4,5],  
     client: [1, 2]      
 };
     //1ere version -  que les clients
