@@ -48,7 +48,7 @@ const Login = ({navigation}) => {
         try{
 
             const res = await axios.post(`${API_BASE_URL}/login`, clientData)
-            console.log('res', res)
+            //console.log('res', res)
             const user = res.data.user
             const token = res.data.token;
 
