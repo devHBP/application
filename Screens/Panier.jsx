@@ -51,6 +51,7 @@ const Panier = ({navigation}) => {
   const [loading, setLoading] = useState(false);
 
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
+  console.log('cart', cart)
   const user = useSelector((state) => state.auth.user)
   const selectedStore = useSelector(state => state.auth.selectedStore);
    const cartTotal = useSelector((state) => state.cart.cartTotal)
@@ -247,7 +248,25 @@ useEffect(() => {
       const dateForDatabase = formattedDate.toISOString();
 
       //prix Sun si collaborateur
-      totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
+      // totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
+
+
+      //pour ne pas cumuler deux offres
+      let adjustedTotalPrice = 0;
+
+      cart.forEach(product => {
+          let adjustedPrice = product.prix_unitaire;
+
+          //si pas de produit anti gaspi
+          if (user.role === 'SUNcollaborateur' && !product.antigaspi) {
+              adjustedPrice *= 0.80; 
+          }
+
+          adjustedTotalPrice += adjustedPrice * product.qty;
+      });
+
+      totalPrice = adjustedTotalPrice.toFixed(2);
+      console.log('total', totalPrice)
 
       //paiement supérieur à 50cts
       if (totalPrice < 0.50) {
@@ -333,7 +352,7 @@ useEffect(() => {
 
                         })()
       };
-    //console.log('orderdata', orderData) 
+    console.log('orderdata', orderData) 
 
       const createOrder = async () => {
         //console.log(dateForDatabase) 
@@ -371,7 +390,7 @@ useEffect(() => {
       }
     })
     .catch(error => {
-    //console.log('erreur', error)
+    console.log('erreur', error)
     return Toast.show({
          type: 'error',
          text1: 'Date de livraison manquante',

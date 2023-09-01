@@ -21,7 +21,7 @@ import {decrementhandler } from '../Fonctions/fonctions'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
 
-const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, showButtons = true   }) => {
+const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, showButtons, showPromo = true   }) => {
 
   // Déclaration de l'état du stock
   const [currentStock, setCurrentStock] = useState(stock);
@@ -302,16 +302,39 @@ const incrementhandler = async () => {
                   >
                       {libelle}
                   </TextTicker>
-                    <Text
+                  <View style={{flexDirection:'row'}}>
+                  <Text
                             numberOfLines={1}
                             style={{
                             fontSize: 14,
                             fontWeight: "300",
-                            width: "100%",
+                            width: "50%",
+                            color: showPromo ? 'gray' : 'black', 
+                            textDecorationLine: showPromo ? 'line-through' : 'none',  // Barrer le texte si showPromo est vrai
+
                             }}
                         >
                             {prix}€
                       </Text>
+                      {
+                        showPromo ? 
+                        <Text
+                            numberOfLines={1}
+                            style={{
+                            fontSize: 14,
+                            fontWeight: showPromo ?"bold" : "300",
+                            width: "50%",
+                            color: showPromo ? 'green' : 'black', 
+
+                            }}
+                        >
+                            {prix* 0.5}€
+                      </Text>
+                      : null
+                      }
+                      
+                  </View>
+                    
                       {/* <Text>
                         {
                           stock===0 ?  'stock indispo':'stock ok'             

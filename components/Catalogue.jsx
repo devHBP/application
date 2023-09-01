@@ -20,27 +20,28 @@ if (__DEV__) {
   }
 }
  const handleUpload = async () => {
-    const url = `${API_BASE_URL}/download`;
-    const dest = RNFS.DocumentDirectoryPath + 'Catalogue.pdf';
+  //desactivé
+  //   const url = `${API_BASE_URL}/download`;
+  //   const dest = RNFS.DocumentDirectoryPath + 'Catalogue.pdf';
 
     
-    try {
-      const response = await axios.get(url, { responseType: 'arraybuffer' });
-      //console.log('status', response.status)
-      if (response.status === 200) {
-          const base64Data = fromByteArray(new Uint8Array(response.data));
-          await RNFS.writeFile(dest, base64Data, 'base64'); 
-          //console.log('Fichier téléchargé avec succès à:', dest);
-          Alert.alert('Succès', 'Catalogue téléchargé');
+  //   try {
+  //     const response = await axios.get(url, { responseType: 'arraybuffer' });
+  //     //console.log('status', response.status)
+  //     if (response.status === 200) {
+  //         const base64Data = fromByteArray(new Uint8Array(response.data));
+  //         await RNFS.writeFile(dest, base64Data, 'base64'); 
+  //         //console.log('Fichier téléchargé avec succès à:', dest);
+  //         Alert.alert('Succès', 'Catalogue téléchargé');
 
-      } else {
-          //console.error('Erreur lors du téléchargement:', response.status);
-          Alert.alert('Erreur', 'Erreur de chargement');
-      }
-  } catch (error) {
-      //console.error('Erreur lors du téléchargement du fichier:', error.message);
-      Alert.alert('Erreur', 'Erreur lors du chargement');
-  }
+  //     } else {
+  //         //console.error('Erreur lors du téléchargement:', response.status);
+  //         Alert.alert('Erreur', 'Erreur de chargement');
+  //     }
+  // } catch (error) {
+  //     //console.error('Erreur lors du téléchargement du fichier:', error.message);
+  //     Alert.alert('Erreur', 'Erreur lors du chargement');
+  // }
 }
 
   return (
@@ -116,7 +117,8 @@ const styles = StyleSheet.create({
         color:colors.color1
       },
       button:{
-        backgroundColor:colors.color2,
+        backgroundColor:colors.color3,
+        //backgroundColor:colors.color2,
         borderRadius:5,
         padding:5,
         width:'auto'

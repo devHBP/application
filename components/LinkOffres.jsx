@@ -41,7 +41,7 @@ const openURL = (url) => {
     useEffect(() => {
         const fetchData = async () => {
           try {
-          const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
+          const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
         
           const updatedProducts = response.data.map((product) => ({
             ...product,
@@ -73,6 +73,9 @@ const openURL = (url) => {
         setIsModalVisible(false)
             }
 
+      const handleAntiGaspi = () => {
+        navigation.navigate('antigaspi')
+      }
       const handleHallesSolanid = () => {
         console.log(solanidProductNames)
         navigation.navigate('solanid')
@@ -90,7 +93,7 @@ const openURL = (url) => {
         {/* anti gaspi */}
         {/* ajouter action onPress */}
 
-        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8}>
+        <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={handleAntiGaspi}>
         <Image
                 source={require('../assets/antigaspi.jpg')} 
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
@@ -111,10 +114,11 @@ const openURL = (url) => {
             </View>
             <View style={styles.pastille}>
             
-            <Image
-                source={require('../assets/pastille_antigaspi.png')}
-                style={{ width:50, resizeMode:'contain'}}
-            />
+              <Image
+                  source={require('../assets/pastille_antigaspi.png')}
+                  style={{ width:50, resizeMode:'contain'}}
+              />
+            
             
             </View>
         </View>

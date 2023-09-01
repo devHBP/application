@@ -83,13 +83,12 @@ if (__DEV__) {
       useEffect(() => {
         const fetchData = async () => {
           try {
-          const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
+          const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
         
           const updatedProducts = response.data.map((product) => ({
             ...product,
             qty: 0, 
           }));
-       
         const sandwichs = updatedProducts.filter(product => product.categorie === "Sandwichs");
         setSandwichs(sandwichs)
           
@@ -151,6 +150,7 @@ const capitalizeIngredients = (ingredients) => {
                         qty={product.qty}
                         stock={product.stock}
                         offre={product.offre}
+                        showPromo={false}
                       />
                     </View>
                 

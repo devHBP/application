@@ -86,11 +86,12 @@ const Home =  ({navigation}) => {
     const fetchData = async () => {
       setIsLoading(true)
       try {
-      const response = await axios.get(`${API_BASE_URL}/getAllProducts`);    
+      const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);    
       const updatedProducts = response.data.map((product) => ({
         ...product,
         qty: 0, 
       }));
+
       setProducts(updatedProducts);
       setCategories([...new Set(updatedProducts.map((product) => product.categorie)), 'Tous']);
 
@@ -332,6 +333,8 @@ const ongletButtonHandler = (onglet) => {
                         qty={item.qty}
                         stock={item.stock}
                         offre={item.offre}
+                        showPromo={false}
+                        showButtons={true}
                       />
                     </TouchableOpacity>
                   </View>
@@ -368,6 +371,9 @@ const ongletButtonHandler = (onglet) => {
                         qty={item.qty}
                         stock={item.stock}
                         offre={item.offre}
+                        showPromo={false}
+                        showButtons={true}
+
                       />
                     </TouchableOpacity>
                   </View>
@@ -413,6 +419,9 @@ const ongletButtonHandler = (onglet) => {
                         qty={item.qty}
                         stock={item.stock}
                         offre={item.offre}
+                        showPromo={false}
+                        showButtons={true}
+
                       />
                     </TouchableOpacity>
                   </View>
@@ -447,6 +456,9 @@ const ongletButtonHandler = (onglet) => {
                         qty={item.qty}
                         stock={item.stock}
                         offre={item.offre}
+                        showPromo={false}
+                        showButtons={true}
+
                       />
                     </TouchableOpacity>
                   </View>
@@ -489,6 +501,9 @@ const ongletButtonHandler = (onglet) => {
                         qty={item.qty}
                         stock={item.stock}
                         offre={item.offre}
+                        showPromo={false}
+                        showButtons={true}
+
                       />
                     </TouchableOpacity>
                   </View>

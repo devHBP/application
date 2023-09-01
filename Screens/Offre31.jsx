@@ -49,7 +49,7 @@ const Offre31 = ({navigation}) => {
       useEffect(() => {
           const fetchData = async () => {
             try {
-            const response = await axios.get(`${API_BASE_URL}/getAllProducts`);
+            const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
           
             const updatedProducts = response.data.map((product) => ({
               ...product,
@@ -214,6 +214,7 @@ const handleCart = () => {
                         stock={product.stock}
                         offre={product.offre}
                         showButtons={false} 
+                        showPromo={false}
                       />
                       </View>
                     <TouchableOpacity

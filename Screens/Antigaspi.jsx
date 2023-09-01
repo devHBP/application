@@ -15,7 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ProductCard from '../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
-const Solanid = ({navigation}) => {
+const Antigaspi = ({navigation}) => {
 
 
  //pour les test
@@ -27,10 +27,10 @@ const Solanid = ({navigation}) => {
   }
 }
   
-  const [solanidProducts, setSolanidProductNames] = useState([]);
+  const [clickProducts, setclickProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [familyProductDetails, setFamilyProductDetails] = useState({});
-  const familyProductIds = [10, 13];  // Remplacez cela par vos réels ID de famille de produits
+  const familyProductIds = [1];  // Mettre toutes les familles
 
 
     const dispatch = useDispatch()
@@ -41,7 +41,7 @@ const Solanid = ({navigation}) => {
       }
     
       useEffect(() => {
-        //les produits ayant une offre 3+1
+        //les produits ayant le champ "clickandcollect" à true
         const fetchData = async () => {
             try {
             const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
@@ -51,11 +51,11 @@ const Solanid = ({navigation}) => {
               qty: 0, 
 
             }));
-          //produits offre 3+1
-          const solanidProducts = updatedProducts.filter(product => product.reference_fournisseur === "Solanid");
-          const solanidProductNames = solanidProducts.map(product => product.libelle)
-    
-          setSolanidProductNames(solanidProducts)
+          //produits ayant la valeur "clickandcollect" à true et "antigaspi" à true
+          const clickProducts = updatedProducts.filter(product => product.antigaspi === true && product.clickandcollect === true);
+          const clickProductNames = clickProducts.map(product => product.libelle)
+            console.log('click product', clickProductNames)
+          setclickProducts(clickProducts)
 
           } catch (error) {
             console.error('Une erreur s\'est produite lors de la récupération des produits:', error);
@@ -95,6 +95,7 @@ const Solanid = ({navigation}) => {
         setSelectedProduct(product)
     }
 
+    //verifier le stock ?
     const handleCart = async () => {
       try{
         const productStock = await checkStockForSingleProduct(selectedProduct.productId);
@@ -105,8 +106,9 @@ const Solanid = ({navigation}) => {
 
         if ( remainingStock > 0) {
            
-            dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire, qty: 1 , offre: selectedProduct.offre}));
-           
+            // dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire, qty: 1 , offre: selectedProduct.offre}));
+            dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire * 0.5, qty: 1 , offre: selectedProduct.offre, antigaspi: true}));
+
             Toast.show({
               type: 'success',
               text1: 'Produit ajouté au panier',
@@ -134,36 +136,33 @@ const Solanid = ({navigation}) => {
       <ScrollView>
         <View>
             <Image
-                    source={require('../assets/fond_halles.jpg')} 
+                    source={require('../assets/antigaspi.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
-            <Image
-                source={require('../assets/halles_solanid.png')} 
-                style={{ ...styles.pastilleOffre31, transform: [{rotate: '15deg'}]}}
-                />
+          
               
-                  <LinearGradient
-                  colors={['#273545', 'transparent']}
+                  <View
+                 
                   style={{flexDirection:'row', justifyContent:'space-between', width:"100%", alignItems:'center', position:'absolute', top:0, paddingHorizontal:30, paddingVertical:30}}
                 >
-                  <Text style={{...style.titleProduct, width:"90%"}}>Les produits des Halles Solanid</Text>
+                  <Text style={{...style.titleProduct, width:"90%"}}>Les produits antigaspi</Text>
                   <TouchableOpacity onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                     <ArrowLeft fill="white"/>
                   </TouchableOpacity>
-                </LinearGradient>
+                </View>
            
         </View>
         <View style={{paddingHorizontal:30, paddingTop:50}}>
-            <Text style={style.title}>Les halles Solanid</Text>
-            <Text style={styles.texteOffre}>Découvrez les pokébowls et la mousse au chocolat faites maison par Les Halles Solanid</Text>
+            <Text style={style.title}>Titre anti gaspi</Text>
+            <Text style={styles.texteOffre}>Texte anti gaspi</Text>
         </View>
         {/* choix produits*/}
         <View>
       
         <ScrollView>
-    <View style={{ gap: 20 }}>
+    <View style={{ gap: 20 , marginBottom:100}}>
       {Object.values(
-        solanidProducts.reduce((groups, product) => {
+        clickProducts.reduce((groups, product) => {
           const { id_famille_produit } = product;
           if (!groups[id_famille_produit]) {
             groups[id_famille_produit] = {
@@ -196,7 +195,6 @@ const Solanid = ({navigation}) => {
                         stock={product.stock}
                         offre={product.offre}
                         showButtons={false} 
-                        showPromo={false}
                       />
                       </View>
                 <TouchableOpacity
@@ -226,15 +224,16 @@ const Solanid = ({navigation}) => {
         <View>
           <View style={style.bandeauFormule}>
           <Text style={{ fontWeight: "bold"}}>Prix du produit</Text>
-         <Text>{selectedProduct ? selectedProduct.prix_unitaire : 0} €</Text>
+        <Text>{selectedProduct ? (selectedProduct.prix_unitaire * 0.5).toFixed(2) : 0} €</Text>
+
           </View>
-          <View style={style.bandeauFormule}>
+          {/* <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
             <Text>Avec</Text><Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
          <Text style={{color:colors.color2, fontWeight:"bold"}}>{selectedProduct ?  Number(selectedProduct.prix_remise_collaborateur) : 0} €</Text>
-          </View>
-        </View>
+          </View>*/}
+        </View> 
       <Button
                 style={style.btn}
                 textColor={'white'} 
@@ -248,4 +247,4 @@ const Solanid = ({navigation}) => {
   )
 }
 
-export default Solanid
+export default Antigaspi

@@ -43,6 +43,7 @@ import PageCroque from './Screens/PagesSalees/PageCroque'
 import Pwd from './Screens/Pwd'
 import LoaderHome from './Screens/LoaderHome'
 import PagePizza from './Screens/PagesSalees/PagePizza'
+import Antigaspi from './Screens/Antigaspi'
 
 const Main = () => {
 
@@ -95,6 +96,7 @@ const Main = () => {
                     <Stack.Screen name='petitdej' component={FormulePetitDejeuner}/>
                     <Stack.Screen name='petitdejgourmand' component={FormulePetitDejeunerGourmand}/>
                     {/* Link Offres */}
+                    <Stack.Screen name='antigaspi' component={Antigaspi}/>
                     <Stack.Screen name='offre31' component={Offre31}/>
                     <Stack.Screen name='solanid' component={Solanid}/>
                 <Stack.Screen name='details' component={ProductDetails}/>

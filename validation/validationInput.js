@@ -41,6 +41,7 @@ export const validateEmail = (value) => {
 };
 
 export const validatePostalCode = (value) => {
+  if (value === "") return "";
   // regex qui correspond à une structure de code postal de 5 chiffres
   const postalCodeRegex = /^[0-9]{5}$/;
   if (!value.match(postalCodeRegex)) {
