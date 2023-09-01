@@ -39,47 +39,21 @@ if (__DEV__) {
     }
 }, [user.role]);
 
-//   const ROLE_STORES = {
-//     SUNcollaborateur: [1],  
-       
-// };
-const ROLE_STORES = {
-    SUNcollaborateur: [3,4,5],  
-    client: [1, 2]      
-};
-    //1ere version -  que les clients
-    // const allStores = async () => {
-    //     try {
-           
-    //             const response = await axios.get(`${API_BASE_URL}/getAllStores`);
-    //             //console.log('all stores', response.data)
-    //             setStores(response.data);
-    //     } catch (error) {
-    //       console.error("Une erreur s'est produite, erreur stores :", error);
-    //     }
-    // };
-
+   
     const allStores = async () => {
         try {
-            //console.log('Role actuel de l\'utilisateur:', user.role); // Affichez le rôle actuel pour vérifier
-            const response = await axios.get(`${API_BASE_URL}/getAllStores`);
+            const response = await axios.post(`${API_BASE_URL}/getStoresByRole`, { role: user.role });
             if (response.data && Array.isArray(response.data)) {
-                // Vérifier si ROLE_STORES[user.role] est défini
-                if (!ROLE_STORES[user.role]) {
-                    console.error("ROLE_STORES pour", user.role, "n'est pas défini");
-                    return; // Quitter la fonction tôt pour éviter d'autres erreurs
-                }
-                // Filtrer les stores en fonction du rôle de l'utilisateur
-                const filteredStores = response.data.filter(store => ROLE_STORES[user.role].includes(store.storeId));
-                //console.log('filteredStores', filteredStores);
-                setStores(filteredStores);
+              console.log('stores', response.data)
+                setStores(response.data);
             } else {
                 console.error("Réponse inattendue de l'API.");
             }
         } catch (error) {
-            console.error("Une erreur s'est produite, erreur stores :", error);
+            console.error("Une erreur s'est produite lors de la récupération des magasins :", error);
         }
-    };
+      };
+      
     
     function formatLabel(label) {
         const splitLabel = label.split(' '); // Divisez le label par les espaces
