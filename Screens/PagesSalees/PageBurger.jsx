@@ -153,6 +153,7 @@ if (__DEV__) {
                         stock={product.stock}
                         offre={product.offre}
                         showPromo={false}
+                        showButtons={true}
                       />
                     </View>
                 </TouchableOpacity>

@@ -151,6 +151,7 @@ const capitalizeIngredients = (ingredients) => {
                         stock={product.stock}
                         offre={product.offre}
                         showPromo={false}
+                        showButtons={true}
                       />
                     </View>
                 
