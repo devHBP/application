@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     color:colors.color1,
     fontFamily:fonts.font3,
     fontWeight: "700",
-    fontSize:16,
+    fontSize:15,
   },
   pickerNoDate:{
     fontSize:12,

@@ -140,13 +140,16 @@ const Antigaspi = ({navigation}) => {
                     source={require('../assets/antigaspi.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
-          
+          <Image
+                source={require('../assets/pastille_antigaspi.png')} 
+                style={ {...styles.pastilleOffre31, resizeMode:'contain', width:90, right:20, top:250}}
+                />
               
                   <View
                  
                   style={{flexDirection:'row', justifyContent:'space-between', width:"100%", alignItems:'center', position:'absolute', top:0, paddingHorizontal:30, paddingVertical:30}}
                 >
-                  <Text style={{...style.titleProduct, width:"90%"}}>Les produits antigaspi</Text>
+                  <Text style={{...style.titleProduct, width:"90%"}}>Notre offre anti-gaspillage</Text>
                   <TouchableOpacity onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                     <ArrowLeft fill="white"/>
                   </TouchableOpacity>
@@ -154,8 +157,9 @@ const Antigaspi = ({navigation}) => {
            
         </View>
         <View style={{paddingHorizontal:30, paddingTop:50}}>
-            <Text style={style.title}>Titre anti gaspi</Text>
-            <Text style={styles.texteOffre}>Texte anti gaspi</Text>
+            <Text style={{...style.title, fontSize:19 }}>Sélection Anti-Gaspillage</Text>
+            <Text style={styles.texteOffre}>Chaque produit ici joue un rôle vital dans la réduction du gaspillage alimentaire. Faites un choix conscient et 
+            contribuez à un futur plus durable.</Text>
         </View>
         {/* choix produits*/}
         <View>

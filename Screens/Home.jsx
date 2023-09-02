@@ -271,10 +271,13 @@ const ongletButtonHandler = (onglet) => {
         {
           onglets.map((item, index) => (
             <Pressable title="button" 
-              style={{...styles.btn_categorie, 
-                backgroundColor: item === 'Promos' ? colors.color2 : 'white', 
-             
-            }}
+            style={({ pressed }) => [
+              styles.btn_categorie, 
+              {
+                backgroundColor: item === 'Promos' ? colors.color2 : 'white',
+                shadowColor: pressed ? 'rgba(233, 82, 14, 0.5)' : 'rgba(0, 0, 0, 0.3)', 
+              }
+            ]}
               key={index}
               onPress={() => ongletButtonHandler(item)}
             >
