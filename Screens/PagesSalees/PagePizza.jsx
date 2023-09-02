@@ -31,8 +31,6 @@ if (__DEV__) {
     const [stock, setStock] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [productCount, setProductCount] = useState(0);
-    const grandesIDs = [95]; 
-    const petitesIDs = [93, 96]; 
     const [selectedButton, setSelectedButton] = useState('petites');  
 
 
@@ -103,7 +101,7 @@ if (__DEV__) {
         const products = updatedProducts.filter(product => product.categorie === "Pizzas");
         setProducts(products)
 
-        const petitesProducts = products.filter(product => petitesIDs.includes(product.productId));
+        const petitesProducts = products.filter(product => product.libelle.toLowerCase().startsWith("petite"));
       setDisplayedProducts(petitesProducts);
           
           } catch (error) {
@@ -130,14 +128,14 @@ if (__DEV__) {
 
   //filtre petites - grandes pizzas
   const filterGrandes = () => {
-    const grandesProducts = products.filter(product => grandesIDs.includes(product.productId));
+    const grandesProducts = products.filter(product => product.libelle.toLowerCase().startsWith("grande"));
     setDisplayedProducts(grandesProducts);
     setSelectedButton('grandes');  
 
 };
 
 const filterPetites = () => {
-    const petitesProducts = products.filter(product => petitesIDs.includes(product.productId));
+    const petitesProducts = products.filter(product => product.libelle.toLowerCase().startsWith("petite"));
     setDisplayedProducts(petitesProducts);
     setSelectedButton('petites');  
 
@@ -197,7 +195,7 @@ const filterPetites = () => {
                         stock={product.stock}
                         offre={product.offre}
                         showPromo={false}
-
+                        showButtons={true}
                       />
                     </View>
                 </TouchableOpacity>

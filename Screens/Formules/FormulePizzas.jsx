@@ -50,10 +50,19 @@ if (__DEV__) {
         const fetchProducts = async () => {
           try {
             //on choisit les petites pizzas pour les formules
-            const productIds = [93];
-            const productPromises = productIds.map((productId) => fetchOneProduct(productId));
-            const products = await Promise.all(productPromises);
-              setProducts(products)
+            //const productIds = [93];
+            //const products = await Promise.all(productPromises);
+             
+               const category = 'Pizzas'; 
+                const pizzas = await getProductsByCategory(category);
+                      // pizzas.forEach((pizza) => {
+                      //     console.log(pizza.libelle);
+                      //   });
+                const updatedPizzas = pizzas.filter(pizza => pizza.clickandcollect === true && pizza.libelle.toLowerCase().startsWith("petite")
+                )
+                setProducts(updatedPizzas)
+                
+                
           } catch (error) {
             console.error('Une erreur s\'est produite lors de la récupération des produits:', error);
           }
