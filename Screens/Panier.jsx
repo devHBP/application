@@ -51,7 +51,7 @@ const Panier = ({navigation}) => {
   const [loading, setLoading] = useState(false);
 
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
-  console.log('cart', cart)
+  //console.log('cart', cart)
   const user = useSelector((state) => state.auth.user)
   const selectedStore = useSelector(state => state.auth.selectedStore);
    const cartTotal = useSelector((state) => state.cart.cartTotal)
@@ -65,9 +65,10 @@ const Panier = ({navigation}) => {
     return total + item.qty * prix;
   }, 0)).toFixed(2));
   
+  const antigaspiProductsCount = cart.filter(product => product.antigaspi).length;
+  //console.log(antigaspiProductsCount)
 
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0)
-
 
   const aggregatedCartItems = cart.reduce((accumulator, currentItem) => {
 
@@ -648,11 +649,19 @@ useEffect(() => {
                           <View style={{ flexDirection: 'row', paddingHorizontal: 30, justifyContent: 'center', gap: 10 }}>
                               <View>
                                   <Text style={{ fontWeight: "bold" }}>Votre total</Text>
-                                  <Text style={{ color: colors.color2 }}>Total Avec<Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode: 'contain' }} /></Text>
+                                  {
+                                    (cart.length !== 1 || antigaspiProductsCount !== 1) 
+                                    ? <Text style={{ color: colors.color2 }}>Total Avec<Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode: 'contain' }} /></Text>
+                                    : null
+                                  }
                               </View>
                               <View style={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: "flex-end" }}>
                                   <Text>{totalPrice.toFixed(2)}€</Text>
-                                  <Text style={{ color: colors.color2, fontWeight: "bold" }}>{(totalPrice * 0.8).toFixed(2)}€</Text>
+                                  {
+                                    (cart.length !== 1 || antigaspiProductsCount !== 1) 
+                                    ? <Text style={{ color: colors.color2, fontWeight: "bold" }}>{(totalPrice * 0.8).toFixed(2)}€</Text>
+                                    : null
+                                  }
                               </View>
                           </View>
                           <View style={{gap:10}}>
