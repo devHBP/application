@@ -1,16 +1,6 @@
 import axios from 'axios';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
-
-//pour les test
-if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
-
 //check des stocks par produits
 // export const checkStock = async (productId) => {
 //   try {

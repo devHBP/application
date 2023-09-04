@@ -14,6 +14,7 @@ import ArrowLeft from '../SVG/ArrowLeft';
 import LinearGradient from 'react-native-linear-gradient';
 import ProductCard from '../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import Cloche from '../SVG/Cloche';
 
 const Antigaspi = ({navigation}) => {
 
@@ -41,11 +42,11 @@ const Antigaspi = ({navigation}) => {
               qty: 0, 
 
             }));
-            console.log('upd', updatedProducts)
+            //console.log('upd', updatedProducts)
           //produits ayant la valeur "clickandcollect" à true et "antigaspi" à true
           const clickProducts = updatedProducts.filter(product => product.antigaspi === true && product.clickandcollect === true);
           const clickProductNames = clickProducts.map(product => product.libelle)
-            console.log('click product', clickProductNames)
+            //console.log('click product', clickProductNames)
           setclickProducts(clickProducts)
 
           } catch (error) {
@@ -148,7 +149,9 @@ const Antigaspi = ({navigation}) => {
         </View>
         <View style={{paddingHorizontal:30, paddingTop:50}}>
             <Text style={{...style.title, fontSize:19 }}>Sélection Anti-Gaspillage</Text>
-            <Text style={styles.texteOffre}>Chaque produit ici joue un rôle vital dans la réduction du gaspillage alimentaire. Faites un choix conscient et 
+            <Text style={styles.texteOffre}>Chaque produit ici joue un rôle vital dans la réduction du gaspillage alimentaire. </Text>
+            <Text style={styles.texteOffre}>Dépêchez-vous, il n'y en aura pas pour tout le monde.</Text>
+            <Text style={styles.texteOffre}>Faites un choix conscient et 
             contribuez à un futur plus durable.</Text>
         </View>
         {/* choix produits*/}
@@ -178,7 +181,6 @@ const Antigaspi = ({navigation}) => {
                   <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
                   
                 <View style={{width:170, marginVertical:10}} key={index}>
-                  <Text>{product.stockantigaspi} produits restants</Text>
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -192,6 +194,10 @@ const Antigaspi = ({navigation}) => {
                         offre={product.offre}
                         showButtons={false} 
                       />
+                      <View style={styles.stockantigaspi}>
+                        <Cloche />
+                        <Text style={styles.textestockantigaspi}>{product.stockantigaspi} en stock !</Text>
+                      </View>
                       </View>
                 <TouchableOpacity
                   style={[

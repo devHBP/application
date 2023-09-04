@@ -57,19 +57,7 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, show
       //console.log(totalCount)
       //console.log(cart)
     }, [cart]);
-
-    //pour les test
-  const API_BASE_URL_IOS = API_BASE_URL;
-
-
-  if (__DEV__) {
-    if (Platform.OS === 'android') {
-        API_BASE_URL = API_BASE_URL_ANDROID;
-    } else if (Platform.OS === 'ios') {
-        API_BASE_URL = API_BASE_URL_IOS;  // Vous devez définir cette variable
-    }
-  }
-
+ 
 
     const handleAcceptOffer = () => {
       dispatch(addFreeProductToCart(product));

@@ -227,6 +227,24 @@ const styles = StyleSheet.create({
   paddingProduct:{
     paddingTop:40
   },
+  stockantigaspi:{
+    backgroundColor:colors.color8,
+    flexDirection:'row', 
+    alignItems:'center',
+    gap: 5,
+    paddingVertical: 5,
+    width: 110,
+    justifyContent:'center',
+    borderRadius:5,
+    position:'absolute',
+    top:14,
+    left:10
+  },
+  textestockantigaspi:{
+    color:colors.color6,
+    fontFamily:fonts.font2,
+    fontWeight:"700"
+  }
   
 });
 

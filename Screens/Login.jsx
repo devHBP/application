@@ -23,7 +23,7 @@ const inputOptions = {
 const Login = ({navigation}) => {
 
 
-    console.log("api base url :", API_BASE_URL)
+    //console.log("api base url :", API_BASE_URL)
      const dispatch = useDispatch()
      const selectedStoreRedux = useSelector(state => state.auth.selectedStore);
    
