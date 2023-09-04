@@ -18,15 +18,6 @@ import { decrementhandler } from '../Fonctions/fonctions'
 
 const ProductDetails = ({navigation, route}) => {
 
-  
- //pour les test
- if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
     const { product } = route.params;
     const [currentStock, setCurrentStock] = useState(product.stock);
     const [modalVisible, setModalVisible] = useState(false);

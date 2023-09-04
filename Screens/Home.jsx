@@ -23,14 +23,6 @@ import Search from '../SVG/Search';
 
 const Home =  ({navigation}) => {
   
- //pour les test
- if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
 
   const [stores, setStores] = useState([]);
   const [role, setRole] = useState('');

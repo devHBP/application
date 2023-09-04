@@ -12,15 +12,7 @@ import axios from 'axios';
 
 const SuccessPage = ({navigation}) => {
     
-   
- //pour les test
- if (__DEV__) {
-    if (Platform.OS === 'android') {
-        API_BASE_URL = API_BASE_URL_ANDROID;
-    } else if (Platform.OS === 'ios') {
-        API_BASE_URL = API_BASE_URL_IOS;  
-    }
-  }
+
     const user = useSelector((state) => state.auth.user)
     const order = useSelector((state) => state.order.orderId)
     //console.log('order', order)

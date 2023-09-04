@@ -17,14 +17,6 @@ import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 const PageWrap = ({navigation}) => {
 
- //pour les test
-if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
 
     const [products, setProducts] = useState([]); // Ajoutez cette ligne
     const [selectedProduct, setSelectedProduct] = useState(null); // Nouvel état pour le sandwich sélectionné

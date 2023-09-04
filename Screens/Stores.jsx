@@ -13,15 +13,7 @@ import { fonts, colors} from '../styles/styles'
 
 const Stores = ({navigation}) => {
   
- 
- //pour les test
- if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
+
   const [selectedStore, setSelectedStore] = useState(null);
   const [stores, setStores] = useState([]);
 

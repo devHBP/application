@@ -26,15 +26,7 @@ const inputOptions = {
 
 const Profile =  ({navigation}) => {
 
- 
- //pour les test
- if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
+
   const [stores, setStores] = useState([]);
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);

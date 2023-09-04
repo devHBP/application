@@ -15,14 +15,6 @@ import Cart from '../SVG/Cart'
 import Profile from '../SVG/Profile'
 
 const FooterProfile = () => {
- //pour les test
- if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
 
   
   //on utilise ici useNavigation et non pas navigation car le footer n'est pas dans la pile de screens

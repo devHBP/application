@@ -10,14 +10,6 @@ import FastImage from 'react-native-fast-image';
 
 const LinkOffres = ({}) => {
 
-   //pour les test
-if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
 
 const openURL = (url) => {
   Linking.canOpenURL(url)

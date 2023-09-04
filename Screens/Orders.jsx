@@ -18,15 +18,7 @@ import { getStoreById } from '../CallApi/api';
 import ArrowDown from '../SVG/ArrowDown';
 
 const Orders = ({navigation}) => {
-  //pour les test
-  if (__DEV__) {
-    if (Platform.OS === 'android') {
-        API_BASE_URL = API_BASE_URL_ANDROID;
-    } else if (Platform.OS === 'ios') {
-        API_BASE_URL = API_BASE_URL_IOS;  
-    }
-  }
-  
+
     const user = useSelector((state) => state.auth.user);
     const userId = user.userId
     const [expandedOrderIds, setExpandedOrderIds] = useState([]);

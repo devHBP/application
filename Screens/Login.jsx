@@ -22,15 +22,8 @@ const inputOptions = {
 
 const Login = ({navigation}) => {
 
-    //pour les test
-    if (__DEV__) {
-      if (Platform.OS === 'android') {
-          API_BASE_URL = API_BASE_URL_ANDROID;
-      } else if (Platform.OS === 'ios') {
-          API_BASE_URL = API_BASE_URL_IOS;  
-      }
-    }
-    //console.log(API_BASE_URL)
+
+    console.log("api base url :", API_BASE_URL)
      const dispatch = useDispatch()
      const selectedStoreRedux = useSelector(state => state.auth.selectedStore);
    

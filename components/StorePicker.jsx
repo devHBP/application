@@ -23,15 +23,6 @@ const StorePicker = () => {
     const selectedStore = useSelector((state) => state.auth.selectedStore)
     //console.log('select', selectedStore)
 
- //pour les test
-if (__DEV__) {
-    if (Platform.OS === 'android') {
-        API_BASE_URL = API_BASE_URL_ANDROID;
-    } else if (Platform.OS === 'ios') {
-        API_BASE_URL = API_BASE_URL_IOS;  
-    }
-  }
-  
 
   useEffect(() => {
     if (user && user.role) {
