@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image,} from 'react-native'
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Switch, Image, Linking} from 'react-native'
 import { Button, TextInput  } from 'react-native-paper'
 import React, { useEffect, useState} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -25,6 +25,18 @@ const inputOptions = {
 }
 
 const Profile =  ({navigation}) => {
+
+  const openURL = (url) => {
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (!supported) {
+          console.log("Can't handle URL: " + url);
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch((err) => console.error('An error occurred', err));
+  };
 
 
   const [stores, setStores] = useState([]);
@@ -523,42 +535,52 @@ const allStores = async () => {
         <View style={{marginVertical:10}}>
         <Text style={style.label}>Gestion des cookies et données personnelles</Text>
         <View style={{flexDirection:'row'}}>
-        <Button
-                style={style.btn_cookies} 
-                textColor={colors.color1} 
-                onPress={handleCookies}
-                >
-                   Cookies
-                  <View style={{width:8, paddingLeft:15}}>
-                    <Image source={require('../assets/arrow.png')} />
-                  </View>
-               
-            </Button>
-            <Button
-                style={style.btn_cookies} 
-                textColor={colors.color1} 
-                onPress={handleDonnees}
-                >
-                   Données personnelles
-                  <View style={{width:8, paddingLeft:15}}>
-                    <Image source={require('../assets/arrow.png')} />
-                  </View>
-            </Button>
+     
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://www.lepaindujour.io/politique-de-gestion-des-cookies/')}>
+              <Text>Cookies</Text>
+              <Image source={require('../assets/arrow.png')} />
+            </TouchableOpacity>
+
+
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://lepaindujour.io/page-de-confidentialite')}>
+              <Text>Données personnelles</Text>
+              <Image source={require('../assets/arrow.png')} />
+            </TouchableOpacity>
+            
         </View>
         </View>
         
         <Text style={style.label}>Informations légales</Text>
         <View style={{flexDirection:'row'}}>
-            <Button
-                style={style.btn_cookies} 
-                textColor={colors.color1} 
-                onPress={handleMentions}
-                >
-                   Mentions légales, CGU, CGV
-                  <View style={{width:8, paddingLeft:15}}>
-                    <Image source={require('../assets/arrow.png')} />
-                  </View>
-            </Button> 
+
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://lepaindujour.io/mentions-legales')}>
+              <Text>Mentions légales</Text>
+              <Image source={require('../assets/arrow.png')} />
+            </TouchableOpacity>
+
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://www.lepaindujour.io/cgv-cgu/')}>
+              <Text>CGU, CGV</Text>
+              <Image source={require('../assets/arrow.png')} />
+            </TouchableOpacity>
+        </View>
+
+        <Text style={style.label}>Gestion des données</Text>
+        <View style={{flexDirection:'row', flexWrap:'wrap'}}>
+
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://www.lepaindujour.io/formulaire-de-consentement/')}>
+              <Text>Formulaire de consentement</Text>
+              <Image source={require('../assets/arrow.png')} />
+            </TouchableOpacity>
+
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://www.lepaindujour.io/formulaire-de-demande-dacces/')}>
+              <Text>Formulaire de demande d'acces</Text>
+              <Image source={require('../assets/arrow.png')} />
+            </TouchableOpacity>
+
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://www.lepaindujour.io/formulaire-de-suppression-des-donnees-personnelles//')}>
+              <Text>Formulaire de suppression des données</Text>
+              <Image source={require('../assets/arrow.png')} />
+            </TouchableOpacity>
         </View>
 
         </View>
@@ -644,7 +666,11 @@ const style = StyleSheet.create({
     borderColor:colors.color5,
     borderWidth:1,
     borderStyle:'solid',
-   
+   flexDirection:'row', 
+   alignItems:'center',
+   gap:5, 
+   paddingHorizontal:20,
+   paddingVertical:15
   },
   btn_enregistrer:{
     backgroundColor: colors.color9,

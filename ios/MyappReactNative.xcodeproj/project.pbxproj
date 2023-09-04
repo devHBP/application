@@ -727,7 +727,7 @@
 				DEVELOPMENT_TEAM = DF5WW8JDSL;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = MyappReactNative/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Le pain du jour";
+				INFOPLIST_KEY_CFBundleDisplayName = "Click and Collect Le Pain du Jour";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -759,7 +759,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = DF5WW8JDSL;
 				INFOPLIST_FILE = MyappReactNative/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Le pain du jour";
+				INFOPLIST_KEY_CFBundleDisplayName = "Click and Collect Le Pain du Jour";
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.food-and-drink";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
