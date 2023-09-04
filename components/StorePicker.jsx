@@ -35,7 +35,7 @@ const StorePicker = () => {
         try {
             const response = await axios.post(`${API_BASE_URL}/getStoresByRole`, { role: user.role });
             if (response.data && Array.isArray(response.data)) {
-              console.log('stores', response.data)
+              //console.log('stores', response.data)
                 setStores(response.data);
             } else {
                 console.error("Réponse inattendue de l'API.");

@@ -52,9 +52,25 @@ const Panier = ({navigation}) => {
   const numero_commande = useSelector((state) => state.order.numero_commande)
 
   let totalPrice = Number((cart.reduce((total, item) => {
-    const prix = item.prix || item.prix_unitaire; // Utilisez la propriété "prix" si elle existe, sinon utilisez "prix_unitaire"
+    const prix = item.prix || item.prix_unitaire; 
+  
     return total + item.qty * prix;
   }, 0)).toFixed(2));
+
+  let totalPriceCollab = cart.reduce((total, product) => {
+    let adjustedPrice = product.prix || product.prix_unitaire;
+
+    if (user.role === 'SUNcollaborateur' && !product.antigaspi) {
+        adjustedPrice *= 0.80;
+    }
+
+    return total + adjustedPrice * product.qty;
+}, 0);
+
+totalPriceCollab = Number(totalPriceCollab.toFixed(2));
+
+
+
   
   const antigaspiProductsCount = cart.filter(product => product.antigaspi).length;
   //console.log(antigaspiProductsCount)
@@ -208,6 +224,28 @@ useEffect(() => {
   fetchFamilies();
 }, [cart]);
 
+const updateAntigaspiStock = async () => {
+  for (const product of cart) {
+      if (product.antigaspi) {
+          try {
+              await axios.put(`${API_BASE_URL}/getUpdateStockAntigaspi`, {
+                  productId: product.productId,
+                  quantityPurchased: product.qty
+              });
+          } catch (error) {
+            console.error("Erreur lors de la mise à jour du stock antigaspi", error.response || error);
+            if (error.response) {
+              console.log('Data:', error.response.data);
+              console.log('Status:', error.response.status);
+              console.log('Headers:', error.response.headers);
+          } else {
+              console.log('Error Message:', error.message);
+          }
+
+          }
+      }
+  }
+};
 
   const handleConfirm = async (newPaiement) => {
 
@@ -246,7 +284,8 @@ useEffect(() => {
       //pour ne pas cumuler deux offres
       let adjustedTotalPrice = 0;
 
-      cart.forEach(product => {
+      cart.forEach( product =>
+       {
           let adjustedPrice = product.prix_unitaire;
 
           //si pas de produit anti gaspi
@@ -258,8 +297,9 @@ useEffect(() => {
       });
 
       totalPrice = adjustedTotalPrice.toFixed(2);
-      console.log('total', totalPrice)
+      //console.log('total', totalPrice)
 
+      
       //paiement supérieur à 50cts
       if (totalPrice < 0.50) {
         //console.log('en dessous de 1euros')
@@ -270,7 +310,7 @@ useEffect(() => {
         });
        
     }
-      
+
       const orderData = {
         userRole: user.role, 
         firstname_client: user.firstname,
@@ -376,6 +416,8 @@ useEffect(() => {
         }
       }
      createOrder()
+     updateAntigaspiStock()
+
      //console.log('commande créé')
       } else {
           console.log('erreur ici', error)
@@ -650,7 +692,7 @@ useEffect(() => {
                                   <Text>{totalPrice.toFixed(2)}€</Text>
                                   {
                                     (cart.length !== 1 || antigaspiProductsCount !== 1) 
-                                    ? <Text style={{ color: colors.color2, fontWeight: "bold" }}>{(totalPrice * 0.8).toFixed(2)}€</Text>
+                                    ? <Text style={{ color: colors.color2, fontWeight: "bold" }}>{(totalPriceCollab).toFixed(2)}€</Text>
                                     : null
                                   }
                               </View>

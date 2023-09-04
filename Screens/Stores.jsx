@@ -19,7 +19,7 @@ const Stores = ({navigation}) => {
 
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
-  console.log('user dans Stores', user)
+  //console.log('user dans Stores', user)
   //modif userId <= id
   const userId = useSelector(state => state.auth.user.userId)
 
@@ -62,12 +62,12 @@ const Stores = ({navigation}) => {
 
   const handleStoreSelection = (store) => {
     setSelectedStore(store);
-    console.log('store button selectionné:', store)
+    //console.log('store button selectionné:', store)
     dispatch(updateSelectedStore(store));
   };
 
   const  submitHandler = () => {
-    console.log('store validé', selectedStore)
+    //console.log('store validé', selectedStore)
     // console.log('user après validation', user);
     //update du user
    if (selectedStore === null){
@@ -79,12 +79,12 @@ const Stores = ({navigation}) => {
    }
      if (selectedStore && user) {
       const updatedUser = { ...user, storeId: selectedStore.storeId };
-      console.log('update user',updatedUser)
+      //console.log('update user',updatedUser)
 
       axios
         .put(`${API_BASE_URL}/updateOneUser/${userId}`, updatedUser)
         .then((response) => {
-          console.log('User updated:', response.data);
+          //console.log('User updated:', response.data);
           navigation.navigate('login');
           return Toast.show({
             type: 'success',

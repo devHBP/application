@@ -42,12 +42,14 @@ const Antigaspi = ({navigation}) => {
               qty: 0, 
 
             }));
-            //console.log('upd', updatedProducts)
+            console.log('upd', updatedProducts)
           //produits ayant la valeur "clickandcollect" à true et "antigaspi" à true
           const clickProducts = updatedProducts.filter(product => product.antigaspi === true && product.clickandcollect === true);
           const clickProductNames = clickProducts.map(product => product.libelle)
             //console.log('click product', clickProductNames)
-          setclickProducts(clickProducts)
+            //stock sup ou egale à 1
+            const updatedStockProducts = clickProducts.filter(product => product.stockantigaspi >= 1)
+          setclickProducts(updatedStockProducts)
 
           } catch (error) {
             console.error('Une erreur s\'est produite lors de la récupération des produits:', error);
@@ -89,14 +91,14 @@ const Antigaspi = ({navigation}) => {
 
     //verifier le stock ?
     const handleCart = async () => {
-      try{
-        const productStock = await checkStockForSingleProduct(selectedProduct.productId);
-        const cartQty = cart.reduce((sum, cartItem) => {
-          return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
-        }, 0);
-        const remainingStock = productStock[0]?.quantite - cartQty || 0;
+      // try{
+      //   const productStock = await checkStockForSingleProduct(selectedProduct.productId);
+      //   const cartQty = cart.reduce((sum, cartItem) => {
+      //     return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
+      //   }, 0);
+      //   const remainingStock = productStock[0]?.quantite - cartQty || 0;
 
-        if ( remainingStock > 0) {
+      //   if ( remainingStock > 0) {
            
             // dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire, qty: 1 , offre: selectedProduct.offre}));
             dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire * 0.5, qty: 1 , offre: selectedProduct.offre, antigaspi: true}));
@@ -106,21 +108,21 @@ const Antigaspi = ({navigation}) => {
               text1: 'Produit ajouté au panier',
             });
             
-          }else {
-            Toast.show({
-              type: 'error',
-              position: 'bottom',
-              text1: 'Victime de son succès',
-              text2: `Quantité maximale: ${productStock[0].quantite}`,
+      //     }else {
+      //       Toast.show({
+      //         type: 'error',
+      //         position: 'bottom',
+      //         text1: 'Victime de son succès',
+      //         text2: `Quantité maximale: ${productStock[0].quantite}`,
               
-            });
-          } 
+      //       });
+      //     } 
           
          
-      }  catch (error) {
-        console.error("Une erreur s'est produite lors de la vérification du stock :", error);
+      // }  catch (error) {
+      //   console.error("Une erreur s'est produite lors de la vérification du stock :", error);
       
-      }  
+      // }  
     
 }   
   return (
