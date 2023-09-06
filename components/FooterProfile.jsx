@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, TouchableOpacity } from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
 import React, { useState, useEffect, useRef} from 'react'
 import { colors} from '../styles/styles'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -13,6 +13,7 @@ import Home from '../SVG/Home'
 import Orders from '../SVG/Orders'
 import Cart from '../SVG/Cart'
 import Profile from '../SVG/Profile'
+import Bug from '../SVG/Bug'
 
 const FooterProfile = () => {
 
@@ -37,6 +38,17 @@ const FooterProfile = () => {
     };
   }, [orders]);
 
+  const openURL = (url) => {
+    Linking.canOpenURL(url)
+      .then((supported) => {
+        if (!supported) {
+          console.log("Can't handle URL: " + url);
+        } else {
+          return Linking.openURL(url);
+        }
+      })
+      .catch((err) => console.error('An error occurred', err));
+  };
 
 
   const user = useSelector((state) => state.auth.user);
@@ -183,6 +195,10 @@ const FooterProfile = () => {
          style={{ width: 20, height: 27, resizeMode:'contain' }} // Remplacez ces valeurs par les dimensions souhaitées
       /> */}
       <Profile />
+      </TouchableOpacity>
+
+      <TouchableOpacity onPress={() => openURL('https://bit.ly/bug-pdj')}>
+      <Bug color={colors.color6}/>
       </TouchableOpacity>
     </View>
   )
