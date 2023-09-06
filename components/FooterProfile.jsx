@@ -1,4 +1,4 @@
-import { View, StyleSheet, Image, TouchableOpacity, Linking } from 'react-native'
+import { View, StyleSheet, Image, TouchableOpacity, Linking, Platform } from 'react-native'
 import React, { useState, useEffect, useRef} from 'react'
 import { colors} from '../styles/styles'
 import Icon from 'react-native-vector-icons/MaterialIcons'
@@ -38,18 +38,34 @@ const FooterProfile = () => {
     };
   }, [orders]);
 
-  const openURL = (url) => {
-    Linking.canOpenURL(url)
-      .then((supported) => {
-        if (!supported) {
-          console.log("Can't handle URL: " + url);
-        } else {
-          return Linking.openURL(url);
-        }
-      })
-      .catch((err) => console.error('An error occurred', err));
-  };
 
+  const openLink = (url) => {
+    if (Platform.OS === 'android') {
+        Linking.openURL(url)
+          .then((supported) => {
+            if (!supported) {
+              console.log("Can't handle URL: " + url);
+            } else {
+              return Linking.openURL(url);
+            }
+          })
+          .catch((err) => console.error('An error occurred', err));
+    } else if (Platform.OS === 'ios') {
+        Linking.canOpenURL(url)
+          .then((supported) => {
+            if (!supported) {
+              console.log("Can't handle URL: " + url);
+            } else {
+              return Linking.openURL(url);
+            }
+          })
+          .catch((err) => console.error('An error occurred', err));
+    }
+}
+
+    
+  
+  
 
   const user = useSelector((state) => state.auth.user);
   const userId = user.userId
@@ -197,7 +213,7 @@ const FooterProfile = () => {
       <Profile />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => openURL('https://bit.ly/bug-pdj')}>
+      <TouchableOpacity onPress={() => openLink('https://bit.ly/bug-pdj')}>
       <Bug color={colors.color6}/>
       </TouchableOpacity>
     </View>
