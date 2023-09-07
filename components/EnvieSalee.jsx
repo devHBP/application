@@ -44,7 +44,8 @@ const EnvieSalee = () => {
             {/* Sandwichs */}
             <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageSandwich}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            // source={require('../assets/Formule36.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/sandwich.jpg'}}
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
                             />
                     {/* <FastImage
@@ -65,7 +66,8 @@ const EnvieSalee = () => {
                 
                 <TouchableOpacity onPress={openPagePizza}>
                     <Image
-                        source={require('../assets/Formule2.jpg')} 
+                        // source={require('../assets/Formule2.jpg')} 
+                        source={{uri:'https://cdn.lepaindujour.io/assets/pizza.jpg'}}
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
                     />
                     {/* <FastImage
@@ -103,7 +105,9 @@ const EnvieSalee = () => {
             {/* Salades */}
             <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageSalade}>
                     <Image
-                            source={require('../assets/Formule26.jpg')} 
+                            // source={require('../assets/Formule26.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/salade.jpg'}}
+                            
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
                             />
                     {/* <FastImage
