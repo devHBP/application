@@ -12,6 +12,8 @@ import Svg, { Path } from 'react-native-svg';
 import { style } from '../styles/formules'; 
 import { Button} from 'react-native-paper'
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import FastImage from 'react-native-fast-image';
+
 
 //fonctions
 import { decrementhandler } from '../Fonctions/fonctions'
@@ -111,7 +113,14 @@ const ProductDetails = ({navigation, route}) => {
     <ScrollView style={{marginBottom:20}}>
       
             <View>
-                <Image source={{ uri: `${API_BASE_URL}/${product.image}` }} style={{width: "100%", height:300, resizeMode:'cover'}} />
+                {/* <Image source={{ uri: `${API_BASE_URL}/${product.image}` }} style={{width: "100%", height:300, resizeMode:'cover'}} /> */}
+                 <FastImage
+                            style={{width: "100%", height:300, resizeMode:'cover'}}
+                            source={{ uri: `${API_BASE_URL}/${product.image}`,
+                                priority: FastImage.priority.high,
+                            }}
+                    resizeMode={FastImage.resizeMode.cover}
+                />
                 <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
                   <Text style={styles.titleProduct}>{product.libelle}</Text>
                   <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:colors.color1, borderRadius:25}}>

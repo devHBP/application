@@ -463,4 +463,4 @@ const style = StyleSheet.create({
         
 })
 
-export default ProductCard
+export default React.memo(ProductCard)

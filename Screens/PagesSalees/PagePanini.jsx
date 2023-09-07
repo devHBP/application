@@ -13,6 +13,7 @@ import ArrowLeft from '../../SVG/ArrowLeft';
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import ProductCard from '../../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import FastImage from 'react-native-fast-image';
 
 
 const PagePanini = ({navigation}) => {
@@ -113,10 +114,14 @@ const PagePanini = ({navigation}) => {
     <View style={{marginBottom:150}} >
        <ScrollView>
         <View>
-            <Image
+            {/* <Image
                     source={require('../../assets/panini.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                />
+                /> */}
+            <FastImage
+              source={require('../../assets/panini.jpg')}
+              style={{ width: "100%", height: 330, resizeMode:'cover' }}
+            />
              <Text style={styles.titleProduct}>Panini</Text>
              <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
                     <ArrowLeft fill="white"/>
@@ -204,10 +209,14 @@ const PagePanini = ({navigation}) => {
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
             <TouchableOpacity style={{marginRight:10}} onPress={openFormulePanini} activeOpacity={0.8}>
             <View style={{width:320}}> 
-                    <Image
+                    {/* <Image
                             source={require('../../assets/Formule55.jpg')} 
                             style={{ resizeMode:'cover',  width: 320, height: 200, }}
-                            />
+                            /> */}
+                            <FastImage
+              source={require('../../assets/Formule55.jpg')}
+              style={{ resizeMode:'cover',  width: 320, height: 200, }}
+              />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Panini</Text>
                         <Text style={styles.textFormule}>Un panini, un dessert et une boisson</Text>

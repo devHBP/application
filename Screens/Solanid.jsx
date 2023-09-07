@@ -14,6 +14,7 @@ import ArrowLeft from '../SVG/ArrowLeft';
 import LinearGradient from 'react-native-linear-gradient';
 import ProductCard from '../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import FastImage from 'react-native-fast-image';
 
 const Solanid = ({navigation}) => {
 
@@ -124,10 +125,15 @@ const Solanid = ({navigation}) => {
     <View style={{flex:1}}>
       <ScrollView>
         <View>
-            <Image
+            {/* <Image
                     source={require('../assets/fond_halles.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                />
+                /> */}
+                <FastImage
+              source={require('../assets/fond_halles.jpg')}
+              style={{ width: "100%", height: 330, resizeMode:'cover' }}
+             
+            />
             <Image
                 source={require('../assets/halles_solanid.jpg')} 
                 style={{ ...styles.pastilleOffre31, transform: [{rotate: '15deg'}]}}

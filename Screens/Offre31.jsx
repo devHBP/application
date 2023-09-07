@@ -16,20 +16,11 @@ import ArrowLeft from '../SVG/ArrowLeft';
 import ProductCard from '../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
+import FastImage from 'react-native-fast-image';
 
 
 const Offre31 = ({navigation}) => {
-
- //pour les test
- if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
   
-
   const [offre31Products, setOffre31ProductNames] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [familyProductDetails, setFamilyProductDetails] = useState({});
@@ -37,7 +28,7 @@ const Offre31 = ({navigation}) => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   //pensez à mettre toutes les familles
-  const familyProductIds = [12, 14, 19]; 
+  const familyProductIds = [1, 2, 3,4,5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17]; 
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
@@ -56,7 +47,7 @@ const Offre31 = ({navigation}) => {
               qty: 0, 
             }));
 
-            const productsOffre = updatedProducts.filter(product => product.offre && product.offre.startsWith("offre31_"));
+            const productsOffre = updatedProducts.filter(product => product.offre && product.offre.startsWith("offre31_") && product.vente_a_distance === true);
     
             setOffre31ProductNames(productsOffre);
 
@@ -159,10 +150,15 @@ const handleCart = () => {
     <View style={{flex:1}}>
       <ScrollView>
         <View>
-            <Image
+            {/* <Image
                     source={require('../assets/Croissant_offre31.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                />
+                /> */}
+                  <FastImage
+              source={require('../assets/Croissant_offre31.jpg')}
+              style={{ width: "100%", height: 330, resizeMode:'cover' }}
+             
+            />
             <Image
                 source={require('../assets/offre31.jpg')} 
                 style={ styles.pastilleOffre31}

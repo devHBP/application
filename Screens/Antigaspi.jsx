@@ -15,6 +15,7 @@ import LinearGradient from 'react-native-linear-gradient';
 import ProductCard from '../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import Cloche from '../SVG/Cloche';
+import FastImage from 'react-native-fast-image';
 
 const Antigaspi = ({navigation}) => {
 
@@ -42,7 +43,7 @@ const Antigaspi = ({navigation}) => {
               qty: 0, 
 
             }));
-            console.log('upd', updatedProducts)
+            //console.log('upd', updatedProducts)
           //produits ayant la valeur "clickandcollect" à true et "antigaspi" à true
           const clickProducts = updatedProducts.filter(product => product.antigaspi === true && product.clickandcollect === true);
           const clickProductNames = clickProducts.map(product => product.libelle)
@@ -129,10 +130,15 @@ const Antigaspi = ({navigation}) => {
     <View style={{flex:1}}>
       <ScrollView>
         <View>
-            <Image
+            {/* <Image
                     source={require('../assets/antigaspi.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                />
+                /> */}
+                <FastImage
+              source={require('../assets/antigaspi.jpg')}
+              style={{ width: "100%", height: 330, resizeMode:'cover' }}
+             
+            />
           <Image
                 source={require('../assets/pastille_antigaspi.png')} 
                 style={ {...styles.pastilleOffre31, resizeMode:'contain', width:90, right:20, top:250}}

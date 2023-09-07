@@ -1,7 +1,7 @@
-import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Modal, Button } from 'react-native'
+import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Modal, Button, FlatList } from 'react-native'
 import { fonts, colors} from '../styles/styles'
 import { styles } from '../styles/home'; 
-import React, {useState, useEffect,  createRef,useRef } from 'react'
+import React, {useState, useEffect,  createRef,useRef, useCallback } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {  updateUser} from '../reducers/authSlice';
 import axios from 'axios'
@@ -20,6 +20,7 @@ import SearchModal from '../components/SearchModal';
 import ArrowLeft from '../SVG/ArrowLeft';
 import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Search from '../SVG/Search';
+import ProductFlatList from '../components/ProductFlatList';
 
 const Home =  ({navigation}) => {
   
@@ -158,10 +159,10 @@ const refs = {
 
 const onglets = Object.keys(refs);
 
-const handleLayout = (onglet, event) => {
+const handleLayout = useCallback((onglet, event) => {
   const { y } = event.nativeEvent.layout;
   setPositionsY(prev => ({ ...prev, [onglet]: y }));
-};
+});
 const ongletButtonHandler = (onglet) => {
   setSelectedOnglet(onglet);
   
@@ -181,7 +182,7 @@ const ongletButtonHandler = (onglet) => {
         
       <View View style={{flex:1}}>
 
-    <ScrollView vertical={true} style={{ flex:1, paddingVertical:20}} ref={scrollViewRef} stickyHeaderIndices={[1]}>
+    <ScrollView vertical={true} style={{ flex:1, paddingVertical:20, backgroundColor:'lightgray'}} ref={scrollViewRef} stickyHeaderIndices={[1]}>
    
     <View >
 
@@ -305,37 +306,11 @@ const ongletButtonHandler = (onglet) => {
               .filter(category => category === 'Baguettes')
               .map((category) => (
                 <View key={category} onLayout={(event) => handleLayout('Baguettes', event)} style={styles.paddingProduct}>
-
-                <Text style={styles.categoryTitle}>{category}</Text>
-
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
-                {groupedAndSortedProducts[category]
-                .map((item, index) => (
-                  <View key={item.productId} style={styles.productContainer}>
-                    <TouchableOpacity
-                      key={item.productId}
-                      onPress={() => handleProductPress(item)}
-                      activeOpacity={1}
-                    >
-                      <ProductCard
-                        libelle={item.libelle}
-                        key={item.productId}
-                        id={item.productId}
-                        index={index}
-                        image={item.image}
-                        prix={item.prix_unitaire}
-                        prixSUN={item.prix_remise_collaborateur}
-                        qty={item.qty}
-                        stock={item.stock}
-                        offre={item.offre}
-                        showPromo={false}
-                        showButtons={true}
-                      />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              
-              </ScrollView>
+                <ProductFlatList
+                category={category}
+                products={groupedAndSortedProducts[category]}
+                handleProductPress={handleProductPress}
+              />
               </View>
             ))}
 
@@ -343,38 +318,11 @@ const ongletButtonHandler = (onglet) => {
               .filter(category => category ===  'Viennoiseries')
               .map((category) => (
                 <View key={category} onLayout={(event) => handleLayout('Viennoiseries', event)} style={styles.paddingProduct}>
-
-                <Text style={styles.categoryTitle}>{category}</Text>
-
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
-                {groupedAndSortedProducts[category]
-                .map((item, index) => (
-                  <View key={item.productId} style={styles.productContainer}>
-                    <TouchableOpacity
-                      key={item.productId}
-                      onPress={() => handleProductPress(item)}
-                      activeOpacity={1}
-                    >
-                      <ProductCard
-                        libelle={item.libelle}
-                        key={item.productId}
-                        id={item.productId}
-                        index={index}
-                        image={item.image}
-                        prix={item.prix_unitaire}
-                        prixSUN={item.prix_remise_collaborateur}
-                        qty={item.qty}
-                        stock={item.stock}
-                        offre={item.offre}
-                        showPromo={false}
-                        showButtons={true}
-
-                      />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              
-              </ScrollView>
+                <ProductFlatList
+                category={category}
+                products={groupedAndSortedProducts[category]}
+                handleProductPress={handleProductPress}
+              />
               </View>
             ))}
 
@@ -393,35 +341,11 @@ const ongletButtonHandler = (onglet) => {
               .filter(category => category ===  'Pâtisseries')
               .map((category) => (
                 <View key={category} onLayout={(event) => handleLayout('Pâtisseries', event)} style={styles.paddingProduct}>
-                <Text style={styles.categoryTitle}>{category}</Text>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
-                {groupedAndSortedProducts[category]
-                .map((item, index) => (
-                  <View key={item.productId} style={styles.productContainer}>
-                    <TouchableOpacity
-                      key={item.productId}
-                      onPress={() => handleProductPress(item)}
-                      activeOpacity={1}
-                    >
-                      <ProductCard
-                        libelle={item.libelle}
-                        key={item.productId}
-                        id={item.productId}
-                        index={index}
-                        image={item.image}
-                        prix={item.prix_unitaire}
-                        prixSUN={item.prix_remise_collaborateur}
-                        qty={item.qty}
-                        stock={item.stock}
-                        offre={item.offre}
-                        showPromo={false}
-                        showButtons={true}
-
-                      />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </ScrollView>
+                <ProductFlatList
+                category={category}
+                products={groupedAndSortedProducts[category]}
+                handleProductPress={handleProductPress}
+              />
                </View>
             ))}
 
@@ -430,38 +354,13 @@ const ongletButtonHandler = (onglet) => {
               .filter(category => category ===  'Boules et Pains Spéciaux')
               .map((category) => (
                 <View key={category} onLayout={(event) => handleLayout('Pains Spéciaux', event)} style={styles.paddingProduct}>
-                <Text style={styles.categoryTitle}>{category}</Text>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
-                {groupedAndSortedProducts[category]
-                .map((item, index) => (
-                  <View key={item.productId} style={styles.productContainer}>
-                    <TouchableOpacity
-                      key={item.productId}
-                      onPress={() => handleProductPress(item)}
-                      activeOpacity={1}
-                    >
-                      <ProductCard
-                        libelle={item.libelle}
-                        key={item.productId}
-                        id={item.productId}
-                        index={index}
-                        image={item.image}
-                        prix={item.prix_unitaire}
-                        prixSUN={item.prix_remise_collaborateur}
-                        qty={item.qty}
-                        stock={item.stock}
-                        offre={item.offre}
-                        showPromo={false}
-                        showButtons={true}
-
-                      />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </ScrollView>
+              <ProductFlatList
+                category={category}
+                products={groupedAndSortedProducts[category]}
+                handleProductPress={handleProductPress}
+              />
               </View>
             ))}
-
 
             {/* formules petits dejeuners */}
             {user.role == 'client' &&
@@ -475,35 +374,11 @@ const ongletButtonHandler = (onglet) => {
               .filter(category => category ===  'Boissons')
               .map((category) => (
                 <View key={category} onLayout={(event) => handleLayout('Boissons', event)} style={styles.paddingProduct}>
-                <Text style={styles.categoryTitle}>{category}</Text>
-                <ScrollView horizontal={true} showsHorizontalScrollIndicator={false} style={styles.scrollHorizontal} >
-                {groupedAndSortedProducts[category]
-                .map((item, index) => (
-                  <View key={item.productId} style={styles.productContainer}>
-                    <TouchableOpacity
-                      key={item.productId}
-                      onPress={() => handleProductPress(item)}
-                      activeOpacity={1}
-                    >
-                      <ProductCard
-                        libelle={item.libelle}
-                        key={item.productId}
-                        id={item.productId}
-                        index={index}
-                        image={item.image}
-                        prix={item.prix_unitaire}
-                        prixSUN={item.prix_remise_collaborateur}
-                        qty={item.qty}
-                        stock={item.stock}
-                        offre={item.offre}
-                        showPromo={false}
-                        showButtons={true}
-
-                      />
-                    </TouchableOpacity>
-                  </View>
-                ))}
-              </ScrollView>
+                <ProductFlatList
+                category={category}
+                products={groupedAndSortedProducts[category]}
+                handleProductPress={handleProductPress}
+              />
               </View>
             ))}
                 

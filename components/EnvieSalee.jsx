@@ -3,6 +3,7 @@ import React from 'react'
 import { styles} from '../styles/home'; 
 import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
+import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 
 const EnvieSalee = () => {
 
@@ -43,11 +44,11 @@ const EnvieSalee = () => {
 
             {/* Sandwichs */}
             <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageSandwich}>
-                    <Image
+                    {/* <Image
                             // source={require('../assets/Formule36.jpg')} 
                             source={{uri:'https://cdn.lepaindujour.io/assets/sandwich.jpg'}}
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
-                            />
+                            /> */}
                     {/* <FastImage
                             style={{ width: 200, height: 234,  }}
                             source={{
@@ -56,6 +57,11 @@ const EnvieSalee = () => {
                             }}
                     resizeMode={FastImage.resizeMode.cover}
                 /> */}
+               <FastImage
+              source={require('../assets/sandwich.jpg')}
+              style={{ width: 200, height: 234,  }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Sandwichs</Text>
                     </View>
@@ -65,11 +71,11 @@ const EnvieSalee = () => {
             <TouchableOpacity style={{marginRight:10, flexDirection:'column', gap:12}}  activeOpacity={0.8}>
                 
                 <TouchableOpacity onPress={openPagePizza}>
-                    <Image
+                    {/* <Image
                         // source={require('../assets/Formule2.jpg')} 
                         source={{uri:'https://cdn.lepaindujour.io/assets/pizza.jpg'}}
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
-                    />
+                    /> */}
                     {/* <FastImage
                             style={{ width: 200, height: 85,  }}
                             source={{
@@ -78,16 +84,21 @@ const EnvieSalee = () => {
                             }}
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
+                    <FastImage
+              source={require('../assets/pizza.jpg')}
+              style={{ width: 200, height: 80,  }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Pizzas</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={openPageWrap}>
-                    <Image
+                    {/* <Image
                         // source={require('../assets/Formule32.jpg')} 
                         source={{uri:'https://cdn.lepaindujour.io/assets/wrap.jpg'}}
                         style={{ width: 200, height: 80, resizeMode:'cover' }}
-                    />
+                    /> */}
                     {/* <FastImage
                             style={{ width: 200, height: 80,  }}
                             source={{
@@ -96,6 +107,11 @@ const EnvieSalee = () => {
                             }}
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
+                    <FastImage
+                    source={require('../assets/wrap.jpg')}
+                    style={{ width: 200, height: 80,  }}
+                    resizeMode={FastImage.resizeMode.cover}
+                    />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Wraps</Text>
                     </View>
@@ -105,12 +121,12 @@ const EnvieSalee = () => {
 
             {/* Salades */}
             <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageSalade}>
-                    <Image
+                    {/* <Image
                             // source={require('../assets/Formule26.jpg')} 
                             source={{uri:'https://cdn.lepaindujour.io/assets/salade.jpg'}}
                             
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
-                            />
+                            /> */}
                     {/* <FastImage
                             style={{ width: 200, height: 234,  }}
                             source={{
@@ -119,6 +135,11 @@ const EnvieSalee = () => {
                             }}
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
+                    <FastImage
+                    source={require('../assets/salade.jpg')}
+                    style={{ width: 200, height: 234,  }}
+                    resizeMode={FastImage.resizeMode.cover}
+                    />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Salades</Text>
                     </View>
@@ -127,11 +148,11 @@ const EnvieSalee = () => {
             {/* Burgers et Paninis */}    
             <TouchableOpacity style={{marginRight:10, flexDirection:'column', gap:12}}>            
                 <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageBurger}>
-                    <Image
+                    {/* <Image
                         // source={require('../assets/Formule27.jpg')} 
                         source={{uri:'https://cdn.lepaindujour.io/assets/burger.jpg'}}
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
-                    />
+                    /> */}
                     {/* <FastImage
                             style={{ width: 200, height: 85,  }}
                             source={{
@@ -140,6 +161,11 @@ const EnvieSalee = () => {
                             }}
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
+                    <FastImage
+                    source={require('../assets/burger.jpg')}
+                    style={{ width: 200, height: 80,  }}
+                    resizeMode={FastImage.resizeMode.cover}
+                    />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Burgers</Text>
                     </View>
@@ -147,11 +173,11 @@ const EnvieSalee = () => {
                
 
                 <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPagePanini}>
-                    <Image
+                    {/* <Image
                         // source={require('../assets/Formule55.jpg')} 
                         source={{uri:'https://cdn.lepaindujour.io/assets/panini.jpg'}}
                         style={{ width: 200, height: 80, resizeMode:'cover' }}
-                    />
+                    /> */}
                     {/* <FastImage
                             style={{ width: 200, height: 80,  }}
                             source={{
@@ -160,6 +186,11 @@ const EnvieSalee = () => {
                             }}
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
+                    <FastImage
+                    source={require('../assets/panini.jpg')}
+                    style={{ width: 200, height: 80,  }}
+                    resizeMode={FastImage.resizeMode.cover}
+                    />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Paninis</Text>
                     </View>
@@ -168,11 +199,11 @@ const EnvieSalee = () => {
 
             {/* Pains bagnats */}
             <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPagePainBagnat}>
-                    <Image
+                    {/* <Image
                             // source={require('../assets/Formule28.jpg')} 
                             source={{uri:'https://cdn.lepaindujour.io/assets/painbagnat.jpg'}}
                             style={{ width: 200, height: 234, resizeMode:'cover' }}
-                            />
+                            /> */}
                     {/* <FastImage
                             style={{ width: 200, height: 234,  }}
                             source={{
@@ -181,6 +212,11 @@ const EnvieSalee = () => {
                             }}
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
+                     <FastImage
+              source={require('../assets/painbagnat.jpg')}
+              style={{ width: 200, height: 234,  }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Pains Bagnats</Text>
                     </View>
@@ -190,11 +226,11 @@ const EnvieSalee = () => {
             <TouchableOpacity style={{marginRight:10, flexDirection:'column', gap:12}}  activeOpacity={0.8}>
                 
                 <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageQuiche}>
-                    <Image
+                    {/* <Image
                         // source={require('../assets/Formule22.jpg')} 
                         source={{uri:'https://cdn.lepaindujour.io/assets/quiche.jpg'}}
                         style={{ width: 200, height: 85, resizeMode:'cover' }}
-                    />
+                    /> */}
                 {/* <FastImage
                             style={{ width: 200, height: 85,  }}
                             source={{
@@ -203,16 +239,21 @@ const EnvieSalee = () => {
                             }}
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
+                        <FastImage
+              source={require('../assets/quiche.jpg')}
+              style={{ width: 200, height: 80,  }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Quiches</Text>
                     </View>
                 </TouchableOpacity>
                 <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageCroque}>
-                    <Image
+                    {/* <Image
                         // source={require('../assets/Formule16.jpg')} 
                         source={{uri:'https://cdn.lepaindujour.io/assets/croque.jpg'}}
                         style={{ width: 200, height: 80, resizeMode:'cover' }}
-                    />
+                    /> */}
                     {/* <FastImage
                             style={{ width: 200, height: 80,  }}
                             source={{
@@ -221,6 +262,11 @@ const EnvieSalee = () => {
                             }}
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
+                        <FastImage
+              source={require('../assets/croque.jpg')}
+              style={{ width: 200, height: 80,  }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule_envie}>Croques</Text>
                     </View>

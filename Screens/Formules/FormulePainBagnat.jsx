@@ -10,6 +10,8 @@ import FooterProfile from '../../components/FooterProfile';
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import FastImage from 'react-native-fast-image'
+
 
 const FormulePainBagnat = ({navigation}) => {
 
@@ -188,11 +190,15 @@ const FormulePainBagnat = ({navigation}) => {
     <View style={{flex:1}}>
       <ScrollView>
         <View>
-            <Image
+            {/* <Image
                     source={require('../../assets/Formule28.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                />
-
+                /> */}
+            <FastImage
+              source={require('../../assets/Formule28.jpg')}
+              style={{ width: "100%", height: 330 }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
                     <Text style={style.titleProduct}>Pains Bagnats</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>

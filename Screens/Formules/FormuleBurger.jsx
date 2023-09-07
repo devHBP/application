@@ -9,6 +9,8 @@ import { getProductsByCategory, fetchOneProduct, fetchDessertIds, fetchBoissonId
 import { style } from '../../styles/formules'; 
 import FooterProfile from '../../components/FooterProfile';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import FastImage from 'react-native-fast-image'
+
 
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
@@ -19,14 +21,6 @@ import ProductCard from '../../components/ProductCard';
 
 const FormuleBurger = ({navigation}) => {
 
-   //pour les test
-if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
 
     const [ products, setProducts] = useState([]);
     const [ desserts, setDesserts] = useState([]);
@@ -208,10 +202,15 @@ if (__DEV__) {
     <View style={{flex:1}}>
       <ScrollView>
         <View>
-            <Image
+            {/* <Image
                     source={require('../../assets/Formule27.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                />
+                /> */}
+            <FastImage
+              source={require('../../assets/Formule27.jpg')}
+              style={{ width: "100%", height: 330 }}
+              resizeMode={FastImage.resizeMode.cover}
+            />
 
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
                     <Text style={style.titleProduct}>Burgers</Text>

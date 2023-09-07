@@ -13,6 +13,7 @@ import ArrowLeft from '../../SVG/ArrowLeft';
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import ProductCard from '../../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import FastImage from 'react-native-fast-image';
 
 
 const PageCroque = ({navigation}) => {
@@ -113,10 +114,14 @@ const PageCroque = ({navigation}) => {
     <View style={{marginBottom:150}} >
        <ScrollView>
         <View>
-            <Image
+            {/* <Image
                     source={require('../../assets/croque.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                />
+                /> */}
+                <FastImage
+              source={require('../../assets/croque.jpg')}
+              style={{ width: "100%", height: 330, resizeMode:'cover' }}
+            />
              <Text style={styles.titleProduct}>Croque</Text>
              <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
                     <ArrowLeft fill="white"/>
@@ -206,10 +211,14 @@ const PageCroque = ({navigation}) => {
             <TouchableOpacity style={{marginRight:10}} onPress={openFormuleCroque} activeOpacity={0.8}>
                     
             <View style={{width:320}}>
-              <Image
+              {/* <Image
                             source={require('../../assets/Formule16.jpg')} 
                             style={{ resizeMode:'cover',  width: 320, height: 200, }}
-                            />
+                            /> */}
+                            <FastImage
+              source={require('../../assets/Formule16.jpg')}
+              style={{ resizeMode:'cover',  width: 320, height: 200, }}
+              />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Croque</Text>
                         <Text style={styles.textFormule}>Un croque-monsieur, un dessert et une boisson</Text>

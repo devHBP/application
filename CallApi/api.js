@@ -85,7 +85,7 @@ export const fetchOneProduct = async  (id) => {
 export const getFamilyProductDetails = async (id) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/getOneFamillyProduct/${id}`);
-    // console.log('res', response.data.familleProduit.nom_famille_produit)
+     console.log('res', response.data.familleProduit.nom_famille_produit)
     return { 
       id: response.data.familleProduit.id_famille_produit, 
       name: response.data.familleProduit.nom_famille_produit
@@ -139,4 +139,6 @@ export const fetchBoissonIds = async () => {
     console.error('Error fetching boisson IDs:', error);
   }
 }
+
+
 

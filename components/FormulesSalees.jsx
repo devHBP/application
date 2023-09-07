@@ -48,19 +48,18 @@ const FormulesSalees = () => {
 
                 {/* Poke Bowl */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePoke} activeOpacity={0.8}>
-                    <Image
+                    {/* <Image
                             // source={require('../assets/PokeSaumon.jpg')} 
                             source={{uri:'https://cdn.lepaindujour.io/assets/PokeSaumon.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
-                            />
-                            {/* <FastImage
+                            /> */}
+                            <FastImage
                             style={{ width: 315, height: 200,  }}
-                            source={{
-                            uri: `${API_BASE_URL}/Images/Formule26.jpg`,
+                            source={{uri:'https://cdn.lepaindujour.io/assets/PokeSaumon.jpg',
                                 priority: FastImage.priority.high,
                             }}
                     resizeMode={FastImage.resizeMode.cover}
-                /> */}
+                />
                    <Image
                             source={require('../assets/halles_solanid.jpg')} 
                             style={styles.pastilleSolanid}

@@ -10,6 +10,8 @@ import FooterProfile from '../../components/FooterProfile';
 import { addToCart, decrementOrRemoveFromCart } from '../../reducers/cartSlice';
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
+import FastImage from 'react-native-fast-image';
+
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
@@ -111,10 +113,14 @@ const capitalizeIngredients = (ingredients) => {
     <View style={{marginBottom:150}} >
        <ScrollView>
         <View>
-            <Image
+            {/* <Image
                     source={require('../../assets/sandwich.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                />
+                /> */}
+                <FastImage
+              source={require('../../assets/sandwich.jpg')}
+              style={{ width: "100%", height: 330, resizeMode:'cover' }}
+            />
              <Text style={styles.titleProduct}>Sandwich</Text>
             
              <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
@@ -207,10 +213,14 @@ const capitalizeIngredients = (ingredients) => {
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
             <TouchableOpacity  onPress={openFormuleSandwich} activeOpacity={0.8}>
               <View style={{width:320}}>
-                <Image
+                {/* <Image
                               source={require('../../assets/Formule36.jpg')} 
                               style={{ resizeMode:'cover',  width: 320, height: 200, }}
-                              />
+                              /> */}
+                               <FastImage
+              source={require('../../assets/Formule36.jpg')}
+              style={{ resizeMode:'cover',  width: 320, height: 200, }}
+            />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Sandwichs</Text>
                         <Text style={styles.textFormule}>Un sandwich, un dessert et une boisson</Text>
