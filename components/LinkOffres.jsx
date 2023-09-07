@@ -99,7 +99,8 @@ const LinkOffres = ({}) => {
 
         <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={handleAntiGaspi}>
         <Image
-                source={require('../assets/antigaspi.jpg')} 
+                // source={require('../assets/antigaspi.jpg')} 
+                source={{uri:'https://cdn.lepaindujour.io/assets/antigaspi.jpg'}}
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
                 />
           
@@ -132,7 +133,8 @@ const LinkOffres = ({}) => {
         {/* Offre 3+1 */}
         <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={handleOffre31}>
         <Image
-                source={require('../assets/Croissant_offre31.jpg')} 
+                // source={require('../assets/Croissant_offre31.jpg')} 
+                source={{uri:'https://cdn.lepaindujour.io/assets/Croissant_offre31.jpg'}}
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
                 />
 
@@ -163,7 +165,8 @@ const LinkOffres = ({}) => {
         {/* collaboration Les Halles Solanid */}
         <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={handleHallesSolanid}>
         <Image
-                source={require('../assets/fond_halles.jpg')} 
+                // source={require('../assets/fond_halles.jpg')} 
+                source={{uri:'https://cdn.lepaindujour.io/assets/fond_halles.jpg'}}
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
                 />
                 {/* <FastImage
@@ -194,7 +197,8 @@ const LinkOffres = ({}) => {
         {/* SUN */}
         <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={() => handlePress({ title: popupData.title1, text: popupData.text1, image:popupData.image1 })}>
         <Image
-                source={require('../assets/fond_halles.jpg')} 
+                // source={require('../assets/fond_halles.jpg')} 
+                source={{uri:'https://cdn.lepaindujour.io/assets/fond_halles.jpg'}}
                 style={{ width: 315, height: 200, resizeMode:'cover', borderTopLeftRadius:10, borderTopRightRadius:10 }}
                 />
         {/* <FastImage
@@ -237,7 +241,8 @@ const LinkOffres = ({}) => {
               </TouchableOpacity>
               <TouchableOpacity onPress={() => openLink('https://www.start-union.fr')}>
                 <Image
-                  source={require('../assets/popupSUN.jpg')}
+                  // source={require('../assets/popupSUN.jpg')}
+                  source={{uri:'https://cdn.lepaindujour.io/assets/popupSUN.jpg'}}
                   style={{ width:"100%", height:"100%", resizeMode:'cover', zIndex:1}}
               />
               </TouchableOpacity>

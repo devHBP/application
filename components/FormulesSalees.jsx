@@ -49,7 +49,8 @@ const FormulesSalees = () => {
                 {/* Poke Bowl */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePoke} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/PokeSaumon.jpg')} 
+                            // source={require('../assets/PokeSaumon.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/PokeSaumon.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                             {/* <FastImage
@@ -74,7 +75,8 @@ const FormulesSalees = () => {
                 {/* Sandwich */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSandwich} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule36.jpg')} 
+                            // source={require('../assets/Formule36.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/Formule36.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                  {/* <FastImage
@@ -94,7 +96,8 @@ const FormulesSalees = () => {
                 {/* Salades*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleSalade} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule25.jpg')} 
+                            // source={require('../assets/Formule25.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/Formule25.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     {/* <FastImage
@@ -115,7 +118,8 @@ const FormulesSalees = () => {
                 {/* Pizzas*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePizzas} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule2.jpg')} 
+                            // source={require('../assets/Formule2.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/Formule2.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     {/* <FastImage
@@ -135,7 +139,8 @@ const FormulesSalees = () => {
                 {/* Wraps*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleWraps} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule32.jpg')} 
+                            // source={require('../assets/Formule32.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/Formule32.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                 {/* <FastImage
@@ -155,7 +160,8 @@ const FormulesSalees = () => {
                 {/* Pains Bagnats*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePainBagnat} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule28.jpg')} 
+                            // source={require('../assets/Formule28.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/Formule28.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     {/* <FastImage
@@ -175,7 +181,8 @@ const FormulesSalees = () => {
                 {/* Burgers*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleBurger} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule27.jpg')} 
+                            // source={require('../assets/Formule27.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/Formule27.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     {/* <FastImage
@@ -195,7 +202,8 @@ const FormulesSalees = () => {
                 {/* croques*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleCroque} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule16.jpg')} 
+                            // source={require('../assets/Formule16.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/Formule16.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     {/* <FastImage
@@ -215,7 +223,8 @@ const FormulesSalees = () => {
                 {/* paninis*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePanini} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule55.jpg')} 
+                            // source={require('../assets/Formule55.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/Formule55.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     {/* <FastImage
@@ -235,7 +244,8 @@ const FormulesSalees = () => {
                 {/* quiches */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormuleQuiche} activeOpacity={0.8}>
                     <Image
-                            source={require('../assets/Formule22.jpg')} 
+                            // source={require('../assets/Formule22.jpg')} 
+                            source={{uri:'https://cdn.lepaindujour.io/assets/Formule22.jpg'}}
                             style={{ width: 315, height: 200, resizeMode:'cover' }}
                             />
                     {/* <FastImage

@@ -41,11 +41,13 @@ const Catalogue = () => {
     <View style={styles.container}>
       <View style={styles.container_image}>
             <Image
-                  source={require('../assets/catalogue1.jpeg')} 
+                  // source={require('../assets/catalogue1.jpeg')} 
+                  source={{uri:'https://cdn.lepaindujour.io/assets/catalogue1.jpeg'}}
                   style={{...styles.images, borderTopLeftRadius:10, borderTopRightRadius:10}}
                 />
             <Image
-                  source={require('../assets/catalogue2.jpeg')} 
+                  // source={require('../assets/catalogue2.jpeg')} 
+                  source={{uri:'https://cdn.lepaindujour.io/assets/catalogue2.jpeg'}}
                   style={{...styles.images, borderBottomLeftRadius:10, borderBottomRightRadius:10}}
                 />
       </View>
