@@ -195,6 +195,12 @@ const allStores = async () => {
     { nom_allergie: 'Poissons' },
     { nom_allergie: 'Crustacés' },
     { nom_allergie: 'Soja' },
+    { nom_allergie: 'Céleri' },
+    { nom_allergie: 'Fruits à coques' },
+    { nom_allergie: 'Sésame' },
+    { nom_allergie: 'Lupin' },
+    { nom_allergie: 'Maïs' },
+    { nom_allergie: 'Moutarde' },
   ];
   const preferences = [
     { nom_preference: 'Vegan' },
