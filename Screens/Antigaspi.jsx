@@ -233,7 +233,7 @@ const Antigaspi = ({navigation}) => {
           </View>
           {/* <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
-            <Text>Avec</Text><Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+            <Text>Avec</Text><Image source={require('../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
          <Text style={{color:colors.color2, fontWeight:"bold"}}>{selectedProduct ?  Number(selectedProduct.prix_remise_collaborateur) : 0} €</Text>
           </View>*/}

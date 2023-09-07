@@ -61,7 +61,7 @@ const FormulesSalees = () => {
                     resizeMode={FastImage.resizeMode.cover}
                 /> */}
                    <Image
-                            source={require('../assets/halles_solanid.png')} 
+                            source={require('../assets/halles_solanid.jpg')} 
                             style={styles.pastilleSolanid}
                             />
                     <View style={styles.cardTitle}>

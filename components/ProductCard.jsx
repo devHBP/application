@@ -195,7 +195,7 @@ const incrementhandler = async () => {
            {
             offre && offre.startsWith('offre31') && (
               <Image
-                source={require('../assets/offre31.png')}
+                source={require('../assets/offre31.jpg')}
                 style={{ width: 35,height:35,  resizeMode:'contain', position:'absolute',top:10, right:10}}
               />
               
@@ -351,7 +351,7 @@ const incrementhandler = async () => {
                         }}
                     > */}
                         {/* <Image
-                          source={require('../assets/SUN.png')} 
+                          source={require('../assets/sun.jpg')} 
                           style={{ width: 30, height: 20, resizeMode:'center' }}
                           /> */}
                           <View>

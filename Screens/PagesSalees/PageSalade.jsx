@@ -18,8 +18,8 @@ import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 const PageSalade = ({navigation}) => {
 
 
-    const [products, setProducts] = useState([]); // Ajoutez cette ligne
-    const [selectedProduct, setSelectedProduct] = useState(null); // Nouvel état pour le sandwich sélectionné
+    const [products, setProducts] = useState([]); 
+    const [selectedProduct, setSelectedProduct] = useState(null); 
     const [stock, setStock] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [productCount, setProductCount] = useState(0);
@@ -81,7 +81,7 @@ const PageSalade = ({navigation}) => {
             qty: 0, 
           }));
        
-        const products = updatedProducts.filter(product => product.categorie === "Salades");
+        const products = updatedProducts.filter(product => product.categorie === "Salades")
         setProducts(products)
         
           
@@ -227,7 +227,7 @@ const PageSalade = ({navigation}) => {
                 </View>
                 <View style={style.bandeauFormule}>
                     <View style={{flexDirection:'row'}}>
-                    <Text>Avec</Text><Image source={require('../../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+                    <Text>Avec</Text><Image source={require('../../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
                     </View>
                <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice*0.8).toFixed(2)}€</Text>
                 </View>

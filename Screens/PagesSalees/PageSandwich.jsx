@@ -81,7 +81,7 @@ const PageSandwich = ({navigation}) => {
             ...product,
             qty: 0, 
           }));
-        const sandwichs = updatedProducts.filter(product => product.categorie === "Sandwichs");
+        const sandwichs = updatedProducts.filter(product => product.categorie === "Sandwichs")
         setSandwichs(sandwichs)
           
           } catch (error) {
@@ -231,7 +231,7 @@ const capitalizeIngredients = (ingredients) => {
                 </View>
                 <View style={style.bandeauFormule}>
                     <View style={{flexDirection:'row'}}>
-                    <Text>Avec</Text><Image source={require('../../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+                    <Text>Avec</Text><Image source={require('../../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
                     </View>
                <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice*0.8).toFixed(2)}€</Text>
                 </View>

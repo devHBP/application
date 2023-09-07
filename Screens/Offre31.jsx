@@ -164,7 +164,7 @@ const handleCart = () => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 />
             <Image
-                source={require('../assets/offre31.png')} 
+                source={require('../assets/offre31.jpg')} 
                 style={ styles.pastilleOffre31}
                 />
              <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
@@ -248,7 +248,7 @@ const handleCart = () => {
           </View>
           <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
-            <Text>Avec</Text><Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+            <Text>Avec</Text><Image source={require('../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
          <Text style={{color:colors.color2, fontWeight:"bold"}}> {(totalPrice*0.8).toFixed(2)}€</Text>
           </View>

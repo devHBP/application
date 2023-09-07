@@ -684,7 +684,7 @@ useEffect(() => {
                                   <Text style={{ fontWeight: "bold" }}>Votre total</Text>
                                   {
                                     (cart.length !== 1 || antigaspiProductsCount !== 1) 
-                                    ? <Text style={{ color: colors.color2 }}>Total Avec<Image source={require('../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode: 'contain' }} /></Text>
+                                    ? <Text style={{ color: colors.color2 }}>Total Avec<Image source={require('../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode: 'contain' }} /></Text>
                                     : null
                                   }
                               </View>

@@ -90,7 +90,7 @@ const PagePizza = ({navigation}) => {
           }));
        
       
-        const products = updatedProducts.filter(product => product.categorie === "Pizzas");
+        const products = updatedProducts.filter(product => product.categorie === "Pizzas")
         setProducts(products)
 
         const petitesProducts = products.filter(product => product.libelle.toLowerCase().startsWith("petite"));
@@ -271,7 +271,7 @@ const filterPetites = () => {
                 </View>
                 <View style={style.bandeauFormule}>
                     <View style={{flexDirection:'row'}}>
-                    <Text>Avec</Text><Image source={require('../../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+                    <Text>Avec</Text><Image source={require('../../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
                     </View>
                <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice*0.8).toFixed(2)}€</Text>
                 </View>

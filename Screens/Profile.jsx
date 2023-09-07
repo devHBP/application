@@ -26,18 +26,29 @@ const inputOptions = {
 
 const Profile =  ({navigation}) => {
 
-  const openURL = (url) => {
-    Linking.canOpenURL(url)
-      .then((supported) => {
-        if (!supported) {
-          console.log("Can't handle URL: " + url);
-        } else {
-          return Linking.openURL(url);
-        }
-      })
-      .catch((err) => console.error('An error occurred', err));
-  };
-
+  const openLink = (url) => {
+    if (Platform.OS === 'android') {
+        Linking.openURL(url)
+          .then((supported) => {
+            if (!supported) {
+              console.log("Can't handle URL: " + url);
+            } else {
+              return Linking.openURL(url);
+            }
+          })
+          .catch((err) => console.error('An error occurred', err));
+    } else if (Platform.OS === 'ios') {
+        Linking.canOpenURL(url)
+          .then((supported) => {
+            if (!supported) {
+              console.log("Can't handle URL: " + url);
+            } else {
+              return Linking.openURL(url);
+            }
+          })
+          .catch((err) => console.error('An error occurred', err));
+    }
+}
 
   const [stores, setStores] = useState([]);
   const dispatch = useDispatch();
@@ -84,7 +95,7 @@ const allStores = async () => {
   try {
       const response = await axios.post(`${API_BASE_URL}/getStoresByRole`, { role: user.role });
       if (response.data && Array.isArray(response.data)) {
-        console.log('stores', response.data)
+        //console.log('stores', response.data)
           setStores(response.data);
       } else {
           console.error("Réponse inattendue de l'API.");
@@ -536,13 +547,13 @@ const allStores = async () => {
         <Text style={style.label}>Gestion des cookies et données personnelles</Text>
         <View style={{flexDirection:'row'}}>
      
-            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://www.lepaindujour.io/politique-de-gestion-des-cookies/')}>
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://www.lepaindujour.io/politique-de-gestion-des-cookies/')}>
               <Text>Cookies</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
 
 
-            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://lepaindujour.io/page-de-confidentialite')}>
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://lepaindujour.io/page-de-confidentialite')}>
               <Text>Données personnelles</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
@@ -553,12 +564,12 @@ const allStores = async () => {
         <Text style={style.label}>Informations légales</Text>
         <View style={{flexDirection:'row'}}>
 
-            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://lepaindujour.io/mentions-legales')}>
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://lepaindujour.io/mentions-legales')}>
               <Text>Mentions légales</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
 
-            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://www.lepaindujour.io/cgv-cgu/')}>
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://www.lepaindujour.io/cgv-cgu/')}>
               <Text>CGU, CGV</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
@@ -567,17 +578,17 @@ const allStores = async () => {
         <Text style={style.label}>Gestion des données</Text>
         <View style={{flexDirection:'row', flexWrap:'wrap'}}>
 
-            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://www.lepaindujour.io/formulaire-de-consentement/')}>
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://www.lepaindujour.io/formulaire-de-consentement/')}>
               <Text>Formulaire de consentement</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
 
-            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://www.lepaindujour.io/formulaire-de-demande-dacces/')}>
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://www.lepaindujour.io/formulaire-de-demande-dacces/')}>
               <Text>Formulaire de demande d'acces</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
 
-            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openURL('https://www.lepaindujour.io/formulaire-de-suppression-des-donnees-personnelles//')}>
+            <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://www.lepaindujour.io/formulaire-de-suppression-des-donnees-personnelles//')}>
               <Text>Formulaire de suppression des données</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>

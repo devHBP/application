@@ -11,17 +11,29 @@ import FastImage from 'react-native-fast-image';
 const LinkOffres = ({}) => {
 
 
-const openURL = (url) => {
-  Linking.canOpenURL(url)
-    .then((supported) => {
-      if (!supported) {
-        console.log("Can't handle URL: " + url);
-      } else {
-        return Linking.openURL(url);
-      }
-    })
-    .catch((err) => console.error('An error occurred', err));
-};
+  const openLink = (url) => {
+    if (Platform.OS === 'android') {
+        Linking.openURL(url)
+          .then((supported) => {
+            if (!supported) {
+              console.log("Can't handle URL: " + url);
+            } else {
+              return Linking.openURL(url);
+            }
+          })
+          .catch((err) => console.error('An error occurred', err));
+    } else if (Platform.OS === 'ios') {
+        Linking.canOpenURL(url)
+          .then((supported) => {
+            if (!supported) {
+              console.log("Can't handle URL: " + url);
+            } else {
+              return Linking.openURL(url);
+            }
+          })
+          .catch((err) => console.error('An error occurred', err));
+    }
+}
 
     const navigation = useNavigation();
 
@@ -139,7 +151,7 @@ const openURL = (url) => {
             </View>
             <View style={styles.pastille}>
             <Image
-                source={require('../assets/offre31.png')}
+                source={require('../assets/offre31.jpg')}
                 style={{ width:60, resizeMode:'contain'}}
             />
             
@@ -169,7 +181,7 @@ const openURL = (url) => {
             </View>
             <View style={styles.pastille}>
             <Image
-                source={require('../assets/halles_solanid.png')}
+                source={require('../assets/halles_solanid.jpg')}
                 style={{ width:60, resizeMode:'contain'}}
             />
             
@@ -200,7 +212,7 @@ const openURL = (url) => {
             </View>
             <View style={styles.pastille}>
             <Image
-                source={require('../assets/start_union.png')}
+                source={require('../assets/start_union.jpg')}
                 style={{ width:60, resizeMode:'contain'}}
             />
             
@@ -223,7 +235,7 @@ const openURL = (url) => {
               <TouchableOpacity onPress={handleClose} style={{ alignItems: 'center', position:'absolute', top:0, right:10, zIndex:99}}>
                 <Text style={{ fontSize: 36}}>&times;</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => openURL('https://www.start-union.fr')}>
+              <TouchableOpacity onPress={() => openLink('https://www.start-union.fr')}>
                 <Image
                   source={require('../assets/popupSUN.jpg')}
                   style={{ width:"100%", height:"100%", resizeMode:'cover', zIndex:1}}

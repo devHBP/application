@@ -7,8 +7,8 @@ import ArrowLeft from '../SVG/ArrowLeft';
 const PopUp = ({ onClose, title, text, image }) => {
 
     const images = {
-        sun: require('../assets/SUN.png'),
-        halles: require('../assets/halles_solanid.png')
+        sun: require('../assets/sun.jpg'),
+        halles: require('../assets/halles_solanid.jpg')
       };
   return (
     <View style={{flex:1, backgroundColor:'white', padding:30, height:"100%"}}>

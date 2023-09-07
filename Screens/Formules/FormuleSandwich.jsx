@@ -17,14 +17,6 @@ import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 
 const FormuleSandwich = ({navigation}) => {
 
- //pour les test
-if (__DEV__) {
-  if (Platform.OS === 'android') {
-      API_BASE_URL = API_BASE_URL_ANDROID;
-  } else if (Platform.OS === 'ios') {
-      API_BASE_URL = API_BASE_URL_IOS;  
-  }
-}
 
     const [products, setProducts] = useState([]);
     const [ desserts, setDesserts] = useState([]);
@@ -368,7 +360,7 @@ if (__DEV__) {
           </View>
           <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
-            <Text>Avec</Text><Image source={require('../../assets/SUN.png')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+            <Text>Avec</Text><Image source={require('../../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
           {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:"bold"}}>{(prix*0.8).toFixed(2)} €</Text>}
           </View>
