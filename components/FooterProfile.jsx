@@ -14,6 +14,8 @@ import Orders from '../SVG/Orders'
 import Cart from '../SVG/Cart'
 import Profile from '../SVG/Profile'
 import Bug from '../SVG/Bug'
+import LoginInvite from '../SVG/LoginInvite'
+import ModaleInvite from './ModalInvite'
 
 const FooterProfile = () => {
 
@@ -24,19 +26,24 @@ const FooterProfile = () => {
   const [orders, setOrders] = useState([]);
   const [badgeColor, setBadgeColor] = useState('white');
   const [isBadgeVisible, setIsBadgeVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false) 
+
   
   const intervalId = useRef()
 
   useEffect(() => {
-    intervalId.current= setInterval(() => { // Utilisez intervalId ici
-      allMyOrders();
-    }, 1000); // 5000 ms = 5 s
+    // intervalId.current= setInterval(() => { 
+    //   console.log("Récupération des commandes..."); 
 
-    // Nettoyer l'intervalle lors du démontage du composant
-    return () => {
-      clearInterval(intervalId.current);
-    };
-  }, [orders]);
+    //   allMyOrders();
+    // }, 1000); // 5000 ms = 5 s
+
+    // // Nettoyer l'intervalle lors du démontage du composant
+    // return () => {
+    //   clearInterval(intervalId.current);
+    // };
+    allMyOrders()
+  }, []);
 
 
   const openLink = (url) => {
@@ -63,13 +70,9 @@ const FooterProfile = () => {
     }
 }
 
-    
-  
-  
 
   const user = useSelector((state) => state.auth.user);
   const userId = user.userId
-
   const cart = useSelector((state) => state.cart.cart);
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
 
@@ -106,90 +109,72 @@ const FooterProfile = () => {
   const openProfile = () => {
     navigation.navigate('profile')
   }
+
+  const openPopupInvite = () => {
+    setIsModalVisible(true)
+  }
   //deconnexion
   const handleLogout = () => {
     dispatch(clearCart())
     navigation.navigate('app')
   }
 
-  //recupérer toutes les commandes du user
   const allMyOrders = async () => {
     if (!userId) {
       return;
     }
     try {
-      const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}`);
-      const orders = response.data;
-     
-
-
-      if(orders && orders.length > 0){
-           // Triez les commandes par orderId en ordre décroissant
-    const sortedOrders = orders.sort((a, b) => b.orderId - a.orderId);
-
-    // Prenez la première commande (la plus récente)
-    const latestOrder = sortedOrders[0];
+      console.log('Récupération du statut de la dernière commande...');
       
-    //console.log('Latest Order ID:', latestOrder.orderId, 'Status:', latestOrder.status);
-    switch(latestOrder.status) {
+      const response = await axios.get(`${API_BASE_URL}/statusLastOrder/${userId}`);
+      const orderStatus = response.data.status;
+  
+      if (orderStatus) {
+        switch (orderStatus) {
           case 'en attente':
             setBadgeColor('gray');
-            setIsBadgeVisible(true)
+            setIsBadgeVisible(true);
             break;
           case 'preparation':
             setBadgeColor('blue');
-            setIsBadgeVisible(true)
+            setIsBadgeVisible(true);
             break;
           case 'prete':
             setBadgeColor('green');
-            clearInterval(intervalId.current);
-            setIsBadgeVisible(true)
+            setIsBadgeVisible(true);
             break;
           case 'livree':
-            clearInterval(intervalId.current);
-            setIsBadgeVisible(false)
+            setIsBadgeVisible(false);
             break;
           default:
             setBadgeColor('purple');
-            setIsBadgeVisible(true)
+            setIsBadgeVisible(true);
         }
-      }
-      else {
+      } else {
         setIsBadgeVisible(false);
       }
       
     } catch (error) {
-      console.error("Une erreur s'est produite, order :", error);
+      console.error("Une erreur s'est produite lors de la récupération du statut de la commande :", error);
     }
   };
+  
 
   return (
     <View style={style.profile}>
-      {/* <Icon name="home" size={30} color="#000" style={style.icon} onPress={openHome}/> */}
-      {/* <Icon name="list" size={28} color="#000" style={style.icon} onPress={openOrders} /> */}
-      {/* <Icon name="shopping-cart" size={30} color="#000" style={style.icon} onPress={openCart}/> */}
 
       <TouchableOpacity onPress={openHome}>
         <Home />
-      {/* <Image
-         source={require('../assets/home.png')} // Remplacez 'my-image' par le nom de votre image
-         style={{ width: 28, height: 30, resizeMode:'contain' }} // Remplacez ces valeurs par les dimensions souhaitées
-      /> */}
       </TouchableOpacity> 
        
       <View style={style.badgeContainer}>
-       {/* <Icon name="person" size={30} color="#000" style={style.icon} onPress={openProfile}/> */}
        {isBadgeVisible && (
         <Badge size={16} style={{...style.badge, backgroundColor: badgeColor}}></Badge>
       )}
-      <TouchableOpacity onPress={openOrders}>
-        {/* <Image
-          source={require('../assets/commande.png')} // Remplacez 'my-image' par le nom de votre image
-          style={{ width: 23, height: 28, resizeMode:'stretch' }}
-           // Remplacez ces valeurs par les dimensions souhaitées
-        /> */}
-        <Orders />
-      </TouchableOpacity>
+
+        <TouchableOpacity onPress={ user.role == 'invite' ? openPopupInvite : openOrders}>
+          <Orders />
+        </TouchableOpacity>
       </View>
 
       <View style={style.badgeContainer}>
@@ -197,25 +182,31 @@ const FooterProfile = () => {
             {totalQuantity}
           </Badge>
         <TouchableOpacity onPress={openCart}>
-        {/* <Image
-          source={require('../assets/panier.png')} // Remplacez 'my-image' par le nom de votre image
-          style={{ width: 25, height: 28, resizeMode:'stretch'  }} // Remplacez ces valeurs par les dimensions souhaitées
-        /> */}
-        <Cart />
-      </TouchableOpacity>
+          <Cart />
+        </TouchableOpacity>
       </View>
 
-      <TouchableOpacity onPress={openProfile}>
-      {/* <Image
-         source={require('../assets/profile.png')} // Remplacez 'my-image' par le nom de votre image
-         style={{ width: 20, height: 27, resizeMode:'contain' }} // Remplacez ces valeurs par les dimensions souhaitées
-      /> */}
-      <Profile />
-      </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => openLink('https://bit.ly/bug-pdj')}>
-      <Bug color={colors.color6}/>
+      {
+          user.role !== 'invite' &&
+      <TouchableOpacity onPress={openProfile}>
+        <Profile />
       </TouchableOpacity>
+      }
+        {
+          user.role !== 'invite' &&
+              <TouchableOpacity onPress={() => openLink('https://bit.ly/bug-pdj')}>
+                <Bug color={colors.color6}/>
+              </TouchableOpacity>
+        }
+
+        {
+          user.role == 'invite' &&
+          <TouchableOpacity onPress={openPopupInvite}>
+          <LoginInvite />
+        </TouchableOpacity>
+        }
+      <ModaleInvite isModalVisible={isModalVisible} setIsModalVisible={setIsModalVisible} navigation={navigation}/>
     </View>
   )
 }

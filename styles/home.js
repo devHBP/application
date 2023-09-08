@@ -225,7 +225,7 @@ const styles = StyleSheet.create({
     marginVertical:5
   },
   paddingProduct:{
-    paddingTop:40
+    paddingTop:60
   },
   stockantigaspi:{
     backgroundColor:colors.color8,

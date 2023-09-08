@@ -150,10 +150,10 @@ const StorePicker = () => {
                     
                     }
 
-                     {user.role == 'client' &&
+                     {user.role == 'client' || user.role == 'invite' &&
                     <View style={{flexDirection:'row'}}>
                         <View >
-                            <Text style={{fontSize:10, color:colors.color1}}>
+                            <Text style={{fontSize:10, color:colors.color1, width:130}}>
                                 {selectedStore.adresse_magasin}   
                             </Text>
                             <Text  style={{fontSize:10, color:colors.color1}}>{selectedStore.cp_magasin} {selectedStore.ville_magasin}</Text>
@@ -189,4 +189,4 @@ const pickerStyles = Platform.select({
 });
 
 
-export default StorePicker;
+export default React.memo(StorePicker);

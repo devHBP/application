@@ -8,7 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS, EMAIL_INVITE, PASSWORD_INVITE } from '@env';
 
 
 import axios from 'axios'
@@ -37,7 +37,7 @@ const Login = ({navigation}) => {
             email,
             password
         }
-        //console.log('client', clientData)
+        console.log('clientData', clientData)
         try{
 
             const res = await axios.post(`${API_BASE_URL}/login`, clientData)
@@ -72,6 +72,46 @@ const Login = ({navigation}) => {
               });
         }
     }
+    const loginAsGuest = async () => {
+    
+      const clientData = {
+          email: EMAIL_INVITE,
+          password: PASSWORD_INVITE 
+      }
+      console.log('clientData', clientData)
+      try {
+          const res = await axios.post(`${API_BASE_URL}/login`, clientData)
+          const user = res.data.user
+          const token = res.data.token;
+  
+          await AsyncStorage.setItem('userToken', token);
+  
+          const selectedStoreId = user.storeId;
+  
+          axios.get(`${API_BASE_URL}/getOneStore/${selectedStoreId}`)
+              .then(storeResponse => {
+                  const selectedStore = storeResponse.data;
+                  dispatch(updateSelectedStore(selectedStore));
+                  dispatch(loginUser(user))
+                  navigation.navigate('home')
+              })
+              .catch(error => {
+                  console.error('Erreur lors de la récupération des informations du magasin:', error);
+              });
+      } catch (error) {
+          console.log(error)
+          return Toast.show({
+              type: 'error',
+              text1: `Echec de connexion`,
+              text2: `Impossible de se connecter en tant qu'invité`
+          });
+      }
+  }
+  
+
+    // const handleInvite = () => {
+    //   console.log('test')
+    // }
     
   return (
    
@@ -111,6 +151,21 @@ const Login = ({navigation}) => {
                 onChangeText={setPassword}
                 
             />
+            <TouchableOpacity onPress={() => navigation.navigate('pwd')}>
+                <Text style={{...style.signup, fontSize:12, textAlign:'left'}}>Mot de passe oublié ?</Text>
+            </TouchableOpacity>
+
+
+            <View style={{flexDirection:'row', justifyContent:'center', gap:5, paddingVertical:10}}>
+            <Button
+                style={{...style.btn, backgroundColor:colors.color5}} 
+                textColor={'white'} 
+                //inactif si email ou password vide
+                disabled={email === "" || password === ""}
+                onPress={() => navigation.navigate('signup')}
+                >
+                Inscription
+            </Button>
             <Button
                 style={style.btn} 
                 textColor={'white'} 
@@ -120,15 +175,13 @@ const Login = ({navigation}) => {
                 >
                 Se connecter
             </Button>
+            </View>
+            
 
-            <TouchableOpacity onPress={() => navigation.navigate('signup')}>
-                <Text style={style.signup}>Vous n'avez pas encore de compte ?</Text>
+
+            <TouchableOpacity onPress={loginAsGuest}>
+                <Text style={style.signup}>Accédez à l'application en tant qu'invité</Text>
             </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => navigation.navigate('pwd')}>
-                <Text style={{...style.signup, fontSize:12}}>Mot de passe oublié ?</Text>
-            </TouchableOpacity>
-
     
     </View>
   )
@@ -171,10 +224,9 @@ const style = StyleSheet.create({
     btn: {
         backgroundColor: colors.color2,
         margin: 5,
-        padding: 2,
         borderRadius:6,
-        marginHorizontal:80,
-        marginTop:40
+        // marginHorizontal:80,
+        // marginTop:40
       },
     signup:{
         textAlign:'center',
