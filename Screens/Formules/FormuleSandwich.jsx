@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch, TouchableHighlight } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch, TouchableHighlight , Platform} from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { fonts, colors} from '../../styles/styles'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
@@ -13,6 +13,7 @@ import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image'
+import Check from '../../SVG/Check';
 
 
 
@@ -161,8 +162,6 @@ const FormuleSandwich = ({navigation}) => {
     } else {
         setSelectedBoisson(product); 
         setProductIds([...productIds, product.productId]);
-        console.log('Selected Dessert:', product.libelle);
-        console.log('Price:', product.prix_formule);
     }
   }
 
@@ -236,10 +235,35 @@ const FormuleSandwich = ({navigation}) => {
             <Text style={style.choixTitle}>Votre choix de sandwich</Text>
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {products.map((product, index) => (
-                  <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
-                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}>
+                  <View key={product.productId} style={{flexDirection:'row', justifyContent:'center'}}>
+                    <TouchableOpacity  activeOpacity={0.8}
+                    style={{gap:10,flexDirection:'row',  justifyContent:'center', alignItems:'center',  }} 
+                    onPress={() => handleSandwich(product)}>
                        
-                      <View style={{width:180, marginLeft:10}} key={index}>
+                     <View style={[
+                        { width:180, marginHorizontal:15 },
+                        selectedSandwich?.productId === product.productId ? {
+                            borderBottomLeftRadius:10,
+                            borderBottomRightRadius:10,
+                            backgroundColor:'white',
+                            ...Platform.select({
+                                android: {
+                                    backgroundColor: 'rgba(255,255,255,0.1)', 
+                                    elevation: 10 
+                                },
+                                ios: { 
+                                    shadowColor: colors.color1,
+                                    shadowOpacity: 0.3,
+                                    shadowOffset: {
+                                        width: 5,
+                                        height: 4,
+                                    },
+                                }
+                            })
+                        } : {}
+                    ]}
+                    key={index}
+                    >
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -254,17 +278,12 @@ const FormuleSandwich = ({navigation}) => {
                         showButtons={false} 
                         showPromo={false}
                       />
+                        <View style={{position:'absolute', top: 5, left:5}}>
+                        {selectedSandwich?.productId === product.productId && <Check color={colors.color9}/>}
+                        </View>
+
                       </View>
                         
-                      <TouchableOpacity
-                        style={[
-                          style.checkButton,
-                          selectedSandwich?.productId === product.productId
-                        ]}
-                        onPress={() => handleSandwich(product)}
-                      >
-                        {selectedSandwich?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                      </TouchableOpacity>
                     </TouchableOpacity>
                   </View>    
                 ))}
@@ -281,9 +300,33 @@ const FormuleSandwich = ({navigation}) => {
                 {desserts.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
-                     disabled={!selectedSandwich } >
+                    onPress={() => handleDessert(product)} activeOpacity={0.8}>
                        
-                      <View style={{width:180, marginLeft:10}} key={index}>
+                         
+                     <View style={[
+                        { width:180, marginHorizontal:15 },
+                        selectedDessert?.productId === product.productId ? {
+                            borderBottomLeftRadius:10,
+                            borderBottomRightRadius:10,
+                            backgroundColor:'white',
+                            ...Platform.select({
+                                android: {
+                                    backgroundColor: 'rgba(255,255,255,0.1)', 
+                                    elevation: 10 
+                                },
+                                ios: { 
+                                    shadowColor: colors.color1,
+                                    shadowOpacity: 0.3,
+                                    shadowOffset: {
+                                        width: 5,
+                                        height: 4,
+                                    },
+                                }
+                            })
+                        } : {}
+                    ]}
+                    key={index}
+                    >
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -298,16 +341,11 @@ const FormuleSandwich = ({navigation}) => {
                         showButtons={false} 
                         showPromo={false}
                       />
+                      <View style={{position:'absolute', top: 5, left:5}}>
+                        {selectedDessert?.productId === product.productId && <Check color={colors.color9}/>}
+                        </View>
                       </View>
-                         <TouchableOpacity
-                        style={[
-                          style.checkButton,
-                          selectedDessert?.productId === product.productId
-                        ]}
-                        onPress={() => handleDessert(product)}
-                      >
-                        {selectedDessert?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                      </TouchableOpacity>
+                      
                     </TouchableOpacity>
                   </View>     
                 ))}
@@ -324,9 +362,33 @@ const FormuleSandwich = ({navigation}) => {
                 {boissons.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
-                     disabled={!selectedSandwich } >
+                     onPress={() => handleBoisson(product)} activeOpacity={0.8} >
                        
-                      <View style={{width:180, marginLeft:10}} key={index}>
+                         
+                     <View style={[
+                        { width:180, marginHorizontal:15 },
+                        selectedBoisson?.productId === product.productId ? {
+                            borderBottomLeftRadius:10,
+                            borderBottomRightRadius:10,
+                            backgroundColor:'white',
+                            ...Platform.select({
+                                android: {
+                                    backgroundColor: 'rgba(255,255,255,0.1)', 
+                                    elevation: 10 
+                                },
+                                ios: { 
+                                    shadowColor: colors.color1,
+                                    shadowOpacity: 0.3,
+                                    shadowOffset: {
+                                        width: 5,
+                                        height: 4,
+                                    },
+                                }
+                            })
+                        } : {}
+                    ]}
+                    key={index}
+                    >
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -341,8 +403,12 @@ const FormuleSandwich = ({navigation}) => {
                         showButtons={false} 
                         showPromo={false}
                       />
+                       <View style={{position:'absolute', top: 5, left:5}}>
+                        {selectedBoisson?.productId === product.productId && <Check color={colors.color9}/>}
+                        </View>
                       </View>
-                      <TouchableOpacity
+
+                      {/* <TouchableOpacity
                         style={[
                           style.checkButton,
                           selectedBoisson?.productId === product.productId
@@ -350,7 +416,7 @@ const FormuleSandwich = ({navigation}) => {
                         onPress={() => handleBoisson(product)}
                       >
                         {selectedBoisson?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                     </TouchableOpacity>
                   </View>     
                 ))}

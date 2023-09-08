@@ -21,9 +21,6 @@ const Solanid = ({navigation}) => {
 
   const [solanidProducts, setSolanidProductNames] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [familyProductDetails, setFamilyProductDetails] = useState({});
-  const familyProductIds = [10, 13];  // Remplacez cela par vos réels ID de famille de produits
-
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
@@ -46,7 +43,6 @@ const Solanid = ({navigation}) => {
           //produits offre 3+1
           const solanidProducts = updatedProducts.filter(product => product.reference_fournisseur === "Solanid");
           const solanidProductNames = solanidProducts.map(product => product.libelle)
-    
           setSolanidProductNames(solanidProducts)
 
           } catch (error) {
@@ -57,31 +53,6 @@ const Solanid = ({navigation}) => {
         fetchData();
     }, [])
 
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-              const responses = await Promise.all(
-                familyProductIds.map((id) => getFamilyProductDetails(id))
-              );
-              const familleProductDetailsMap = {};
-              responses.forEach((famille) => {
-                if (famille) {
-                  familleProductDetailsMap[famille.id] =
-                    famille.name;
-                }
-              });
-              setFamilyProductDetails(familleProductDetailsMap);
-            } catch (error) {
-              console.error(
-                "Une erreur s'est produite lors de la récupération des familles de produits:",
-                error
-              );
-            }
-        };
-    
-        fetchData();
-      }, []);
     
     const handleProduct = (product) => {
         setSelectedProduct(product)
@@ -156,10 +127,8 @@ const Solanid = ({navigation}) => {
         </View>
         {/* choix produits*/}
         <View>
-      
-        <ScrollView>
     <View style={{ gap: 20 }}>
-      {Object.values(
+      {/* {Object.values(
         solanidProducts.reduce((groups, product) => {
           const { id_famille_produit } = product;
           if (!groups[id_famille_produit]) {
@@ -171,13 +140,12 @@ const Solanid = ({navigation}) => {
           groups[id_famille_produit].products.push(product);
           return groups;
         }, {})
-      ).map((group) => (
-        <View key={group.id_famille_produit}>
+      ).map((group) => ( */}
+        <View>
           {/* <Text style={{margin:30}}>{group.id_famille_produit}</Text> */}
-          <Text style={{marginLeft:30, marginVertical:10, color:colors.color1, fontFamily:fonts.font2, fontWeight:"700"}}>{familyProductDetails[group.id_famille_produit]}</Text>
-          <ScrollView >
+          {/* <Text style={{marginLeft:30, marginVertical:10, color:colors.color1, fontFamily:fonts.font2, fontWeight:"700"}}>{familyProductDetails[group.id_famille_produit]}</Text> */}
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center' }}>
-            {group.products.map((product, index) => (
+            {solanidProducts.map((product, index) => (
                   <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
                   
                 <View style={{width:170, marginVertical:10}} key={index}>
@@ -208,12 +176,11 @@ const Solanid = ({navigation}) => {
               </View>
             ))}
             </View>
-          </ScrollView>
           
         </View>
-      ))}
+      {/* ))} */}
     </View>
-  </ScrollView>
+
       </View>
         
         

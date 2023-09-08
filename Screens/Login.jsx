@@ -37,7 +37,7 @@ const Login = ({navigation}) => {
             email,
             password
         }
-        console.log('clientData', clientData)
+        //console.log('clientData', clientData)
         try{
 
             const res = await axios.post(`${API_BASE_URL}/login`, clientData)
@@ -78,7 +78,7 @@ const Login = ({navigation}) => {
           email: EMAIL_INVITE,
           password: PASSWORD_INVITE 
       }
-      console.log('clientData', clientData)
+      //console.log('clientData', clientData)
       try {
           const res = await axios.post(`${API_BASE_URL}/login`, clientData)
           const user = res.data.user

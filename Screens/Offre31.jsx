@@ -28,7 +28,7 @@ const Offre31 = ({navigation}) => {
   const [totalPrice, setTotalPrice] = useState(0);
 
   //pensez à mettre toutes les familles
-  const familyProductIds = [1, 2, 3,4,5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17]; 
+  // const familyProductIds = [1, 2, 3,4,5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17]; 
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
@@ -59,32 +59,32 @@ const Offre31 = ({navigation}) => {
         fetchData();
     }, [])
 
-    useEffect(() => {
-      const fetchData = async () => {
-          try {
-            const responses = await Promise.all(
-              familyProductIds.map((id) => getFamilyProductDetails(id))
-            );
+  //   useEffect(() => {
+  //     const fetchData = async () => {
+  //         try {
+  //           const responses = await Promise.all(
+  //             familyProductIds.map((id) => getFamilyProductDetails(id))
+  //           );
 
-            const familleProductDetailsMap = {};
-            responses.forEach((famille) => {
-              if (famille) {
-                familleProductDetailsMap[famille.id] =
-                  famille.name;
-              }
-            });
-            setFamilyProductDetails(familleProductDetailsMap);
-            console.log(familleProductDetailsMap)
-          } catch (error) {
-            console.error(
-              "Une erreur s'est produite lors de la récupération des familles de produits:",
-              error
-            );
-          }
-      };
+  //           const familleProductDetailsMap = {};
+  //           responses.forEach((famille) => {
+  //             if (famille) {
+  //               familleProductDetailsMap[famille.id] =
+  //                 famille.name;
+  //             }
+  //           });
+  //           setFamilyProductDetails(familleProductDetailsMap);
+  //           console.log(familleProductDetailsMap)
+  //         } catch (error) {
+  //           console.error(
+  //             "Une erreur s'est produite lors de la récupération des familles de produits:",
+  //             error
+  //           );
+  //         }
+  //     };
   
-      fetchData();
-  }, []);
+  //     fetchData();
+  // }, []);
 
   useEffect(() => {
     if (selectedProduct) {
@@ -175,9 +175,8 @@ const handleCart = () => {
             <Text style={styles.texteOffre}>Pour l'achat de 3 produits de cette catégorie, vous aurez droit à 1 produit du même type gratuit</Text>
         </View>
         {/* choix produits*/}
-        <ScrollView>
         <View style={{ gap: 10 }}>
-          {Object.values(
+          {/* {Object.values(
             offre31Products.reduce((groups, product) => {
               const { id_famille_produit } = product;
               if (!groups[id_famille_produit]) {
@@ -189,12 +188,13 @@ const handleCart = () => {
               groups[id_famille_produit].products.push(product);
               return groups;
             }, {})
-          ).map((group) => (
-            <View key={group.id_famille_produit}>
-              <Text style={{marginLeft:30, marginVertical:10, color:colors.color1, fontFamily:fonts.font2, fontWeight:"700"}}>{familyProductDetails[group.id_famille_produit]}</Text>
-              <ScrollView >
+          ).map((group) => ( */}
+       
+            <View >
+              {/* <Text style={{marginLeft:30, marginVertical:10, color:colors.color1, fontFamily:fonts.font2, fontWeight:"700"}}>{familyProductDetails[group.id_famille_produit]}</Text> */}
+              {/* <ScrollView > */}
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center' }}>
-                {group.products.map((product, index) => (
+              {offre31Products.map( (product, index) => (
                   <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
                     
                     <View style={{width:170, marginVertical:10}} key={index}>
@@ -226,12 +226,12 @@ const handleCart = () => {
                 </View>
                 
                 ))}
+                 
                 </View>
-              </ScrollView>
+              {/* </ScrollView> */}
             </View>
-          ))}
+         
         </View>
-      </ScrollView>
         
         
     </ScrollView>

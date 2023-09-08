@@ -17,6 +17,7 @@ import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import { checkProductAvailability } from '../../Fonctions/fonctions';
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
+import Check from '../../SVG/Check';
 
 const FormulePoke = ({navigation}) => {
 
@@ -170,8 +171,6 @@ const FormulePoke = ({navigation}) => {
     } else {
         setSelectedBoisson(product); 
         setProductIds([...productIds, product.productId]);
-        console.log('Selected Dessert:', product.libelle);
-        console.log('Price:', product.prix_formule);
     }
   }
 
@@ -223,7 +222,7 @@ const FormulePoke = ({navigation}) => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 /> */}
                 <FastImage
-              source={require('../../assets/Formule26.jpg')}
+              source={require('../../assets/PokeSaumon.jpg')}
               style={{ width: "100%", height: 330 }}
               resizeMode={FastImage.resizeMode.cover}
           />
@@ -246,9 +245,24 @@ const FormulePoke = ({navigation}) => {
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {products.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
-                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}} key={index}>
+                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}} key={index}
+                        onPress={() => handleSandwich(product)}>
 
-                      <View style={{width:180, marginLeft:10}} key={index}>
+<                     View style={{width:180,marginHorizontal:15, 
+                      ...(selectedProduct?.productId === product.productId ? {
+                        shadowColor: colors.color1,
+                        shadowOffset: {
+                            width: 5,
+                            height: 4,
+                        },
+                        shadowOpacity: 0.3,
+                        shadowRadius: 3,
+                        elevation: 10,
+                        backgroundColor:'transparent',
+                        borderBottomLeftRadius:10,
+                        borderBottomRightRadius:10,
+                    } : {})}}
+                     key={index}>
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -263,17 +277,11 @@ const FormulePoke = ({navigation}) => {
                         showButtons={false} 
                         showPromo={false}
                       />
+                       <View style={{position:'absolute', top: 5, left:5, backgroundColor:'white', borderRadius:25}}>
+                        {selectedProduct?.productId === product.productId && <Check color={colors.color9}/>}
+                        </View>
                       </View>
-                       
-                      <TouchableOpacity
-                        style={[
-                          style.checkButton,
-                          selectedProduct?.productId === product.productId
-                        ]}
-                        onPress={() => handleSandwich(product)}
-                      >
-                        {selectedProduct?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                      </TouchableOpacity>
+
                     </TouchableOpacity>
                   </View>    
                 ))}
@@ -289,10 +297,25 @@ const FormulePoke = ({navigation}) => {
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {desserts.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
-                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
-                     disabled={!selectedProduct} >
+                    <TouchableOpacity  activeOpacity={0.8}
+                    style={{gap:10,flexDirection:'row',  justifyContent:'center', alignItems:'center',  }} 
+                    onPress={() => handleDessert(product)}>
                       
-                      <View style={{width:180, marginLeft:10}} key={index}>
+                      <View style={{width:180,marginHorizontal:15, 
+                      ...(selectedDessert?.productId === product.productId ? {
+                        shadowColor: colors.color1,
+                        shadowOffset: {
+                            width: 5,
+                            height: 4,
+                        },
+                        shadowOpacity: 0.3,
+                        shadowRadius: 3,
+                        elevation: 10,
+                        backgroundColor:'transparent',
+                        borderBottomLeftRadius:10,
+                        borderBottomRightRadius:10,
+                    } : {})}}
+                     key={index}>
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -309,15 +332,9 @@ const FormulePoke = ({navigation}) => {
                       />
                       </View>
                         
-                         <TouchableOpacity
-                        style={[
-                          style.checkButton,
-                          selectedDessert?.productId === product.productId
-                        ]}
-                        onPress={() => handleDessert(product)}
-                      >
-                        {selectedDessert?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                      </TouchableOpacity>
+                      <View style={{position:'absolute', top: 5, left:25}}>
+                        {selectedDessert?.productId === product.productId && <Check color={colors.color9}/>}
+                        </View>
                     </TouchableOpacity>
                   </View>     
                 ))}
@@ -334,9 +351,23 @@ const FormulePoke = ({navigation}) => {
                 {boissons.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
-                     disabled={!selectedProduct} >
+                     onPress={() => handleBoisson(product)} activeOpacity={0.8} >
                       
-                      <View style={{width:180, marginLeft:10}} key={index}>
+                      <View style={{width:180,marginHorizontal:15, 
+                      ...(selectedBoisson?.productId === product.productId ? {
+                        shadowColor: colors.color1,
+                        shadowOffset: {
+                            width: 5,
+                            height: 4,
+                        },
+                        shadowOpacity: 0.3,
+                        shadowRadius: 3,
+                        elevation: 10,
+                        backgroundColor:'transparent',
+                        borderBottomLeftRadius:10,
+                        borderBottomRightRadius:10,
+                    } : {})}}
+                     key={index}>
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -351,16 +382,11 @@ const FormulePoke = ({navigation}) => {
                         showButtons={false} 
                         showPromo={false}
                       />
+                       <View style={{position:'absolute', top: 5, left:5}}>
+                        {selectedBoisson?.productId === product.productId && <Check color={colors.color9}/>}
+                        </View>
                       </View>
-                      <TouchableOpacity
-                        style={[
-                          style.checkButton,
-                          selectedBoisson?.productId === product.productId
-                        ]}
-                        onPress={() => handleBoisson(product)}
-                      >
-                        {selectedBoisson?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                      </TouchableOpacity>
+                      
                     </TouchableOpacity>
                   </View>     
                 ))}
