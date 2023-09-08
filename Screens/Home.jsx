@@ -200,7 +200,7 @@ const ongletButtonHandler = (onglet) => {
                {/* SearchBar */}
             <TouchableOpacity  onPress={() => setIsModalVisible(true)} activeOpacity={0.8} style={{backgroundColor:colors.color3, borderRadius:50, width:50, height:50, justifyContent: 'center', 
                  alignItems: 'center', }}>                           
-                <Search />
+                <Search  colors={colors.color2}/>
                 </TouchableOpacity> 
                 
                 <SearchModal

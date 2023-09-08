@@ -46,12 +46,12 @@ const SearchModal = ({ isVisible, products, onSelectProduct, onClose }) => {
                 )}
                
                 <SearchBar
-                        placeholder="Une petite faim ?"
+                        placeholder="Rechercher un produit..."
                         onChangeText={handleLocalSearch}
                         value={inputValue}
                         containerStyle={styles.searchBarContainer}
                         inputContainerStyle={styles.searchBarInputContainer}
-                        inputStyle={{fontSize:12, }}
+                        inputStyle={{fontSize:12,}}
                         placeholderTextColor={colors.color2}
                         searchIcon={{ size: 20, color: colors.color2, margin:0 }} 
                         />
