@@ -21,6 +21,8 @@ const Solanid = ({navigation}) => {
 
   const [solanidProducts, setSolanidProductNames] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
+  const [totalPrice, setTotalPrice] = useState(0);
+
 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
@@ -52,44 +54,50 @@ const Solanid = ({navigation}) => {
     
         fetchData();
     }, [])
+    useEffect(() => {
+      const totalPrice = cart.reduce((acc, product) => acc + (product.qty * product.prix_unitaire), 0);
+      setTotalPrice(totalPrice);
+    }, [cart]);
 
     
-    const handleProduct = (product) => {
-        setSelectedProduct(product)
-    }
+    // const handleProduct = (product) => {
+    //     setSelectedProduct(product)
+    // }
 
     const handleCart = async () => {
-      try{
-        const productStock = await checkStockForSingleProduct(selectedProduct.productId);
-        const cartQty = cart.reduce((sum, cartItem) => {
-          return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
-        }, 0);
-        const remainingStock = productStock[0]?.quantite - cartQty || 0;
+      navigation.navigate('panier')
 
-        if ( remainingStock > 0) {
+      // try{
+      //   const productStock = await checkStockForSingleProduct(selectedProduct.productId);
+      //   const cartQty = cart.reduce((sum, cartItem) => {
+      //     return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
+      //   }, 0);
+      //   const remainingStock = productStock[0]?.quantite - cartQty || 0;
+
+      //   if ( remainingStock > 0) {
            
-            dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire, qty: 1 , offre: selectedProduct.offre}));
+      //       dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire, qty: 1 , offre: selectedProduct.offre}));
            
-            Toast.show({
-              type: 'success',
-              text1: 'Produit ajouté au panier',
-            });
+      //       Toast.show({
+      //         type: 'success',
+      //         text1: 'Produit ajouté au panier',
+      //       });
             
-          }else {
-            Toast.show({
-              type: 'error',
-              position: 'bottom',
-              text1: 'Victime de son succès',
-              text2: `Quantité maximale: ${productStock[0].quantite}`,
+      //     }else {
+      //       Toast.show({
+      //         type: 'error',
+      //         position: 'bottom',
+      //         text1: 'Victime de son succès',
+      //         text2: `Quantité maximale: ${productStock[0].quantite}`,
               
-            });
-          } 
+      //       });
+      //     } 
           
          
-      }  catch (error) {
-        console.error("Une erreur s'est produite lors de la vérification du stock :", error);
+      // }  catch (error) {
+      //   console.error("Une erreur s'est produite lors de la vérification du stock :", error);
       
-      }  
+      // }  
     
 }   
   return (
@@ -160,11 +168,11 @@ const Solanid = ({navigation}) => {
                         qty={product.qty}
                         stock={product.stock}
                         offre={product.offre}
-                        showButtons={false} 
+                        showButtons={true} 
                         showPromo={false}
                       />
                       </View>
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={[
                     style.checkButton,
                     selectedProduct?.productId === product.productId && { backgroundColor: 'white' } 
@@ -172,7 +180,7 @@ const Solanid = ({navigation}) => {
                   onPress={() => handleProduct(product)}
                 >
                   {selectedProduct?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                </TouchableOpacity>
+                </TouchableOpacity> */}
               </View>
             ))}
             </View>
@@ -190,21 +198,24 @@ const Solanid = ({navigation}) => {
         <View>
           <View style={style.bandeauFormule}>
           <Text style={{ fontWeight: "bold"}}>Prix du produit</Text>
-         <Text>{selectedProduct ? selectedProduct.prix_unitaire : 0} €</Text>
+         {/* <Text>{selectedProduct ? selectedProduct.prix_unitaire : 0} €</Text> */}
+         <Text>{totalPrice.toFixed(2)} €</Text>
+
           </View>
           <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
             <Text>Avec</Text><Image source={require('../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
-         <Text style={{color:colors.color2, fontWeight:"bold"}}>{selectedProduct ?  Number(selectedProduct.prix_remise_collaborateur) : 0} €</Text>
+         {/* <Text style={{color:colors.color2, fontWeight:"bold"}}>{selectedProduct ?  Number(selectedProduct.prix_remise_collaborateur) : 0} €</Text> */}
+         <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice*0.8).toFixed(2)}€</Text>
           </View>
         </View>
       <Button
                 style={style.btn}
                 textColor={'white'} 
-                disabled={!selectedProduct}
+                // disabled={!selectedProduct}
                 onPress={handleCart}
-                >Choisir ce produit</Button>
+                >Aller au panier</Button>
                 
     </View>
     <FooterProfile />
