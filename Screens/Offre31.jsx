@@ -15,8 +15,9 @@ import ModalePageOffre31 from '../components/ModalePageOffre';
 import ArrowLeft from '../SVG/ArrowLeft';
 import ProductCard from '../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
-
+import { getStyle } from '../Fonctions/stylesFormule';
 import FastImage from 'react-native-fast-image';
+import Check from '../SVG/Check';
 
 
 const Offre31 = ({navigation}) => {
@@ -93,7 +94,15 @@ const Offre31 = ({navigation}) => {
   }, [selectedProduct]);
 
   const handleProduct = (product) => {
-    setSelectedProduct(product)
+        if (selectedProduct?.productId === product.productId) {
+            setSelectedProduct(null)
+            setTotalPrice(0);  
+
+        } else {
+          setSelectedProduct(product)
+          
+        }
+
 }
       
 const handleAcceptOffer = async () => {
@@ -192,12 +201,13 @@ const handleCart = () => {
        
             <View >
               {/* <Text style={{marginLeft:30, marginVertical:10, color:colors.color1, fontFamily:fonts.font2, fontWeight:"700"}}>{familyProductDetails[group.id_famille_produit]}</Text> */}
-              {/* <ScrollView > */}
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center' }}>
               {offre31Products.map( (product, index) => (
-                  <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
-                    
-                    <View style={{width:170, marginVertical:10}} key={index}>
+                
+                <TouchableOpacity  key={index}
+                        onPress={() => handleProduct(product)} activeOpacity={0.8}>
+                      <View style={StyleSheet.flatten([getStyle(selectedProduct, product), { width:170, marginHorizontal:5, marginVertical:10 }])} key={index}>
+
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -212,23 +222,14 @@ const handleCart = () => {
                         showButtons={false} 
                         showPromo={false}
                       />
-                      </View>
-                    <TouchableOpacity
-                  style={[
-                    style.checkButton,
-                    selectedProduct?.productId === product.productId && { backgroundColor: 'white' } 
-                  ]}
-                  onPress={() => handleProduct(product)}
-                >
-                  {selectedProduct?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                </TouchableOpacity>
+                      {selectedProduct?.productId === product.productId && <Check color={colors.color9}/>}
 
-                </View>
-                
+                      </View>
+                   
+                </TouchableOpacity>
                 ))}
                  
                 </View>
-              {/* </ScrollView> */}
             </View>
          
         </View>
@@ -262,25 +263,5 @@ const handleCart = () => {
     </View> 
   )
 }
-const styling = StyleSheet.create({
- 
-  qtyContainer:{
-    flexDirection:'row',
-    gap:5
-  },
-  decrement:{
-    backgroundColor:colors.color3,
-    flexDirection:'row',
-    alignItems:'center'
-  },
-  qtyText:{
-    backgroundColor:colors.color3,
-    paddingHorizontal: 5
-  },
-  increment:{
-    backgroundColor:colors.color2,
-    flexDirection:'row',
-    alignItems:'center'
-  },
-}); 
+
 export default Offre31
