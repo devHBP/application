@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Modal, TextInput, KeyboardAvoidingView } from 'react-native'
 import React, { useEffect} from 'react'
 import {  colors, fonts} from '../styles/styles'
 import { useSelector, useDispatch } from 'react-redux';
@@ -71,6 +71,7 @@ const SuccessPage = ({navigation}) => {
 
   return (
    <>
+   
         <View style={style.container}>
 
             <View style={style.centeredTextContainer}>
@@ -97,18 +98,22 @@ const SuccessPage = ({navigation}) => {
                 </TouchableOpacity>
             </View>
         </View>
-
+     
         <Modal
                     animationType="slide"
                     transparent={false}
                     visible={modalVisible}
                     onRequestClose={closeRatingModal}>
-                    <View style={{ flex: 1, alignItems: 'center',justifyContent:'center', marginVertical:40 }}>
-                        <View style={{ width: '90%', height: '80%', backgroundColor: 'white', padding: 20, borderRadius: 10, alignItems: 'center', borderColor:'lightgray', borderWidth:1, justifyContent:'center',gap:10 }}>
+                    <KeyboardAvoidingView
+                    keyboardVerticalOffset={10}
+                        behavior={Platform.OS === 'ios' ? 'padding' : ''} style={{flexGrow:1}}
+                        >
+                    <View style={{ flex: 1, alignItems: 'center',justifyContent:'center', marginVertical:10 }}>
+                        <View style={{ width: '90%', height: '90%', backgroundColor: 'white', padding: 20, borderRadius: 10, alignItems: 'center', borderColor:'lightgray', borderWidth:1, justifyContent:'center',gap:10 }}>
                             <TouchableOpacity onPress={closeRatingModal} style={{ position:'absolute', top:0, right:10 }}>
                                 <Text style={{ fontSize: 36 }}>&times;</Text>
                             </TouchableOpacity>
-                                <Text>Votre option nous intéresse !</Text>
+                                <Text style={{fontWeight:"bold"}}>Votre option nous intéresse !</Text>
                                 <Text>Comment s'est déroulée votre expérience d'achat ?</Text>
                                 <Rating
                                     startingValue={5}
@@ -132,9 +137,11 @@ const SuccessPage = ({navigation}) => {
                         </TouchableOpacity>                 
                         </View>
                     </View>
+                    </KeyboardAvoidingView>
                 </Modal>
-        
+                
     </View>
+   
     <FooterProfile />
 
     </>

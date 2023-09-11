@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Image, KeyboardAvoidingView,} from 'react-native'
 import React, {useState} from 'react'
 import { inputStyling, colors, fonts } from '../styles/styles'
 import { Button, TextInput } from 'react-native-paper'
@@ -114,9 +114,11 @@ const Login = ({navigation}) => {
     // }
     
   return (
-   
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : ''} style={style.container}
+    >
       
-      <View style={style.container}>
+      {/* <View style={style.container}> */}
 
               <View style={{flexDirection:'row', justifyContent:'center', marginBottom:20}}>
                 <Image
@@ -183,7 +185,8 @@ const Login = ({navigation}) => {
                 <Text style={style.signup}>Accédez à l'application en tant qu'invité</Text>
             </TouchableOpacity>
     
-    </View>
+    {/* </View> */}
+    </KeyboardAvoidingView>
   )
 }
 const style = StyleSheet.create({
@@ -193,14 +196,9 @@ const style = StyleSheet.create({
         padding:20,
         paddingHorizontal:30,
         justifyContent:'center',
-        //reajustement margin pour laisser de la place au footer
-        // marginBottom:70,
         backgroundColor:colors.color1,
     },
-    // title:{
-    //     textAlign:'center',
-    //     margin: 20,
-    // },
+   
     title1:{
         marginVertical:5,
         color:colors.color6,
