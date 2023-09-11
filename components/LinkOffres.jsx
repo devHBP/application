@@ -92,7 +92,7 @@ const LinkOffres = ({}) => {
 
   return (
     <View >
-     <ScrollView horizontal={true} style={{marginVertical:10, marginLeft:30}}>
+     <ScrollView horizontal={true} style={{marginVertical:10, marginLeft:30}} showsHorizontalScrollIndicator={false}>
 
         {/* anti gaspi */}
         {/* ajouter action onPress */}
