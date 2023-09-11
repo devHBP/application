@@ -179,7 +179,8 @@ const LinkOffres = ({}) => {
             /> */}
         <View style={styles.container_offre_antigaspi}>
             <View style={styles.text_offre31}>
-            <Text style={styles.texte_offre31} >Un repas sain avec</Text>
+            <Text style={styles.texte_offre31} >Un repas équilibré,</Text>
+            <Text style={styles.texte_offre31} >frais et de saison avec</Text>
             <Text style={styles.texte_gratuit}>Les Halles Solanid</Text>
             </View>
             <View style={styles.pastille}>
@@ -211,8 +212,8 @@ const LinkOffres = ({}) => {
             /> */}
         <View style={styles.container_offre_antigaspi}>
             <View style={styles.text_offre31}>
-            <Text style={styles.texte_offre31} >  Découvrez</Text>
-            <Text style={styles.texte_gratuit}>   les bénéfices</Text>
+            <Text style={styles.texte_offre31} >     Découvrez</Text>
+            <Text style={styles.texte_gratuit}>      les bénéfices</Text>
             </View>
             <View style={styles.pastille}>
             <Image

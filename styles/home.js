@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
     backgroundColor:colors.color6,
     borderBottomLeftRadius:10, 
     borderBottomRightRadius:10,
+    
   },
   text_antigaspi:{
     flexDirection:'column',
@@ -174,7 +175,7 @@ const styles = StyleSheet.create({
     height:'100%',
     flexDirection:'row',
     alignItems:'center',
-    paddingLeft:40
+    paddingLeft:20
   },
   text_offre31:{
     flexDirection:'column',
