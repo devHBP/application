@@ -14,8 +14,7 @@ import ProductCard from '../../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image'
 import Check from '../../SVG/Check';
-
-
+import { getStyle } from '../../Fonctions/stylesFormule';
 
 const FormuleSandwich = ({navigation}) => {
 
@@ -240,30 +239,8 @@ const FormuleSandwich = ({navigation}) => {
                     style={{gap:10,flexDirection:'row',  justifyContent:'center', alignItems:'center',  }} 
                     onPress={() => handleSandwich(product)}>
                        
-                     <View style={[
-                        { width:180, marginHorizontal:15 },
-                        selectedSandwich?.productId === product.productId ? {
-                            borderBottomLeftRadius:10,
-                            borderBottomRightRadius:10,
-                            backgroundColor:'white',
-                            ...Platform.select({
-                                android: {
-                                    backgroundColor: 'rgba(255,255,255,0.1)', 
-                                    elevation: 10 
-                                },
-                                ios: { 
-                                    shadowColor: colors.color1,
-                                    shadowOpacity: 0.3,
-                                    shadowOffset: {
-                                        width: 5,
-                                        height: 4,
-                                    },
-                                }
-                            })
-                        } : {}
-                    ]}
-                    key={index}
-                    >
+                    <View style={getStyle(selectedSandwich, product)} key={index}>
+
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -277,10 +254,8 @@ const FormuleSandwich = ({navigation}) => {
                         offre={product.offre}
                         showButtons={false} 
                         showPromo={false}
-                      />
-                        <View style={{position:'absolute', top: 5, left:5}}>
+                      /> 
                         {selectedSandwich?.productId === product.productId && <Check color={colors.color9}/>}
-                        </View>
 
                       </View>
                         
@@ -302,31 +277,9 @@ const FormuleSandwich = ({navigation}) => {
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                     onPress={() => handleDessert(product)} activeOpacity={0.8}>
                        
-                         
-                     <View style={[
-                        { width:180, marginHorizontal:15 },
-                        selectedDessert?.productId === product.productId ? {
-                            borderBottomLeftRadius:10,
-                            borderBottomRightRadius:10,
-                            backgroundColor:'white',
-                            ...Platform.select({
-                                android: {
-                                    backgroundColor: 'rgba(255,255,255,0.1)', 
-                                    elevation: 10 
-                                },
-                                ios: { 
-                                    shadowColor: colors.color1,
-                                    shadowOpacity: 0.3,
-                                    shadowOffset: {
-                                        width: 5,
-                                        height: 4,
-                                    },
-                                }
-                            })
-                        } : {}
-                    ]}
-                    key={index}
-                    >
+                        
+                  <View style={getStyle(selectedDessert, product)} key={index}>
+
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -341,11 +294,9 @@ const FormuleSandwich = ({navigation}) => {
                         showButtons={false} 
                         showPromo={false}
                       />
-                      <View style={{position:'absolute', top: 5, left:5}}>
                         {selectedDessert?.productId === product.productId && <Check color={colors.color9}/>}
                         </View>
-                      </View>
-                      
+                  
                     </TouchableOpacity>
                   </View>     
                 ))}
@@ -364,31 +315,9 @@ const FormuleSandwich = ({navigation}) => {
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
                      onPress={() => handleBoisson(product)} activeOpacity={0.8} >
                        
-                         
-                     <View style={[
-                        { width:180, marginHorizontal:15 },
-                        selectedBoisson?.productId === product.productId ? {
-                            borderBottomLeftRadius:10,
-                            borderBottomRightRadius:10,
-                            backgroundColor:'white',
-                            ...Platform.select({
-                                android: {
-                                    backgroundColor: 'rgba(255,255,255,0.1)', 
-                                    elevation: 10 
-                                },
-                                ios: { 
-                                    shadowColor: colors.color1,
-                                    shadowOpacity: 0.3,
-                                    shadowOffset: {
-                                        width: 5,
-                                        height: 4,
-                                    },
-                                }
-                            })
-                        } : {}
-                    ]}
-                    key={index}
-                    >
+
+                  <View style={getStyle(selectedBoisson, product)} key={index}>
+
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -403,20 +332,10 @@ const FormuleSandwich = ({navigation}) => {
                         showButtons={false} 
                         showPromo={false}
                       />
-                       <View style={{position:'absolute', top: 5, left:5}}>
                         {selectedBoisson?.productId === product.productId && <Check color={colors.color9}/>}
-                        </View>
+                   
                       </View>
 
-                      {/* <TouchableOpacity
-                        style={[
-                          style.checkButton,
-                          selectedBoisson?.productId === product.productId
-                        ]}
-                        onPress={() => handleBoisson(product)}
-                      >
-                        {selectedBoisson?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                      </TouchableOpacity> */}
                     </TouchableOpacity>
                   </View>     
                 ))}

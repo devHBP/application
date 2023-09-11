@@ -11,6 +11,8 @@ import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image'
+import { getStyle } from '../../Fonctions/stylesFormule';
+import Check from '../../SVG/Check';
 
 const FormuleQuiche = ({navigation}) => {
 
@@ -142,8 +144,6 @@ const FormuleQuiche = ({navigation}) => {
     } else {
         setSelectedBoisson(product); 
         setProductIds([...productIds, product.productId]);
-        console.log('Selected Dessert:', product.libelle);
-        console.log('Price:', product.prix_formule);
     }
   }
 
@@ -216,9 +216,10 @@ const FormuleQuiche = ({navigation}) => {
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {products.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
-                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}>
+                    <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
+                    onPress={() => handleSandwich(product)}>
                        
-                        <View style={{width:180, marginLeft:10}} key={index}>
+                    <View style={getStyle(selectedProduct, product)} key={index}>
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -233,16 +234,10 @@ const FormuleQuiche = ({navigation}) => {
                         showButtons={false} 
                         showPromo={false}
                       />
+                      {selectedProduct?.productId === product.productId && <Check color={colors.color9}/>}
+
                       </View>
-                      <TouchableOpacity
-                        style={[
-                          style.checkButton,
-                          selectedProduct?.productId === product.productId
-                        ]}
-                        onPress={() => handleSandwich(product)}
-                      >
-                        {selectedProduct?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                      </TouchableOpacity>
+                      
                     </TouchableOpacity>
                   </View>    
                 ))}
@@ -259,9 +254,9 @@ const FormuleQuiche = ({navigation}) => {
                 {desserts.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
-                     disabled={!selectedProduct} >
+                    onPress={() => handleDessert(product)} >
                       
-                      <View style={{width:180, marginLeft:10}} key={index}>
+                  <View style={getStyle(selectedDessert, product)} key={index}>
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -276,16 +271,10 @@ const FormuleQuiche = ({navigation}) => {
                         showButtons={false} 
                         showPromo={false}
                       />
+                      {selectedDessert?.productId === product.productId && <Check color={colors.color9}/>}
+
                       </View>
-                         <TouchableOpacity
-                        style={[
-                          style.checkButton,
-                          selectedDessert?.productId === product.productId
-                        ]}
-                        onPress={() => handleDessert(product)}
-                      >
-                        {selectedDessert?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                      </TouchableOpacity>
+                        
                     </TouchableOpacity>
                   </View>     
                 ))}
@@ -302,9 +291,9 @@ const FormuleQuiche = ({navigation}) => {
                 {boissons.map((product,index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
                     <TouchableOpacity  style={{gap:10,flexDirection:'column',  justifyContent:'center', alignItems:'center', margin:10}}
-                     disabled={!selectedProduct} >
+                     onPress={() => handleBoisson(product)} >
                        
-                      <View style={{width:180, marginLeft:10}} key={index}>
+                    <View style={getStyle(selectedBoisson, product)} key={index}>
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -319,16 +308,10 @@ const FormuleQuiche = ({navigation}) => {
                         showButtons={false} 
                         showPromo={false}
                       />
+                      {selectedBoisson?.productId === product.productId && <Check color={colors.color9}/>}
+
                       </View>
-                      <TouchableOpacity
-                        style={[
-                          style.checkButton,
-                          selectedBoisson?.productId === product.productId
-                        ]}
-                        onPress={() => handleBoisson(product)}
-                      >
-                        {selectedBoisson?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                      </TouchableOpacity>
+                      
                     </TouchableOpacity>
                   </View>     
                 ))}
