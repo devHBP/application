@@ -1,4 +1,4 @@
-import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Modal, Button, FlatList, Dimensions } from 'react-native'
+import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Modal, Button, FlatList, Dimensions, ImageBackground } from 'react-native'
 import { fonts, colors} from '../styles/styles'
 import { styles } from '../styles/home'; 
 import React, {useState, useEffect,  createRef,useRef, useCallback } from 'react'
@@ -22,6 +22,7 @@ import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Search from '../SVG/Search';
 import ProductFlatList from '../components/ProductFlatList';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import LogoFond from '../SVG/LogoFond';
 
 
 const Home =  ({navigation}) => {
@@ -191,6 +192,7 @@ const ongletButtonHandler = (onglet) => {
       ) : (
         
       <SafeAreaProvider  style={{flex:1, paddingTop:50, backgroundColor:colors.color4}}>
+       
 
     <ScrollView vertical={true} style={{ flex:1, backgroundColor:colors.color4}} ref={scrollViewRef} stickyHeaderIndices={[1]}>
    
@@ -313,6 +315,23 @@ const ongletButtonHandler = (onglet) => {
         </ScrollView>
       </View>
 
+      {/* 1er logo */}
+      <View style={{ position: 'absolute', top: '10%', left: '10%', transform: [{ translateX: -50 }, { translateY: +60 }], zIndex: -1}}>
+        <LogoFond color={colors.color6}/>
+      </View>
+      {/* 2e logo */}
+      <View style={{ position: 'absolute', top: '10%', right: '10%', transform: [{ translateX: +150 }, { translateY: +1000 }], zIndex: -1, }}>
+        <LogoFond color={colors.color6}/>
+      </View>    
+      {/* 3e logo */}
+      <View style={{ position: 'absolute', top: '10%', left: '10%', transform: [{ translateX: -200 }, { translateY: +1700 }], zIndex: -1,}}>
+        <LogoFond color={colors.color6}/>
+      </View>
+       {/* 4e logo */}
+       <View style={{ position: 'absolute', top: '10%', left: '10%', transform: [{ translateX: +100 }, { translateY: +2250 }], zIndex: -1,}}>
+        <LogoFond color={colors.color6}/>
+      </View>
+
           {/* link - anti gaspi -  */}
           <View onLayout={(event) => handleLayout('Promos', event)} style={styles.paddingProduct}>
            <LinkOffres />
@@ -331,6 +350,7 @@ const ongletButtonHandler = (onglet) => {
               />
               </View>
             ))}
+          
 
             {sortedCategories
               .filter(category => category ===  'Viennoiseries')
