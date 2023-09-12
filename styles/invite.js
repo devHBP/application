@@ -22,15 +22,37 @@ export const stylesInvite = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+       
         
       },
       modalContent: {
         backgroundColor: colors.color1,
-        padding: 20,
+        padding: 10,
         borderRadius: 20,
-        width: '80%',
-        height: "60%",
+        width: '95%',
+        height: "90%",
         justifyContent: 'center',
         alignItems: 'center',
+        borderColor:colors.color3,
+        borderWidth:1
       },
+      btn_cookies: {
+        backgroundColor: colors.color4,
+        margin: 1,
+        paddingHorizontal: 2,
+        borderRadius:6,
+        borderColor:colors.color5,
+        borderWidth:1,
+        borderStyle:'solid',
+        flexDirection:'row', 
+        alignItems:'center',
+        gap:15, 
+        paddingHorizontal:20,
+        paddingVertical:10,
+      },
+      label:{
+        fontWeight:"bold",
+         color:colors.color1,
+         paddingVertical:5
+       },
   });  
