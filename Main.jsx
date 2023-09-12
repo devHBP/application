@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useState, useEffect} from 'react'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack' 
+import { useDispatch, useSelector} from 'react-redux'
+import { loginUser, updateSelectedStore } from './reducers/authSlice';
+
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import  Toast  from 'react-native-toast-message'
 import App from './Screens/App'
 import Login from './Screens/Login'
@@ -45,7 +49,44 @@ import LoaderHome from './Screens/LoaderHome'
 import PagePizza from './Screens/PagesSalees/PagePizza'
 import Antigaspi from './Screens/Antigaspi'
 
+
 const Main = () => {
+
+  const [isLoading, setIsLoading] = useState(true);
+  const [isLoggedin, setIsLoggedin] = useState(false);
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    const checkToken = async () => {
+        try {
+            const token = await AsyncStorage.getItem('userToken');
+
+            const userInfo = JSON.parse(await AsyncStorage.getItem('userInfo'));
+
+            const storedSelectedStore = JSON.parse(await AsyncStorage.getItem('selectedStore'));
+            //console.log('store Main 1', storedSelectedStore)
+
+            if (token && userInfo) {
+              //console.log('token trouvé')
+              setIsLoggedin(true);
+              dispatch(loginUser(userInfo)); 
+
+              if (storedSelectedStore) {
+                dispatch(updateSelectedStore(storedSelectedStore));
+                //console.log('store Main 2', storedSelectedStore)
+            }
+          }
+
+        } catch (error) {
+            console.error("Erreur lors de la vérification du token:", error);
+        } finally {
+          
+            setIsLoading(false);
+        }
+    };
+
+    checkToken();
+}, []);
 
     const Stack = createNativeStackNavigator();
 
@@ -61,15 +102,19 @@ const Main = () => {
       },
     };
 
+    if (isLoading) {
+      return <LoaderHome />; 
+  }
       return (
         <NavigationContainer linking={linking}>
-            <Stack.Navigator initialRouteName='login' screenOptions={{headerShown:false}}>
+            {/* <Stack.Navigator initialRouteName='login' screenOptions={{headerShown:false}}> */}
+            <Stack.Navigator initialRouteName={isLoggedin ? 'home' : 'login'} screenOptions={{headerShown:false}}>
+
                 {/* <Stack.Screen name='app' component={App}/> */}
                 <Stack.Screen name='login' component={Login}/>
                 <Stack.Screen name='signup' component={Signup}/>
                 <Stack.Screen name="stores" component={Stores}/>
                 <Stack.Screen name='home' component={Home}/>
-                {/* <Stack.Screen name='loaderhome' component={LoaderHome}/> */}
                     {/*  Formules  */}
                     <Stack.Screen name='formulesandwich' component={FormuleSandwich}/>
                     <Stack.Screen name='formulepoke' component={FormulePoke}/>
@@ -112,7 +157,6 @@ const Main = () => {
                 <Stack.Screen name='mentions' component={Mentions}/>
             </Stack.Navigator>
            
-
             <Toast  position="bottom"/>
         </NavigationContainer>        
       )

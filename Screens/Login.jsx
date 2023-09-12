@@ -6,7 +6,6 @@ import { Button, TextInput } from 'react-native-paper'
  import { loginUser, updateSelectedStore } from '../reducers/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS, EMAIL_INVITE, PASSWORD_INVITE } from '@env';
 
@@ -46,16 +45,19 @@ const Login = ({navigation}) => {
             const token = res.data.token;
 
             await AsyncStorage.setItem('userToken', token);
+            await AsyncStorage.setItem('userInfo', JSON.stringify(user));
 
             const selectedStoreId = user.storeId;
 
             axios.get(`${API_BASE_URL}/getOneStore/${selectedStoreId}`)
-                .then(storeResponse => {
+                .then(async storeResponse => {
 
                     const selectedStore = storeResponse.data;
                      dispatch(updateSelectedStore(selectedStore));
                      dispatch(loginUser(user))
                     navigation.navigate('home')
+                    await AsyncStorage.setItem('selectedStore', JSON.stringify(selectedStore));
+                    //console.log('store', selectedStore)
                  
                  })
                 .catch(error => {
@@ -87,9 +89,10 @@ const Login = ({navigation}) => {
           await AsyncStorage.setItem('userToken', token);
   
           const selectedStoreId = user.storeId;
+       
   
           axios.get(`${API_BASE_URL}/getOneStore/${selectedStoreId}`)
-              .then(storeResponse => {
+              .then(  storeResponse => {
                   const selectedStore = storeResponse.data;
                   dispatch(updateSelectedStore(selectedStore));
                   dispatch(loginUser(user))
