@@ -38,6 +38,7 @@ const Home =  ({navigation}) => {
   const [positionsY, setPositionsY] = useState({});
   const [isLoading, setIsLoading] = useState(true); 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isManualScrolling, setIsManualScrolling] = useState(false);
 
 
   const user = useSelector((state) => state.auth.user);
@@ -105,6 +106,7 @@ const Home =  ({navigation}) => {
     fetchData(); 
   }, []);
 
+
   //redirection vers la page de détails
   const handleProductPress = (product) => {
     navigation.navigate('details', { product });
@@ -140,6 +142,10 @@ const sortedCategories = Object.keys(groupedAndSortedProducts).sort();
 const scrollToTop = () => {
   if (scrollViewRef.current) {
     scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+
+  }
+  if (horizontalScrollViewRef.current) {
+    horizontalScrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   }
 };
 
@@ -148,40 +154,97 @@ const toggleVisibility = () => {
   setVisible(!visible)
 }
 
+//liste d'onglets differents si collab ou non
+let refs;
 //scroll ref pour les differents onglets
-const refs = {
-  'Promos': useRef(null),
-  'Baguettes': useRef(null),
-  'Viennoiseries': useRef(null),
-  'Formules': useRef(null),
-  'Produits Salés': useRef(null),
-  'Pâtisseries': useRef(null),
-  'Pains Spéciaux': useRef(null),
-  'Petits déjeuners': useRef(null),
-  'Boissons': useRef(null),
-  'Tarterie': useRef(null),
-};
+if (user.role === "SUNcollaborateur"){
+  refs = {
+    'Promos': useRef(null),
+    'Baguettes': useRef(null),
+    'Viennoiseries': useRef(null),
+    'Formules': useRef(null),
+    'Produits Salés': useRef(null),
+    'Pâtisseries': useRef(null),
+    'Pains Spéciaux': useRef(null),
+    'Boissons': useRef(null),
+    'Tarterie': useRef(null),
+  }
+}
+  else {
+     refs = {
+    'Promos': useRef(null),
+    'Baguettes': useRef(null),
+    'Viennoiseries': useRef(null),
+    'Formules': useRef(null),
+    'Produits Salés': useRef(null),
+    'Pâtisseries': useRef(null),
+    'Pains Spéciaux': useRef(null),
+    'Petits déjeuners': useRef(null),
+    'Boissons': useRef(null),
+    'Tarterie': useRef(null),
+  };
+}
 
 const onglets = Object.keys(refs);
 
-const handleLayout = useCallback((onglet, event) => {
+const handleLayout = useCallback((onglet) => (event) => {
   const { y } = event.nativeEvent.layout;
   setPositionsY(prev => ({ ...prev, [onglet]: y }));
-});
+}, []);
+
 const ongletButtonHandler = (onglet) => {
+  setIsManualScrolling(true);
   setSelectedOnglet(onglet);
   
   const positionY = positionsY[onglet];
   if (scrollViewRef.current && positionY !== undefined) {
     scrollViewRef.current.scrollTo({ x: 0, y: positionY, animated: true });
   }
+
+  setTimeout(() => {
+    setIsManualScrolling(false);
+  }, 1500);
   // Pour déplacer l'onglet actif vers la gauche de l'écran
   const tabIndex = onglets.indexOf(onglet);
   const tabWidth = 170; // Remplacez par la largeur de vos onglets si elle est constante
   const positionX = tabIndex * tabWidth;
   horizontalScrollViewRef.current?.scrollTo({ x: positionX, animated: true });
 };
+
+const handleScroll = (event) => {
+  if (isManualScrolling) return; // Ignorez les mises à jour si un défilement manuel est en cours
+
+  const paddingTop = 50; 
+  const scrollY = event.nativeEvent.contentOffset.y + paddingTop;
+
+  let currentOnglet = null;
+
+  // Parcourez les positionsY pour déterminer l'onglet actuellement visible
+  for (let i = 0; i < onglets.length; i++) {
+    const onglet = onglets[i];
+    const nextOnglet = onglets[i + 1];
+
+    if (scrollY >= positionsY[onglet] && (!nextOnglet || scrollY < positionsY[nextOnglet])) {
+      currentOnglet = onglet;
+      break;
+    }
+  }
+
+  // Si l'onglet actuellement visible est différent de l'onglet sélectionné, mettez à jour
+  if (currentOnglet && currentOnglet !== selectedOnglet) {
+    setSelectedOnglet(currentOnglet);
+
+    // Déplacez l'onglet actif vers la gauche de l'écran
+    const tabIndex = onglets.indexOf(currentOnglet);
+    const tabWidth = 170;
+    const positionX = tabIndex * tabWidth;
+    horizontalScrollViewRef.current?.scrollTo({ x: positionX, animated: true });
+  }
+};
+
 //fin scroll onglets
+
+
   return (
     <>
     <View style={{flex:1}}>
@@ -192,7 +255,7 @@ const ongletButtonHandler = (onglet) => {
         
       <SafeAreaProvider  style={{flex:1, paddingTop:50, backgroundColor:colors.color4}}>
 
-    <ScrollView vertical={true} style={{ flex:1, backgroundColor:colors.color4}} ref={scrollViewRef} stickyHeaderIndices={[1]}>
+    <ScrollView vertical={true} style={{ flex:1, backgroundColor:colors.color4}} ref={scrollViewRef} stickyHeaderIndices={[1]} onScroll={handleScroll} scrollEventThrottle={16}>
    
     <View >
 
@@ -289,7 +352,7 @@ const ongletButtonHandler = (onglet) => {
               onPress={() => ongletButtonHandler(item)}
             >
               <View style={{flexDirection:'row', alignItems:'center', gap:6}}>
-                <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight: "600",
+                <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight: "700",
                    color: item === 'Promos' 
                    ? colors.color6 
                    : item === selectedOnglet 
@@ -314,7 +377,7 @@ const ongletButtonHandler = (onglet) => {
       </View>
 
           {/* link - anti gaspi -  */}
-          <View onLayout={(event) => handleLayout('Promos', event)} style={styles.paddingProduct}>
+          <View onLayout={handleLayout('Promos')} style={styles.paddingProduct}>
            <LinkOffres />
           </View>
           
@@ -323,7 +386,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category === 'Baguettes')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Baguettes', event)} style={styles.paddingProduct}>
+            <View key={category} onLayout={handleLayout('Baguettes')} style={{...styles.paddingProduct}}>
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -335,7 +398,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category ===  'Viennoiseries')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Viennoiseries', event)} style={styles.paddingProduct}>
+              <View key={category} onLayout={handleLayout('Viennoiseries')} style={{...styles.paddingProduct}}>
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -345,12 +408,12 @@ const ongletButtonHandler = (onglet) => {
             ))}
 
           {/* Link page Formule */}
-          <View onLayout={(event) => handleLayout('Formules', event)} style={{...styles.paddingProduct, paddingTop:60}}>
+          <View onLayout={handleLayout('Formules')} style={{...styles.paddingProduct, paddingTop:60}}>
             <FormulesSalees />
           </View>
 
           {/* envie de salé */}
-         <View onLayout={(event) => handleLayout('Produits Salés', event)} style={styles.paddingProduct} >
+          <View onLayout={handleLayout('Produits Salés')} style={{...styles.paddingProduct}}>
           <EnvieSalee />
         </View>
 
@@ -358,7 +421,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category ===  'Pâtisseries')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Pâtisseries', event)} style={styles.paddingProduct}>
+                <View key={category} onLayout={handleLayout('Pâtisseries')} style={styles.paddingProduct}>
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -369,10 +432,10 @@ const ongletButtonHandler = (onglet) => {
 
             {/* pains speciaux */}
             {sortedCategories
-              .filter(category => category ===  'Boules et Pains Spéciaux')
+              .filter(category => category === 'Boules et Pains Spéciaux')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Pains Spéciaux', event)} style={styles.paddingProduct}>
-              <ProductFlatList
+            <View key={category} onLayout={handleLayout('Pains Spéciaux')} style={{...styles.paddingProduct}}>
+                <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
                 handleProductPress={handleProductPress}
@@ -382,7 +445,7 @@ const ongletButtonHandler = (onglet) => {
 
             {/* formules petits dejeuners */}
             {user.role == 'client' &&
-            <View onLayout={(event) => handleLayout('Petits déjeuners', event)} style={styles.paddingProduct}>
+            <View onLayout={handleLayout('Petits déjeuners')} style={styles.paddingProduct}>
             <FormulesPetitDejeuner />
             </View>
             }
@@ -391,7 +454,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category ===  'Boissons')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Boissons', event)} style={styles.paddingProduct}>
+                <View key={category} onLayout={handleLayout('Boissons')} style={styles.paddingProduct}>
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -401,7 +464,7 @@ const ongletButtonHandler = (onglet) => {
             ))}
                 
             {/* catalogue */}
-            <View onLayout={(event) => handleLayout('Tarterie', event)} style={styles.paddingProduct}>
+            <View onLayout={handleLayout('Tarterie')} style={styles.paddingProduct}>
               <Catalogue />
             </View>
 
