@@ -267,7 +267,11 @@ const ongletButtonHandler = (onglet) => {
             style={({ pressed }) => [
               styles.btn_categorie, 
               {
-                backgroundColor: item === 'Promos' ? colors.color2 : 'white',
+                backgroundColor: item === 'Promos' 
+                ? colors.color2 
+                : item === selectedOnglet 
+                  ? colors.color1 
+                  : 'white',  
                 shadowColor: pressed ? 'rgba(233, 82, 14, 0.5)' : 'rgba(0, 0, 0, 0.3)', 
               }
             ]}
@@ -276,7 +280,11 @@ const ongletButtonHandler = (onglet) => {
             >
               <View style={{flexDirection:'row', alignItems:'center', gap:6}}>
                 <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight: "600",
-                   color: item === 'Promos' ? 'white' : colors.color1, 
+                   color: item === 'Promos' 
+                   ? colors.color6 
+                   : item === selectedOnglet 
+                     ? colors.color6
+                     : colors.color1 , 
                   }}>{item}</Text>
                   
                  {item === 'Promos' && 
