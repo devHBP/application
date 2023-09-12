@@ -37,10 +37,10 @@ const EnvieSalee = () => {
         navigation.navigate('croque')
     }
   return (
-    <View style={{marginLeft:30}}>
+    <View style={{marginLeft:30, marginTop:10}}>
         <Text style={styles.text1formule}>Une petite envie <Text style={styles.text2formule}>Salée ? </Text></Text>
         
-        <ScrollView horizontal={true} style={{marginVertical:20}}>
+        <ScrollView horizontal={true} style={{marginTop:10}}>
 
             {/* Sandwichs */}
             <TouchableOpacity style={{marginRight:10}}  activeOpacity={0.8} onPress={openPageSandwich}>

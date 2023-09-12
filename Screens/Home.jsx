@@ -1,4 +1,4 @@
-import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Modal, Button, FlatList } from 'react-native'
+import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Modal, Button, FlatList, Dimensions } from 'react-native'
 import { fonts, colors} from '../styles/styles'
 import { styles } from '../styles/home'; 
 import React, {useState, useEffect,  createRef,useRef, useCallback } from 'react'
@@ -21,6 +21,8 @@ import ArrowLeft from '../SVG/ArrowLeft';
 import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Search from '../SVG/Search';
 import ProductFlatList from '../components/ProductFlatList';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+
 
 const Home =  ({navigation}) => {
   
@@ -41,6 +43,8 @@ const Home =  ({navigation}) => {
   const user = useSelector((state) => state.auth.user);
   const cart = useSelector((state) => state.cart.cart);
 
+  const screenWidth = Dimensions.get('window').width;
+
   const totalPrice = Number((cart.reduce((total, item) => {
     const prix = item.prix || item.prix_unitaire; 
     return total + item.qty * prix;
@@ -48,6 +52,7 @@ const Home =  ({navigation}) => {
 
   const dispatch = useDispatch();
   const scrollViewRef = createRef();
+  const horizontalScrollViewRef = useRef(null);
   
   const allStores = async () => {
     try {
@@ -170,6 +175,11 @@ const ongletButtonHandler = (onglet) => {
   if (scrollViewRef.current && positionY !== undefined) {
     scrollViewRef.current.scrollTo({ x: 0, y: positionY, animated: true });
   }
+  // Pour déplacer l'onglet actif vers la gauche de l'écran
+  const tabIndex = onglets.indexOf(onglet);
+  const tabWidth = 170; // Remplacez par la largeur de vos onglets si elle est constante
+  const positionX = tabIndex * tabWidth;
+  horizontalScrollViewRef.current?.scrollTo({ x: positionX, animated: true });
 };
 //fin scroll onglets
   return (
@@ -180,9 +190,9 @@ const ongletButtonHandler = (onglet) => {
         <LoaderHome />
       ) : (
         
-      <View View style={{flex:1}}>
+      <SafeAreaProvider  style={{flex:1, paddingTop:50, backgroundColor:colors.color4}}>
 
-    <ScrollView vertical={true} style={{ flex:1, paddingVertical:20, backgroundColor:'lightgray'}} ref={scrollViewRef} stickyHeaderIndices={[1]}>
+    <ScrollView vertical={true} style={{ flex:1, backgroundColor:colors.color4}} ref={scrollViewRef} stickyHeaderIndices={[1]}>
    
     <View >
 
@@ -260,7 +270,7 @@ const ongletButtonHandler = (onglet) => {
       {/* onglet ancres */}
       <View style={styles.categories} >
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} ref={horizontalScrollViewRef}>
         {
           onglets.map((item, index) => (
             <Pressable title="button" 
@@ -335,12 +345,12 @@ const ongletButtonHandler = (onglet) => {
             ))}
 
           {/* Link page Formule */}
-          <View onLayout={(event) => handleLayout('Formules', event)} style={styles.paddingProduct}>
+          <View onLayout={(event) => handleLayout('Formules', event)} style={{...styles.paddingProduct, paddingTop:60}}>
             <FormulesSalees />
           </View>
 
           {/* envie de salé */}
-         <View onLayout={(event) => handleLayout('Produits Salés', event)} style={styles.paddingProduct}>
+         <View onLayout={(event) => handleLayout('Produits Salés', event)} style={styles.paddingProduct} >
           <EnvieSalee />
         </View>
 
@@ -404,7 +414,7 @@ const ongletButtonHandler = (onglet) => {
           
      </ScrollView>
      <FooterProfile />
-     </View>
+     </SafeAreaProvider>
       )}
     
     </View>

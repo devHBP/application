@@ -37,16 +37,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: 'center',
-    marginVertical: 20,
-    marginLeft: 30,
+    // marginVertical: 20,
+    paddingVertical:10,
+    paddingLeft: 30,
+    backgroundColor:colors.color4
   },
   btn_categorie: {
     borderRadius: 6,
     height: Platform.OS === 'android' ? 50 : 40,
-    marginVertical: 5,
+    // marginVertical: 5,
     marginRight: 10,
     paddingVertical: 11,
-    paddingHorizontal: 16,
+    paddingHorizontal: 5,
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: 'white',
@@ -57,6 +59,7 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.5,
     shadowRadius: 2,
+    width: 160
   },
   categoryTitle: {
     width: "100%",
@@ -226,7 +229,7 @@ const styles = StyleSheet.create({
     marginVertical:5
   },
   paddingProduct:{
-    paddingTop:60
+    paddingTop:50
   },
   stockantigaspi:{
     backgroundColor:colors.color8,

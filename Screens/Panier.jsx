@@ -23,6 +23,7 @@ import ArrowLeft from '../SVG/ArrowLeft';
 import LottieView from 'lottie-react-native';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import Svg, { Path } from 'react-native-svg';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 
 import { getFamilyOfProduct } from '../CallApi/api';
@@ -593,7 +594,8 @@ useEffect(() => {
   return (
    
       <>
-          <View style={{ flex: 1, alignItems: 'center', backgroundColor: colors.color3}}>
+      <SafeAreaProvider style={{flex:1, paddingTop:50, backgroundColor:colors.color4}}>
+          <View style={{ flex: 1, alignItems: 'center', backgroundColor: colors.color4}}>
               
               {loading ? (
                   <LottieView 
@@ -609,6 +611,7 @@ useEffect(() => {
                   />
               ) : (
                   <>
+
                       <View style={{ flexDirection: 'row', alignItems: 'center', marginVertical: 30, paddingHorizontal: 30, justifyContent: 'space-between', width: "100%" }}>
 
 
@@ -685,7 +688,7 @@ useEffect(() => {
                           <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
                       </View> */}
   
-  <                   View style={[style.menu, Platform.OS === 'android' && style.androidMenu]}>
+                      <View style={[style.menu, Platform.OS === 'android' && style.androidMenu]}>
                         {/* <View tyle={{ flexDirection: 'row', justifyContent: 'center' }}> */}
 
                           <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10 ,}}>
@@ -754,9 +757,13 @@ useEffect(() => {
                       <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
                       
                       <FooterProfile />
+                    
+
                   </>
               )}
           </View>
+
+          </SafeAreaProvider>
       </>
   );
   

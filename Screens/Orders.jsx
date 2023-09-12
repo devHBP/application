@@ -8,7 +8,7 @@ import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
 import TextTicker from 'react-native-text-ticker'
 import LottieView from 'lottie-react-native';
-
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 
 
@@ -102,6 +102,7 @@ const Orders = ({navigation}) => {
     const renderOrder = (item, index, lastOrder = false) => {
 
         return (
+            
             <View style={lastOrder ? style.lastOrderContainer : { borderBottomWidth: 1, borderBottomColor: '#ccc', backgroundColor:colors.color6, marginVertical:5}}>
                 <TouchableOpacity
                     style={{ flexDirection: 'row', justifyContent: 'space-between', padding: 10, alignItems:'center', gap:10 }}
@@ -213,7 +214,7 @@ const Orders = ({navigation}) => {
     const ListHeader = ({ lastOrder }) => (
         <View>
           {lastOrder && renderLastOrder(lastOrder)}
-          <Text style={{ paddingHorizontal: 30, marginTop: 30,marginBottom:10,  fontFamily: fonts.font3, fontWeight: "600", color: colors.color1, fontSize: 16 }}>Vos commandes antérieures</Text>
+          <Text style={{ paddingHorizontal: 30, marginVertical: 20,marginBottom:0,  fontFamily: fonts.font3, fontWeight: "600", color: colors.color1, fontSize: 16 }}>Vos commandes antérieures</Text>
         </View>
       )
     
@@ -238,26 +239,28 @@ const Orders = ({navigation}) => {
                     ) :
                 
                 (hasOrder ? (
-                    <View style={{ alignItems: 'center', backgroundColor:colors.color3}}>
-                    <View>
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap:90, marginHorizontal:30, marginTop:40, justifyContent:'space-between' }}>
+                    <SafeAreaProvider style={{flex:1, paddingTop:50, backgroundColor:colors.color4, marginBottom:80}}>
+                    {/* <View style={{ alignItems: 'center', backgroundColor:colors.color3}}> */}
+                
+                            <View style={{ flexDirection: 'row', alignItems: 'center', gap:90, marginHorizontal:30, marginVertical:10, justifyContent:'space-between' }}>
                                  <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1, color:colors.color1}}>Vos commandes</Text>
                             
                                 <TouchableOpacity  onPress={handleBack} activeOpacity={0.8} style={{backgroundColor:'white', borderRadius:25,}}>                           
                                     <ArrowLeft fill={colors.color1}/>
                                 </TouchableOpacity>     
                             </View>
-                            <View style={{marginBottom:300}}>
+                            {/* <View style={{marginBottom:300}}> */}
                                         <FlatList
                                             data={previousOrders}
                                             renderItem={({ item, index }) => renderOrder(item, index)}
                                             keyExtractor={item => item.orderId.toString()}
                                             ListHeaderComponent={lastOrder ? <ListHeader lastOrder={lastOrder} /> : null}
                                         />     
-                            </View>
-                </View>
+                            {/* </View> */}
              
-                </View>
+             
+                {/* </View> */}
+                </SafeAreaProvider>
                 )
                 :
                 (
