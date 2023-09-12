@@ -216,6 +216,8 @@ const FormulePoke = ({navigation}) => {
       
   return (
     <View style={{flex:1}}>
+      <View style={{paddingTop:50}}></View>
+
       <ScrollView>
         <View>
             {/* <Image
@@ -229,7 +231,7 @@ const FormulePoke = ({navigation}) => {
           />
 
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={style.titleProduct}>Poke Bowls</Text>
+                    <Text style={{...style.titleProduct, color:colors.color1}}>Poke Bowls</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>

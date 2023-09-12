@@ -111,6 +111,7 @@ const PagePainBagnat = ({navigation}) => {
 
   return (
     <View style={{marginBottom:150}} >
+      <View style={{paddingTop:50}}></View>
        <ScrollView>
         <View>
             {/* <Image
