@@ -205,6 +205,8 @@ const FormuleSandwich = ({navigation}) => {
       
   return (
     <View style={{flex:1}}>
+      <View style={{paddingTop:50}}></View>
+
       <ScrollView>
         <View>
             {/* <Image

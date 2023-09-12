@@ -19,7 +19,6 @@ import { getStyle } from '../Fonctions/stylesFormule';
 import FastImage from 'react-native-fast-image';
 import Check from '../SVG/Check';
 
-
 const Offre31 = ({navigation}) => {
   
   const [offre31Products, setOffre31ProductNames] = useState([]);
@@ -156,7 +155,10 @@ const handleCart = () => {
   setModalVisible(true);
 }
   return (
+
     <View style={{flex:1}}>
+      <View style={{paddingTop:50}}></View>
+
       <ScrollView>
         <View>
             {/* <Image

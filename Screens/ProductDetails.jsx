@@ -110,6 +110,7 @@ const ProductDetails = ({navigation, route}) => {
   return (
     <>
     <View style={{flex:1}} >
+      <View style={{paddingTop:50}}></View>
     <ScrollView style={{marginBottom:20}}>
       
             <View>
