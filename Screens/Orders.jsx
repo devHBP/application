@@ -214,7 +214,7 @@ const Orders = ({navigation}) => {
     const ListHeader = ({ lastOrder }) => (
         <View>
           {lastOrder && renderLastOrder(lastOrder)}
-          <Text style={{ paddingHorizontal: 30, marginVertical: 20,marginBottom:0,  fontFamily: fonts.font3, fontWeight: "600", color: colors.color1, fontSize: 16 }}>Vos commandes antérieures</Text>
+          <Text style={{ paddingHorizontal: 30, marginVertical: 20, fontFamily: fonts.font3, fontWeight: "600", color: colors.color1, fontSize: 16 }}>Vos commandes antérieures</Text>
         </View>
       )
     
@@ -239,7 +239,7 @@ const Orders = ({navigation}) => {
                     ) :
                 
                 (hasOrder ? (
-                    <SafeAreaProvider style={{flex:1, paddingTop:50, backgroundColor:colors.color4, marginBottom:80}}>
+                    <SafeAreaProvider style={{flex:1, paddingTop:50, backgroundColor:colors.color4}}>
                     {/* <View style={{ alignItems: 'center', backgroundColor:colors.color3}}> */}
                 
                             <View style={{ flexDirection: 'row', alignItems: 'center', gap:90, marginHorizontal:30, marginVertical:10, justifyContent:'space-between' }}>
@@ -249,14 +249,12 @@ const Orders = ({navigation}) => {
                                     <ArrowLeft fill={colors.color1}/>
                                 </TouchableOpacity>     
                             </View>
-                            {/* <View style={{marginBottom:300}}> */}
                                         <FlatList
                                             data={previousOrders}
                                             renderItem={({ item, index }) => renderOrder(item, index)}
                                             keyExtractor={item => item.orderId.toString()}
                                             ListHeaderComponent={lastOrder ? <ListHeader lastOrder={lastOrder} /> : null}
                                         />     
-                            {/* </View> */}
              
              
                 {/* </View> */}

@@ -688,8 +688,8 @@ useEffect(() => {
                           <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
                       </View> */}
   
+  
                       <View style={[style.menu, Platform.OS === 'android' && style.androidMenu]}>
-                        {/* <View tyle={{ flexDirection: 'row', justifyContent: 'center' }}> */}
 
                           <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10 ,}}>
                               <View>
@@ -729,35 +729,30 @@ useEffect(() => {
                               :
                               (
                                 <View style={{gap:10}}>
-                                <TouchableOpacity onPress={() => handleConfirm('onsite')} style={{...style.btnPaiement, flexDirection:'row', alignItems:'center', justifyContent:'space-around'}}>
-                                <Image
-                                    source={require('../assets/paiementsurplace.png')} 
-                                    style={{ width: 20, height: 20, resizeMode:'contain' }}
-                                />
-                                <Text style={{ color:colors.color6, fontFamily:fonts.font3}}> Sur place</Text>
-                            </TouchableOpacity> 
-                            <TouchableOpacity onPress={() => handleConfirm('online')} style={{ ...style.btnPaiement, backgroundColor: colors.color3, flexDirection:'row', alignItems:'center', justifyContent:'space-around' }}>
-                            <Image
-                                source={require('../assets/paiementenligne.png')} 
-                                style={{ width: 20, height: 20, resizeMode:'contain' }}
-                            />
-                            <Text style={{ color: colors.color1, fontFamily:fonts.font3}}> En ligne</Text>
-                        </TouchableOpacity>
-                         </View>
+                                  <TouchableOpacity onPress={() => handleConfirm('onsite')} style={{...style.btnPaiement, flexDirection:'row', alignItems:'center', justifyContent:'space-around'}}>
+                                    <Image
+                                        source={require('../assets/paiementsurplace.png')} 
+                                        style={{ width: 20, height: 20, resizeMode:'contain' }}
+                                    />
+                                    <Text style={{ color:colors.color6, fontFamily:fonts.font3}}> Sur place</Text>
+                                 </TouchableOpacity> 
+                                 <TouchableOpacity onPress={() => handleConfirm('online')} style={{ ...style.btnPaiement, backgroundColor: colors.color3, flexDirection:'row', alignItems:'center', justifyContent:'space-around' }}>
+                                  <Image
+                                      source={require('../assets/paiementenligne.png')} 
+                                      style={{ width: 20, height: 20, resizeMode:'contain' }}
+                                  />
+                                  <Text style={{ color: colors.color1, fontFamily:fonts.font3}}> En ligne</Text>
+                                 </TouchableOpacity>
+                                </View>
                               )
                             }
-                            {/* </View> */}
-                      </View>
-                         
-                            
-                              
-                              
-                         
-                      </View>
-                      <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
-                      
-                      <FooterProfile />
+                          </View>
                     
+                      </View>
+                      
+                      <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
+                      <FooterProfile />
+
 
                   </>
               )}

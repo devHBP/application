@@ -24,8 +24,9 @@ const style = StyleSheet.create({
         borderRadius: 10,
     },
     menu:{
+      // flex:1, 
         height:110,
-        backgroundColor: '#fff',
+        backgroundColor: colors.color6,
         padding: 10,
         elevation: 2, 
         shadowColor: '#000', 
@@ -38,11 +39,11 @@ const style = StyleSheet.create({
         alignItems:'center',
         justifyContent:'center',
         gap:10,
-        marginBottom:65,
+        // marginBottom:65,
         width:"100%"
     },
     androidMenu:{
-      height:140,
+      height:110,
     },
     disabledCheckBox: {
       opacity: 0.2, 
