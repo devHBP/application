@@ -240,7 +240,7 @@ const FormuleSandwich = ({navigation}) => {
                     <TouchableOpacity  activeOpacity={0.8}
                     style={{gap:10,flexDirection:'row',  justifyContent:'center', alignItems:'center',  }} 
                     onPress={() => handleSandwich(product)}>
-                       
+ 
                     <View style={getStyle(selectedSandwich, product)} key={index}>
 
                       <ProductCard
@@ -256,6 +256,7 @@ const FormuleSandwich = ({navigation}) => {
                         offre={product.offre}
                         showButtons={false} 
                         showPromo={false}
+                        ingredients={product.ingredients}
                       /> 
                         {selectedSandwich?.productId === product.productId && <Check color={colors.color9}/>}
 
