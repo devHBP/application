@@ -77,7 +77,8 @@ const FooterProfile = () => {
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
 
   const openHome = () => {
-    navigation.navigate('home')
+    //retour en position page haute
+    navigation.navigate('home', { shouldScrollToTop: true })
   }
   const openOrders = () => {
     navigation.navigate('orders')

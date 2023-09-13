@@ -23,6 +23,8 @@ import Search from '../SVG/Search';
 import ProductFlatList from '../components/ProductFlatList';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LogoFond from '../SVG/LogoFond';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
+
 
 
 const Home =  ({navigation}) => {
@@ -39,10 +41,14 @@ const Home =  ({navigation}) => {
   const [positionsY, setPositionsY] = useState({});
   const [isLoading, setIsLoading] = useState(true); 
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isManualScrolling, setIsManualScrolling] = useState(false);
+
 
   const user = useSelector((state) => state.auth.user);
   const cart = useSelector((state) => state.cart.cart);
 
+  const screenWidth = Dimensions.get('window').width;
+  const route = useRoute();
 
   const totalPrice = Number((cart.reduce((total, item) => {
     const prix = item.prix || item.prix_unitaire; 
@@ -51,7 +57,19 @@ const Home =  ({navigation}) => {
 
   const dispatch = useDispatch();
   const scrollViewRef = createRef();
-  
+  const horizontalScrollViewRef = useRef(null);
+
+   //retour en haut de page au click sur bouton Home
+   useFocusEffect(
+    React.useCallback(() => {
+      if (route.params?.shouldScrollToTop) {
+        scrollToTop();
+      }
+      if (route.params?.shouldScrollToTop) {
+        route.params.shouldScrollToTop = false;
+      }
+    }, [route.params?.shouldScrollToTop])
+  );
   const allStores = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/getAllStores`);
@@ -60,8 +78,7 @@ const Home =  ({navigation}) => {
       console.error("Une erreur s'est produite, erreur stores :", error);
     }
   };
-  
-  
+
   useEffect(() => {
     allStores();
     setFilteredProducts(products)
@@ -141,6 +158,9 @@ const scrollToTop = () => {
   if (scrollViewRef.current) {
     scrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   }
+  if (horizontalScrollViewRef.current) {
+    horizontalScrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
+  }
 };
 
 //contenu visible
@@ -148,6 +168,7 @@ const toggleVisibility = () => {
   setVisible(!visible)
 }
 
+////// LE SOUCI VIENT D'ICI //////////
 //liste d'onglets differents si collab ou non
 const refs = {
   'Promos': useRef(null),
@@ -164,27 +185,62 @@ const refs = {
 
 const onglets = Object.keys(refs);
 
-const handleLayout = useCallback((onglet, event) => {
+const handleLayout = useCallback((onglet) => (event) => {
   const { y } = event.nativeEvent.layout;
   setPositionsY(prev => ({ ...prev, [onglet]: y }));
 });
 
 
 const ongletButtonHandler = (onglet) => {
+  setIsManualScrolling(true);
   setSelectedOnglet(onglet);
   
   const positionY = positionsY[onglet];
   if (scrollViewRef.current && positionY !== undefined) {
     scrollViewRef.current.scrollTo({ x: 0, y: positionY, animated: true });
   }
+  setTimeout(() => {
+    setIsManualScrolling(false);
+  }, 1500);
 
   // // Pour déplacer l'onglet actif vers la gauche de l'écran
-  // const tabIndex = onglets.indexOf(onglet);
-  // const tabWidth = 170; // Remplacez par la largeur de vos onglets si elle est constante
-  // const positionX = tabIndex * tabWidth;
-  // horizontalScrollViewRef.current?.scrollTo({ x: positionX, animated: true });
+  const tabIndex = onglets.indexOf(onglet);
+  const tabWidth = 170; // Remplacez par la largeur de vos onglets si elle est constante
+  const positionX = tabIndex * tabWidth;
+  horizontalScrollViewRef.current?.scrollTo({ x: positionX, animated: true });
 };
 
+
+const handleScroll = (event) => {
+  if (isManualScrolling) return; // Ignorez les mises à jour si un défilement manuel est en cours
+
+  const paddingTop = 50; 
+  const scrollY = event.nativeEvent.contentOffset.y + paddingTop;
+
+  let currentOnglet = null;
+
+  // Parcourez les positionsY pour déterminer l'onglet actuellement visible
+  for (let i = 0; i < onglets.length; i++) {
+    const onglet = onglets[i];
+    const nextOnglet = onglets[i + 1];
+
+    if (scrollY >= positionsY[onglet] && (!nextOnglet || scrollY < positionsY[nextOnglet])) {
+      currentOnglet = onglet;
+      break;
+    }
+  }
+
+  // Si l'onglet actuellement visible est différent de l'onglet sélectionné, mettez à jour
+  if (currentOnglet && currentOnglet !== selectedOnglet) {
+    setSelectedOnglet(currentOnglet);
+
+    // Déplacez l'onglet actif vers la gauche de l'écran
+    const tabIndex = onglets.indexOf(currentOnglet);
+    const tabWidth = 170;
+    const positionX = tabIndex * tabWidth;
+    horizontalScrollViewRef.current?.scrollTo({ x: positionX, animated: true });
+  }
+};
 
 
 //fin scroll onglets
@@ -201,7 +257,7 @@ const ongletButtonHandler = (onglet) => {
       <SafeAreaProvider  style={{flex:1, paddingTop:50, backgroundColor:colors.color4}}>
        
 
-    <ScrollView vertical={true} style={{ flex:1, backgroundColor:colors.color4}} ref={scrollViewRef} stickyHeaderIndices={[1]}>
+    <ScrollView vertical={true} style={{ flex:1, backgroundColor:colors.color4}} ref={scrollViewRef} stickyHeaderIndices={[1]} onScroll={handleScroll} scrollEventThrottle={16}>
    
     <View >
 
@@ -279,7 +335,7 @@ const ongletButtonHandler = (onglet) => {
       {/* onglet ancres */}
       <View style={styles.categories} >
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} ref={horizontalScrollViewRef} >
         {
           onglets.map((item, index) => (
             <Pressable title="button" 
@@ -340,7 +396,7 @@ const ongletButtonHandler = (onglet) => {
       </View>
 
           {/* link - anti gaspi -  */}
-          <View onLayout={(event) => handleLayout('Promos', event)} style={styles.paddingProduct}>
+          <View onLayout={handleLayout('Promos')} style={styles.paddingProduct}>
            <LinkOffres />
           </View>
           
@@ -349,7 +405,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category === 'Baguettes')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Baguettes', event)} style={styles.paddingProduct}>
+                <View key={category} onLayout={handleLayout('Baguettes')} style={{...styles.paddingProduct}}>
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -362,7 +418,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category ===  'Viennoiseries')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Viennoiseries', event)} style={styles.paddingProduct}>
+                <View key={category} onLayout={handleLayout('Viennoiseries')} style={{...styles.paddingProduct}}>
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -372,12 +428,12 @@ const ongletButtonHandler = (onglet) => {
             ))}
 
           {/* Link page Formule */}
-          <View onLayout={(event) => handleLayout('Formules', event)} style={{...styles.paddingProduct, paddingTop:60}}>
+          <View onLayout={handleLayout('Formules')} style={{...styles.paddingProduct, paddingTop:60}}>
             <FormulesSalees />
           </View>
 
           {/* envie de salé */}
-          <View onLayout={(event) => handleLayout('Produits Salés', event)} style={styles.paddingProduct} >
+          <View onLayout={handleLayout('Produits Salés')} style={{...styles.paddingProduct}}>
           <EnvieSalee />
         </View>
 
@@ -385,7 +441,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category ===  'Pâtisseries')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Pâtisseries', event)} style={styles.paddingProduct}>
+            <View key={category} onLayout={handleLayout('Pains Spéciaux')} style={{...styles.paddingProduct}}>
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -398,7 +454,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category === 'Boules et Pains Spéciaux')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Pains Spéciaux', event)} style={styles.paddingProduct}>
+                <View key={category} onLayout={handleLayout('Pains Spéciaux')} style={{...styles.paddingProduct}}>
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -409,7 +465,7 @@ const ongletButtonHandler = (onglet) => {
 
             {/* formules petits dejeuners */}
             {user.role == 'client' &&
-            <View onLayout={(event) => handleLayout('Petits déjeuners', event)} style={styles.paddingProduct}>
+            <View onLayout={handleLayout('Petits déjeuners')} style={styles.paddingProduct}>
             <FormulesPetitDejeuner />
             </View>
             }
@@ -418,7 +474,7 @@ const ongletButtonHandler = (onglet) => {
             {sortedCategories
               .filter(category => category ===  'Boissons')
               .map((category) => (
-                <View key={category} onLayout={(event) => handleLayout('Boissons', event)} style={styles.paddingProduct}>
+                <View key={category} onLayout={handleLayout('Boissons')} style={styles.paddingProduct}>
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -428,7 +484,7 @@ const ongletButtonHandler = (onglet) => {
             ))}
                 
             {/* catalogue */}
-            <View onLayout={(event) => handleLayout('Tarterie', event)} style={styles.paddingProduct}>
+            <View onLayout={handleLayout('Tarterie')} style={styles.paddingProduct}>
               <Catalogue />
             </View>
 
