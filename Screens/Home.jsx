@@ -23,6 +23,8 @@ import Search from '../SVG/Search';
 import ProductFlatList from '../components/ProductFlatList';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LogoFond from '../SVG/LogoFond';
+import { useRoute, useFocusEffect } from '@react-navigation/native';
+
 
 
 const Home =  ({navigation}) => {
@@ -46,6 +48,8 @@ const Home =  ({navigation}) => {
   const cart = useSelector((state) => state.cart.cart);
 
   const screenWidth = Dimensions.get('window').width;
+  const route = useRoute();
+
 
   const totalPrice = Number((cart.reduce((total, item) => {
     const prix = item.prix || item.prix_unitaire; 
@@ -64,7 +68,19 @@ const Home =  ({navigation}) => {
       console.error("Une erreur s'est produite, erreur stores :", error);
     }
   };
-
+  
+  //retour en haut de page au click sur bouton Home
+  useFocusEffect(
+    React.useCallback(() => {
+      if (route.params?.shouldScrollToTop) {
+        scrollToTop();
+      }
+      if (route.params?.shouldScrollToTop) {
+        route.params.shouldScrollToTop = false;
+      }
+    }, [route.params?.shouldScrollToTop])
+  );
+  
   useEffect(() => {
     allStores();
     setFilteredProducts(products)
