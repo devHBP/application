@@ -14,6 +14,7 @@ import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import ProductCard from '../../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image';
+import { getStyle } from '../../Fonctions/stylesFormule';
 
 
 const PageBurger = ({navigation}) => {
@@ -135,9 +136,9 @@ const PageBurger = ({navigation}) => {
             <Text style={styles.titleOptions}>Les options</Text>
             <ScrollView horizontal={true} style={{marginVertical:20}}>
             {products.map((product, index) => (
-                <TouchableOpacity key={index} onPress={() => setSelectedProduct(product)}>
+                <TouchableOpacity key={index} onPress={() => setSelectedProduct(product)} style={{marginVertical:10}}>
                 
-                 <View style={{width:180, marginLeft:10}} key={index}>
+                 <View style={getStyle(selectedProduct, product)} key={index}>
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -166,7 +167,10 @@ const PageBurger = ({navigation}) => {
         {/* les ingredients */}
        <View style={{marginHorizontal:30}}>
             <Text style={styles.titleOptions}>Ingrédients</Text>
-            <Text style={styles.libelle}>{selectedProduct ? selectedProduct.libelle : ""}</Text> 
+            {
+              selectedProduct && 
+              <Text style={styles.libelle}>{selectedProduct.libelle}</Text> 
+            }
             {/* {selectedProduct && selectedProduct.ingredients && ( */}
         <View style={styles.ingredients}>
         <Text style={styles.listeIngredients}>
