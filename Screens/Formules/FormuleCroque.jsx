@@ -18,6 +18,7 @@ import { getStyle } from '../../Fonctions/stylesFormule';
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
 import Check from '../../SVG/Check';
+import axios from 'axios'
 
 
 const FormuleCroques = ({navigation}) => {
@@ -45,10 +46,9 @@ const FormuleCroques = ({navigation}) => {
         //les sandwichs - categorie
         const fetchProducts = async () => {
           try {
-            const category = 'Croques'; 
-            const products = await getProductsByCategory(category);
-            const updatedProducts = products.filter(product => product.clickandcollect ===  true);
-              setProducts(updatedProducts)
+            const products = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
+            const updatedProducts = products.data.filter(product => product.clickandcollect === true && product.categorie === 'Croques')
+            setProducts(updatedProducts)
           } catch (error) {
             console.error('Une erreur s\'est produite lors de la récupération des produits:', error);
           }
@@ -59,14 +59,23 @@ const FormuleCroques = ({navigation}) => {
         //les desserts - par id
         const getDessertDetails = async () => {
           try {
-            // Récupération des IDs
-            const response = await fetchDessertIds();
-            //console.log('response', response);
-          
-            // // Récupération des détails pour chaque ID
-             const productPromises = response.map((productId) => fetchOneProduct(productId));
-             const desserts = await Promise.all(productPromises);
-             const updtatedDesserts = desserts.filter(product => product.clickandcollect ===  true);
+            // 1. Récupération de tous les produits
+            const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
+            let allProducts = response.data; // Je suppose que vos produits sont dans le champ 'data' de la réponse.
+    
+            // 2. Filtrer les produits avec fetchDessertIds 
+            const dessertIds = await fetchDessertIds();
+            let filteredProducts = allProducts.filter(product => dessertIds.includes(product.productId)); 
+     
+            // 3. Obtenir les détails pour chaque ID filtré
+            const productPromises = filteredProducts.map((product) => fetchOneProduct(product.productId));
+            const desserts = await Promise.all(productPromises);
+            const updtatedDesserts = desserts.filter(product => product.clickandcollect === true);
+    
+            // updtatedDesserts.forEach((product) => {
+            //     console.log('product: ', product.libelle + '  ingredients:', product.ingredients);
+            // });
+    
             setDesserts(updtatedDesserts);
           } catch (error) {
             console.error("Une erreur s'est produite lors de la récupération du produit:", error);
@@ -92,16 +101,20 @@ const FormuleCroques = ({navigation}) => {
        //les boissons - par id
        const getBoissonDetails = async () => {
         try {
-          // Récupération des IDs
-          const response = await fetchBoissonIds();
-          //console.log('response', response);
-        
-          // // Récupération des détails pour chaque ID
-           const productPromises = response.map((productId) => fetchOneProduct(productId));
-           const boissons = await Promise.all(productPromises);
-           const updatedBoissons = boissons.filter(product => product.clickandcollect ===  true);
+         // 1. Récupération de tous les produits
+         const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
+         let allProducts = response.data; // Je suppose que vos produits sont dans le champ 'data' de la réponse.
+         // 2. Filtrer les produits avec fetchDessertIds 
+         const boissonIds = await fetchBoissonIds();
+         let filteredProducts = allProducts.filter(product => boissonIds.includes(product.productId)); 
 
-          setBoissons(updatedBoissons);
+         // 3. Obtenir les détails pour chaque ID filtré
+         const productPromises = filteredProducts.map((product) => fetchOneProduct(product.productId));
+         const boissons = await Promise.all(productPromises);
+
+         const updatedBoissons = boissons.filter(product => product.clickandcollect === true);
+
+        setBoissons(updatedBoissons);
         } catch (error) {
           console.error("Une erreur s'est produite lors de la récupération du produit:", error);
         }
@@ -246,6 +259,7 @@ const FormuleCroques = ({navigation}) => {
                         offre={product.offre}
                         showButtons={false} 
                         showPromo={false}
+                        ingredients={product.ingredients}
                       />
                       {selectedProduct?.productId === product.productId && <Check color={colors.color9}/>}
 
@@ -283,6 +297,7 @@ const FormuleCroques = ({navigation}) => {
                         offre={product.offre}
                         showButtons={false} 
                         showPromo={false}
+                        ingredients={product.ingredients}
                       />
                       {selectedDessert?.productId === product.productId && <Check color={colors.color9}/>}
 
@@ -320,6 +335,7 @@ const FormuleCroques = ({navigation}) => {
                         offre={product.offre}
                         showButtons={false} 
                         showPromo={false}
+                        ingredients={product.ingredients}
                       />
                       {selectedBoisson?.productId === product.productId && <Check color={colors.color9}/>}
 

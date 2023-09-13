@@ -194,6 +194,7 @@ const filterPetites = () => {
                         offre={product.offre}
                         showPromo={false}
                         showButtons={true}
+                        ingredients={product.ingredients}
                       />
                     </View>
                 </TouchableOpacity>

@@ -32,6 +32,7 @@ const ProductFlatList = ({ category, products, handleProductPress }) => {
                 offre={item.offre}
                 showPromo={false}
                 showButtons={true}
+                ingredients={item.ingredients}
               />
             </TouchableOpacity>
           </View>

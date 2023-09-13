@@ -157,7 +157,7 @@ const Solanid = ({navigation}) => {
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center' }}>
             {solanidProducts.map((product, index) => (
                   <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
-                  
+                 
                 <View style={{width:170, marginVertical:10}} key={index}>
                       <ProductCard
                         libelle={product.libelle}
@@ -172,6 +172,7 @@ const Solanid = ({navigation}) => {
                         offre={product.offre}
                         showButtons={true} 
                         showPromo={false}
+                        ingredients={product.ingredients}
                       />
                       </View>
                 {/* <TouchableOpacity
