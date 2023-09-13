@@ -17,6 +17,8 @@ import FastImage from 'react-native-fast-image';
 
 //fonctions
 import { decrementhandler } from '../Fonctions/fonctions'
+import InfoProduct from '../SVG/InfoProduct';
+import ModaleIngredients from '../components/ModaleIngredients';
 
 const ProductDetails = ({navigation, route}) => {
 
@@ -25,6 +27,7 @@ const ProductDetails = ({navigation, route}) => {
     const [modalVisible, setModalVisible] = useState(false);
     const [totalPrice, setTotalPrice] = useState(0);
     const [productCount, setProductCount] = useState(0);
+    const [modalVisibleIngredients, setModalVisibleIngredients] = useState(false);
 
 
     // Effet de bord pour mettre à jour le stock
@@ -39,7 +42,6 @@ const ProductDetails = ({navigation, route}) => {
   }, [product.productId]);
 
     const dispatch = useDispatch();
-
 
     const cart = useSelector((state) => state.cart.cart);
 
@@ -107,6 +109,9 @@ const ProductDetails = ({navigation, route}) => {
     const handleCart = () => {
       navigation.navigate('panier')
     }
+    const openIngredients = () => {
+      setModalVisibleIngredients(true)
+    }
   return (
     <>
     <View style={{flex:1}} >
@@ -122,6 +127,9 @@ const ProductDetails = ({navigation, route}) => {
                             }}
                     resizeMode={FastImage.resizeMode.cover}
                 />
+                <TouchableOpacity style={{position:'absolute',bottom:10, right:10}} onPress={openIngredients}>
+                <InfoProduct />
+                </TouchableOpacity>
                 <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
                   <Text style={styles.titleProduct}>{product.libelle}</Text>
                   <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:colors.color1, borderRadius:25}}>
@@ -157,13 +165,13 @@ const ProductDetails = ({navigation, route}) => {
               </View>
             </View>
 
-            <View style={{ marginVertical:20, marginHorizontal:30}}>
+            {/* <View style={{ marginVertical:20, marginHorizontal:30}}>
                 <Text style={{fontFamily:fonts.font2, fontWeight:"700"}}>Ingrédients</Text>
               </View>
 
               <View style={{backgroundColor:colors.color6, marginHorizontal:30, borderRadius:10, padding: 10, flexDirection:'row', justifyContent:'space-between'}}>
               <Text>{product.ingredients}</Text>
-              </View>
+              </View> */}
 
       </ScrollView>
         <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
@@ -228,6 +236,8 @@ const ProductDetails = ({navigation, route}) => {
                 </View>
                 
             </View>
+            <ModaleIngredients modalVisibleIngredients={modalVisibleIngredients} setModalVisibleIngredients={setModalVisibleIngredients} product={product.ingredients}/>
+
             
     <FooterProfile/>
     </>
