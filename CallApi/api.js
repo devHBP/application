@@ -75,6 +75,7 @@ export const getProductsByCategory = async (category) => {
 export const fetchOneProduct = async  (id) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/getOneProduct/${id}`);
+      //console.log('fetchOneproduct', response.data)
       return response.data;
     } catch (error) {
       console.error('Une erreur s\'est produite lors de la récupération des produits par catégorie:', error);
@@ -85,7 +86,7 @@ export const fetchOneProduct = async  (id) => {
 export const getFamilyProductDetails = async (id) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/getOneFamillyProduct/${id}`);
-     console.log('res', response.data.familleProduit.nom_famille_produit)
+     //console.log('res', response.data.familleProduit.nom_famille_produit)
     return { 
       id: response.data.familleProduit.id_famille_produit, 
       name: response.data.familleProduit.nom_famille_produit
