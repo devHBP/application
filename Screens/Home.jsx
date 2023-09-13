@@ -40,11 +40,9 @@ const Home =  ({navigation}) => {
   const [isLoading, setIsLoading] = useState(true); 
   const [isModalVisible, setIsModalVisible] = useState(false);
 
-
   const user = useSelector((state) => state.auth.user);
   const cart = useSelector((state) => state.cart.cart);
 
-  const screenWidth = Dimensions.get('window').width;
 
   const totalPrice = Number((cart.reduce((total, item) => {
     const prix = item.prix || item.prix_unitaire; 
@@ -53,7 +51,6 @@ const Home =  ({navigation}) => {
 
   const dispatch = useDispatch();
   const scrollViewRef = createRef();
-  const horizontalScrollViewRef = useRef(null);
   
   const allStores = async () => {
     try {
@@ -63,7 +60,8 @@ const Home =  ({navigation}) => {
       console.error("Une erreur s'est produite, erreur stores :", error);
     }
   };
-
+  
+  
   useEffect(() => {
     allStores();
     setFilteredProducts(products)
@@ -105,6 +103,7 @@ const Home =  ({navigation}) => {
     };
     fetchData(); 
   }, []);
+
 
   //redirection vers la page de détails
   const handleProductPress = (product) => {
@@ -149,7 +148,7 @@ const toggleVisibility = () => {
   setVisible(!visible)
 }
 
-//scroll ref pour les differents onglets
+//liste d'onglets differents si collab ou non
 const refs = {
   'Promos': useRef(null),
   'Baguettes': useRef(null),
@@ -169,6 +168,8 @@ const handleLayout = useCallback((onglet, event) => {
   const { y } = event.nativeEvent.layout;
   setPositionsY(prev => ({ ...prev, [onglet]: y }));
 });
+
+
 const ongletButtonHandler = (onglet) => {
   setSelectedOnglet(onglet);
   
@@ -176,13 +177,19 @@ const ongletButtonHandler = (onglet) => {
   if (scrollViewRef.current && positionY !== undefined) {
     scrollViewRef.current.scrollTo({ x: 0, y: positionY, animated: true });
   }
-  // Pour déplacer l'onglet actif vers la gauche de l'écran
-  const tabIndex = onglets.indexOf(onglet);
-  const tabWidth = 170; // Remplacez par la largeur de vos onglets si elle est constante
-  const positionX = tabIndex * tabWidth;
-  horizontalScrollViewRef.current?.scrollTo({ x: positionX, animated: true });
+
+  // // Pour déplacer l'onglet actif vers la gauche de l'écran
+  // const tabIndex = onglets.indexOf(onglet);
+  // const tabWidth = 170; // Remplacez par la largeur de vos onglets si elle est constante
+  // const positionX = tabIndex * tabWidth;
+  // horizontalScrollViewRef.current?.scrollTo({ x: positionX, animated: true });
 };
+
+
+
 //fin scroll onglets
+
+
   return (
     <>
     <View style={{flex:1}}>
@@ -272,7 +279,7 @@ const ongletButtonHandler = (onglet) => {
       {/* onglet ancres */}
       <View style={styles.categories} >
 
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} ref={horizontalScrollViewRef}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} >
         {
           onglets.map((item, index) => (
             <Pressable title="button" 
@@ -291,7 +298,7 @@ const ongletButtonHandler = (onglet) => {
               onPress={() => ongletButtonHandler(item)}
             >
               <View style={{flexDirection:'row', alignItems:'center', gap:6}}>
-                <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight: "600",
+                <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight: "700",
                    color: item === 'Promos' 
                    ? colors.color6 
                    : item === selectedOnglet 
@@ -370,7 +377,7 @@ const ongletButtonHandler = (onglet) => {
           </View>
 
           {/* envie de salé */}
-         <View onLayout={(event) => handleLayout('Produits Salés', event)} style={styles.paddingProduct} >
+          <View onLayout={(event) => handleLayout('Produits Salés', event)} style={styles.paddingProduct} >
           <EnvieSalee />
         </View>
 
@@ -389,10 +396,10 @@ const ongletButtonHandler = (onglet) => {
 
             {/* pains speciaux */}
             {sortedCategories
-              .filter(category => category ===  'Boules et Pains Spéciaux')
+              .filter(category => category === 'Boules et Pains Spéciaux')
               .map((category) => (
                 <View key={category} onLayout={(event) => handleLayout('Pains Spéciaux', event)} style={styles.paddingProduct}>
-              <ProductFlatList
+                <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
                 handleProductPress={handleProductPress}
