@@ -1,5 +1,5 @@
 import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import { fonts, colors} from '../../styles/styles'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { useSelector, useDispatch } from 'react-redux'
@@ -7,6 +7,7 @@ import { getProductsByCategory, fetchOneProduct, fetchDessertIds, fetchBoissonId
 import {  addToCart} from '../../reducers/cartSlice';
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import { style } from '../../styles/formules'; 
+import { styles } from '../../styles/home'; 
 import FooterProfile from '../../components/FooterProfile';
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
@@ -31,6 +32,8 @@ const FormulePizzas = ({navigation}) => {
 
 
     const dispatch = useDispatch()
+    const scrollViewRef = useRef(null);
+
     const cart = useSelector((state) => state.cart.cart);
 
     const handleBack = () => {
@@ -127,6 +130,9 @@ const FormulePizzas = ({navigation}) => {
       } else {
           setSelectedProduct(product); 
           setProductIds([...productIds, product.productId]);
+          setTimeout(() => {
+            scrollViewRef.current?.scrollTo({ y: 800, animated: true });
+          }, 1000);
       }
   }
   const handleDessert = (product) => {
@@ -144,6 +150,9 @@ const FormulePizzas = ({navigation}) => {
     } else {
         setSelectedDessert(product); 
         setProductIds([...productIds, product.productId]);
+        setTimeout(() => {
+          scrollViewRef.current?.scrollTo({ y: 2800, animated: true });
+        }, 1000);
     }
   }
   const handleBoisson = (product) => {
@@ -207,7 +216,7 @@ const FormulePizzas = ({navigation}) => {
     <View style={{flex:1}}>
       <View style={{paddingTop:50}}></View>
 
-      <ScrollView>
+      <ScrollView ref={scrollViewRef}>
         <View>
             {/* <Image
                     source={require('../../assets/Formule2.jpg')} 
@@ -217,6 +226,10 @@ const FormulePizzas = ({navigation}) => {
               source={require('../../assets/Formule2.jpg')}
               style={{ width: "100%", height: 330 }}
               resizeMode={FastImage.resizeMode.cover}
+            />
+            <Image
+                source={require('../../assets/offre31.jpg')} 
+                style={ styles.pastilleOffre31}
             />
 
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
