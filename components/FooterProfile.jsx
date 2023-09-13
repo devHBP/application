@@ -214,12 +214,9 @@ const FooterProfile = () => {
 
 const style = StyleSheet.create({
     profile: {
-        height:'10%',
+        height:100,
         width:'100%', 
-        position:'absolute', 
-        bottom:0, 
         backgroundColor:colors.color1,
-        flex:1,
         flexDirection: 'row',
         justifyContent:'space-around',
         alignItems:'center',

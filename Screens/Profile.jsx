@@ -235,7 +235,7 @@ const allStores = async () => {
     <>
           <SafeAreaProvider style={{flex:1, paddingTop:50, backgroundColor:colors.color4}}>
 
-    <ScrollView showsVerticalScrollIndicator={false} style={{  marginHorizontal: 15,marginTop:30,  marginBottom:80}}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{  marginHorizontal: 15,marginTop:30}}>
       <View style={{  marginBottom: 20}}> 
             <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
                 <Text style={style.title}>Votre compte</Text>
