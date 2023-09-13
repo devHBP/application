@@ -163,7 +163,7 @@ const incrementhandler = async (productIds, offre) => {
             productId: id,
             libelle: productInCart.libelle,
             image: productInCart.image,
-            prix_unitaire: productInCart.prix,
+            prix_unitaire: productInCart.prix_unitaire,
             qty: 1,
             offre: offre,
           })
@@ -171,6 +171,7 @@ const incrementhandler = async (productIds, offre) => {
 
         if (offre && offre.startsWith('offre31')) {
           const updatedCart = [...cart, { productId: id, libelle: productInCart.libelle, image: productInCart.image, prix_unitaire: productInCart.prix, qty: 1, offre: offre }];
+          console.log('updated cart', updatedCart)
           const sameOfferProducts = updatedCart.filter((item) => item.offre === offre);
           const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
 
