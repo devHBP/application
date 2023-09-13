@@ -18,7 +18,7 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
       
 
       <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
-      <Text numberOfLines={2} style={styles.titleLibelle}>{libelle}</Text>
+      <Text numberOfLines={3} style={styles.titleLibelle}>{libelle}</Text>
       <View style={styles.actions}>
       
         <TouchableOpacity onPress={decrementhandler} style={styles.container_gray}>
@@ -62,14 +62,14 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
         
     
         <View style={styles.content}> 
-          <Text>{qty - freeCount}x {libelle}</Text>
+          <Text numberOfLines={2} style={styles.details}>{qty - freeCount}x {libelle}</Text>
           <Text style={styles.price}>{qty - freeCount}x {prix || prix_unitaire }€</Text>  
           </View>
       
           <View style={styles.content}>
             {isFree = 'true' && freeCount > 0 && (
               <>
-                <Text style={{ color: colors.color9 }}>
+                <Text style={{ ... styles.details, color: colors.color9 }}>
                   {`${freeCount} x ${libelle}`}
                 </Text>
                 <Text style={{ color: colors.color9 }}>+0€</Text>
@@ -137,7 +137,11 @@ const styles = StyleSheet.create({
       titleLibelle:{
         color:colors.color2,
         fontFamily:fonts.font2,
-        fontWeight:"700"
+        fontWeight:"700",
+        width:170,
+      },
+      details:{
+        fontSize:12
       }
   });
 
