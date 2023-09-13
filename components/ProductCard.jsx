@@ -19,13 +19,16 @@ import { checkStockForSingleProduct } from '../CallApi/api.js';
 import {decrementhandler } from '../Fonctions/fonctions'
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import InfoProduct from '../SVG/InfoProduct';
+import ModaleIngredients from './ModaleIngredients';
 
 
-const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, showButtons, showPromo = true   }) => {
+const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, showButtons, showPromo = true , ingredients  }) => {
 
   // Déclaration de l'état du stock
   const [currentStock, setCurrentStock] = useState(stock);
   const [modalVisible, setModalVisible] = useState(false);
+  const [modalVisibleIngredients, setModalVisibleIngredients] = useState(false);
 
 
   // Effet de bord pour mettre à jour le stock
@@ -162,6 +165,10 @@ const incrementhandler = async () => {
     console.error("Une erreur s'est produite lors de l'incrémentation du stock :", error);
   }
 };
+
+const handleIngredients = () => {
+  setModalVisibleIngredients(true)
+}
    
   return (
     
@@ -194,6 +201,9 @@ const incrementhandler = async () => {
           {currentStock === 0 && (
             <View style={style.overlay} />
             )}
+             <TouchableOpacity style={{position:'absolute',bottom:10, left:10}} onLongPress={handleIngredients} activeOpacity={0.8}>
+                <InfoProduct />
+                </TouchableOpacity>
            {
             offre && offre.startsWith('offre31') && (
               <Image
@@ -390,6 +400,8 @@ const incrementhandler = async () => {
 
   
             <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
+            <ModaleIngredients modalVisibleIngredients={modalVisibleIngredients} setModalVisibleIngredients={setModalVisibleIngredients} product={ingredients}/>
+
 
     </View>   
   )

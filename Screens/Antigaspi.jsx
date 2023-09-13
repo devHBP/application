@@ -203,6 +203,7 @@ const Antigaspi = ({navigation}) => {
                         stock={product.stock}
                         offre={product.offre}
                         showButtons={false} 
+                        ingredients={product.ingredients}
                       />
                       <View style={styles.stockantigaspi}>
                         <Cloche />

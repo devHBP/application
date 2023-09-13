@@ -223,6 +223,7 @@ const handleCart = () => {
                         offre={product.offre}
                         showButtons={false} 
                         showPromo={false}
+                        ingredients={product.ingredients}
                       />
                       {selectedProduct?.productId === product.productId && <Check color={colors.color9}/>}
 

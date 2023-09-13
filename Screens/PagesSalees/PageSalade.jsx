@@ -149,6 +149,7 @@ const PageSalade = ({navigation}) => {
                         offre={product.offre}
                         showPromo={false}
                         showButtons={true}
+                        ingredients={product.ingredients}
                       />
                     </View>
                 </TouchableOpacity>
