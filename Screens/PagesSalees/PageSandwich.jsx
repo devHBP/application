@@ -110,7 +110,7 @@ const capitalizeIngredients = (ingredients) => {
 
 
   return (
-    <View style={{marginBottom:150}} >
+    <View style={{flex:1}} >
       <View style={{paddingTop:50}}></View>
        <ScrollView>
         <View>
@@ -151,6 +151,7 @@ const capitalizeIngredients = (ingredients) => {
                         offre={product.offre}
                         showPromo={false}
                         showButtons={true}
+                        ingredients={product.ingredients}
                       />
                     </View>
                 
@@ -234,7 +235,7 @@ const capitalizeIngredients = (ingredients) => {
         </ScrollView>
 
         {/* redirection vers formule*/}
-        <View style={{...style.menu, marginBottom:40, paddingBottom:40}}>
+        <View style={style.menu}>
                 <View >
                 <View style={style.bandeauFormule}>
                 <Text style={{ fontWeight:"bold"}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
