@@ -155,7 +155,7 @@ const StorePicker = () => {
                     }
 
                      {user.role == 'client' || user.role == 'invite' &&
-                    <View style={{flexDirection:'row'}}>
+                    <View style={{flexDirection:'row',justifyContent:'center'}}>
                         <View >
                             <Text style={{fontSize:10, color:colors.color1, width:130}}>
                                 {selectedStore.adresse_magasin}   
