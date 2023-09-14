@@ -1,20 +1,44 @@
-import { View, Text, ScrollView, TouchableOpacity, Image } from 'react-native'
-import React from 'react'
+import { View, Text, ScrollView, TouchableOpacity  } from 'react-native'
+import React, { useState} from 'react'
+import { useSelector,  } from 'react-redux'
 import { styles} from '../styles/home'; 
 import { useNavigation } from '@react-navigation/native';
+import FastImage from 'react-native-fast-image';
+import ModaleFormulePetitdej from './ModaleFormulePetitDej';
+
 
 const FormulesSalees = () => {
 
     const navigation = useNavigation();
+    const user = useSelector((state) => state.auth.user);
+    const [modalVisible, setModalVisible] = useState(false);
+
 
     const openFormuleArtisan = () => {
-        navigation.navigate('artisan')
+        if (user.role  === 'SUNcollaborateur'){
+            setModalVisible(true)
+        }
+        else {
+            navigation.navigate('artisan')
+        }
+       
     }
     const openFormulePetitDejeuner = () => {
-        navigation.navigate('petitdej')
+        if (user.role  === 'SUNcollaborateur'){
+            setModalVisible(true)
+        }
+        else {
+            navigation.navigate('petitdej')
+        }
+       
     }
     const openFormulePetitDejeunerGourmand = () => {
-        navigation.navigate('petitdejgourmand')
+        if (user.role  === 'SUNcollaborateur'){
+            setModalVisible(true)
+        }
+        else {
+            navigation.navigate('petitdejgourmand')
+        }
     }
   
   return (
@@ -28,11 +52,12 @@ const FormulesSalees = () => {
               <ScrollView horizontal={true} style={{marginVertical:10}}>
 
                 {/* artisan */}
-                <TouchableOpacity style={{marginRight:10}} onPress={openFormuleArtisan} activeOpacity={0.8}>
-                    <Image
-                            source={require('../assets/Formuleartisan.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'cover' }}
-                            />
+                <TouchableOpacity style={{marginRight:10}} onPress={openFormuleArtisan} activeOpacity={0.8}>  
+                    <FastImage
+                    source={require('../assets/Formuleartisan.jpg')}
+                    style={{ width: 315, height: 200, resizeMode:'cover' }}
+                    resizeMode={FastImage.resizeMode.cover}
+                    />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Formule Artisan</Text>
                         <Text style={styles.textFormule}>Un café et un en-cas de 6h à 8h</Text>
@@ -41,10 +66,11 @@ const FormulesSalees = () => {
 
                 {/* petit dej */}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePetitDejeuner} activeOpacity={0.8}>
-                    <Image
-                            source={require('../assets/FormulePetitdejeuner.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'cover' }}
-                            />
+                     <FastImage
+                    source={require('../assets/FormulePetitdejeuner.jpg')}
+                    style={{ width: 315, height: 200, resizeMode:'cover' }}
+                    resizeMode={FastImage.resizeMode.cover}
+                    />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Petit Déjeuner </Text>
                         <Text style={styles.textFormule}>Une viennoiserie, un jus d'orange et un café</Text>
@@ -53,10 +79,11 @@ const FormulesSalees = () => {
 
                 {/* petit dej gourmand*/}
                 <TouchableOpacity style={{marginRight:10}} onPress={openFormulePetitDejeunerGourmand} activeOpacity={0.8}>
-                    <Image
-                            source={require('../assets/FormulepetitdejeunerGourmand.jpg')} 
-                            style={{ width: 315, height: 200, resizeMode:'cover' }}
-                            />
+                     <FastImage
+                    source={require('../assets/FormulepetitdejeunerGourmand.jpg')}
+                    style={{ width: 315, height: 200, resizeMode:'cover' }}
+                    resizeMode={FastImage.resizeMode.cover}
+                    />
                     <View style={styles.cardTitle}>
                         <Text style={styles.titleFormule}>Petit déjeuner gourmand</Text>
                         <Text style={styles.textFormule} numberOfLines={2}>Une viennoiserie, un jus d'orange et une boisson gourmande</Text>
@@ -65,6 +92,8 @@ const FormulesSalees = () => {
                     
                 
               </ScrollView>
+              <ModaleFormulePetitdej modalVisible={modalVisible} setModalVisible={setModalVisible}  />
+
           </View>
   )
 }

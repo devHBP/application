@@ -199,7 +199,6 @@ const refs = {
   'Tarterie': useRef(null),
 };
 
-
 const onglets = Object.keys(refs);
 
 const handleLayout = useCallback((onglet) => (event) => {
@@ -486,12 +485,11 @@ const handleScroll = (event) => {
               </View>
             ))}
 
-            {/* formules petits dejeuners */}
-            {user.role == 'client' &&
+           {/* Petites dejeuners */}
             <View onLayout={handleLayout('Petits déjeuners')} style={styles.paddingProduct}>
             <FormulesPetitDejeuner />
             </View>
-            }
+         
             
             {/* boissons */}
             {sortedCategories
