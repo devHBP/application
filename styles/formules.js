@@ -8,11 +8,15 @@ const style = StyleSheet.create({
         paddingBottom:10,
         color:colors.color1
     },
+    descriptionFormule:{
+      color:colors.color1
+    },
     choixTitle:{
         textAlign:'center',
         fontSize:20,
         padding:10,
         backgroundColor:colors.color3,
+        color:colors.color1
     },
     scrollProduct:{
         height:280,

@@ -257,7 +257,7 @@ const FormuleSandwich = ({navigation}) => {
         </View>
         <View style={{padding:30}}>
             <Text style={style.title}>Formule Sandwich</Text>
-            <Text>"Un Sandwich classique, avec une touche du Pain du Jour. Garnitures généreuses et pain frais pour une satisfaction garantie."</Text>
+            <Text style={style.descriptionFormule}>"Un Sandwich classique, avec une touche du Pain du Jour. Garnitures généreuses et pain frais pour une satisfaction garantie."</Text>
         </View>
         {/* choix sandwich */}
         <View>
@@ -299,7 +299,7 @@ const FormuleSandwich = ({navigation}) => {
         <View>
           <View style={{...style.choixTitle,flexDirection:'row', gap:10, justifyContent:'center', alignItems:'center'}}>
               <Text style={style.choixTitle}>Les desserts  </Text>
-              <Text style={{fontSize:12}}>(pour 2€ en +)</Text>
+              <Text style={{fontSize:12, color:colors.color1}}>(pour 2€ en +)</Text>
               
           </View>
             <ScrollView horizontal={true} style={style.scrollProduct}>
@@ -340,7 +340,7 @@ const FormuleSandwich = ({navigation}) => {
         <View>
           <View style={{...style.choixTitle,flexDirection:'row', gap:10, justifyContent:'center', alignItems:'center'}}>
               <Text style={style.choixTitle}>Les boissons  </Text>
-              <Text style={{fontSize:12}}>(pour 2€ en +)</Text>
+              <Text style={{fontSize:12, color:colors.color1}}>(pour 2€ en +)</Text>
           </View>
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {boissons.map((product, index) => (
@@ -381,12 +381,12 @@ const FormuleSandwich = ({navigation}) => {
     <View style={style.menu}>
         <View>
           <View style={style.bandeauFormule}>
-          <Text style={{ fontWeight:"bold"}}>Prix de la formule</Text>
-          {selectedSandwich && typeof prix === 'number' && <Text>{prix.toFixed(2)} €</Text>}
+          <Text style={{ fontWeight:"bold", color:colors.color1}}>Prix de la formule</Text>
+          {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color1}}>{prix.toFixed(2)} €</Text>}
           </View>
           <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
-            <Text>Avec</Text><Image source={require('../../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+            <Text style={{color:colors.color1}}>Avec</Text><Image source={require('../../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
           {selectedSandwich && typeof prix === 'number' && <Text style={{color:colors.color2, fontWeight:"bold"}}>{(prix*0.8).toFixed(2)} €</Text>}
           </View>
