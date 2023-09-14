@@ -15,30 +15,34 @@ const FormulesSalees = () => {
 
 
     const openFormuleArtisan = () => {
-        if (user.role  === 'SUNcollaborateur'){
-            setModalVisible(true)
-        }
-        else {
-            navigation.navigate('artisan')
-        }
+        // if (user.role  === 'SUNcollaborateur'){
+        //     setModalVisible(true)
+        // }
+        // else {
+        //     navigation.navigate('artisan')
+        // }
+
+        setModalVisible(true)
        
     }
     const openFormulePetitDejeuner = () => {
-        if (user.role  === 'SUNcollaborateur'){
-            setModalVisible(true)
-        }
-        else {
-            navigation.navigate('petitdej')
-        }
+        // if (user.role  === 'SUNcollaborateur'){
+        //     setModalVisible(true)
+        // }
+        // else {
+        //     navigation.navigate('petitdej')
+        // }
+        setModalVisible(true)
        
     }
     const openFormulePetitDejeunerGourmand = () => {
-        if (user.role  === 'SUNcollaborateur'){
-            setModalVisible(true)
-        }
-        else {
-            navigation.navigate('petitdejgourmand')
-        }
+        // if (user.role  === 'SUNcollaborateur'){
+        //     setModalVisible(true)
+        // }
+        // else {
+        //     navigation.navigate('petitdejgourmand')
+        // }
+        setModalVisible(true)
     }
   
   return (
