@@ -227,14 +227,14 @@ const FormulePainBagnat = ({navigation}) => {
               resizeMode={FastImage.resizeMode.cover}
               />
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={style.titleProduct}>Pains Bagnats</Text>
+                    <Text style={style.titleProduct}>Formule Pain Bagnat</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
                   </View>
         </View>
         <View style={{padding:30}}>
-            <Text style={style.title}>Pain Bagnat</Text>
+            <Text style={style.title}>Formule Pain Bagnat</Text>
             <Text>"Le Pain Bagnat du Pain du Jour, c'est la Méditerranée en sandwich. Simple, frais et délicieux."</Text>
         </View>
         {/* choix sandwich */}

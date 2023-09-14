@@ -252,7 +252,7 @@ const FormulePoke = ({navigation}) => {
               resizeMode={FastImage.resizeMode.cover}
               />
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={{...style.titleProduct, color:colors.color1}}>Poke Bowls</Text>
+                    <Text style={{...style.titleProduct, color:colors.color1}}>Formule Poke Bowl</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
@@ -260,7 +260,7 @@ const FormulePoke = ({navigation}) => {
                
         </View>
         <View style={{padding:30}}>
-            <Text style={style.title}>Poke Bowl</Text>
+            <Text style={style.title}>Formule Poke Bowl</Text>
             <Text>"Notre Poke Bowl combine fraîcheur et équilibre. Des ingrédients simples et de qualité pour une pause déjeuner saine."</Text>
         </View>
         {/* choix sandwich */}

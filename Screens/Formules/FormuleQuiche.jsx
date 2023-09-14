@@ -229,14 +229,14 @@ const FormuleQuiche = ({navigation}) => {
               resizeMode={FastImage.resizeMode.cover}
               />
                  <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={style.titleProduct}>Quiches</Text>
+                    <Text style={style.titleProduct}>Formule Quiche</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
                   </View>
         </View>
         <View style={{padding:30}}>
-            <Text style={style.title}>Quiches</Text>
+            <Text style={style.title}>Formule Quiche</Text>
             <Text>"Nos Quiches sont une invitation à la simplicité. Pâte fine, garniture onctueuse, pour un repas sans chichi."</Text>
         </View>
         {/* choix sandwich */}

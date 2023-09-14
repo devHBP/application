@@ -229,14 +229,14 @@ const FormulePanini = ({navigation}) => {
               />
 
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={style.titleProduct}>Paninis</Text>
+                    <Text style={style.titleProduct}>Formule Panini</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
                   </View>
         </View>
         <View style={{padding:30}}>
-            <Text style={style.title}>Paninis</Text>
+            <Text style={style.title}>Formule Panini</Text>
             <Text>"Un Panini grillé, garnitures savoureuses. Le choix parfait pour une pause chaleureuse."</Text>
         </View>
         {/* choix sandwich */}

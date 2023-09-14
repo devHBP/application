@@ -239,14 +239,14 @@ const FormuleBurger = ({navigation}) => {
               />
 
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={style.titleProduct}>Burgers</Text>
+                    <Text style={style.titleProduct}>Formule Burger</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
                   </View>
         </View>
         <View style={{padding:30}}>
-            <Text style={style.title}>Burger</Text>
+            <Text style={style.title}>Formule Burger</Text>
             <Text>"Un Burger gourmand avec une touche artisanale. Viande tendre, pain moelleux, pour les amateurs de classiques."</Text>
         </View>
         {/* choix burger */}

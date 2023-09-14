@@ -42,7 +42,7 @@ const FormulesSalees = () => {
   return (
     <View style={{marginLeft:30, marginVertical:0}}>
               <Text style={styles.text1formule}>Notre sélection de</Text>
-              <Text style={styles.text2formule}>snack <Text style={styles.text1formule}>et </Text>formules</Text>
+              <Text style={styles.text2formule}>snacks <Text style={styles.text1formule}>et </Text>formules</Text>
               
               <ScrollView horizontal={true} style={{marginVertical:10}}>
 
@@ -87,7 +87,7 @@ const FormulesSalees = () => {
                     resizeMode={FastImage.resizeMode.cover}
                 /> */}
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Sandwichs</Text>
+                        <Text style={styles.titleFormule}>Formule Sandwich</Text>
                         <Text style={styles.textFormule}>Un sandwich, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>
@@ -109,7 +109,7 @@ const FormulesSalees = () => {
                     /> */}
                             
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Salades</Text>
+                        <Text style={styles.titleFormule}>Formule Salade</Text>
                         <Text style={styles.textFormule}>Une salade, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>
@@ -130,7 +130,7 @@ const FormulesSalees = () => {
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Pizzas</Text>
+                        <Text style={styles.titleFormule}>Formule Pizza</Text>
                         <Text style={styles.textFormule}>Une pizza, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>
@@ -151,7 +151,7 @@ const FormulesSalees = () => {
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Wraps</Text>
+                        <Text style={styles.titleFormule}>Formule Wrap</Text>
                         <Text style={styles.textFormule}>Un wrap, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>
@@ -172,7 +172,7 @@ const FormulesSalees = () => {
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Pains Bagnats</Text>
+                        <Text style={styles.titleFormule}>Formule Pain Bagnat</Text>
                         <Text style={styles.textFormule}>Un pain bagnat, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>
@@ -193,7 +193,7 @@ const FormulesSalees = () => {
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Burgers</Text>
+                        <Text style={styles.titleFormule}>Formule Burger</Text>
                         <Text style={styles.textFormule}>Un burger, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>
@@ -214,7 +214,7 @@ const FormulesSalees = () => {
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Croques</Text>
+                        <Text style={styles.titleFormule}>Formule Croque</Text>
                         <Text style={styles.textFormule}>Un croque, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>
@@ -235,7 +235,7 @@ const FormulesSalees = () => {
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Paninis</Text>
+                        <Text style={styles.titleFormule}>Formule Panini</Text>
                         <Text style={styles.textFormule}>Un panini, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>
@@ -256,7 +256,7 @@ const FormulesSalees = () => {
                             resizeMode={FastImage.resizeMode.cover}
                     /> */}
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Quiches</Text>
+                        <Text style={styles.titleFormule}>Formule Quiche</Text>
                         <Text style={styles.textFormule}>Un panini, un dessert et une boisson</Text>
                     </View>
                 </TouchableOpacity>

@@ -234,14 +234,14 @@ const FormulePizzas = ({navigation}) => {
               />
 
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={style.titleProduct}>Pizzas</Text>
+                    <Text style={style.titleProduct}>Formule Pizza</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
                   </View>
         </View>
         <View style={{padding:30}}>
-            <Text style={style.title}>Pizzas</Text>
+            <Text style={style.title}>Formule Pizza</Text>
             <Text>"Découvrez notre Pizza croustillante, garnie avec soin. Un plaisir simple à partager."</Text>
         </View>
         {/* choix sandwich */}

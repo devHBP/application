@@ -240,14 +240,14 @@ const FormuleCroques = ({navigation}) => {
               />
 
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={style.titleProduct}>Croques</Text>
+                    <Text style={style.titleProduct}>Formule Croque</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
                   </View>
         </View>
         <View style={{padding:30}}>
-            <Text style={style.title}>Croques</Text>
+            <Text style={style.title}>Formule Croque</Text>
             <Text>"Notre Croque est l'alliance parfaite du croustillant et du fondant. Idéal pour une petite faim."</Text>
         </View>
         {/* choix sandwich */}

@@ -228,14 +228,14 @@ const FormuleWraps = ({navigation}) => {
               />
 
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={style.titleProduct}>Wraps</Text>
+                    <Text style={style.titleProduct}>Formule Wrap</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
                   </View>
         </View>
         <View style={{padding:30}}>
-            <Text style={style.title}>Wraps</Text>
+            <Text style={style.title}>Formule Wrap</Text>
             <Text>"Notre Wrap est pratique et savoureux. Des ingrédients bien choisis pour un repas rapide."</Text>
         </View>
         {/* choix sandwich */}

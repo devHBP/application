@@ -230,14 +230,14 @@ const FormuleSalade = ({navigation}) => {
               />
 
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={style.titleProduct}>Salades</Text>
+                    <Text style={style.titleProduct}>Formule Salade</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
                   </View> 
         </View>
         <View style={{padding:30}}>
-            <Text style={style.title}>Salade</Text>
+            <Text style={style.title}>Formule Salade</Text>
             <Text>"Notre Salade est un choix léger et nutritif. Des légumes frais, une pointe d'assaisonnement, idéale pour une pause déjeuner."</Text>
         </View>
         {/* choix salade */}
