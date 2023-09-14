@@ -22,6 +22,7 @@ const PageWrap = ({navigation}) => {
 
     const [products, setProducts] = useState([]); 
     const [selectedProduct, setSelectedProduct] = useState(null); 
+    const [stock, setStock] = useState([]);
     const [totalPrice, setTotalPrice] = useState(0);
     const [productCount, setProductCount] = useState(0);
 
