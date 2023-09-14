@@ -90,8 +90,9 @@ const styles = StyleSheet.create({
     marginTop:30
   },
   title: {
-    fontSize: 16,
+    fontSize: 12,
     marginBottom: 5,
+    color:colors.color1
   },
   price: {
     fontSize: 14,

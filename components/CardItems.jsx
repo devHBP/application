@@ -141,7 +141,8 @@ const styles = StyleSheet.create({
         width:170,
       },
       details:{
-        fontSize:12
+        fontSize:12,
+        color:colors.color1
       }
   });
 
