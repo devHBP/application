@@ -13,7 +13,12 @@ export const styles = StyleSheet.create({
     titleOptions:{
         fontSize:20,
         fontWeight: "600",
-        fontFamily:fonts.font2
+        fontFamily:fonts.font2,
+        color:colors.color1
+    },
+    descriptionProduit:{
+      marginHorizontal:10,
+      color:colors.color1
     },
     imageOptions:{
         width: 128, 
@@ -41,6 +46,7 @@ export const styles = StyleSheet.create({
     listeIngredients:{
         fontSize:13,
         fontFamily:fonts.font2,
+        color:colors.color1
     },
     description:{
         flexDirection:'row',
@@ -80,7 +86,8 @@ export const styles = StyleSheet.create({
       paddingLeft:30,
       fontFamily:fonts.font3,
       fontWeight: "600",
-      fontSize:20
+      fontSize:20,
+      color:colors.color1
     },
     titleFormule: {
       color:colors.color2,
@@ -104,7 +111,8 @@ export const styles = StyleSheet.create({
      texteFormule:{
       fontSize:14,
       fontWeight: "700",
-      fontFamily:fonts.font2
+      fontFamily:fonts.font2,
+      color:colors.color1
      },
      container_gray:{
       backgroundColor:'lightgray',

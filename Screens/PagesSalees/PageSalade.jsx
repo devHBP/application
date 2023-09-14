@@ -156,7 +156,7 @@ const PageSalade = ({navigation}) => {
                 </TouchableOpacity>
             ))}
             </ScrollView >
-            <Text style={{marginHorizontal:10}}>
+            <Text style={styles.descriptionProduit}>
           {selectedProduct ? selectedProduct.descriptionProduit : "Sélectionnez un produit pour avoir sa description"}
           </Text>       
         </View>
@@ -235,14 +235,14 @@ const PageSalade = ({navigation}) => {
 
         {/* redirection vers formule*/}
         <View style={style.menu}>
-                <View>
+                <View >
                 <View style={style.bandeauFormule}>
-                    <Text style={{ fontWeight:"bold"}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
-                   <Text>{totalPrice.toFixed(2)} €</Text>
+                <Text style={{ fontWeight:"bold", color:colors.color1}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
+               <Text style={{color:colors.color1}}>{totalPrice.toFixed(2)} €</Text>
                 </View>
                 <View style={style.bandeauFormule}>
                     <View style={{flexDirection:'row'}}>
-                    <Text>Avec</Text><Image source={require('../../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+                    <Text style={{color:colors.color1}}>Avec</Text><Image source={require('../../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
                     </View>
                <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice*0.8).toFixed(2)}€</Text>
                 </View>
