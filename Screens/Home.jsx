@@ -49,10 +49,6 @@ const Home =  ({navigation}) => {
 
   const screenWidth = Dimensions.get('window').width;
   const route = useRoute();
-<<<<<<< HEAD
-
-=======
->>>>>>> work
 
   const totalPrice = Number((cart.reduce((total, item) => {
     const prix = item.prix || item.prix_unitaire; 
@@ -188,38 +184,6 @@ const toggleVisibility = () => {
   setVisible(!visible)
 }
 
-<<<<<<< HEAD
-//liste d'onglets differents si collab ou non
-let refs;
-//scroll ref pour les differents onglets
-if (user.role === "SUNcollaborateur"){
-  refs = {
-    'Promos': useRef(null),
-    'Baguettes': useRef(null),
-    'Viennoiseries': useRef(null),
-    'Formules': useRef(null),
-    'Produits Salés': useRef(null),
-    'Pâtisseries': useRef(null),
-    'Pains Spéciaux': useRef(null),
-    'Boissons': useRef(null),
-    'Tarterie': useRef(null),
-  }
-}
-  else {
-     refs = {
-    'Promos': useRef(null),
-    'Baguettes': useRef(null),
-    'Viennoiseries': useRef(null),
-    'Formules': useRef(null),
-    'Produits Salés': useRef(null),
-    'Pâtisseries': useRef(null),
-    'Pains Spéciaux': useRef(null),
-    'Petits déjeuners': useRef(null),
-    'Boissons': useRef(null),
-    'Tarterie': useRef(null),
-  };
-}
-=======
 ////// LE SOUCI VIENT D'ICI //////////
 //liste d'onglets differents si collab ou non
 const refs = {
@@ -234,19 +198,16 @@ const refs = {
   'Boissons': useRef(null),
   'Tarterie': useRef(null),
 };
->>>>>>> work
+
 
 const onglets = Object.keys(refs);
 
 const handleLayout = useCallback((onglet) => (event) => {
   const { y } = event.nativeEvent.layout;
   setPositionsY(prev => ({ ...prev, [onglet]: y }));
-<<<<<<< HEAD
 }, []);
-=======
-});
 
->>>>>>> work
+
 
 const ongletButtonHandler = (onglet) => {
   setIsManualScrolling(true);
@@ -256,29 +217,18 @@ const ongletButtonHandler = (onglet) => {
   if (scrollViewRef.current && positionY !== undefined) {
     scrollViewRef.current.scrollTo({ x: 0, y: positionY, animated: true });
   }
-<<<<<<< HEAD
-
-  setTimeout(() => {
-    setIsManualScrolling(false);
-  }, 1500);
-  // Pour déplacer l'onglet actif vers la gauche de l'écran
-=======
   setTimeout(() => {
     setIsManualScrolling(false);
   }, 1500);
 
   // // Pour déplacer l'onglet actif vers la gauche de l'écran
->>>>>>> work
+
   const tabIndex = onglets.indexOf(onglet);
   const tabWidth = 170; // Remplacez par la largeur de vos onglets si elle est constante
   const positionX = tabIndex * tabWidth;
   horizontalScrollViewRef.current?.scrollTo({ x: positionX, animated: true });
 };
 
-<<<<<<< HEAD
-=======
-
->>>>>>> work
 const handleScroll = (event) => {
   if (isManualScrolling) return; // Ignorez les mises à jour si un défilement manuel est en cours
 
@@ -310,10 +260,6 @@ const handleScroll = (event) => {
   }
 };
 
-<<<<<<< HEAD
-=======
-
->>>>>>> work
 //fin scroll onglets
 
 
@@ -365,8 +311,8 @@ const handleScroll = (event) => {
     </View>
     
       {/*  bandeau header */}
-      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:5}}>
-          <View style={{ flexDirection:'row', gap:20, alignItems:'center',justifyContent:'center', width:"100%"}}>
+      <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'center'}}>
+          {/* <View style={{ flexDirection:'row', alignItems:'center',justifyContent:'center', width:"100%"}}> */}
               
             <View>
             <StorePicker />
@@ -376,16 +322,14 @@ const handleScroll = (event) => {
               <CustomDatePicker />
             </View>
 
-            <View style={{width: 2, backgroundColor: colors.color2, marginVertical: 5}} /> 
-
-            <View style={{backgroundColor:'white'}}> 
+            <View style={{backgroundColor:'white', marginHorizontal:30}}> 
               <TouchableOpacity  onPress={toggleVisibility} activeOpacity={1} >
                 <ArrowDown />
               </TouchableOpacity>
           </View>
-          </View>
+          {/* </View> */}
           
-        </View>
+      </View>
         {
           visible && (
             <View style={{ width:"100%", height:'auto', backgroundColor:'white', flexDirection:'column', paddingHorizontal:25, borderBottomLeftRadius:10, borderBottomRightRadius:10, paddingVertical:10}}> 
@@ -476,11 +420,9 @@ const handleScroll = (event) => {
             {sortedCategories
               .filter(category => category === 'Baguettes')
               .map((category) => (
-<<<<<<< HEAD
+
             <View key={category} onLayout={handleLayout('Baguettes')} style={{...styles.paddingProduct}}>
-=======
-                <View key={category} onLayout={handleLayout('Baguettes')} style={{...styles.paddingProduct}}>
->>>>>>> work
+
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -493,11 +435,9 @@ const handleScroll = (event) => {
             {sortedCategories
               .filter(category => category ===  'Viennoiseries')
               .map((category) => (
-<<<<<<< HEAD
+
               <View key={category} onLayout={handleLayout('Viennoiseries')} style={{...styles.paddingProduct}}>
-=======
-                <View key={category} onLayout={handleLayout('Viennoiseries')} style={{...styles.paddingProduct}}>
->>>>>>> work
+
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -520,11 +460,9 @@ const handleScroll = (event) => {
             {sortedCategories
               .filter(category => category ===  'Pâtisseries')
               .map((category) => (
-<<<<<<< HEAD
+
                 <View key={category} onLayout={handleLayout('Pâtisseries')} style={styles.paddingProduct}>
-=======
-            <View key={category} onLayout={handleLayout('Pains Spéciaux')} style={{...styles.paddingProduct}}>
->>>>>>> work
+
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}
@@ -537,11 +475,9 @@ const handleScroll = (event) => {
             {sortedCategories
               .filter(category => category === 'Boules et Pains Spéciaux')
               .map((category) => (
-<<<<<<< HEAD
+
             <View key={category} onLayout={handleLayout('Pains Spéciaux')} style={{...styles.paddingProduct}}>
-=======
-                <View key={category} onLayout={handleLayout('Pains Spéciaux')} style={{...styles.paddingProduct}}>
->>>>>>> work
+
                 <ProductFlatList
                 category={category}
                 products={groupedAndSortedProducts[category]}

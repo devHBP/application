@@ -86,12 +86,12 @@ const CustomDatePicker = () => {
 
 
   return (
-    <View>
+    <View style={{backgroundColor:'white', height:80, flexDirection:'column', justifyContent:'center',alignItems:'center', width:130}}>
       {/* // Selection Jour  */}
       <TouchableOpacity onPress={() => setOpenDate(true)}  style={styles.bordersPicker}>
          {/* <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text>  */}
-            <Text style={styles.textPickerDate}>Pour quel jour</Text>
-            <View style={{flexDirection:'row', alignItems:'center', gap: 5}}>
+            <Text style={{...styles.textPickerDate, marginBottom:8}}>Pour quel jour</Text>
+            <View style={{flexDirection:'row', justifyContent:'center', gap: 10, alignItems:'center'}}>
               <DateLogo/>
               <Text>
               {date ? 

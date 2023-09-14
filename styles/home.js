@@ -130,11 +130,11 @@ const styles = StyleSheet.create({
     // borderLeftWidth: 1,
     // borderRightWidth: 1,
     // borderColor: colors.color4,
-    height: 35,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width: "100%",
-    paddingHorizontal: 0
+    // height: 35,
+    // justifyContent: 'center',
+    // alignItems: 'center',
+    // width: "100%",
+    // paddingHorizontal: 0
   },
   text1formule:{
     fontFamily:fonts.font2,

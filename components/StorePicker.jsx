@@ -60,16 +60,20 @@ const StorePicker = () => {
     
     
     return (
-        <View style={{ width:"100%", height:80, backgroundColor:'white', flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
-            <View style={{ flexDirection:'row', gap:5, alignItems:'center', }}>
+        <View style={{ width:160, height:80, backgroundColor:'white', flexDirection:'column', alignItems:'center', justifyContent:'center'}}>
+            {/* <View style={{ flexDirection:'row', gap:5, alignItems:'center', }}> */}
                 {/* <Image
                     source={require('../assets/store.png')} 
                     style={{ width: 24, height: 25, resizeMode:'contain' }}
                 /> */}
-                <Location />
-                <View >   
+             
+                <View style={{flexDirection:'column'}}>   
                     {
-                        user.role == 'SUNcollaborateur' && <Text style={{...styles.textPickerDate, textAlign:'center'}}>Livraison</Text>
+                        user.role == 'SUNcollaborateur' && 
+                        <View style={{flexDirection:'row', gap:5, alignItems:'center', justifyContent:'center', paddingBottom: Platform.OS === 'ios' ? 8 : 0,}}>
+                            <Location />
+                            <Text style={{...styles.textPickerDate,   textAlign:'center'}}>Livraison</Text>
+                        </View>
                     }
                     {
                         Platform.OS === 'android' ? (
@@ -161,7 +165,7 @@ const StorePicker = () => {
                     </View> 
                     } 
                 </View>
-            </View>
+            {/* </View> */}
         </View>
    
     )
@@ -169,9 +173,10 @@ const StorePicker = () => {
 
 const pickerSelectStyles = StyleSheet.create({
   inputIOS: {
-    fontSize: 10,
+    fontSize: 12,
     color: colors.color2,
-    
+    textAlign:'center',
+    marginVertical:2
   },
   inputAndroid: {
     fontSize: 18,
