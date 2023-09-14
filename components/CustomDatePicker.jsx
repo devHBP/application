@@ -9,6 +9,7 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { addDate, addTime} from '../reducers/cartSlice';
 import axios from 'axios'
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import DateLogo from '../SVG/DateLogo';
 
 
 
@@ -86,24 +87,26 @@ const CustomDatePicker = () => {
 
   return (
     <View>
-    <View>
       {/* // Selection Jour  */}
       <TouchableOpacity onPress={() => setOpenDate(true)}  style={styles.bordersPicker}>
          {/* <Text>{dateRedux ? <Text style={style.picker}>{dateRedux}</Text> : "Choisissez votre jour"}</Text>  */}
             <Text style={styles.textPickerDate}>Pour quel jour</Text>
-            <Text>
-            {date ? 
-          
-            <Text style={styles.picker}>{dateRedux}</Text>
-            :
-            (
-           
-                  <Text style={styles.pickerNoDate}>jj/mm/aaaa</Text>
-            )}
-            </Text>
+            <View style={{flexDirection:'row', alignItems:'center', gap: 5}}>
+              <DateLogo/>
+              <Text>
+              {date ? 
+            
+              <Text style={styles.picker}>{dateRedux}</Text>
+              :
+              (
+                    <Text style={styles.pickerNoDate}>jj/mm/aaaa</Text>
+              )}
+              </Text>
+            </View>
+            
             {/* <Text style={{fontSize:10, color:colors.color2}}>Status</Text> */}
         </TouchableOpacity> 
-        </View>
+     
                <DatePicker
                 cancelText= "Annuler"
                 confirmText="Confirmer"
