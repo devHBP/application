@@ -222,7 +222,7 @@ const FormuleWraps = ({navigation}) => {
               resizeMode={FastImage.resizeMode.cover}
             />
             <FastImage
-              source={require('../../assets/logo_formule.png')}
+              source={require('../../assets/logo_formule.jpg')}
               style={{...styles.pastilleOffre31, transform: [{rotate: '0deg'}], } }
               resizeMode={FastImage.resizeMode.cover}
               />
