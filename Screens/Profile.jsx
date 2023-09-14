@@ -520,7 +520,7 @@ const allStores = async () => {
 
         <View style={{marginVertical:10}}>
           <View style={{marginVertical:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
-            <Text>Recevoir les notifications par SMS</Text>
+            <Text style={{color:colors.color1}}>Recevoir les notifications par SMS</Text>
             <Switch
               trackColor={{false: colors.color8, true: colors.color9}}
               thumbColor={isEnabledSMS ? '#f4f3f4' : '#f4f3f4'}
@@ -531,7 +531,7 @@ const allStores = async () => {
             />
           </View>
           <View style={{marginVertical:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
-            <Text>Recevoir les notifications par Email</Text>
+            <Text style={{color:colors.color1}}>Recevoir les notifications par Email</Text>
             <Switch
               trackColor={{false: colors.color8, true: colors.color9}}
               thumbColor={isEnabledEmail ? '#f4f3f4' : '#f4f3f4'}
@@ -541,7 +541,7 @@ const allStores = async () => {
             />
           </View>
           <View style={{marginVertical:10, flexDirection:'row', alignItems:'center', justifyContent:'space-between'}}>
-            <Text>Recevoir des notifications Push</Text>
+            <Text style={{color:colors.color1}}>Recevoir des notifications Push</Text>
             <Switch
               trackColor={{false: colors.color8, true: colors.color9}}
               thumbColor={isEnabledPush ? '#f4f3f4' : '#f4f3f4'}
@@ -557,13 +557,13 @@ const allStores = async () => {
         <View style={{flexDirection:'row'}}>
      
             <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://www.lepaindujour.io/politique-de-gestion-des-cookies/')}>
-              <Text>Cookies</Text>
+              <Text style={{color:colors.color1}}>Cookies</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
 
 
             <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://lepaindujour.io/page-de-confidentialite')}>
-              <Text>Données personnelles</Text>
+              <Text style={{color:colors.color1}}>Données personnelles</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
             
@@ -574,12 +574,12 @@ const allStores = async () => {
         <View style={{flexDirection:'row'}}>
 
             <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://lepaindujour.io/mentions-legales')}>
-              <Text>Mentions légales</Text>
+              <Text style={{color:colors.color1}}>Mentions légales</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
 
             <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://www.lepaindujour.io/cgv-cgu/')}>
-              <Text>CGU, CGV</Text>
+              <Text style={{color:colors.color1}}>CGU, CGV</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
         </View>
@@ -588,17 +588,17 @@ const allStores = async () => {
         <View style={{flexDirection:'row', flexWrap:'wrap'}}>
 
             <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://www.lepaindujour.io/formulaire-de-consentement/')}>
-              <Text>Formulaire de consentement</Text>
+              <Text style={{color:colors.color1}}>Formulaire de consentement</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
 
             <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://www.lepaindujour.io/formulaire-de-demande-dacces/')}>
-              <Text>Formulaire de demande d'acces</Text>
+              <Text style={{color:colors.color1}}>Formulaire de demande d'acces</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
 
             <TouchableOpacity   style={style.btn_cookies}  onPress={() => openLink('https://www.lepaindujour.io/formulaire-de-suppression-des-donnees-personnelles//')}>
-              <Text>Formulaire de suppression des données</Text>
+              <Text style={{color:colors.color1}}>Formulaire de suppression des données</Text>
               <Image source={require('../assets/arrow.png')} />
             </TouchableOpacity>
         </View>

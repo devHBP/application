@@ -236,8 +236,8 @@ const Antigaspi = ({navigation}) => {
     <View style={style.menu}>
         <View>
           <View style={style.bandeauFormule}>
-          <Text style={{ fontWeight: "bold"}}>Prix du produit</Text>
-        <Text>{selectedProduct ? (selectedProduct.prix_unitaire * 0.5).toFixed(2) : 0} €</Text>
+          <Text style={{ fontWeight: "bold", color:colors.color1}}>Prix du produit</Text>
+        <Text style={{ color:colors.color1}}>{selectedProduct ? (selectedProduct.prix_unitaire * 0.5).toFixed(2) : 0} €</Text>
 
           </View>
           {/* <View style={style.bandeauFormule}>

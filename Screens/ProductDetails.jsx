@@ -139,13 +139,13 @@ const ProductDetails = ({navigation, route}) => {
               </View>
             <View style={styles.details}>
                 
-                <Text>{product.descriptionProduit}</Text>
+                <Text style={{color:colors.color1}}>{product.descriptionProduit}</Text>
             </View>
 
             <View style={{backgroundColor:colors.color6, marginHorizontal:30, borderRadius:10, padding: 10, flexDirection:'row', justifyContent:'space-between'}}>
               <View style={{flexDirection:'column'}}>
-                <Text style={{fontWeight:"bold"}}>{product.libelle}</Text>
-                <Text style={{fontWeight:'200'}}>{product.prix_unitaire} €</Text>
+                <Text style={{fontWeight:"bold", color:colors.color1}}>{product.libelle}</Text>
+                <Text style={{fontWeight:'200', color:colors.color1}}>{product.prix_unitaire} €</Text>
               </View>
               <View style={{width: 1, backgroundColor: colors.color3, marginVertical: 5}} /> 
               <View style={{flexDirection:'column', justifyContent:'flex-end'}}>
@@ -183,7 +183,7 @@ const ProductDetails = ({navigation, route}) => {
           
                 <View style={{flexDirection:'column', gap:20, }}>
                   <View style={{ flexDirection:'row'}}>
-                      <Text style={{fontWeight:"bold"}}>Ajouter le produit au panier: </Text>
+                      <Text style={{fontWeight:"bold", color:colors.color1}}>Ajouter le produit au panier: </Text>
                     <View style={styles.qtyContainer}>
                                 <TouchableOpacity
                                   onPress={() => decrementhandler(product.productId, dispatch)}
@@ -214,12 +214,12 @@ const ProductDetails = ({navigation, route}) => {
                       <View  style={{flexDirection:'row', gap:10}}>
                             <View>
                                 <View style={style.bandeauFormule}>
-                                <Text style={{ fontWeight:"bold"}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
-                                <Text>{totalPrice.toFixed(2)} €</Text>
+                                <Text style={{ fontWeight:"bold", color:colors.color1}}>{productCount < 2 ? 'Prix du produit' : 'Prix des produits'}</Text>
+                                <Text style={{color:colors.color1}}>{totalPrice.toFixed(2)} €</Text>
                               </View>
                               <View style={style.bandeauFormule}>
                                   <View style={{flexDirection:'row'}}>
-                                  <Text>Avec</Text><Image source={require('../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
+                                  <Text style={{color:colors.color1}}>Avec</Text><Image source={require('../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
                                   </View>
                                   <Text style={{color:colors.color2, fontWeight:"bold"}}>{(totalPrice*0.8).toFixed(2)}€</Text>
                               </View>

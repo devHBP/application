@@ -153,13 +153,13 @@ const Orders = ({navigation}) => {
                         {item.products && item.products.map(product => {
                             return (
                                 <View key={product.productId} style={{marginVertical:5, flexDirection:'row', justifyContent:'space-between'}}>
-                                    <Text>{product.quantity}x {product.libelle}</Text>
-                                    <Text>{product.prix_unitaire || product.prix_formule}€</Text>
+                                    <Text  style={{color:colors.color1}}>{product.quantity}x {product.libelle}</Text>
+                                    <Text  style={{color:colors.color1}}>{product.prix_unitaire || product.prix_formule}€</Text>
                                 </View>
                             );
                         })}
                         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                            <Text style={{fontSize:14, fontWeight: "600"}}>Votre total:</Text>
+                            <Text style={{fontSize:14, fontWeight: "600", color:colors.color1}}>Votre total:</Text>
                             <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                         </View>
                        
@@ -193,14 +193,14 @@ const Orders = ({navigation}) => {
                         return (
                             <View key={product.productId}>
                                 <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-                                    <Text>{product.quantity}x {product.libelle}</Text>
-                                    <Text>{product.prix_unitaire || product.prix_formule}€</Text>
+                                    <Text style={{color:colors.color1}}>{product.quantity}x {product.libelle}</Text>
+                                    <Text style={{color:colors.color1}}>{product.prix_unitaire || product.prix_formule}€</Text>
                                 </View>   
                             </View>
                         );
                     })}
                     <View style={{flexDirection:'row', justifyContent:'space-between', marginTop:10}}>
-                        <Text style={{fontSize:14, fontWeight: "600"}}>Votre total:</Text>
+                        <Text style={{fontSize:14, fontWeight: "600", color:colors.color1}}>Votre total:</Text>
                         <Text style={{color:colors.color2, fontWeight:"bold"}}>{item.prix_total}€</Text>
                     </View>
                    

@@ -694,7 +694,7 @@ useEffect(() => {
 
                           <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10 ,}}>
                               <View>
-                                  <Text style={{ fontWeight: "bold" }}>Votre total</Text>
+                                  <Text style={{ fontWeight: "bold" , color:colors.color1}}>Votre total</Text>
                                   {
                                     (cart.length !== 1 || antigaspiProductsCount !== 1) 
                                     ? <Text style={{ color: colors.color2 }}>Total Avec<Image source={require('../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode: 'contain' }} /></Text>
@@ -702,7 +702,7 @@ useEffect(() => {
                                   }
                               </View>
                               <View style={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: "flex-end" }}>
-                                  <Text>{totalPrice.toFixed(2)}€</Text>
+                                  <Text style={{color:colors.color1}}>{totalPrice.toFixed(2)}€</Text>
                                   {
                                     (cart.length !== 1 || antigaspiProductsCount !== 1) 
                                     ? <Text style={{ color: colors.color2, fontWeight: "bold" }}>{(totalPriceCollab).toFixed(2)}€</Text>

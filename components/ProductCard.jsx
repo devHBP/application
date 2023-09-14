@@ -292,6 +292,7 @@ const handleIngredients = () => {
                           fontSize: 14,
                           fontWeight: "300",
                           width: "100%",
+                          color:colors.color1
                       }}
                       duration={3000} // durée en ms pour un aller-retour (peut être modifié selon vos besoins)
                       loop // pour répéter l'animation en boucle
@@ -309,7 +310,7 @@ const handleIngredients = () => {
                             fontSize: 14,
                             fontWeight: "300",
                             width: "50%",
-                            color: showPromo ? 'gray' : 'black', 
+                            color: showPromo ? 'gray' : colors.color1, 
                             textDecorationLine: showPromo ? 'line-through' : 'none',  // Barrer le texte si showPromo est vrai
 
                             }}
@@ -324,7 +325,7 @@ const handleIngredients = () => {
                             fontSize: 14,
                             fontWeight: showPromo ?"bold" : "300",
                             width: "50%",
-                            color: showPromo ? 'green' : 'black', 
+                            color: showPromo ? 'green' : colors.color1, 
 
                             }}
                         >
@@ -352,20 +353,7 @@ const handleIngredients = () => {
                     backgroundColor:'white',
                     paddingVertical:5
                     }}>
-                {/* <Text
-                        numberOfLines={1}
-                        style={{
-                        fontSize: 16,
-                        fontWeight: "bold",
-                        width: "100%",
-                        textAlign:'center',
-                        color:colors.color2
-                        }}
-                    > */}
-                        {/* <Image
-                          source={require('../assets/sun.jpg')} 
-                          style={{ width: 30, height: 20, resizeMode:'center' }}
-                          /> */}
+                
                           <View>
                             <Svg width="34" height="20" viewBox="0 0 34 23" fill="none" xmlns="http://www.w3.org/2000/svg">
                               <Path d="M6.72 5.43809C6.4 5.17809 6.08 4.98809 5.76 4.86809C5.44 4.73809 5.13 4.67309 4.83 4.67309C4.45 4.67309 4.14 4.76309 3.9 4.94309C3.66 5.12309 3.54 5.35809 3.54 5.64809C3.54 5.84809 3.6 6.01309 3.72 6.14309C3.84 6.27309 3.995 6.38809 4.185 6.48809C4.385 6.57809 4.605 6.65809 4.845 6.72809C5.095 6.79809 5.34 6.87309 5.58 6.95309C6.54 7.27309 7.24 7.70309 7.68 8.24309C8.13 8.77309 8.355 9.46809 8.355 10.3281C8.355 10.9081 8.255 11.4331 8.055 11.9031C7.865 12.3731 7.58 12.7781 7.2 13.1181C6.83 13.4481 6.37 13.7031 5.82 13.8831C5.28 14.0731 4.665 14.1681 3.975 14.1681C2.545 14.1681 1.22 13.7431 0 12.8931L1.26 10.5231C1.7 10.9131 2.135 11.2031 2.565 11.3931C2.995 11.5831 3.42 11.6781 3.84 11.6781C4.32 11.6781 4.675 11.5681 4.905 11.3481C5.145 11.1281 5.265 10.8781 5.265 10.5981C5.265 10.4281 5.235 10.2831 5.175 10.1631C5.115 10.0331 5.015 9.91809 4.875 9.81809C4.735 9.70809 4.55 9.60809 4.32 9.51809C4.1 9.42809 3.83 9.32809 3.51 9.21809C3.13 9.09809 2.755 8.96809 2.385 8.82809C2.025 8.67809 1.7 8.48309 1.41 8.24309C1.13 8.00309 0.9 7.70309 0.72 7.34309C0.55 6.97309 0.465 6.50809 0.465 5.94809C0.465 5.38809 0.555 4.88309 0.735 4.43309C0.925 3.97309 1.185 3.58309 1.515 3.26309C1.855 2.93309 2.265 2.67809 2.745 2.49809C3.235 2.31809 3.78 2.22809 4.38 2.22809C4.94 2.22809 5.525 2.30809 6.135 2.46809C6.745 2.61809 7.33 2.84309 7.89 3.14309L6.72 5.43809Z" fill="#E9520E"/>
@@ -380,16 +368,15 @@ const handleIngredients = () => {
                               <Path d="M27.5853 20.0326L28.4181 15.1681H29.6803L30.6627 17.7616L31.6387 15.1681H32.9009L33.7336 20.0326H32.4649L32.042 17.2326L30.884 20.0326H30.3765L29.2769 17.2326L28.854 20.0326H27.5853Z" fill="black"/>
                             </Svg>
                           </View>
-                          
-
-                    {/* </Text> */}
+                   
                     <Text
                             numberOfLines={1}
                             style={{
                             fontSize: 14,
                             fontWeight: "300",
                             width: "100%",
-                            textAlign:'center'
+                            textAlign:'center',
+                            color:colors.color1
                             }}
                         >
                             {(prix*0.80).toFixed(2)}€
