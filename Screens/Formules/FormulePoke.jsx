@@ -246,11 +246,11 @@ const FormulePoke = ({navigation}) => {
               style={{ width: "100%", height: 330 }}
               resizeMode={FastImage.resizeMode.cover}
               />
-               <Image
-                source={require('../../assets/offre31.jpg')} 
-                style={ styles.pastilleOffre31}
-                />
-
+               <FastImage
+              source={require('../../assets/logo_formule.png')}
+              style={{...styles.pastilleOffre31, transform: [{rotate: '0deg'}], } }
+              resizeMode={FastImage.resizeMode.cover}
+              />
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
                     <Text style={{...style.titleProduct, color:colors.color1}}>Poke Bowls</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
