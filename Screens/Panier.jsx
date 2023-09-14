@@ -46,7 +46,7 @@ const Panier = ({navigation}) => {
   const [loading, setLoading] = useState(false);
 
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
-  //console.log('cart', cart)
+
   const user = useSelector((state) => state.auth.user)
   const selectedStore = useSelector(state => state.auth.selectedStore);
    const cartTotal = useSelector((state) => state.cart.cartTotal)
@@ -60,6 +60,7 @@ const Panier = ({navigation}) => {
   
     return total + item.qty * prix;
   }, 0)).toFixed(2));
+
 
   let totalPriceCollab = cart.reduce((total, product) => {
     let adjustedPrice = product.prix || product.prix_unitaire;
@@ -288,22 +289,22 @@ const updateAntigaspiStock = async () => {
 
       //pour ne pas cumuler deux offres
       let adjustedTotalPrice = 0;
+      cart.forEach(product => {
 
-      cart.forEach( product =>
-       {
-          let adjustedPrice = product.prix_unitaire;
+        // Utilisez product.prix si c'est une formule, sinon utilisez product.prix_unitaire
+        let adjustedPrice = product.type === "formule" ? product.prix : product.prix_unitaire;
+    
+        //si pas de produit anti gaspi
+        if (user.role === 'SUNcollaborateur' && !product.antigaspi) {
+            adjustedPrice *= 0.80; 
+        }
+    
+        adjustedTotalPrice += adjustedPrice * product.qty;
 
-          //si pas de produit anti gaspi
-          if (user.role === 'SUNcollaborateur' && !product.antigaspi) {
-              adjustedPrice *= 0.80; 
-          }
-
-          adjustedTotalPrice += adjustedPrice * product.qty;
-      });
+    });
+    
 
       totalPrice = adjustedTotalPrice.toFixed(2);
-      //console.log('total', totalPrice)
-
       
       //paiement supérieur à 50cts
       if (totalPrice < 0.50) {
@@ -410,7 +411,7 @@ const updateAntigaspiStock = async () => {
             paiement
           });
 
-          //console.log('response createOrder', response.data)
+          console.log('response createOrder', response.data)
           const orderId = response.data.orderId;
           dispatch(setOrderId(orderId)); 
           //console.log('resp data', response.data)
@@ -629,7 +630,7 @@ useEffect(() => {
   
                       <ScrollView style={{ marginVertical: 10, flex: 1 }} showsVerticalScrollIndicator={false}>
                           {/* - formules - */}
-                          {formules.length > 0 && <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>Formules</Text>}
+                          {formules.length > 0 && <Text style={{ paddingVertical: 5, fontWeight: 'bold', color:colors.color1 }}>Formules</Text>}
                           {formules.map((item, index) => {
                               if (item.type === 'formule') {
                                   return (
@@ -656,7 +657,7 @@ useEffect(() => {
                           {Object.entries(itemsGroupedByFamily).map(([familyName, items], index) => {
                               return (
                                   <View key={index}>
-                                      <Text style={{ paddingVertical: 5, fontWeight: 'bold' }}>{familyName}</Text>
+                                      <Text style={{ paddingVertical: 5, fontWeight: 'bold', color:colors.color1 }}>{familyName}</Text>
                                       {items.map((group, groupIndex) => (
                                           <View key={groupIndex} style={{ backgroundColor: "white", borderRadius: 10, marginVertical: 5 }}>
                                               <CartItem 
