@@ -19,7 +19,7 @@ const ModaleIngredients = ({ modalVisibleIngredients, setModalVisibleIngredients
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
         <TouchableOpacity onPress={onClose} style={{ alignItems: 'center', position:'absolute', top:0, right:10}}>
-                <Text style={{ fontSize: 36}}>&times;</Text>
+                <Text style={{ fontSize: 36, color:colors.color1}}>&times;</Text>
         </TouchableOpacity>
          <View style={{flexDirection:'colum', alignItems:'center', gap:10}}>
             <Text style={styles.title}>Liste d'ingrédients</Text>

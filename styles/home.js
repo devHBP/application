@@ -241,8 +241,8 @@ const styles = StyleSheet.create({
     justifyContent:'center',
     borderRadius:5,
     position:'absolute',
-    top:14,
-    left:10
+    top:5,
+    right:5
   },
   textestockantigaspi:{
     color:colors.color6,

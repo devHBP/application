@@ -76,13 +76,13 @@ const SuccessPage = ({navigation}) => {
 
             <View style={style.centeredTextContainer}>
               <View style={style.centeredText}>
-                  <Text>Merci d'avoir commandé chez nous ! </Text>
+                  <Text style={style.textColor}>Merci d'avoir commandé chez nous ! </Text>
               </View>
               <View style={style.centeredText}>
                 {
                     role === 'SUNcollaborateur' 
-                    ? <Text style={{textAlign:'center'}}>Votre commande arrivera demain dans la matinée via la tournée du camion</Text>
-                    : <Text style={{textAlign:'center'}}>Vous recevrez un message quand la commande sera prête à être récupérée </Text>
+                    ? <Text style={style.textColor}>Votre commande arrivera demain dans la matinée via la tournée du camion</Text>
+                    : <Text style={style.textColor}>Vous recevrez un message quand la commande sera prête à être récupérée </Text>
                 }
                   
               </View>
@@ -111,10 +111,10 @@ const SuccessPage = ({navigation}) => {
                     <View style={{ flex: 1, alignItems: 'center',justifyContent:'center', marginVertical:10 }}>
                         <View style={{ width: '90%', height: '90%', backgroundColor: 'white', padding: 20, borderRadius: 10, alignItems: 'center', borderColor:'lightgray', borderWidth:1, justifyContent:'center',gap:10 }}>
                             <TouchableOpacity onPress={closeRatingModal} style={{ position:'absolute', top:0, right:10 }}>
-                                <Text style={{ fontSize: 36 }}>&times;</Text>
+                                <Text style={{ fontSize: 36 , color:colors.color1}}>&times;</Text>
                             </TouchableOpacity>
-                                <Text style={{fontWeight:"bold"}}>Votre option nous intéresse !</Text>
-                                <Text>Comment s'est déroulée votre expérience d'achat ?</Text>
+                                <Text style={{fontWeight:"bold", color:colors.color1}}>Votre option nous intéresse !</Text>
+                                <Text style={{color:colors.color1}}>Comment s'est déroulée votre expérience d'achat ?</Text>
                                 <Rating
                                     startingValue={5}
                                     onFinishRating={(rating) => setRatingValue(rating)}
@@ -207,6 +207,10 @@ submitButton: {
 submitButtonText: {
     color: colors.color6,
     fontSize: 16
+},
+textColor:{
+    color:colors.color1,
+    textAlign:'center'
 }
 
 

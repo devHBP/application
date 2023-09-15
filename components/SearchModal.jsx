@@ -70,7 +70,7 @@ const SearchModal = ({ isVisible, products, onSelectProduct, onClose }) => {
                   />
                 )}
               <TouchableOpacity onPress={handleCloseModal} style={{marginTop: 20, alignItems: 'center'}}>
-                <Text>Fermer</Text>
+                <Text style={{color:colors.color1}}>Fermer</Text>
               </TouchableOpacity>
             </View>
           </View>

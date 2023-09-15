@@ -272,7 +272,7 @@ const Orders = ({navigation}) => {
                                 </View>
 
                         <View style={{backgroundColor:'white', flex:1, flexDirection:'row', justifyContent:'center', alignItems:'center', marginBottom:100, borderRadius:20}}>
-                            <Text>Pas de commandes encore</Text>
+                            <Text style={{color: colors.color1}}>Pas de commandes encore</Text>
                         </View>
                     </View>
                     </View>

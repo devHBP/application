@@ -154,7 +154,7 @@ const filterPetites = () => {
               </TouchableOpacity>
 
               <View style={{...styles.ingredients, position:'absolute', bottom:0, left:0, right:0, marginHorizontal:40, marginBottom:10}}>
-                <Text style={{textAlign:'center'}}>Choisissez 4 Pizzas, Payez-en que 3 ! </Text>
+                <Text style={{textAlign:'center', color:colors.color1}}>Choisissez 4 Pizzas, Payez-en que 3 ! </Text>
               </View>
         </View>
         

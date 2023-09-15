@@ -304,7 +304,7 @@ const handleIngredients = () => {
 
                             }}
                         >
-                            {prix* 0.5}€
+                            {(prix* 0.5).toFixed(2)}€
                       </Text>
                       : null
                       }

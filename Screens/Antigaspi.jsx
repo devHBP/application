@@ -7,6 +7,7 @@ import { addToCart} from '../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { style } from '../styles/formules'; 
 import { styles } from '../styles/home'; 
+import { getStyle } from '../Fonctions/stylesFormule';
 import axios from 'axios'
 import { getFamilyProductDetails, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
@@ -16,6 +17,7 @@ import ProductCard from '../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import Cloche from '../SVG/Cloche';
 import FastImage from 'react-native-fast-image';
+import Check from '../SVG/Check';
 
 const Antigaspi = ({navigation}) => {
 
@@ -87,7 +89,14 @@ const Antigaspi = ({navigation}) => {
       }, []);
     
     const handleProduct = (product) => {
-        setSelectedProduct(product)
+      if (selectedProduct?.productId === product.productId) {
+        setSelectedProduct(null)
+      
+
+    } else {
+      setSelectedProduct(product)
+      
+    }
     }
 
     //verifier le stock ?
@@ -188,9 +197,10 @@ const Antigaspi = ({navigation}) => {
           <ScrollView >
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center' }}>
             {group.products.map((product, index) => (
-                  <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
-                  
-                <View style={{width:170, marginVertical:10}} key={index}>
+                 <TouchableOpacity  key={index}
+                 onPress={() => handleProduct(product)} activeOpacity={0.8}>
+               <View style={StyleSheet.flatten([getStyle(selectedProduct, product), { width:170, marginHorizontal:5, marginVertical:10 }])} key={index}>
+
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}
@@ -205,21 +215,15 @@ const Antigaspi = ({navigation}) => {
                         showButtons={false} 
                         ingredients={product.ingredients}
                       />
+                      {selectedProduct?.productId === product.productId && <Check color={colors.color9}/>}
+
                       <View style={styles.stockantigaspi}>
                         <Cloche />
                         <Text style={styles.textestockantigaspi}>{product.stockantigaspi} en stock !</Text>
                       </View>
                       </View>
-                <TouchableOpacity
-                  style={[
-                    style.checkButton,
-                    selectedProduct?.productId === product.productId && { backgroundColor: 'white' } 
-                  ]}
-                  onPress={() => handleProduct(product)}
-                >
-                  {selectedProduct?.productId === product.productId && <View style={style.checkInnerCircle} />}
-                </TouchableOpacity>
-              </View>
+                
+              </TouchableOpacity>
             ))}
             </View>
           </ScrollView>
