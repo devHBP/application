@@ -1,11 +1,10 @@
-import { View, Text, TouchableOpacity, Image, StyleSheet, Modal, TouchableHighlight } from 'react-native'
+import { View, Text, TouchableOpacity, Image, StyleSheet } from 'react-native'
 import TextTicker from 'react-native-text-ticker'
 import React, { useState, useEffect} from 'react'
-import { Button } from 'react-native-paper'
-import { addToCart,addFreeProductToCart, decrementOrRemoveFromCart, makeLastSmallPizzaFree, makeLastBigPizzaFree } from '../reducers/cartSlice';
+import { addToCart,addFreeProductToCart, makeLastSmallPizzaFree, makeLastBigPizzaFree } from '../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import { defaultStyle, fonts, colors} from '../styles/styles'
+import { colors} from '../styles/styles'
 import ModaleOffre31 from '../components/ModaleOffre31';
 import Svg, { Path } from 'react-native-svg';
 import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
@@ -17,8 +16,6 @@ import { checkStockForSingleProduct } from '../CallApi/api.js';
 
 //fonctions
 import {decrementhandler } from '../Fonctions/fonctions'
-
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import InfoProduct from '../SVG/InfoProduct';
 import ModaleIngredients from './ModaleIngredients';
 
@@ -53,12 +50,9 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, show
       }
       return total;
   }, 0);
-    //console.log(productQuantity)
 
     useEffect(() => {
       const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
-      //console.log(totalCount)
-      //console.log(cart)
     }, [cart]);
  
 
@@ -175,20 +169,6 @@ const handleIngredients = () => {
     <View style={style.card_container}>
          <View style={style.image_container}>
          
-          {/* <Image 
-              // source={image.uri}
-              source={{ uri: `${API_BASE_URL}/${image}`,
-              
-            }}
-              style={{
-                      width: "100%",
-                      height: 140,
-                      resizeMode: "cover",
-                      // borderTopLeftRadius:10,
-                      // borderTopRightRadius:10,
-                      }}
-              
-          /> */}
           <FastImage
             style={{ width: "100%", height: 140 }}
             source={{
@@ -219,7 +199,6 @@ const handleIngredients = () => {
                   onPress={() => decrementhandler(id, dispatch)}
                   style={showButtons ? style.decrement : {...style.decrement, opacity: 0, height: 0, width: 0}}
                   >
-                  {/* <Icon name="remove" size={16} color="#000" /> */}
                   <View>
                     <Svg width={7} height={4} viewBox="0 0 7 4">
                       <Path
@@ -245,11 +224,7 @@ const handleIngredients = () => {
                   onPress={incrementhandler}
                   style={showButtons ? style.increment : {...style.increment, opacity: 0, height: 0, width: 0}}
               >
-                  {/* <Icon name="add" size={16}  color="white" /> */}
-                  {/* <Image
-                    source={require('../assets/add.png')}
-                    style={{ width: 10,height:10,  resizeMode:'contain'}}
-                  /> */}
+                 
                   <Svg width="10" height="10" viewBox="0 0 10 10" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <Path d="M10 4.05197V6.48141H6.63702V9.86669H4.14375V6.48141H0.800049V4.05197H4.14375V0.666687H6.63702V4.05197H10Z" fill="#ECECEC"/>
                   </Svg>
