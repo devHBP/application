@@ -1,5 +1,5 @@
 import axios from 'axios';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import {  API_BASE_URL } from '@env';
 
 //check des stocks par produits
 // export const checkStock = async (productId) => {
@@ -12,6 +12,30 @@ import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 //     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
 //   }
 // }
+
+// Dans votre fichier API (par exemple apiService.js)
+
+export const getAllStores = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/getAllStores`);
+    return response.data;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de la récupération des magasins:", error);
+    throw error; // Renvoie l'erreur pour permettre au composant appelant de la gérer
+  }
+};
+
+
+export const fetchAllProductsClickandCollect = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
+    return response.data;
+  } catch (error) {
+    console.error('Une erreur s\'est produite, error products :', error);
+    throw error; // Pour propager l'erreur et
+  }
+}
+
 export const checkStockFormule = async (productIds) => {
   try {
     let stocks = [];
