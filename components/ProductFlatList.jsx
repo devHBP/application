@@ -9,6 +9,9 @@ const ProductFlatList = ({ category, products, handleProductPress }) => {
     <View>
       <Text style={styles.categoryTitle}>{category}</Text>
       <FlatList
+        removeClippedSubviews={true}
+        maxToRenderPerBatch={2}
+        initialNumToRender={2}
         horizontal
         showsHorizontalScrollIndicator={false}
         style={styles.scrollHorizontal}

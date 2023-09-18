@@ -92,7 +92,7 @@ const LinkOffres = ({}) => {
 
   return (
     <View >
-     <ScrollView horizontal={true} style={{marginVertical:10, marginLeft:30}} showsHorizontalScrollIndicator={false}>
+     <ScrollView horizontal={true} style={{marginVertical:10, marginLeft:30}} showsHorizontalScrollIndicator={false} removeClippedSubviews={true}>
 
         {/* anti gaspi */}
         {/* ajouter action onPress */}
@@ -109,7 +109,8 @@ const LinkOffres = ({}) => {
           source={{
             uri: `${API_BASE_URL}/Images/antigaspi.jpg`,
               priority: FastImage.priority.high,
-          }}
+              cache: FastImage.cacheControl.cacheOnly
+            }}
           resizeMode={FastImage.resizeMode.cover}
       /> */}
         <View style={styles.container_offre_antigaspi}>
@@ -143,6 +144,7 @@ const LinkOffres = ({}) => {
                 source={{
                   uri: `${API_BASE_URL}/Images/Croissant_offre31.jpg`,
                     priority: FastImage.priority.high,
+                    cache: FastImage.cacheControl.cacheOnly
                 }}
           resizeMode={FastImage.resizeMode.cover}
       /> */}

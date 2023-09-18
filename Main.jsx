@@ -48,6 +48,7 @@ import Pwd from './Screens/Pwd'
 import LoaderHome from './Screens/LoaderHome'
 import PagePizza from './Screens/PagesSalees/PagePizza'
 import Antigaspi from './Screens/Antigaspi'
+import PageHome from './Screens/PageHome';
 
 
 const Main = () => {
@@ -115,6 +116,8 @@ const Main = () => {
                 <Stack.Screen name='signup' component={Signup}/>
                 <Stack.Screen name="stores" component={Stores}/>
                 <Stack.Screen name='home' component={Home}/>
+                {/* test page Home 2 */}
+                <Stack.Screen name='pagehome' component={PageHome}/>
                     {/*  Formules  */}
                     <Stack.Screen name='formulesandwich' component={FormuleSandwich}/>
                     <Stack.Screen name='formulepoke' component={FormulePoke}/>
