@@ -1,7 +1,6 @@
 import { View, Text, TouchableOpacity, ScrollView , Modal, Image, Linking, FlatList, Platform} from 'react-native'
 import React, { useState, useEffect} from 'react'
 import { styles} from '../styles/home'; 
-import popupData from '../Datas/datas.json';
 import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
