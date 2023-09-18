@@ -5,6 +5,15 @@ import axios from 'axios'
 import { useNavigation } from '@react-navigation/native';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image';
+import antigaspiImage from '../assets/antigaspi.jpg';
+import offre31 from '../assets/Croissant_offre31.jpg';
+import pastilleAntigaspi from '../assets/pastille_antigaspi.png';
+import offre31Image from '../assets/offre31.jpg';
+import hallesSolanidImage from '../assets/halles_solanid.jpg';
+import startUnionImage from '../assets/start_union.jpg';
+import halleSolanid from '../assets/fond_halles.jpg'
+import popupSUN from '../assets/popupSUN.jpg';
+
 
 
 const LinkOffres = () => {
@@ -90,34 +99,35 @@ const LinkOffres = () => {
       const data = [
         {
             type: 'antigaspi',
-            imageUri: 'https://cdn.lepaindujour.io/assets/antigaspi.jpg',
+            imageUri: antigaspiImage,
             mainText: "L'offre",
-            secondaryText: "Anti-gaspillage",
-            pastilleImage: require('../assets/pastille_antigaspi.png')
+            secondaryText: "Anti-gaspillage   ",
+            pastilleImage: pastilleAntigaspi
         },
         {
             type: 'offre31',
-            imageUri: 'https://cdn.lepaindujour.io/assets/Croissant_offre31.jpg',
+            imageUri: offre31,
             mainText: "Profitez d'un produit",
             secondaryText: "Gratuit",
-            pastilleImage: require('../assets/offre31.jpg')
+            pastilleImage: offre31Image
         },
         {
             type: 'hallesSolanid',
-            imageUri: 'https://cdn.lepaindujour.io/assets/fond_halles.jpg',
+            imageUri: halleSolanid,
             mainText: "Un repas équilibré,",
-            thirdText:"frais et de saison avec",
+            thirdText: "frais et de saison avec",
             secondaryText: "Les Halles Solanid",
-            pastilleImage: require('../assets/halles_solanid.jpg')
+            pastilleImage: hallesSolanidImage
         },
         {
             type: 'sun',
-            imageUri: 'https://cdn.lepaindujour.io/assets/fond_halles.jpg',
+            imageUri: halleSolanid,
             mainText: "Découvrez",
             secondaryText: "les bénéfices",
-            pastilleImage: require('../assets/start_union.jpg')
+            pastilleImage: startUnionImage
         }
     ];
+    
     
     const renderItem = ({ item }) => {
         let handlePressFunc, imgSrc, mainText, secondaryText, pastilleImgSrc;
@@ -165,10 +175,10 @@ const LinkOffres = () => {
             activeOpacity={0.8} 
             onPress={handlePressFunc}
         >
-            <Image
-                source={{uri: imgSrc}}
-                style={{ width: 315, height: 200, resizeMode: 'cover', borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
-            />
+      <FastImage
+          source={imgSrc}
+          style={{ width: 315, height: 160, resizeMode: 'contain', borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
+      />
             <View style={styles.container_offre_antigaspi}>
                 <View style={styles.text_antigaspi}>
                     <Text style={styles.texte_offre}>{mainText}</Text>
@@ -177,9 +187,10 @@ const LinkOffres = () => {
                 </View>
                 <View style={styles.pastille}>
                     <Image
-                        source={pastilleImgSrc}  // Utilisation de la variable pastilleImgSrc
+                        source={pastilleImgSrc}  
                         style={{ width: 50, resizeMode: 'contain' }}
                     />
+                  
                 </View>
             </View>
         </TouchableOpacity>

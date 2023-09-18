@@ -237,7 +237,7 @@ const Antigaspi = ({navigation}) => {
         
     </ScrollView>
 
-    <View style={style.menu}>
+    <View style={{...style.menu, height:90}}>
         <View>
           <View style={style.bandeauFormule}>
           <Text style={{ fontWeight: "bold", color:colors.color1}}>Prix du produit</Text>

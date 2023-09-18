@@ -235,23 +235,23 @@ const allStores = async () => {
     <>
           <SafeAreaProvider style={{flex:1, paddingTop:50, backgroundColor:colors.color4}}>
 
-    <ScrollView showsVerticalScrollIndicator={false} style={{  marginHorizontal: 15,marginTop:30}}>
+    <ScrollView showsVerticalScrollIndicator={false} style={{  marginHorizontal: 20,marginTop:30}}>
       <View style={{  marginBottom: 20}}> 
-            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10}}>
+            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', paddingHorizontal:10, marginBottom:20}}>
                 <Text style={style.title}>Votre compte</Text>
                 <TouchableOpacity  onPress={handleBack} activeOpacity={0.8} style={{backgroundColor:'white', borderRadius:25,}}>                           
                   <ArrowLeft fill={colors.color1}/>
                 </TouchableOpacity>  
             </View>
-            <View style={{flexDirection:'row', alignItems:'center', justifyContent:'center', gap:60,marginVertical:10}}>
+            <View style={{flexDirection:'column',  marginVertical:10}}>
               {/* <Avatar.Image size={60} source={require('../assets/avatar.png')} style={style.avatar}/> */}
-              <View style={{backgroundColor:colors.color1, padding:10, borderRadius:50, width:80, height:80, flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+              {/* <View style={{backgroundColor:colors.color1, padding:10, borderRadius:50, width:80, height:80, flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
                 <Avatar />
-              </View>
-              <View style={{width:"50%", flexDirection:'column', gap:10}}>
-                <Text style={{color:colors.color2}}>#UserId {user.userId}</Text>
-                <Text style={{fontSize:12}}>Ce code unique pour vous permet de vous identifier sur le réseau SUN</Text>
-              </View>
+              </View> */}
+              {/* <View style={{}}> */}
+                <Text style={{color:colors.color2,  fontSize:24, fontWeight:"600", paddingHorizontal:10, marginBottom:15}}>#UserId {user.userId}</Text>
+                <Text style={{fontSize:14, paddingHorizontal:10, color:colors.color1}}>Ce code unique pour vous permet de vous identifier sur le réseau SUN</Text>
+              {/* </View> */}
           </View>
       </View>
 
@@ -261,7 +261,7 @@ const allStores = async () => {
       <View>
      
       <View style={{ flexDirection: 'row', alignItems: 'center', gap:5, marginVertical:10 }}>
-      <Text>Vous êtes :</Text>
+      <Text style={style.textlabel}>Vous êtes :</Text>
       <TouchableOpacity 
           style={style.radioButtonOut}
           onPress={() => { setGenre('femme'); }}>
@@ -270,7 +270,7 @@ const allStores = async () => {
             <View style={style.radioButtonIn} />
           }
         </TouchableOpacity>
-        <Text>Mme.</Text>
+        <Text style={style.textlabel}>Mme.</Text>
         <TouchableOpacity 
           style={style.radioButtonOut}
           onPress={() => { setGenre('homme'); }}>
@@ -279,7 +279,7 @@ const allStores = async () => {
             <View style={style.radioButtonIn} />
           }
         </TouchableOpacity>
-        <Text style={{ marginRight: 10 }}>M.</Text>
+        <Text style={{...style.textlabel, marginRight:10}}>M.</Text>
         <TouchableOpacity 
           style={style.radioButtonOut}
           onPress={() => { setGenre('nbinaire'); }}>
@@ -288,34 +288,34 @@ const allStores = async () => {
             <View style={style.radioButtonIn} />
           }
         </TouchableOpacity>
-        <Text>Non-binaire</Text>
+        <Text style={style.textlabel}>Non-binaire</Text>
         
         
       </View>
     </View>
 
        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-          <TextInput {...inputOptions} value={lastname}  onChangeText={setLastname} style={style.short_input} placeholder='Nom'/>
-          <TextInput {...inputOptions} value={firstname} onChangeText={setFirstname} style={style.short_input}  placeholder="Prénom" /> 
+          <TextInput {...inputOptions} value={lastname}  onChangeText={setLastname} style={style.short_input} placeholder='Nom' placeholderTextColor={colors.color5}/>
+          <TextInput {...inputOptions} value={firstname} onChangeText={setFirstname} style={style.short_input}  placeholder="Prénom" placeholderTextColor={colors.color5}/> 
         </View>
        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-          <TextInput {...inputOptions}  onChangeText={setTelephone} value={telephone}  style={style.short_input} placeholder='N° téléphone'/>
+          <TextInput {...inputOptions}  onChangeText={setTelephone} value={telephone}  style={style.short_input} placeholder='N° téléphone' placeholderTextColor={colors.color5}/>
           <TextInput {...inputOptions}  onChangeText={(value) => setCodepostal(value ? parseInt(value) : '')}   value={cp !== null ? cp.toString() : ''}
-            style={style.short_input} placeholder='Code postal' />
+            style={style.short_input} placeholder='Code postal' placeholderTextColor={colors.color5}/>
        </View>
        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-       <TextInput {...inputOptions}  style={style.short_input} placeholder='Date de naissance'/>
+       <TextInput {...inputOptions}  style={style.short_input} placeholder='Date de naissance'placeholderTextColor={colors.color5}/>
           
        </View>
        
        <View style={{flexDirection:'column', marginVertical:10}}>
           <Text style={style.label}>Votre email</Text>
-          <TextInput {...inputOptions} placeholder='exemple.mail@email.com' onChangeText={setEmail} value={email}  style={style.long_input}/>
+          <TextInput {...inputOptions} placeholder='exemple.mail@email.com' onChangeText={setEmail} value={email}  style={style.long_input} placeholderTextColor={colors.color5}/>
         </View> 
 
         <View style={{flexDirection:'column', marginVertical:10}}>
           <Text style={style.label}>Votre adresse</Text>
-          <TextInput {...inputOptions} placeholder='123 Direction de la rue' onChangeText={setAdresse} value={adresse} style={style.long_input}/>
+          <TextInput {...inputOptions} placeholder='123 Direction de la rue' onChangeText={setAdresse} value={adresse} style={style.long_input} placeholderTextColor={colors.color5}/>
         </View>
 
         </View>
@@ -723,7 +723,7 @@ const style = StyleSheet.create({
   short_input:{
     width:"48%",
     fontSize:14,
-    backgroundColor:colors.color4
+    backgroundColor:colors.color4,
   },
   long_input:{
     width:"100%",
@@ -770,6 +770,9 @@ const style = StyleSheet.create({
     width: 10,
     borderRadius: 6,
     backgroundColor: colors.color1,
+  },
+  textlabel:{
+    color:colors.color1
   }
 
 });

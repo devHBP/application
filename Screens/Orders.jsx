@@ -242,8 +242,8 @@ const Orders = ({navigation}) => {
                     <SafeAreaProvider style={{flex:1, paddingTop:50, backgroundColor:colors.color4}}>
                     {/* <View style={{ alignItems: 'center', backgroundColor:colors.color3}}> */}
                 
-                            <View style={{ flexDirection: 'row', alignItems: 'center', gap:90, marginHorizontal:30, marginVertical:10, justifyContent:'space-between' }}>
-                                 <Text style={{ fontSize: 20, fontWeight: "bold", fontFamily:fonts.font1, color:colors.color1}}>Vos commandes</Text>
+                            <View style={{ flexDirection: 'row', alignItems: 'center', marginHorizontal:30, marginVertical:10, justifyContent:'space-between' }}>
+                                 <Text style={{ fontSize: 24, fontWeight: "bold", fontFamily:fonts.font1, color:colors.color1}}>Vos commandes</Text>
                             
                                 <TouchableOpacity  onPress={handleBack} activeOpacity={0.8} style={{backgroundColor:'white', borderRadius:25,}}>                           
                                     <ArrowLeft fill={colors.color1}/>

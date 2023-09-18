@@ -63,12 +63,13 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     width: "100%",
-    marginVertical: 10,
+    marginTop: 10,
+    marginBottom:15,
     marginLeft: 30,
     color: colors.color1,
     fontFamily:fonts.font2,
     fontSize:20,
-    fontWeight: "600"
+    fontWeight: "700"
   },
   scrollHorizontal: {
     marginLeft: 30,

@@ -284,7 +284,7 @@ const renderCategoryProducts = (categoryName) => {
           <View style={{paddingVertical:20, flexDirection:'row', alignItems:'center', justifyContent:'space-around', width:"100%"}}>
             <View >
               <Text style={{fontFamily:fonts.font1, fontSize:32, color:colors.color1}}>Bonjour </Text>
-              <Text style={{fontSize:18, fontFamily:fonts.font2, color:colors.color1}}>{user.firstname}</Text>
+              <Text style={{fontSize:18, fontFamily:fonts.font2, color:colors.color1, fontWeight:"700"}}>{user.firstname}</Text>
             </View>
               
                {/* SearchBar */}
@@ -331,13 +331,13 @@ const renderCategoryProducts = (categoryName) => {
         {
           visible && (
             <View style={{ width:"100%", height:'auto', backgroundColor:'white', flexDirection:'column', paddingHorizontal:25, borderBottomLeftRadius:10, borderBottomRightRadius:10, paddingVertical:10}}> 
-              <Text style={{fontWeight:"bold"}}>Vos articles:</Text>
+              <Text style={{fontWeight:"bold", color:colors.color1}}>Vos articles:</Text>
             {cart.map((item, index) => (
                 <View key={index} style={{paddingLeft:20}}>
-                    <Text> {item.qty} x {item.libelle}</Text>
+                    <Text style={{ color:colors.color1}}> {item.qty} x {item.libelle}</Text>
                 </View>
             ))}
-            <Text style={{fontWeight:"bold", paddingVertical:10}}>Votre total: {totalPrice}€</Text>
+            <Text style={{fontWeight:"bold", paddingVertical:10, color:colors.color1}}>Votre total: {totalPrice}€</Text>
 
             </View>
           )
@@ -418,6 +418,7 @@ const renderCategoryProducts = (categoryName) => {
             {renderCategoryProducts('Viennoiseries')}
 
 
+          {/* fait ralentir la page */}
           {/* Link page Formule */}
           <View onLayout={handleLayout('Formules')} style={{...styles.paddingProduct, paddingTop:60}}>
             <FormulesSalees />

@@ -4,7 +4,7 @@ import React, { useState, useEffect} from 'react'
 import { addToCart,addFreeProductToCart, makeLastSmallPizzaFree, makeLastBigPizzaFree } from '../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import { colors} from '../styles/styles'
+import { fonts, colors} from '../styles/styles'
 import ModaleOffre31 from '../components/ModaleOffre31';
 import Svg, { Path } from 'react-native-svg';
 import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
@@ -175,7 +175,7 @@ const handleIngredients = () => {
                 uri: `${API_BASE_URL}/${image}` ,
                 // headers: { Authorization: 'someAuthToken' },
                 priority: FastImage.priority.high,
-                // cache: FastImage.cacheControl.cacheOnly
+                cache: FastImage.cacheControl.cacheOnly
               }}
             resizeMode={FastImage.resizeMode.cover}
             
@@ -183,7 +183,7 @@ const handleIngredients = () => {
           {currentStock === 0 && (
             <View style={style.overlay} />
             )}
-             <TouchableOpacity style={{position:'absolute',bottom:10, left:10}} onLongPress={handleIngredients} activeOpacity={0.8}>
+             <TouchableOpacity style={{position:'absolute',bottom:10, left:10}} onPress={handleIngredients} activeOpacity={0.8}>
                 <InfoProduct />
                 </TouchableOpacity>
            {
@@ -216,7 +216,7 @@ const handleIngredients = () => {
                   style={showButtons ? style.qtyText : {...style.qtyText, opacity: 0, height: 0, width: 0}}
 
               >
-                <Text>{productQuantity}</Text>
+                <Text style={{color:colors.color1, fontWeight:"600"}}>{productQuantity}</Text>
                  {/* <Text >{product ? product.qty : 0}</Text> */}
               </TouchableOpacity>
                            
@@ -269,9 +269,11 @@ const handleIngredients = () => {
                           fontSize: 14,
                           fontWeight: "300",
                           width: "100%",
-                          color:colors.color1
+                          color:colors.color1,
+                          fontFamily:fonts.font2,
+                          fontWeight:"600"
                       }}
-                      duration={3000} // durée en ms pour un aller-retour (peut être modifié selon vos besoins)
+                      duration={5000} // durée en ms pour un aller-retour (peut être modifié selon vos besoins)
                       loop // pour répéter l'animation en boucle
                       // bounce // pour que le texte "rebondisse" à chaque extrémité
                       repeatSpacer={50} // espace entre chaque répétition
@@ -350,10 +352,10 @@ const handleIngredients = () => {
                             numberOfLines={1}
                             style={{
                             fontSize: 14,
-                            fontWeight: "300",
+                            fontWeight: "600",
                             width: "100%",
                             textAlign:'center',
-                            color:colors.color1
+                            color:colors.color2
                             }}
                         >
                             {(prix*0.80).toFixed(2)}€

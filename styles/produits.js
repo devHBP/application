@@ -29,7 +29,8 @@ export const styles = StyleSheet.create({
         fontSize:12,
         fontFamily: fonts.font2,
         fontWeight: "400",
-        paddingVertical:10
+        paddingVertical:10, 
+        color:colors.colors1
     },
     sousTexte:{
         // fontFamily:fonts.font2,

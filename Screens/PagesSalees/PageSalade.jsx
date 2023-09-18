@@ -187,7 +187,7 @@ const PageSalade = ({navigation}) => {
                     source={require('../../assets/halal.png')}
                     style={{ width: 42, height: 42, resizeMode:'cover' }}
                     />
-                    <Text>Ce produit est certifié Halal !</Text>
+                    <Text style={{color: colors.color1}}>Ce produit est certifié Halal !</Text>
                 </View>
             }
             {
@@ -199,7 +199,7 @@ const PageSalade = ({navigation}) => {
                     source={require('../../assets/vegan.png')}
                     style={{ width: 42, height: 42, resizeMode:'cover' }}
                     />
-                    <Text>Ce produit est vegan !</Text>
+                    <Text style={{color: colors.color1}}>Ce produit est vegan !</Text>
                 </View>
             }
 
