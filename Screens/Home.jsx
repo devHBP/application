@@ -1,4 +1,4 @@
-import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Modal, Button, FlatList, Dimensions, ImageBackground } from 'react-native'
+import {View, Text, Pressable, ScrollView , TouchableOpacity, Image, Dimensions, } from 'react-native'
 import { fonts, colors} from '../styles/styles'
 import { styles } from '../styles/home'; 
 import React, {useState, useEffect,  createRef,useRef, useCallback } from 'react'
@@ -6,7 +6,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import {  updateUser} from '../reducers/authSlice';
 import axios from 'axios'
 import FooterProfile from '../components/FooterProfile';
-import ProductCard from '../components/ProductCard'
 import FormulesSalees from '../components/FormulesSalees';
 import FormulesPetitDejeuner from '../components/FormulesPetitDejeuner';
 import LinkOffres from '../components/LinkOffres';
@@ -17,7 +16,6 @@ import CustomDatePicker from '../components/CustomDatePicker';
 import ArrowDown from '../SVG/ArrowDown';
 import LoaderHome from './LoaderHome';
 import SearchModal from '../components/SearchModal';
-import ArrowLeft from '../SVG/ArrowLeft';
 import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Search from '../SVG/Search';
 import ProductFlatList from '../components/ProductFlatList';
