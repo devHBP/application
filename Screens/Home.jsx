@@ -22,6 +22,7 @@ import ProductFlatList from '../components/ProductFlatList';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LogoFond from '../SVG/LogoFond';
 import { useRoute, useFocusEffect } from '@react-navigation/native';
+import { getAllStores, fetchAllProductsClickandCollect } from '../CallApi/api';
 
 
 
@@ -67,20 +68,23 @@ const Home =  ({navigation}) => {
       }
     }, [route.params?.shouldScrollToTop])
   );
-  const allStores = async () => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/getAllStores`);
-      setStores(response.data);
-    } catch (error) {
-      console.error("Une erreur s'est produite, erreur stores :", error);
-    }
-  };
-  
+
   useEffect(() => {
-    allStores();
-    setFilteredProducts(products)
+    const fetchStores = async () => {
+      try {
+        const fetchedStores = await getAllStores();
+        setStores(fetchedStores);
+        setFilteredProducts(products)
+      } catch (error) {
+        console.error("Une erreur s'est produite, erreur stores :", error);
+      }
+    };
+  
+    fetchStores();
   }, [products]);
 
+
+  
   useEffect(() => {
     axios.get(`${API_BASE_URL}/getOne/${user.userId}`)
       .then(response => {
@@ -95,27 +99,27 @@ const Home =  ({navigation}) => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       try {
-      const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);    
-      const updatedProducts = response.data.map((product) => ({
-        ...product,
-        qty: 0, 
-      }));
-
-      setProducts(updatedProducts);
-      setCategories([...new Set(updatedProducts.map((product) => product.categorie)), 'Tous']);
-
-      setTimeout(() => {
-        setIsLoading(false); 
-      }, 5000);
-
+        const products = await fetchAllProductsClickandCollect();
+        const updatedProducts = products.map((product) => ({
+          ...product,
+          qty: 0,
+        }));
+  
+        setProducts(updatedProducts);
+        setCategories([...new Set(updatedProducts.map((product) => product.categorie)), 'Tous']);
+  
+        setTimeout(() => {
+          setIsLoading(false); 
+        }, 5000);
+        
       } catch (error) {
-        console.error('Une erreur s\'est produite, error products :', error);
-        setIsLoading(false)
-      } 
+        setIsLoading(false);
+      }
     };
-    fetchData(); 
+    
+    fetchData();
   }, []);
 
 
@@ -159,9 +163,6 @@ const scrollToTop = () => {
   if (horizontalScrollViewRef.current) {
     horizontalScrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
   }
-  if (horizontalScrollViewRef.current) {
-    horizontalScrollViewRef.current.scrollTo({ x: 0, y: 0, animated: true });
-  }
 };
 
 //contenu visible
@@ -169,7 +170,6 @@ const toggleVisibility = () => {
   setVisible(!visible)
 }
 
-////// LE SOUCI VIENT D'ICI //////////
 //liste d'onglets differents si collab ou non
 const refs = {
   'Promos': useRef(null),
@@ -246,6 +246,20 @@ const handleScroll = (event) => {
 
 //fin scroll onglets
 
+//appel des produits categories
+const renderCategoryProducts = (categoryName) => {
+  const categoryProducts = groupedAndSortedProducts[categoryName];
+  return (
+    categoryProducts &&
+    <View key={categoryName} onLayout={handleLayout(categoryName)} style={styles.paddingProduct}>
+      <ProductFlatList
+        category={categoryName}
+        products={categoryProducts}
+        handleProductPress={handleProductPress}
+      />
+    </View>
+  );
+};
 
   return (
     <>
@@ -399,36 +413,10 @@ const handleScroll = (event) => {
            <LinkOffres />
           </View>
           
-              
-           {/* card products */}
-            {sortedCategories
-              .filter(category => category === 'Baguettes')
-              .map((category) => (
 
-            <View key={category} onLayout={handleLayout('Baguettes')} style={{...styles.paddingProduct}}>
+            {renderCategoryProducts('Baguettes')}
+            {renderCategoryProducts('Viennoiseries')}
 
-                <ProductFlatList
-                category={category}
-                products={groupedAndSortedProducts[category]}
-                handleProductPress={handleProductPress}
-              />
-              </View>
-            ))}
-          
-
-            {sortedCategories
-              .filter(category => category ===  'Viennoiseries')
-              .map((category) => (
-
-              <View key={category} onLayout={handleLayout('Viennoiseries')} style={{...styles.paddingProduct}}>
-
-                <ProductFlatList
-                category={category}
-                products={groupedAndSortedProducts[category]}
-                handleProductPress={handleProductPress}
-              />
-              </View>
-            ))}
 
           {/* Link page Formule */}
           <View onLayout={handleLayout('Formules')} style={{...styles.paddingProduct, paddingTop:60}}>
@@ -439,55 +427,19 @@ const handleScroll = (event) => {
           <View onLayout={handleLayout('Produits Salés')} style={{...styles.paddingProduct}}>
           <EnvieSalee />
         </View>
+          
 
-            {/* patisseries */}
-            {sortedCategories
-              .filter(category => category ===  'Pâtisseries')
-              .map((category) => (
+          {renderCategoryProducts('Pâtisseries')}
+          {renderCategoryProducts('Boules et Pains Spéciaux')}
 
-                <View key={category} onLayout={handleLayout('Pâtisseries')} style={styles.paddingProduct}>
-
-                <ProductFlatList
-                category={category}
-                products={groupedAndSortedProducts[category]}
-                handleProductPress={handleProductPress}
-              />
-               </View>
-            ))}
-
-            {/* pains speciaux */}
-            {sortedCategories
-              .filter(category => category === 'Boules et Pains Spéciaux')
-              .map((category) => (
-
-            <View key={category} onLayout={handleLayout('Pains Spéciaux')} style={{...styles.paddingProduct}}>
-
-                <ProductFlatList
-                category={category}
-                products={groupedAndSortedProducts[category]}
-                handleProductPress={handleProductPress}
-              />
-              </View>
-            ))}
 
            {/* Petites dejeuners */}
             <View onLayout={handleLayout('Petits déjeuners')} style={styles.paddingProduct}>
             <FormulesPetitDejeuner />
             </View>
          
-            
-            {/* boissons */}
-            {sortedCategories
-              .filter(category => category ===  'Boissons')
-              .map((category) => (
-                <View key={category} onLayout={handleLayout('Boissons')} style={styles.paddingProduct}>
-                <ProductFlatList
-                category={category}
-                products={groupedAndSortedProducts[category]}
-                handleProductPress={handleProductPress}
-              />
-              </View>
-            ))}
+            {renderCategoryProducts('Boissons')}
+
                 
             {/* catalogue */}
             <View onLayout={handleLayout('Tarterie')} style={styles.paddingProduct}>
