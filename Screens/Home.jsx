@@ -16,7 +16,7 @@ import CustomDatePicker from '../components/CustomDatePicker';
 import ArrowDown from '../SVG/ArrowDown';
 import LoaderHome from './LoaderHome';
 import SearchModal from '../components/SearchModal';
-import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+import {API_BASE_URL} from '@env';
 import Search from '../SVG/Search';
 import ProductFlatList from '../components/ProductFlatList';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -45,7 +45,6 @@ const Home =  ({navigation}) => {
   const user = useSelector((state) => state.auth.user);
   const cart = useSelector((state) => state.cart.cart);
 
-  const screenWidth = Dimensions.get('window').width;
   const route = useRoute();
 
   const totalPrice = Number((cart.reduce((total, item) => {
@@ -76,18 +75,6 @@ const Home =  ({navigation}) => {
       console.error("Une erreur s'est produite, erreur stores :", error);
     }
   };
-  
-  //retour en haut de page au click sur bouton Home
-  useFocusEffect(
-    React.useCallback(() => {
-      if (route.params?.shouldScrollToTop) {
-        scrollToTop();
-      }
-      if (route.params?.shouldScrollToTop) {
-        route.params.shouldScrollToTop = false;
-      }
-    }, [route.params?.shouldScrollToTop])
-  );
   
   useEffect(() => {
     allStores();
