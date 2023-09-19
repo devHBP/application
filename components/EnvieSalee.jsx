@@ -47,7 +47,7 @@ const EnvieSalee = () => {
     ];
 
     return (
-        <View style={{marginLeft:30, marginTop:10}}>
+        <View style={{marginLeft:30, marginTop:20}}>
             <Text style={styles.text1formule}>Une petite envie <Text style={styles.text2formule}>Salée ? </Text></Text>
 
             <FlatList

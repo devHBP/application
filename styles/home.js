@@ -44,11 +44,9 @@ const styles = StyleSheet.create({
   },
   btn_categorie: {
     borderRadius: 6,
-    height: Platform.OS === 'android' ? 50 : 40,
+    height: Platform.OS === 'android' ? 55 : 40,
     // marginVertical: 5,
     marginRight: 10,
-    paddingVertical: 11,
-    paddingHorizontal: 5,
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: 'white',
@@ -63,7 +61,7 @@ const styles = StyleSheet.create({
   },
   categoryTitle: {
     width: "100%",
-    marginTop: 10,
+    marginTop: 20,
     marginBottom:15,
     marginLeft: 30,
     color: colors.color1,

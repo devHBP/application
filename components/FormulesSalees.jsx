@@ -54,7 +54,7 @@ const FormulesSalees = () => {
     );
 
     return (
-        <View style={{ marginLeft: 30, marginVertical: 0 }}>
+        <View style={{ marginLeft: 30, marginTop: 10 }}>
             <Text style={styles.text1formule}>Notre sélection de</Text>
             <Text style={styles.text2formule}>snacks <Text style={styles.text1formule}>et </Text>formules</Text>
             <FlatList

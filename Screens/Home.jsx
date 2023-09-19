@@ -180,7 +180,7 @@ const refs = {
   'Formules': useRef(null),
   'Produits Salés': useRef(null),
   'Pâtisseries': useRef(null),
-  'Pains Spéciaux': useRef(null),
+  'Boules et Pains Spéciaux': useRef(null),
   'Petits déjeuners': useRef(null),
   'Boissons': useRef(null),
   'Tarterie': useRef(null),
@@ -369,7 +369,7 @@ const renderCategoryProducts = (categoryName) => {
               onPress={() => ongletButtonHandler(item)}
             >
               <View style={{flexDirection:'row', alignItems:'center', gap:6}}>
-                <Text style={{fontSize:16, fontFamily:fonts.font2,fontWeight: "700",
+                <Text style={{fontSize:15, fontFamily:fonts.font2,fontWeight: "700",textAlign:'center',
                    color: item === 'Promos' 
                    ? colors.color6 
                    : item === selectedOnglet 
