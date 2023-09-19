@@ -141,7 +141,8 @@ const styles = StyleSheet.create({
     fontFamily:fonts.font2,
     color:colors.color1, 
     fontSize:16,
-    fontWeight:"600"
+    fontWeight:"600",
+    marginBottom:10
   },
   text2formule:{
     color:colors.color2,

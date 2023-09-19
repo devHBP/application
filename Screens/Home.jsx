@@ -24,6 +24,7 @@ import LogoFond from '../SVG/LogoFond';
 import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { getAllStores, fetchAllProductsClickandCollect } from '../CallApi/api';
 import TestFormules from './TestFormules';
+import TestEnvieSalee from '../components/TestEnvieSalee';
 
 
 
@@ -429,6 +430,7 @@ const renderCategoryProducts = (categoryName) => {
           {/* envie de salé */}
           <View onLayout={handleLayout('Produits Salés')} style={{...styles.paddingProduct}}>
           <EnvieSalee />
+          {/* <TestEnvieSalee /> */}
         </View>
           
 
