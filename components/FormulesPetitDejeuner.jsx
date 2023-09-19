@@ -49,8 +49,8 @@ const FormulesSalees = () => {
     <View style={{marginLeft:30, marginTop:10}}>
 
         <View style={{flexDirection:'row', alignItems:'center'}}>
-        <Text style={styles.text1formule}>Les formules du</Text>
-              <Text style={styles.text2formule}> petit dejeuner</Text>
+        <Text style={styles.text1formule}>Les formules du <Text style={styles.text2formule}>petit déjeuner </Text></Text>
+
         </View>
               
               <ScrollView horizontal={true} style={{marginVertical:10}}>
