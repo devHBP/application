@@ -23,6 +23,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LogoFond from '../SVG/LogoFond';
 import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { getAllStores, fetchAllProductsClickandCollect } from '../CallApi/api';
+import TestFormules from './TestFormules';
 
 
 
@@ -422,6 +423,7 @@ const renderCategoryProducts = (categoryName) => {
           {/* Link page Formule */}
           <View onLayout={handleLayout('Formules')} style={{...styles.paddingProduct, paddingTop:60}}>
             <FormulesSalees />
+            {/* <TestFormules /> */}
           </View>
 
           {/* envie de salé */}
