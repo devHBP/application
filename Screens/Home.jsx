@@ -251,12 +251,20 @@ const handleScroll = (event) => {
 //appel des produits categories
 const renderCategoryProducts = (categoryName) => {
   const categoryProducts = groupedAndSortedProducts[categoryName];
+  let sortedProducts = categoryProducts;
+  //Monster et redbull en dernier sur la liste des boissons
+  if (categoryName === 'Boissons') {
+    sortedProducts = [...categoryProducts].sort((a, b) => 
+    a.libelle === 'Monster' || a.libelle === 'Redbull' ? 1 : b.libelle === 'Monster' || b.libelle === 'Redbull' ? -1 : 0
+    );
+  }
   return (
-    categoryProducts &&
+    // categoryProducts &&
+    sortedProducts &&
     <View key={categoryName} onLayout={handleLayout(categoryName)} style={styles.paddingProduct}>
       <ProductFlatList
         category={categoryName}
-        products={categoryProducts}
+        products={sortedProducts}
         handleProductPress={handleProductPress}
       />
     </View>
