@@ -16,6 +16,7 @@ import ArrowLeft from '../SVG/ArrowLeft';
 import Remove from '../SVG/Remove';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import PasswordModal from '../components/PasswordModal';
 
 
 //options des input
@@ -66,6 +67,7 @@ const Profile =  ({navigation}) => {
      const [genre, setGenre] = useState(user.genre);
      const [selectedAllergies, setSelectedAllergies] = useState([]);
      const [selectedPreferences, setSelectedPreferences] = useState([]);
+     const [password, setPassword] = useState('');
      //ajouter date de naissance
   const [currentSelection, setCurrentSelection] = useState(null);
 
@@ -77,6 +79,8 @@ const Profile =  ({navigation}) => {
 
   const [isEnabledPush, setIsEnabledPush] = useState(false);
   const toggleSwitchPush = () => setIsEnabledPush(previousState => !previousState);
+
+  const [isModalVisible, setModalVisible] = useState(false);
 
 
     const handleBack = () => {
@@ -120,6 +124,7 @@ const allStores = async () => {
          setAdresse(userData.adresse);
          setSelectedAllergies(userData.allergies ? userData.allergies.split(",") : []);
          setSelectedPreferences(userData.preferences_alimentaires ? userData.preferences_alimentaires.split(",") : []);
+         setPassword(userData.password)
 
       } catch (error) {
         console.error('Erreur lors de la récupération des informations utilisateur :', error);
@@ -229,7 +234,9 @@ const allStores = async () => {
     //dispatch(updateUser({ preferences_alimentaires: updatedPreferences.join(",") }));
   }
 
-
+  const openPasswordModal = () => {
+    setModalVisible(true);
+  };
    
   return (
     <>
@@ -305,7 +312,8 @@ const allStores = async () => {
        </View>
        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
        <TextInput {...inputOptions}  style={style.short_input} placeholder='Date de naissance'placeholderTextColor={colors.color5}/>
-          
+       <TouchableOpacity style={style.button_passwd}  activeOpacity={0.7} onPress={openPasswordModal}><Text style={style.textPasswd}>*******</Text></TouchableOpacity>
+       
        </View>
        
        <View style={{flexDirection:'column', marginVertical:10}}>
@@ -626,6 +634,12 @@ const allStores = async () => {
         </View>
     </ScrollView>
     <View >
+
+    <PasswordModal
+        isVisible={isModalVisible} 
+        onClose={() => setModalVisible(false)} 
+        onChangePassword={(newPassword) => setPassword(newPassword)}
+      />
     
       
     </View>
@@ -724,6 +738,21 @@ const style = StyleSheet.create({
     width:"48%",
     fontSize:14,
     backgroundColor:colors.color4,
+  },
+  button_passwd:{
+    width:"48%",
+    backgroundColor:colors.color4,
+    height: 48,
+    borderRadius:2,
+    flexDirection:'row',
+    justifyContent:'flex-start',
+    alignItems:'center',
+    marginTop:8,
+    paddingHorizontal:15
+  },
+  textPasswd:{
+    color:colors.color1,
+    fontSize:16
   },
   long_input:{
     width:"100%",
