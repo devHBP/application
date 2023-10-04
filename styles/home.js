@@ -115,11 +115,11 @@ const styles = StyleSheet.create({
     color:colors.color1,
     fontSize:13,
     fontWeight: "500",
-    width:250
+    width:300
   },
   cardTitle:{
     backgroundColor:'white',
-    height:60,
+    height:70,
     borderBottomLeftRadius:10,
     borderBottomRightRadius:10,
     justifyContent:'center',
