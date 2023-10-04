@@ -13,8 +13,8 @@ import hallesSolanidImage from '../assets/halles_solanid.jpg';
 import startUnionImage from '../assets/start_union.jpg';
 import halleSolanid from '../assets/fond_halles.jpg'
 import popupSUN from '../assets/popupSUN.jpg';
-
-
+import promoSUN from '../assets/promo_sun.jpg';
+import badgeSUN from '../assets/badge_sun.jpg';
 
 const LinkOffres = () => {
    
@@ -121,10 +121,10 @@ const LinkOffres = () => {
         },
         {
             type: 'sun',
-            imageUri: halleSolanid,
+            imageUri: promoSUN,
             mainText: "Découvrez",
-            secondaryText: "les bénéfices",
-            pastilleImage: startUnionImage
+            secondaryText: "les bénéfices       ",
+            pastilleImage: badgeSUN
         }
     ];
     
@@ -177,7 +177,7 @@ const LinkOffres = () => {
         >
       <FastImage
           source={imgSrc}
-          style={{ width: 315, height: 160, resizeMode: 'contain', borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
+          style={{ width: 325, height: 160, resizeMode: 'contain', borderTopLeftRadius: 10, borderTopRightRadius: 10 }}
       />
             <View style={styles.container_offre_antigaspi}>
                 <View style={styles.text_antigaspi}>
