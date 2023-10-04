@@ -1,15 +1,14 @@
-import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet, Switch, TouchableHighlight } from 'react-native'
+import { View, Text, TouchableOpacity, Image, ScrollView, StyleSheet } from 'react-native'
 import React, { useEffect, useState } from 'react'
-import Icon from 'react-native-vector-icons/MaterialIcons'
 import { fonts, colors} from '../styles/styles'
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import { Button, RadioButton} from 'react-native-paper'
+import { Button} from 'react-native-paper'
 import { addToCart, addFreeProductToCart} from '../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { style } from '../styles/formules'; 
 import { styles } from '../styles/home'; 
 import axios from 'axios'
-import { getFamilyProductDetails, checkStockForSingleProduct } from '../CallApi/api';
+import { checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ModalePageOffre31 from '../components/ModalePageOffre';
 import ArrowLeft from '../SVG/ArrowLeft';
@@ -23,7 +22,7 @@ const Offre31 = ({navigation}) => {
   
   const [offre31Products, setOffre31ProductNames] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  const [familyProductDetails, setFamilyProductDetails] = useState({});
+  // const [familyProductDetails, setFamilyProductDetails] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
 
@@ -47,8 +46,13 @@ const Offre31 = ({navigation}) => {
               qty: 0, 
             }));
 
+            //on conserve cette logique pour filtrer avec "vente a distance"
             const productsOffre = updatedProducts.filter(product => product.offre && product.offre.startsWith("offre31_") && product.vente_a_distance === true);
-    
+            // const productsOffre = updatedProducts.filter(product => 
+            //   product.offre && 
+            //   product.offre.startsWith("offre31_") && 
+            //   !product.offre.toLowerCase().includes("pizza")
+            //   );            
             setOffre31ProductNames(productsOffre);
 
           } catch (error) {
@@ -99,16 +103,14 @@ const Offre31 = ({navigation}) => {
 
         } else {
           setSelectedProduct(product)
-          
         }
-
 }
       
 const handleAcceptOffer = async () => {
    //verifier le stock
 try {
   const productStock = await checkStockForSingleProduct(selectedProduct.productId);
-  console.log(productStock)
+  //console.log(productStock)
   const cartQty = cart.reduce((sum, cartItem) => {
     return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
   }, 0);

@@ -88,12 +88,12 @@ const LinkOffres = () => {
         navigation.navigate('antigaspi')
       }
       const handleHallesSolanid = () => {
-        console.log(solanidProductNames)
+        //console.log(solanidProductNames)
         navigation.navigate('solanid')
       }
 
       const handleOffre31 = () => {
-        console.log(offre31ProductNames)
+        //console.log(offre31ProductNames)
         navigation.navigate('offre31')
       }
       const data = [
