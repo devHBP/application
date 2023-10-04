@@ -128,7 +128,7 @@ const FormulePanini = ({navigation}) => {
           setProductIds([...productIds, product.productId]);
           setTimeout(() => {
             scrollViewRef.current?.scrollTo({ y: 800, animated: true });
-          }, 1000);
+          }, 400);
       }
   }
   const handleDessert = (product) => {
@@ -148,7 +148,7 @@ const FormulePanini = ({navigation}) => {
         setProductIds([...productIds, product.productId]);
         setTimeout(() => {
           scrollViewRef.current?.scrollTo({ y: 2800, animated: true });
-        }, 1000);
+        }, 400);
     }
   }
   const handleBoisson = (product) => {
