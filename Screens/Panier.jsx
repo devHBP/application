@@ -172,7 +172,7 @@ const incrementhandler = async (productIds, offre) => {
 
         if (offre && offre.startsWith('offre31')) {
           const updatedCart = [...cart, { productId: id, libelle: productInCart.libelle, image: productInCart.image, prix_unitaire: productInCart.prix, qty: 1, offre: offre }];
-          console.log('updated cart', updatedCart)
+          //console.log('updated cart', updatedCart)
           const sameOfferProducts = updatedCart.filter((item) => item.offre === offre);
           const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
 
@@ -693,7 +693,7 @@ useEffect(() => {
   
                       <View style={[style.menu, Platform.OS === 'android' && style.androidMenu]}>
 
-                          <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 10 ,}}>
+                          <View style={{ flexDirection: 'row', justifyContent: 'center', gap: 20 ,}}>
                               <View>
                                   <Text style={{ fontWeight: "bold" , color:colors.color1}}>Votre total</Text>
                                   {
@@ -702,7 +702,7 @@ useEffect(() => {
                                     : null
                                   }
                               </View>
-                              <View style={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: "flex-end" }}>
+                              <View style={{ flexDirection: 'column', justifyContent: 'space-between', alignItems: "flex-end", marginRight:10 }}>
                                   <Text style={{color:colors.color1}}>{totalPrice.toFixed(2)}€</Text>
                                   {
                                     (cart.length !== 1 || antigaspiProductsCount !== 1) 
