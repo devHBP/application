@@ -12,7 +12,7 @@ const EnvieSalee = () => {
             title: "Sandwichs",
             onPress: () => navigation.navigate('sandwich'),
             image: require('../assets/sandwich.jpg'),
-            style: { width: 200, height: 234 }
+            style: { width: 200, height: 244 }
         },
         {
             title: ["Pizzas", "Wraps"],
@@ -24,7 +24,7 @@ const EnvieSalee = () => {
             title: "Salades",
             onPress: () => navigation.navigate('salade'),
             image: require('../assets/salade.jpg'),
-            style: { width: 200, height: 234 }
+            style: { width: 200, height: 244 }
         },
         {
             title: ["Burgers", "Paninis"],
@@ -36,7 +36,7 @@ const EnvieSalee = () => {
             title: "Pains Bagnats",
             onPress: () => navigation.navigate('painbagnat'),
             image: require('../assets/painbagnat.jpg'),
-            style: { width: 200, height: 234 }
+            style: { width: 200, height: 244 }
         },
         {
             title: ["Quiches", "Croques"],
