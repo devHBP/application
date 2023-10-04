@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, FlatList } from 'react-native';
 import { styles } from '../styles/home';
 import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
-import PokeSaumon from '../assets/PokeSaumon.jpg'
+import PokeSaumon from '../assets/PokeHall.jpg'
 import FormuleSandwich from '../assets/Formule36.jpg'
 import FormuleSalade from '../assets/Formule25.jpg'
 import FormulePizza from '../assets/Formule2.jpg'
