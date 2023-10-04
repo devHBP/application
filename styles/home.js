@@ -169,10 +169,17 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
   texte_anti:{
-    color:colors.color8,
+    // color:colors.color8,
     fontFamily:fonts.font2,
     fontSize:24,
     fontWeight: "700"
+  },
+  firstText:{
+    color:colors.color8
+  },
+  otherText:{
+    color:colors.color2
+
   },
   pastille:{
     height:'100%',

@@ -129,7 +129,7 @@ const LinkOffres = () => {
     ];
     
     
-    const renderItem = ({ item }) => {
+    const renderItem = ({ item, index }) => {
         let handlePressFunc, imgSrc, mainText, secondaryText, pastilleImgSrc;
     
         switch(item.type) {
@@ -183,7 +183,9 @@ const LinkOffres = () => {
                 <View style={styles.text_antigaspi}>
                     <Text style={styles.texte_offre}>{mainText}</Text>
                     {thirdText && <Text style={styles.texte_offre}>{thirdText}</Text>}
-                    <Text style={styles.texte_anti}>{secondaryText}</Text>
+                    {/* <Text style={styles.texte_anti}>{secondaryText}</Text> */}
+                    <Text style={[styles.texte_anti, index === 0 ? styles.firstText : styles.otherText]}>{secondaryText}</Text>
+
                 </View>
                 <View style={styles.pastille}>
                     <Image
