@@ -166,7 +166,6 @@ const Login = ({navigation}) => {
                 style={{...style.btn, backgroundColor:colors.color5}} 
                 textColor={'white'} 
                 //inactif si email ou password vide
-                disabled={email === "" || password === ""}
                 onPress={() => navigation.navigate('signup')}
                 >
                 Inscription
