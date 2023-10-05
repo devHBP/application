@@ -16,48 +16,72 @@ const Stores = ({navigation}) => {
 
   const [selectedStore, setSelectedStore] = useState(null);
   const [stores, setStores] = useState([]);
+  const [actualRole, setActualRole] = useState(userRole || 'client');  
 
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
   //console.log('user dans Stores', user)
   //modif userId <= id
   const userId = useSelector(state => state.auth.user.userId)
+  const userRole = useSelector(state => state.auth.user.role);
 
 
-  // //Tous les magasins
+  //Tous les magasins
+  useEffect(() => {
+    // Récupérer les magasins depuis la base de données
+    allStores()
+  }, []);
+
+  const allStores = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/getAllStores`);
+      if (!userRole){
+        setActualRole('client')
+      }
+      setStores(response.data);
+    } catch (error) {
+      if (error.response) {
+        // la requête a été faite et le code de réponse du serveur n’est pas dans
+        // la plage 2xx
+        console.log(error.response.data);
+        console.log(error.response.status);
+        console.log(error.response.headers);
+      } else if (error.request) {
+        // la requête a été faite mais aucune réponse n’a été reçue
+        // `error.request` est une instance de XMLHttpRequest dans le navigateur
+        // et une instance de http.ClientRequest avec node.js
+        console.log(error.request);
+      } else {
+        // quelque chose s’est passé lors de la construction de la requête et cela
+        // a provoqué une erreur
+        console.log('Error', error.message);
+      }
+      console.log(error.config);
+  };
+  
+  }
+  
+  //FILTRE pour les clients = ne voient que les boulangeries crées
   // useEffect(() => {
+  //   const desiredStoreIds = [1];  
+   
   //   // Récupérer les magasins depuis la base de données
   //   axios.get(`${API_BASE_URL}/getAllStores`)
   //     .then(response => {
-  //       setStores(response.data);
-  //       // console.log('stores', response.data)
+        
+  //       const filteredStores = response.data.filter(store => desiredStoreIds.includes(store.storeId));
+  //       Toast.show({
+  //         type: 'error',
+  //         text1: `L'application n'est pas encore finalisée`,
+  //         text2: `Les magasins ne sont pas encore disponibles`
+  //       });
+  //       setStores(filteredStores);
+  //       // console.log('stores', filteredStores)
   //     })
   //     .catch(error => {
   //       console.error('Erreur lors de la récupération des magasins:', error);
   //     });
   // }, []);
-
-  //FILTRE pour les clients = ne voient que les boulangeries crées
-  useEffect(() => {
-    const desiredStoreIds = [1];  
-   
-    // Récupérer les magasins depuis la base de données
-    axios.get(`${API_BASE_URL}/getAllStores`)
-      .then(response => {
-        
-        const filteredStores = response.data.filter(store => desiredStoreIds.includes(store.storeId));
-        Toast.show({
-          type: 'error',
-          text1: `L'application n'est pas encore finalisée`,
-          text2: `Les magasins ne sont pas encore disponibles`
-        });
-        setStores(filteredStores);
-        // console.log('stores', filteredStores)
-      })
-      .catch(error => {
-        console.error('Erreur lors de la récupération des magasins:', error);
-      });
-  }, []);
 
 
   const handleStoreSelection = (store) => {

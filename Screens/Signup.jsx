@@ -18,9 +18,7 @@ const inputOptions = {
     outlineColor:'white',
 }
 
-
 const Signup = ({navigation}) => {
-
 
   const dispatch = useDispatch()
   const selectedStore = useSelector((state) => state.auth.selectedStore);
@@ -36,59 +34,84 @@ const Signup = ({navigation}) => {
   const [formattedDate, setFormattedDate] = useState('');
   const [idSUN, setIdSun] = useState("")
 
-  const [error, setError] = useState({lastname: '', firstname: '', email: '', password: '', cp:'', genre:'', date:'', idSUN:""});
+  const [error, setError] = useState({lastname: '', firstname: '', email: '', password: '', cp:'', genre:'', date:'', idSUN:"", role:""});
 
-  const  submitHandler = () => {
-
+  const submitHandler = async () => {
     const clientData = {
       lastname,
       firstname,
       email,
       password,
-      //modif ici id_magasin : null au lieu de '' (vide)
       storeId: selectedStore ? selectedStore.storeId : null,
       cp: parseInt(cp, 10),
       genre,
-      date_naissance: date.toISOString(),
-      idSUN, 
-    }
-    console.log('clientData', clientData)
-    //appel axios post pour s'enregister
-    axios.post(`${API_BASE_URL}/signup`, clientData)
-    .then(response => {
-       console.log('response.data', response.data)
-      const userId = response.data.id
-      const user = { userId:userId ,firstname, lastname, email, password, cp, genre,date: date.toISOString(), idSUN}; 
-       console.log('user', user)
+      date_naissance:formattedDate,
+      idSUN,
+      role:'client'
+    };
+
+    console.log('clientData', clientData);
+
+    try {
+      const response = await axios.post(`${API_BASE_URL}/signup`, clientData);
+      console.log('response.data', response.data);
+
+      const userId = response.data.id;
+      const user = {
+        userId,
+        firstname,
+        lastname,
+        email,
+        password,
+        cp,
+        genre,
+        idSUN,
+        role:clientData.role
+      };
+      console.log('user', user);
       dispatch(registerUser(user)); 
-      
-       navigation.navigate('stores')
-       return Toast.show({
+
+        //ajout route envoi email de creation de compte
+      const res = await axios.post(`${API_BASE_URL}/sendWelcomeEmail`, {
+        email, firstname
+      });
+
+      // Navigate and display toast
+      navigation.navigate('stores');
+      Toast.show({
         type: 'success',
         text1: `Inscription validée`,
-        text2: `Bienvenue ${user.firstname} ${user.lastname} ` 
+        text2: `Bienvenue ${user.firstname} ${user.lastname}`,
       });
-    })
-    .catch(function (error) {
-    console.log('erreur signup',error);
-    if (error.response && error.response.status === 400) {
-      console.log(error.response.data.error);
-      Toast.show({
-        type: 'error',
-        text1: `Erreur d'inscription`,
-        text2: error.response.data.error[0].message 
-      });
-     
+    } catch (error) {
+      console.error('erreur signup', error);
 
+      if (error.response) {
+        // Le serveur a répondu avec un statut d'erreur
+        console.error('Erreur du serveur:', error.response.status);
+        console.error('Détails de l’erreur:', error.response.data);
+      } else if (error.request) {
+        // La requête a été faite mais pas de réponse reçue
+        console.error('Pas de réponse du serveur:', error.request);
+      } else {
+        // Quelque chose est arrivé lors de la mise en place de la requête
+        console.error('Erreur lors de la configuration de la requête', error.message);
+      }
+
+      if (error.response && error.response.status === 400) {
+        console.error(error.response.data.error);
+        Toast.show({
+          type: 'error',
+          text1: `Erreur d'inscription`,
+          text2: error.response.data.error[0].message,
+        });
+      }
     }
-    console.error("Erreur générale:", error);
-    });
-  }
+  };
 
   const handleBack = () => {
-    navigation.navigate('login')
-  }
- 
+    navigation.navigate('login');
+  };
 
   return (
     <View style={style.container}>
