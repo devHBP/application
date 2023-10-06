@@ -15,6 +15,7 @@ import halleSolanid from '../assets/fond_halles.jpg'
 import popupSUN from '../assets/popupSUN.jpg';
 import promoSUN from '../assets/promo_sun.jpg';
 import badgeSUN from '../assets/badge_sun.jpg';
+import ScrollIndicators from './ScrollIndicators.';
 
 const LinkOffres = () => {
    
@@ -96,6 +97,15 @@ const LinkOffres = () => {
         //console.log(offre31ProductNames)
         navigation.navigate('offre31')
       }
+
+  const [activeIndex, setActiveIndex] = useState(0); // Nouveau state pour garder la trace de l'index actif
+
+  const handleScroll = (event) => {
+    const scrollPosition = event.nativeEvent.contentOffset.x;
+    const activeIndex = Math.round(scrollPosition / 325);
+    setActiveIndex(activeIndex);
+  };
+
       const data = [
         {
             type: 'antigaspi',
@@ -208,7 +218,12 @@ const LinkOffres = () => {
                 style={{ marginVertical: 10, marginLeft: 30 }}
                 showsHorizontalScrollIndicator={false}
                 keyExtractor={(item, index) => item.type + index.toString()}
+                onScroll={handleScroll}  // Ajouter ceci
+                scrollEventThrottle={16} 
             />
+
+            <ScrollIndicators dataLength={data.length} activeIndex={activeIndex} />
+
 
 
             {/* popup modale SUN... */}
