@@ -36,6 +36,15 @@ const Signup = ({navigation}) => {
 
   const [error, setError] = useState({lastname: '', firstname: '', email: '', password: '', cp:'', genre:'', date:'', idSUN:"", role:""});
 
+  const getCurrentDate = () => {
+    const date = new Date();
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois sont indexés à partir de 0 en JavaScript
+    const year = date.getFullYear();
+    return `${day}-${month}-${year}`;
+  }
+  
+
   const submitHandler = async () => {
     const clientData = {
       lastname,
@@ -72,8 +81,9 @@ const Signup = ({navigation}) => {
       dispatch(registerUser(user)); 
 
         //ajout route envoi email de creation de compte
+      const date = getCurrentDate();  
       const res = await axios.post(`${API_BASE_URL}/sendWelcomeEmail`, {
-        email, firstname
+        email, firstname, date
       });
 
       // Navigate and display toast
