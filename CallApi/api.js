@@ -116,7 +116,7 @@ export const getFamilyProductDetails = async (id) => {
       name: response.data.familleProduit.nom_famille_produit
   }; 
   } catch (error) {
-    console.error('Une erreur s\'est produite lors de la récupération des détails de la famille de produits:', error);
+    // console.error('Une erreur s\'est produite lors de la récupération des détails de la famille de produits:', error);
     return null;
   }
 };

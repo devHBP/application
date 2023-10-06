@@ -24,7 +24,8 @@ const Antigaspi = ({navigation}) => {
   const [clickProducts, setclickProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [familyProductDetails, setFamilyProductDetails] = useState({});
-  const familyProductIds = [1];  // Mettre toutes les familles
+  const familyProductIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];  
+  //ci j'ai mis toutes las familles possibles pour ne plus à avoir à modifier
 
 
     const dispatch = useDispatch()
@@ -45,11 +46,9 @@ const Antigaspi = ({navigation}) => {
               qty: 0, 
 
             }));
-            //console.log('upd', updatedProducts)
           //produits ayant la valeur "clickandcollect" à true et "antigaspi" à true
           const clickProducts = updatedProducts.filter(product => product.antigaspi === true && product.clickandcollect === true);
           const clickProductNames = clickProducts.map(product => product.libelle)
-            //console.log('click product', clickProductNames)
             //stock sup ou egale à 1
             const updatedStockProducts = clickProducts.filter(product => product.stockantigaspi >= 1)
           setclickProducts(updatedStockProducts)
@@ -69,6 +68,7 @@ const Antigaspi = ({navigation}) => {
               const responses = await Promise.all(
                 familyProductIds.map((id) => getFamilyProductDetails(id))
               );
+              console.log('response', responses)
               const familleProductDetailsMap = {};
               responses.forEach((famille) => {
                 if (famille) {
@@ -101,38 +101,12 @@ const Antigaspi = ({navigation}) => {
 
     //verifier le stock ?
     const handleCart = async () => {
-      // try{
-      //   const productStock = await checkStockForSingleProduct(selectedProduct.productId);
-      //   const cartQty = cart.reduce((sum, cartItem) => {
-      //     return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
-      //   }, 0);
-      //   const remainingStock = productStock[0]?.quantite - cartQty || 0;
-
-      //   if ( remainingStock > 0) {
-           
-            // dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire, qty: 1 , offre: selectedProduct.offre}));
+     
             dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire * 0.5, qty: 1 , offre: selectedProduct.offre, antigaspi: true}));
-
             Toast.show({
               type: 'success',
               text1: 'Produit ajouté au panier',
             });
-            
-      //     }else {
-      //       Toast.show({
-      //         type: 'error',
-      //         position: 'bottom',
-      //         text1: 'Victime de son succès',
-      //         text2: `Quantité maximale: ${productStock[0].quantite}`,
-              
-      //       });
-      //     } 
-          
-         
-      // }  catch (error) {
-      //   console.error("Une erreur s'est produite lors de la vérification du stock :", error);
-      
-      // }  
     
 }   
   return (
@@ -145,28 +119,24 @@ const Antigaspi = ({navigation}) => {
                     source={require('../assets/antigaspi.jpg')} 
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 /> */}
-                <FastImage
+           <FastImage
               source={require('../assets/antigaspi.jpg')}
               style={{ width: "100%", height: 330, resizeMode:'cover' }}
-             
             />
           <Image
                 source={require('../assets/pastille_antigaspi.png')} 
                 style={ {...styles.pastilleOffre31, resizeMode:'contain', width:90, right:20, top:250}}
                 />
               
-                  <View
-                 
-                  style={{flexDirection:'row', justifyContent:'space-between', width:"100%", alignItems:'center', position:'absolute', top:0, paddingHorizontal:30, paddingVertical:30}}
-                >
-                  <Text style={{...style.titleProduct, width:"90%"}}>Notre offre anti-gaspillage</Text>
-                  <TouchableOpacity onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
+                  <View style={styleAntigaspi.ViewTitle}>
+                  <Text style={style.titleProduct}>Notre offre anti-gaspillage</Text>
+                  <TouchableOpacity onPress={handleBack} activeOpacity={1} style={styleAntigaspi.TouchArrow}>
                     <ArrowLeft fill="white"/>
                   </TouchableOpacity>
                 </View>
            
         </View>
-        <View style={{paddingHorizontal:30, paddingTop:50}}>
+        <View style={styleAntigaspi.container_texte}>
             <Text style={{...style.title, fontSize:19 }}>Sélection Anti-Gaspillage</Text>
             <Text style={styles.texteOffre}>Chaque produit ici joue un rôle vital dans la réduction du gaspillage alimentaire. </Text>
             <Text style={styles.texteOffre}>Dépêchez-vous, il n'y en aura pas pour tout le monde.</Text>
@@ -177,7 +147,7 @@ const Antigaspi = ({navigation}) => {
         <View>
       
         <ScrollView>
-    <View style={{ gap: 20 , marginBottom:100}}>
+    <View style={styleAntigaspi.container_familleProduct}>
       {Object.values(
         clickProducts.reduce((groups, product) => {
           const { id_famille_produit } = product;
@@ -193,9 +163,9 @@ const Antigaspi = ({navigation}) => {
       ).map((group) => (
         <View key={group.id_famille_produit}>
           {/* <Text style={{margin:30}}>{group.id_famille_produit}</Text> */}
-          <Text style={{marginLeft:30, marginVertical:10, color:colors.color1, fontFamily:fonts.font2, fontWeight:"700"}}>{familyProductDetails[group.id_famille_produit]}</Text>
+          <Text style={styleAntigaspi.familleProduct}>{familyProductDetails[group.id_famille_produit]}</Text>
           <ScrollView >
-          <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center' }}>
+          <View style={styleAntigaspi.container_cards}>
             {group.products.map((product, index) => (
                  <TouchableOpacity  key={index}
                  onPress={() => handleProduct(product)} activeOpacity={0.8}>
@@ -241,8 +211,8 @@ const Antigaspi = ({navigation}) => {
     <View style={{...style.menu, height:90}}>
         <View>
           <View style={style.bandeauFormule}>
-          <Text style={{ fontWeight: "bold", color:colors.color1}}>Prix du produit</Text>
-        <Text style={{ color:colors.color1, fontWeight: "bold",}}>{selectedProduct ? (selectedProduct.prix_unitaire * 0.5).toFixed(2) : 0} €</Text>
+          <Text style={styleAntigaspi.colorText}>Prix du produit</Text>
+        <Text style={styleAntigaspi.colorText}>{selectedProduct ? (selectedProduct.prix_unitaire * 0.5).toFixed(2) : 0} €</Text>
 
           </View>
           {/* <View style={style.bandeauFormule}>
@@ -264,5 +234,54 @@ const Antigaspi = ({navigation}) => {
     </View> 
   )
 }
+
+
+const styleAntigaspi = StyleSheet.create({
+  ViewTitle:{
+    flexDirection:'row', 
+    justifyContent:'space-between', 
+    width:"100%", alignItems:'center', 
+    position:'absolute', 
+    top:0, 
+    paddingHorizontal:30, 
+    paddingVertical:30
+  },
+    titleProduct:{ 
+      color: "white",
+      fontFamily:fonts.font1,
+      fontSize:24,
+      width:"90%"
+    },
+    TouchArrow:{
+      backgroundColor:'black', 
+      borderRadius:25
+    },
+    container_texte:{
+      paddingHorizontal:30, 
+      paddingTop:50
+    },
+    container_familleProduct:{
+      gap: 20 , 
+      marginBottom:100
+    },
+    familleProduct:{
+      marginLeft:30, 
+      marginVertical:10, 
+      color:colors.color1, 
+      fontFamily:fonts.font2, 
+      fontWeight:"700"
+    },
+    container_cards:{
+      flexDirection: 'row', 
+      flexWrap: 'wrap', 
+      justifyContent:'center'
+    },
+    colorText:{
+      fontWeight: "bold", 
+      color:colors.color1
+    }
+  
+  })
+
 
 export default Antigaspi
