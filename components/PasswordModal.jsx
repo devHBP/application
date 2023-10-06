@@ -1,7 +1,6 @@
 import { View, Text, Modal, TextInput, StyleSheet, Alert, TouchableOpacity } from 'react-native';
 import React, { useState} from 'react';
 import { Button  } from 'react-native-paper'
-
 import {fonts, colors} from '../styles/styles'
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import { useSelector, useDispatch } from 'react-redux'
@@ -14,9 +13,7 @@ const PasswordModal = ({ isVisible, onClose, onChangePassword }) => {
     const userId = user.userId
   
     const handlePasswordChange = async () => {
-      console.log('new', newPassword)
-      console.log('confirm', confirmPassword)
-      console.group('userId', userId)
+      
       if (newPassword !== confirmPassword) {
         // Afficher une alerte ou un message indiquant que les mots de passe ne correspondent pas
         Alert.alert('Erreur', 'Les mots de passe ne correspondent pas');
@@ -45,13 +42,23 @@ const PasswordModal = ({ isVisible, onClose, onChangePassword }) => {
         <View style={style.centeredView}>
           
           <View style={style.modalView}>
-          <TouchableOpacity onPress={onClose} >
-            <Text style={{ fontSize: 30, color:colors.color1}}>&times;</Text>
+          <TouchableOpacity onPress={onClose} style={style.container_cross} >
+            <Text style={style.cross}>&times;</Text>
           </TouchableOpacity>
             <Text style={style.title}>Changer votre mot de passe</Text>
+
+            <View style={style.viewText}>
+            <Text style={style.texte}>Bonjour {user.firstname},</Text>
+            <Text style={{...style.texte, textAlign:'justify'}}>Il semble que vous souhaitiez changer votre mot de passe. La sécurité de votre compte est notre priorité,
+             et un mot de passe fort est essentiel pour protéger vos informations personnelles.
+            Veuillez saisir votre nouveau mot de passe, ci-dessous</Text>
+            </View>
+            
+           
             <TextInput 
               secureTextEntry 
               placeholder='Nouveau mot de passe'
+              placeholderTextColor={colors.color5}
               style={style.input}
               onChangeText={setNewPassword}
               value={newPassword}
@@ -59,25 +66,32 @@ const PasswordModal = ({ isVisible, onClose, onChangePassword }) => {
             <TextInput 
               secureTextEntry 
               placeholder='Confirmer le mot de passe'
+              placeholderTextColor={colors.color5}
               style={style.input}
               onChangeText={setConfirmPassword}
               value={confirmPassword}
             />
+
+          <View style={style.viewText}>
+            <Text style={style.rules}><Text style={style.title_rules}>Longueur Minimale :</Text> Votre mot de passe doit contenir au moins 5 caractères.</Text>
+            <Text style={style.rules}><Text style={style.title_rules}>Diversité des Caractères :</Text>  Utilisez une combinaison de majuscules, de minuscules, de chiffres et de caractères spéciaux (ex. @, #, $).</Text>
+          </View>
+
         <View style={style.container_btn}>
-        <Button
-                    style={style.btn_enregistrer} 
-                    textColor={'white'} 
-                    onPress={handlePasswordChange}
-                    >
-                    Valider
-                </Button>
-            <Button
-                    style={style.btn_deconnexion} 
-                    textColor={'white'} 
-                    onPress={onClose}
-                    >
-                   Annuler
-                </Button>
+          <Button
+              style={style.button} 
+              textColor={'white'} 
+              onPress={onClose}
+              >
+              Annuler
+          </Button>
+          <Button
+              style={{...style.button, backgroundColor:colors.color9, borderColor:colors.color9} }
+              textColor={'white'} 
+              onPress={handlePasswordChange}
+              >
+              Valider
+          </Button>
         </View>
             
           </View>
@@ -95,6 +109,7 @@ const PasswordModal = ({ isVisible, onClose, onChangePassword }) => {
         marginTop: 22
     },
     modalView: {
+      position:'relative',
         margin: 20,
         backgroundColor: "white",
         borderRadius: 20,
@@ -109,46 +124,66 @@ const PasswordModal = ({ isVisible, onClose, onChangePassword }) => {
         shadowOpacity: 0.25,
         shadowRadius: 4,
         elevation: 5,
-        width: '80%',
-        height:"60%",
+        width: '90%',
+        height:"80%",
+    },
+    container_cross:{
+      position:"absolute", top:10, right:15, color:colors.color1
+    },
+    cross:{
+      fontSize: 30, 
+      color:colors.color1
     },
     input: {
         height: 40, 
-        borderColor: 'gray', 
+        borderColor: colors.color4, 
         borderWidth: 1,
         marginBottom: 20, 
         width: '100%', 
         paddingHorizontal: 10,
-        borderRadius: 5
+        borderRadius: 5,
+        backgroundColor:colors.color4,
     },
     title:{
       marginVertical:30,
-      fontFamily:fonts.font2,
+      fontFamily:fonts.font1,
       color: colors.color2,
       fontWeight:"700",
       fontSize:16,
       textAlign:'center'
     },
-    btn_deconnexion:{
+    button:{
       backgroundColor: colors.color8,
       borderRadius:6,
       borderColor:colors.color5,
       borderWidth:1,
       borderStyle:'solid',
       marginVertical:10,
-    },
-    btn_enregistrer:{
-      backgroundColor: colors.color9,
-      borderRadius:6,
-      borderColor:colors.color9,
-      borderWidth:1,
-      borderStyle:'solid',
-      marginVertical:10,
+      paddingHorizontal:20,
+      borderColor:colors.color8
     },
     container_btn:{
       flexDirection:'row', 
       justifyContent:'center',
       gap:30
+    },
+    viewText:{
+      marginBottom:20
+    },
+    texte:{
+      textAlign:'left', 
+      color:colors.color1, 
+      fontSize:12
+    },
+    rules:{
+      textAlign:'justify', 
+      color:colors.color5, 
+      fontSize:11,
+      marginBottom:10
+    },
+    title_rules:{
+      fontWeight:"bold",
+      color:colors.color5, 
     }
     
 });
