@@ -23,9 +23,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import LogoFond from '../SVG/LogoFond';
 import { useRoute, useFocusEffect } from '@react-navigation/native';
 import { getAllStores, fetchAllProductsClickandCollect } from '../CallApi/api';
-import TestFormules from './TestFormules';
-import TestEnvieSalee from '../components/TestEnvieSalee';
-
 
 
 const Home =  ({navigation}) => {
@@ -43,6 +40,8 @@ const Home =  ({navigation}) => {
   const [isLoading, setIsLoading] = useState(true); 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isManualScrolling, setIsManualScrolling] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [readyOrders, setReadyOrders] = useState([]);
 
 
   const user = useSelector((state) => state.auth.user);
@@ -270,7 +269,7 @@ const renderCategoryProducts = (categoryName) => {
     </View>
   );
 };
-
+  
   return (
     <>
     <View style={{flex:1}}>
