@@ -68,7 +68,7 @@ const Antigaspi = ({navigation}) => {
               const responses = await Promise.all(
                 familyProductIds.map((id) => getFamilyProductDetails(id))
               );
-              console.log('response', responses)
+              //console.log('response', responses)
               const familleProductDetailsMap = {};
               responses.forEach((famille) => {
                 if (famille) {
