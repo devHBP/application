@@ -48,6 +48,8 @@ const Panier = ({navigation}) => {
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
 
   const user = useSelector((state) => state.auth.user)
+  const emailConfirmOrder = user.email
+  const firstnameConfirmOrder = user.firstname
   const selectedStore = useSelector(state => state.auth.selectedStore);
    const cartTotal = useSelector((state) => state.cart.cartTotal)
 
@@ -396,10 +398,16 @@ const updateAntigaspiStock = async () => {
         //console.log(dateForDatabase) 
         try {
           const response =  await axios.post(`${API_BASE_URL}/createorder`, orderData);
+          console.log('response', response.data)
           const numero_commande = response.data.numero_commande
           dispatch(setNumeroCommande(numero_commande));
-          let userRole = user.role
+          let userRole = user.role;
 
+          const callApi = await axios.get(`${API_BASE_URL}/getOneStore/${user.userId}`)
+          const point_de_vente = callApi.data.nom_magasin
+          const email = user.email
+          const firstname = user.firstname
+         
           setOrderInfo({
             userRole,
             cart,
@@ -414,7 +422,13 @@ const updateAntigaspiStock = async () => {
           console.log('response createOrder', response.data)
           const orderId = response.data.orderId;
           dispatch(setOrderId(orderId)); 
-          //console.log('resp data', response.data)
+        
+
+          //envoi de l'email de confirmation de comande
+          const res = await axios.post(`${API_BASE_URL}/confirmOrder`, {
+            email, firstname, numero_commande, date:orderData.date, point_de_vente
+          });
+          
           return response.data;
         } catch (error) {
           console.error(error);
