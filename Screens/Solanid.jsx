@@ -158,7 +158,7 @@ const Solanid = ({navigation}) => {
             {solanidProducts.map((product, index) => (
                   <View key={product.libelle} style={{  flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginRight: 10 }}>
                  
-                <View style={{width:170, marginVertical:10}} key={index}>
+                <View style={{width:170, marginVertical:15}} key={index}>
                       <ProductCard
                         libelle={product.libelle}
                         key={product.productId}

@@ -233,7 +233,8 @@ const styles = StyleSheet.create({
     fontSize:15,
     color:colors.color1,
     fontFamily:fonts.font2, 
-    marginVertical:5
+    marginVertical:5,
+    marginBottom:20,
   },
   paddingProduct:{
     paddingTop:50
