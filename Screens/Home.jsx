@@ -257,6 +257,11 @@ const renderCategoryProducts = (categoryName) => {
     a.libelle === 'Monster' || a.libelle === 'Redbull' ? 1 : b.libelle === 'Monster' || b.libelle === 'Redbull' ? -1 : 0
     );
   }
+  if (categoryName === 'Pâtisseries') {
+    const dessertProducts = groupedAndSortedProducts['Desserts'] || [];
+    sortedProducts = [...sortedProducts, ...dessertProducts];
+  }
+  //si la catégorie est "Pâtisseries" je souhaite également ajouter les produits de la catégorie "Desserts"
   return (
     // categoryProducts &&
     sortedProducts &&
@@ -269,7 +274,8 @@ const renderCategoryProducts = (categoryName) => {
     </View>
   );
 };
-  
+
+
   return (
     <>
     <View style={{flex:1}}>
@@ -421,7 +427,6 @@ const renderCategoryProducts = (categoryName) => {
           <View onLayout={handleLayout('Promos')} style={styles.paddingProduct}>
            <LinkOffres />
           </View>
-          
 
             {renderCategoryProducts('Baguettes')}
             {renderCategoryProducts('Viennoiseries')}
@@ -439,7 +444,6 @@ const renderCategoryProducts = (categoryName) => {
           <EnvieSalee />
           {/* <TestEnvieSalee /> */}
         </View>
-          
 
           {renderCategoryProducts('Pâtisseries')}
           {renderCategoryProducts('Boules et Pains Spéciaux')}
