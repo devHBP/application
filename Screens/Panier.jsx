@@ -403,7 +403,9 @@ const updateAntigaspiStock = async () => {
           dispatch(setNumeroCommande(numero_commande));
           let userRole = user.role;
 
-          const callApi = await axios.get(`${API_BASE_URL}/getOneStore/${user.userId}`)
+          //userId - le store du user 
+          const callApi = await axios.get(`${API_BASE_URL}/getOneStore/${user.storeId}`)
+          console.log('data', callApi.data)
           const point_de_vente = callApi.data.nom_magasin
           const email = user.email
           const firstname = user.firstname
