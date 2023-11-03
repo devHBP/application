@@ -20,15 +20,15 @@ const FormulesSalees = () => {
     const navigation = useNavigation();
 
     const data = [
-        { name: 'Poke Bowl', imageUri: PokeSaumon, action: () => navigation.navigate('formulepoke'), description: "Un Poke Bowl, un dessert et une boisson" },
         { name: 'Sandwich', imageUri: FormuleSandwich, action: () => navigation.navigate('formulesandwich'), description: "Un sandwich, un dessert et une boisson" },
         { name: 'Plat Chaud', imageUri: FormulePlatsChauds, action: () => navigation.navigate('formuleplatschauds'), description: "Un plat chaud, un dessert et une boisson" },
+        { name: 'Pain Bagnat', imageUri: FormulePainBagnat, action: () => navigation.navigate('formulepainbagnat'), description: "Un pain bagnat, un dessert et une boisson" },
         { name: 'Salade', imageUri: FormuleSalade, action: () => navigation.navigate('formulesalade'), description: "Une salade, un dessert et une boisson" },
+        { name: 'Burger', imageUri: FormuleBurger, action: () => navigation.navigate('formuleburger'), description: "Un burger, un dessert et une boisson" },
         { name: 'Pizza', imageUri: FormulePizza, action: () => navigation.navigate('formulepizza'), description: "Une pizza, un dessert et une boisson" },
         { name: 'Wrap', imageUri: FormuleWrap, action: () => navigation.navigate('formulewrap'), description: "Un wrap, un dessert et une boisson" },
-        { name: 'Pain Bagnat', imageUri: FormulePainBagnat, action: () => navigation.navigate('formulepainbagnat'), description: "Un pain bagnat, un dessert et une boisson" },
-        { name: 'Burger', imageUri: FormuleBurger, action: () => navigation.navigate('formuleburger'), description: "Un burger, un dessert et une boisson" },
         { name: 'Croque', imageUri: FormuleCroque, action: () => navigation.navigate('formulecroque'), description:"Un croque, un dessert et une boisson" },
+        { name: 'Poke Bowl', imageUri: PokeSaumon, action: () => navigation.navigate('formulepoke'), description: "Un Poke Bowl, un dessert et une boisson" },
         { name: 'Panini', imageUri: FormulePanini, action: () => navigation.navigate('formulepanini'), description:"Un panini, un dessert et une boisson" },
         { name: 'Quiche', imageUri: FormuleQuiche, action: () => navigation.navigate('formulequiche'), description:"Une quiche, un dessert et une boisson" },
         // { name: 'Quiche', imageUri: 'https://cdn.lepaindujour.io/assets/Formule22.jpg', action: () => navigation.navigate('formulequiche'), description:"Une quiche, un dessert et une boisson" },
