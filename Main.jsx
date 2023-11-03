@@ -35,6 +35,7 @@ import PageSandwich from './Screens/PagesSalees/PageSandwich'
 import FormuleArtisan from './Screens/Formules/FormuleArtisan'
 import FormulePetitDejeuner from './Screens/Formules/FormulePetitDejeuner'
 import FormulePetitDejeunerGourmand from './Screens/Formules/FormulePetitDejeunerGourmand'
+import FormulePlatsChauds from './Screens/Formules/FormulePlatsChauds'
 import Offre31 from './Screens/Offre31'
 import Solanid from './Screens/Solanid'
 import PageWrap from './Screens/PagesSalees/PageWrap'
@@ -129,6 +130,8 @@ const Main = () => {
                     <Stack.Screen name='formulecroque' component={FormuleCroques}/>
                     <Stack.Screen name='formulepanini' component={FormulePanini}/>
                     <Stack.Screen name='formulequiche' component={FormuleQuiche}/>
+                    <Stack.Screen name='formuleplatschauds' component={FormulePlatsChauds}/>
+
                     {/* Pages salées */}
                     <Stack.Screen name='sandwich' component={PageSandwich}/>
                     <Stack.Screen name='pizza' component={PagePizza}/>

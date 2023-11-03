@@ -13,6 +13,8 @@ import FormuleBurger from '../assets/Formule27.jpg'
 import FormuleCroque from '../assets/Formule16.jpg'
 import FormulePanini from '../assets/Formule55.jpg'
 import FormuleQuiche from '../assets/Formule22.jpg'
+import FormulePlatsChauds from '../assets/formule_platschauds.jpg'
+
 
 const FormulesSalees = () => {
     const navigation = useNavigation();
@@ -20,6 +22,7 @@ const FormulesSalees = () => {
     const data = [
         { name: 'Poke Bowl', imageUri: PokeSaumon, action: () => navigation.navigate('formulepoke'), description: "Un Poke Bowl, un dessert et une boisson" },
         { name: 'Sandwich', imageUri: FormuleSandwich, action: () => navigation.navigate('formulesandwich'), description: "Un sandwich, un dessert et une boisson" },
+        { name: 'Plat Chaud', imageUri: FormulePlatsChauds, action: () => navigation.navigate('formuleplatschauds'), description: "Un plat chaud, un dessert et une boisson" },
         { name: 'Salade', imageUri: FormuleSalade, action: () => navigation.navigate('formulesalade'), description: "Une salade, un dessert et une boisson" },
         { name: 'Pizza', imageUri: FormulePizza, action: () => navigation.navigate('formulepizza'), description: "Une pizza, un dessert et une boisson" },
         { name: 'Wrap', imageUri: FormuleWrap, action: () => navigation.navigate('formulewrap'), description: "Un wrap, un dessert et une boisson" },
