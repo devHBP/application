@@ -151,7 +151,7 @@ const FormulePoke = ({navigation}) => {
       Toast.show({
           type: 'error',
           text1: 'Attention',
-          text2: 'Veuillez sélectionner un Poke Bowl',
+          text2: 'Veuillez sélectionner un plat chaud',
       });
       return;
     }
@@ -179,7 +179,7 @@ const FormulePoke = ({navigation}) => {
       Toast.show({
           type: 'error',
           text1: 'Attention',
-          text2: 'Veuillez sélectionner un Poke Bowl',
+          text2: 'Veuillez sélectionner un plat chaud',
       });
       return;
     }
@@ -223,7 +223,7 @@ const FormulePoke = ({navigation}) => {
         option3:selectedBoisson ? selectedBoisson : null,
         prix: prix,
         libelle:"Formule Plat Chaud",
-        formuleImage: require('../../assets/Formule26.jpg'),
+        formuleImage: require('../../assets/formule_platschauds.jpg'),
         productIds: productIds,
         qty: 1,
       }
@@ -242,7 +242,7 @@ const FormulePoke = ({navigation}) => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 /> */}
                 <FastImage
-              source={require('../../assets/PokeSaumon.jpg')}
+              source={require('../../assets/formule_platschauds.jpg')}
               style={{ width: "100%", height: 330 }}
               resizeMode={FastImage.resizeMode.cover}
               />
@@ -252,7 +252,7 @@ const FormulePoke = ({navigation}) => {
               resizeMode={FastImage.resizeMode.cover}
               />
                   <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
-                    <Text style={{...style.titleProduct, color:colors.color1}}>Formule Plats Chauds</Text>
+                    <Text style={{...style.titleProduct, color:colors.color1}}>Formule Plat Chaud</Text>
                     <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
                       <ArrowLeft fill="white"/>
                     </TouchableOpacity>
@@ -261,11 +261,11 @@ const FormulePoke = ({navigation}) => {
         </View>
         <View style={{padding:30}}>
             <Text style={style.title}>Formule Plat Chaud</Text>
-            <Text style={style.descriptionFormule}>"Découvrez notre sélection de plats chauds en collaboration avec les Halles Solanid : une fusion entre fraîcheur saisonnière et bien-être."</Text>
+            <Text style={style.descriptionFormule}>"Notre sélection de Plats Chauds vous apporte réconfort et équilibre. Des ingrédients simples et de saison pour une pause déjeuner saine."</Text>
         </View>
         {/* choix sandwich */}
         <View>
-            <Text style={style.choixTitle}>Votre choix de Poke Bowl</Text>
+            <Text style={style.choixTitle}>Votre choix de Plat Chaud</Text>
             <ScrollView horizontal={true} style={style.scrollProduct}>
                 {products.map((product, index) => (
                   <View key={product.productId} style={{flexDirection:'column', justifyContent:'center'}}>
