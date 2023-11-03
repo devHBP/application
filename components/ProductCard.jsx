@@ -20,7 +20,7 @@ import InfoProduct from '../SVG/InfoProduct';
 import ModaleIngredients from './ModaleIngredients';
 
 
-const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, showButtons, showPromo = true , ingredients, showPriceSun = true  }) => {
+const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, showButtons, showPromo = true , ingredients, showPriceSun = true, allergenes  }) => {
 
   // Déclaration de l'état du stock
   const [currentStock, setCurrentStock] = useState(stock);
@@ -372,7 +372,7 @@ const handleIngredients = () => {
             </View>
           
             <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
-            <ModaleIngredients modalVisibleIngredients={modalVisibleIngredients} setModalVisibleIngredients={setModalVisibleIngredients} product={ingredients}/>
+            <ModaleIngredients modalVisibleIngredients={modalVisibleIngredients} setModalVisibleIngredients={setModalVisibleIngredients} product={ingredients} allergenes={allergenes}/>
 
     </View>   
   )

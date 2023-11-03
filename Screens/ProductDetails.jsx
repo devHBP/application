@@ -236,7 +236,7 @@ const ProductDetails = ({navigation, route}) => {
                 </View>
                 
             </View>
-            <ModaleIngredients modalVisibleIngredients={modalVisibleIngredients} setModalVisibleIngredients={setModalVisibleIngredients} product={product.ingredients}/>
+            <ModaleIngredients modalVisibleIngredients={modalVisibleIngredients} setModalVisibleIngredients={setModalVisibleIngredients} product={product.ingredients} allergenes={product.allergenes}/>
 
             
     <FooterProfile/>

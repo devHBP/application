@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import { fonts, colors} from '../styles/styles'
 
-const ModaleIngredients = ({ modalVisibleIngredients, setModalVisibleIngredients, product }) => {
+const ModaleIngredients = ({ modalVisibleIngredients, setModalVisibleIngredients, product, allergenes }) => {
 
     const onClose = () => {
         setModalVisibleIngredients(!modalVisibleIngredients);
@@ -24,6 +24,14 @@ const ModaleIngredients = ({ modalVisibleIngredients, setModalVisibleIngredients
          <View style={{flexDirection:'colum', alignItems:'center', gap:10}}>
             <Text style={styles.title}>Liste d'ingrédients</Text>
             <Text style={styles.liste}>{product}</Text>
+            {
+              allergenes && 
+              <View style={{flexDirection:'colum', alignItems:'center', gap:10}}>
+                <Text style={styles.title}>Allergènes</Text>
+                <Text style={styles.liste}>{allergenes}</Text>
+              </View>
+            }
+            
          </View>
         </View>
       </View>
@@ -42,8 +50,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.color6,
     padding: 20,
     borderRadius: 10,
-    width: '80%',
-    height: 180,
+    width: '85%',
+    minHeight: 200,
     justifyContent: 'center',
     alignItems: 'center',
   },
