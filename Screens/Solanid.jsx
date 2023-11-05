@@ -208,10 +208,9 @@ const Solanid = ({navigation}) => {
                   }}>
                     <Text style={styles.categoryTitle}>{category}</Text>
                     {solanidProducts[category].map(product => (
-                      <View >
                         <View
                           style={{width: 170, marginBottom:15}}
-                          key={index}>
+                          key={product.libelle}>
                           <ProductCard
                             libelle={product.libelle}
                             key={product.productId}
@@ -228,7 +227,6 @@ const Solanid = ({navigation}) => {
                             ingredients={product.ingredients}
                           />
                         </View>
-                      </View>
                     ))}
                   </View>
                 ))}
