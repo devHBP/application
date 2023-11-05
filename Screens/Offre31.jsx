@@ -22,13 +22,12 @@ const Offre31 = ({navigation}) => {
   
   const [offre31Products, setOffre31ProductNames] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
-  // const [familyProductDetails, setFamilyProductDetails] = useState({});
   const [modalVisible, setModalVisible] = useState(false);
   const [totalPrice, setTotalPrice] = useState(0);
+  const [offre31ProductsByCategory, setOffre31ProductsByCategory] = useState({});
 
-  //pensez à mettre toutes les familles
-  // const familyProductIds = [1, 2, 3,4,5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17]; 
 
+ 
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
 
@@ -52,8 +51,20 @@ const Offre31 = ({navigation}) => {
             //   product.offre && 
             //   product.offre.startsWith("offre31_") && 
             //   !product.offre.toLowerCase().includes("pizza")
-            //   );            
-            setOffre31ProductNames(productsOffre);
+            //   );   
+            
+            //trie par catégorie
+            const productsByCategory = productsOffre.reduce((acc, product) => {
+              const { categorie } = product;
+              if (!acc[categorie]) {
+                acc[categorie] = [];
+              }
+              acc[categorie].push(product);
+              return acc;
+            }, {});
+            
+            setOffre31ProductsByCategory(productsByCategory);
+            // setOffre31ProductNames(productsOffre);
 
           } catch (error) {
             console.error('Une erreur s\'est produite lors de la récupération des produits:', error);
@@ -63,33 +74,7 @@ const Offre31 = ({navigation}) => {
         fetchData();
     }, [])
 
-  //   useEffect(() => {
-  //     const fetchData = async () => {
-  //         try {
-  //           const responses = await Promise.all(
-  //             familyProductIds.map((id) => getFamilyProductDetails(id))
-  //           );
-
-  //           const familleProductDetailsMap = {};
-  //           responses.forEach((famille) => {
-  //             if (famille) {
-  //               familleProductDetailsMap[famille.id] =
-  //                 famille.name;
-  //             }
-  //           });
-  //           setFamilyProductDetails(familleProductDetailsMap);
-  //           console.log(familleProductDetailsMap)
-  //         } catch (error) {
-  //           console.error(
-  //             "Une erreur s'est produite lors de la récupération des familles de produits:",
-  //             error
-  //           );
-  //         }
-  //     };
-  
-  //     fetchData();
-  // }, []);
-
+    
   useEffect(() => {
     if (selectedProduct) {
       setTotalPrice(selectedProduct.prix_unitaire * 3);  
@@ -189,56 +174,40 @@ const handleCart = () => {
         </View>
         {/* choix produits*/}
         <View style={{ gap: 10 }}>
-          {/* {Object.values(
-            offre31Products.reduce((groups, product) => {
-              const { id_famille_produit } = product;
-              if (!groups[id_famille_produit]) {
-                groups[id_famille_produit] = {
-                  id_famille_produit: id_famille_produit,
-                  products: [],
-                };
-              }
-              groups[id_famille_produit].products.push(product);
-              return groups;
-            }, {})
-          ).map((group) => ( */}
-       
-            <View >
-              {/* <Text style={{marginLeft:30, marginVertical:10, color:colors.color1, fontFamily:fonts.font2, fontWeight:"700"}}>{familyProductDetails[group.id_famille_produit]}</Text> */}
+          {Object.keys(offre31ProductsByCategory).map((category) => (
+            <View key={category}>
+              <Text style={styles.categoryTitle}>{category}</Text>
               <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent:'center' }}>
-              {offre31Products.map( (product, index) => (
-                
-                <TouchableOpacity  key={index}
-                        onPress={() => handleProduct(product)} activeOpacity={0.8}>
-                      <View style={StyleSheet.flatten([getStyle(selectedProduct, product), { width:170, marginHorizontal:5, marginVertical:10 }])} key={index}>
+                {offre31ProductsByCategory[category].map((product, index) => (
+                  <TouchableOpacity  key={index}
+                  onPress={() => handleProduct(product)} activeOpacity={0.8}>
+                <View style={StyleSheet.flatten([getStyle(selectedProduct, product), { width:170, marginHorizontal:5, marginVertical:10 }])} key={index}>
 
-                      <ProductCard
-                        libelle={product.libelle}
-                        key={product.productId}
-                        id={product.productId}
-                        index={index}
-                        image={product.image}
-                        prix={product.prix_unitaire}
-                        prixSUN={product.prix_remise_collaborateur}
-                        qty={product.qty}
-                        stock={product.stock}
-                        offre={product.offre}
-                        showButtons={false} 
-                        showPromo={false}
-                        ingredients={product.ingredients}
-                      />
-                      {selectedProduct?.productId === product.productId && <Check color={colors.color9}/>}
+                <ProductCard
+                  libelle={product.libelle}
+                  key={product.productId}
+                  id={product.productId}
+                  index={index}
+                  image={product.image}
+                  prix={product.prix_unitaire}
+                  prixSUN={product.prix_remise_collaborateur}
+                  qty={product.qty}
+                  stock={product.stock}
+                  offre={product.offre}
+                  showButtons={false} 
+                  showPromo={false}
+                  ingredients={product.ingredients}
+                />
+                {selectedProduct?.productId === product.productId && <Check color={colors.color9}/>}
 
-                      </View>
-                   
-                </TouchableOpacity>
-                ))}
-                 
                 </View>
+            
+          </TouchableOpacity>
+                ))}
+              </View>
             </View>
-         
+          ))}
         </View>
-        
         
     </ScrollView>
 
