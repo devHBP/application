@@ -194,12 +194,13 @@ const FooterProfile = () => {
         <Profile />
       </TouchableOpacity>
       }
-        {
+      {/* icone BUG */}
+        {/* {
           user.role !== 'invite' &&
               <TouchableOpacity onPress={() => openLink('https://bit.ly/bug-pdj')}>
                 <Bug color={colors.color6}/>
               </TouchableOpacity>
-        }
+        } */}
 
         {
           user.role == 'invite' &&
