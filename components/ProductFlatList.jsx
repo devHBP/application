@@ -5,6 +5,7 @@ import ProductCard from '../components/ProductCard';
 import { styles } from '../styles/home'; 
 
 const ProductFlatList = ({ category, products, handleProductPress }) => {
+  
   return (
     <View>
       <Text style={styles.categoryTitle}>{category}</Text>
@@ -37,6 +38,7 @@ const ProductFlatList = ({ category, products, handleProductPress }) => {
                 showButtons={true}
                 ingredients={item.ingredients}
                 allergenes={item.allergenes}
+                category={item.categorie}
               />
             </TouchableOpacity>
           </View>

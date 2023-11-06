@@ -127,9 +127,13 @@ const ProductDetails = ({navigation, route}) => {
                             }}
                     resizeMode={FastImage.resizeMode.cover}
                 />
+                {/* info product n'apparait pas pour les boissons */}
+                 {
+                product.categorie !=='Boissons' &&
                 <TouchableOpacity style={{position:'absolute',bottom:10, right:10}} onPress={openIngredients}>
                 <InfoProduct />
                 </TouchableOpacity>
+                }
                 <View style={{flexDirection:'row',justifyContent:'space-between', width:"100%" , alignItems:'center', position:'absolute', top:30, paddingHorizontal:30}}>
                   <Text style={styles.titleProduct}>{product.libelle}</Text>
                   <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{ backgroundColor:colors.color1, borderRadius:25}}>

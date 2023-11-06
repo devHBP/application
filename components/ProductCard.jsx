@@ -20,7 +20,7 @@ import InfoProduct from '../SVG/InfoProduct';
 import ModaleIngredients from './ModaleIngredients';
 
 
-const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, showButtons, showPromo = true , ingredients, showPriceSun = true, allergenes  }) => {
+const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, showButtons, showPromo = true , ingredients, showPriceSun = true, allergenes, category  }) => {
 
   // Déclaration de l'état du stock
   const [currentStock, setCurrentStock] = useState(stock);
@@ -183,9 +183,13 @@ const handleIngredients = () => {
           {currentStock === 0 && (
             <View style={style.overlay} />
             )}
+          {/* le infoproduct n'apparait pas pour les boissons */}
+            {
+              category!=='Boissons' &&
              <TouchableOpacity style={{position:'absolute',bottom:10, left:10}} onPress={handleIngredients} activeOpacity={0.8}>
                 <InfoProduct />
                 </TouchableOpacity>
+            }
            {
             offre && offre.startsWith('offre31') && (
               <Image
@@ -373,7 +377,7 @@ const handleIngredients = () => {
           
             <ModaleOffre31 modalVisible={modalVisible} setModalVisible={setModalVisible} handleAcceptOffer={handleAcceptOffer} />
             <ModaleIngredients modalVisibleIngredients={modalVisibleIngredients} setModalVisibleIngredients={setModalVisibleIngredients} product={ingredients} allergenes={allergenes}/>
-
+            
     </View>   
   )
 }
