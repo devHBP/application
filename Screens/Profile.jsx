@@ -263,7 +263,7 @@ const allStores = async () => {
       </View>
 
        
-      <Text style={style.title_section}>Votre information personnelle</Text>
+      <Text style={style.title_section}>Vos données personnelles</Text>
       <View style={style.formulaire}>
       <View>
      
@@ -328,7 +328,7 @@ const allStores = async () => {
 
         </View>
 
-        <Text style={style.title_section}>Votre information du compte</Text>
+        <Text style={style.title_section}>Vos informations</Text>
         <View style={style.formulaire}>
           {
             user.role === 'client' && <Text style={style.label}>Votre restaurant favori</Text>
