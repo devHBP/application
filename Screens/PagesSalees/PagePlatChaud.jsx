@@ -123,7 +123,7 @@ const capitalizeIngredients = (ingredients) => {
               source={require('../../assets/formule_platschauds.jpg')}
               style={{ width: "100%", height: 330, resizeMode:'cover' }}
             />
-             <Text style={styles.titleProduct}>Plat Chaud</Text>
+             <Text style={{...styles.titleProduct, color:colors.color1}}>Plat Chaud</Text>
              <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
                     <ArrowLeft fill="white"/>
               </TouchableOpacity>

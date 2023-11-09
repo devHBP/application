@@ -47,7 +47,7 @@ const EnvieSalee = () => {
         {
             title: "Plats Chauds",
             onPress: () => navigation.navigate('platchaud'),
-            image: require('../assets/painbagnat.jpg'),
+            image: require('../assets/test_plat.jpg'),
             style: { width: 200, height: 244 }
         },
     ];
