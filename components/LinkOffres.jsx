@@ -6,6 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image';
 import antigaspiImage from '../assets/antigaspi.jpg';
+import antigaspiImage2 from '../assets/anti.jpg';
 import offre31 from '../assets/Croissant_offre31.jpg';
 import pastilleAntigaspi from '../assets/pastille_antigaspi.png';
 import offre31Image from '../assets/offre31.jpg';
@@ -109,7 +110,7 @@ const LinkOffres = () => {
       const data = [
         {
             type: 'antigaspi',
-            imageUri: antigaspiImage,
+            imageUri: antigaspiImage2,
             mainText: "L'offre",
             secondaryText: "Anti-gaspillage   ",
             pastilleImage: pastilleAntigaspi

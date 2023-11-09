@@ -120,7 +120,7 @@ const Antigaspi = ({navigation}) => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 /> */}
            <FastImage
-              source={require('../assets/antigaspi.jpg')}
+              source={require('../assets/anti2.jpg')}
               style={{ width: "100%", height: 330, resizeMode:'cover' }}
             />
           <Image
