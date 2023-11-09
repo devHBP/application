@@ -226,7 +226,6 @@ const handleIngredients = () => {
                            
               <TouchableOpacity
                   // onPress={() => incrementhandler(id, dispatch, cart, currentStock, offre)}
-
                   onPress={incrementhandler}
                   style={showButtons ? style.increment : {...style.increment, opacity: 0, height: 0, width: 0}}
               >
@@ -277,11 +276,10 @@ const handleIngredients = () => {
                           fontFamily:fonts.font2,
                           fontWeight:"600"
                       }}
-                      duration={5000} // durée en ms pour un aller-retour (peut être modifié selon vos besoins)
-                      loop // pour répéter l'animation en boucle
-                      // bounce // pour que le texte "rebondisse" à chaque extrémité
-                      repeatSpacer={50} // espace entre chaque répétition
-                      marqueeDelay={1000} // délai avant que l'animation ne commence
+                      duration={5000} 
+                      loop 
+                      repeatSpacer={50} 
+                      marqueeDelay={1000} 
                       
                   >
                       {libelle}
@@ -294,7 +292,7 @@ const handleIngredients = () => {
                             fontWeight: "300",
                             width: "50%",
                             color: showPromo ? 'gray' : colors.color1, 
-                            textDecorationLine: showPromo ? 'line-through' : 'none',  // Barrer le texte si showPromo est vrai
+                            textDecorationLine: showPromo ? 'line-through' : 'none',  
 
                             }}
                         >
@@ -312,7 +310,8 @@ const handleIngredients = () => {
                             textAlign:'right'
                             }}
                         >
-                            {(prix* 0.5).toFixed(2)}€
+                          {/* 70% de réduction pour l'antigaspi */}
+                            {(prix* 0.3).toFixed(2)}€
                       </Text>
                       : null
                       }
