@@ -1,40 +1,70 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native'
-import React, { useState} from 'react'
-import { Button, TextInput } from 'react-native-paper' 
-import axios from 'axios'
-import {  inputStyling, fonts, colors } from '../styles/styles'
-import { registerUser } from '../reducers/authSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from 'react-native';
+import React, {useState} from 'react';
+import {Button, TextInput} from 'react-native-paper';
+import axios from 'axios';
+import {inputStyling, fonts, colors} from '../styles/styles';
+import {registerUser} from '../reducers/authSlice';
+import {useDispatch, useSelector} from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from 'react-native-date-picker';
-import { validateLastName, validateFirstName, validateEmail, validatePassword, validatePostalCode, validateGenre, validateDateOfBirth, validateIdSun} from '../validation/validationInput'
-import ArrowLeft from '../SVG/ArrowLeft'
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import {
+  validateLastName,
+  validateFirstName,
+  validateEmail,
+  validatePassword,
+  validatePostalCode,
+  validateGenre,
+  validateDateOfBirth,
+  validateIdSun,
+  validateTelephone,
+} from '../validation/validationInput';
+import ArrowLeft from '../SVG/ArrowLeft';
+import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+
 
 const inputOptions = {
-    style:inputStyling,
-    mode:"outlined",
-    outlineColor:'white',
-}
+  style: inputStyling,
+  mode: 'outlined',
+  outlineColor: 'white',
+};
 
 const Signup = ({navigation}) => {
+  const dispatch = useDispatch();
+  const selectedStore = useSelector(state => state.auth.selectedStore);
 
-  const dispatch = useDispatch()
-  const selectedStore = useSelector((state) => state.auth.selectedStore);
-
-  const [lastname, setLastName] = useState('')
-  const [firstname, setFirstName] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [cp, setCodePostal] = useState('')
+  const [lastname, setLastName] = useState('');
+  const [firstname, setFirstName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [cp, setCodePostal] = useState('');
   const [genre, setGenre] = useState('');
   const [date, setDate] = useState(new Date());
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
   const [formattedDate, setFormattedDate] = useState('');
-  const [idSUN, setIdSun] = useState("")
+  const [idSUN, setIdSun] = useState('');
+  const [telephone, setTelephone] = useState('');
+  const [isPasswordVisible, setIsPasswordVisible] = useState(true);
 
-  const [error, setError] = useState({lastname: '', firstname: '', email: '', password: '', cp:'', genre:'', date:'', idSUN:"", role:""});
+
+  const [error, setError] = useState({
+    lastname: '',
+    firstname: '',
+    email: '',
+    password: '',
+    cp: '',
+    //genre: '',
+    date: '',
+    idSUN: '',
+    role: '',
+    telephone: '',
+  });
 
   const getCurrentDate = () => {
     const date = new Date();
@@ -42,8 +72,7 @@ const Signup = ({navigation}) => {
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Les mois sont indexés à partir de 0 en JavaScript
     const year = date.getFullYear();
     return `${day}-${month}-${year}`;
-  }
-  
+  };
 
   const submitHandler = async () => {
     const clientData = {
@@ -54,12 +83,35 @@ const Signup = ({navigation}) => {
       storeId: selectedStore ? selectedStore.storeId : null,
       cp: parseInt(cp, 10),
       genre,
-      date_naissance:formattedDate,
+      date_naissance: formattedDate,
       idSUN,
-      role:'client'
+      role: 'client',
+      telephone,
     };
 
     console.log('clientData', clientData);
+
+    let errors = [];
+
+    // Valider chaque champ et ajouter des messages d'erreur si nécessaire
+    if (validateLastName(lastname)) errors.push(validateLastName(lastname));
+    if (validateFirstName(firstname)) errors.push(validateFirstName(firstname));
+    if (validateEmail(email)) errors.push(validateEmail(email));
+    if (validatePassword(password)) errors.push(validatePassword(password));
+    if (validatePostalCode(cp)) errors.push(validatePostalCode(cp));
+    if (validateTelephone(telephone)) errors.push(validateTelephone(telephone));
+
+    // ... autres validations
+
+    // Afficher un toast si des erreurs de validation sont présentes
+    if (errors.length > 0) {
+      Toast.show({
+        type: 'error',
+        text1: 'Erreur de validation',
+        text2: errors.join(', '),
+      });
+      return;
+    }
 
     try {
       const response = await axios.post(`${API_BASE_URL}/signup`, clientData);
@@ -75,15 +127,18 @@ const Signup = ({navigation}) => {
         cp,
         genre,
         idSUN,
-        role:clientData.role
+        role: clientData.role,
+        telephone,
       };
       console.log('user', user);
-      dispatch(registerUser(user)); 
+      dispatch(registerUser(user));
 
-        //ajout route envoi email de creation de compte
-      const date = getCurrentDate();  
+      //ajout route envoi email de creation de compte
+      const date = getCurrentDate();
       const res = await axios.post(`${API_BASE_URL}/sendWelcomeEmail`, {
-        email, firstname, date
+        email,
+        firstname,
+        date,
       });
 
       // Navigate and display toast
@@ -105,7 +160,10 @@ const Signup = ({navigation}) => {
         console.error('Pas de réponse du serveur:', error.request);
       } else {
         // Quelque chose est arrivé lors de la mise en place de la requête
-        console.error('Erreur lors de la configuration de la requête', error.message);
+        console.error(
+          'Erreur lors de la configuration de la requête',
+          error.message,
+        );
       }
 
       if (error.response && error.response.status === 400) {
@@ -125,279 +183,340 @@ const Signup = ({navigation}) => {
 
   return (
     <View style={style.container}>
-
       <ScrollView showsVerticalScrollIndicator={false}>
-      <View >
-        <View style={{flexDirection:'row', alignItems:'center', justifyContent:'space-between', marginBottom:30}}>
-           
-              <Text style={style.title}>Création de compte</Text>
-              <TouchableOpacity onPress={handleBack} activeOpacity={1} style={{ backgroundColor:'black', borderRadius:25}}>
-                    <ArrowLeft fill="white"/>
-                  </TouchableOpacity>
-       
+        <View>
+          <View
+            style={{
+              flexDirection: 'row',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              marginBottom: 30,
+            }}>
+            <Text style={style.title}>Création de compte</Text>
+            <TouchableOpacity
+              onPress={handleBack}
+              activeOpacity={1}
+              style={{backgroundColor: 'black', borderRadius: 25}}>
+              <ArrowLeft fill="white" />
+            </TouchableOpacity>
+          </View>
+
+          <View style={{paddingBottom: 30}}>
+            {/* Email */}
+            <Text style={style.label}>Votre mail</Text>
+            <TextInput
+              {...inputOptions}
+              placeholder="exemple@email.com (obligatoire)" 
+              keyboardType="email-address"
+              value={email}
+              onChangeText={value => {
+                setEmail(value);
+                setError({...error, email: validateEmail(value)});
+              }}
+              style={
+                error.email
+                  ? {...inputOptions.style, borderColor: 'red'}
+                  : inputOptions.style
+              }
+            />
+            {/* {error.email ? <Text style={{color: 'red', textAlign:'center'}}>{error.email}</Text> : null} */}
+
+            {/* Mot de passe */}
+            <Text style={style.label}>Votre mot de passe</Text>
+            <View style={{flexDirection:'row', alignItems:'center'}}>
+            <TextInput
+              {...inputOptions}
+              placeholder="Mot de passe (obligatoire)"
+              secureTextEntry={isPasswordVisible}
+              value={password}
+              onChangeText={value => {
+                setPassword(value);
+                setError({...error, password: validatePassword(value)});
+              }}
+              style={{flex:1}}
+            />
+            <TouchableOpacity
+              style={style.visibilityToggle}
+              onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+              <Icon
+                name={isPasswordVisible ? 'visibility-off' : 'visibility'}
+                size={24}
+                color="white"
+              />
+            </TouchableOpacity>
+            </View>
+            
+            {/* {error.password ? <Text style={{color: 'red', textAlign:'center'}}>{error.password}</Text> : null} */}
+            <Text style={style.reglePwd}>
+              Le mot de passe doit inclure au moins 8 caractères, avec au moins
+              1 lettre majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial
+            </Text>
+          </View>
+
+          <View style={{marginBottom: 30}}>
+            <Text style={style.label}>Votre information personnelle</Text>
+
+            {/* genre */}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 5,
+                marginVertical: 10,
+                justifyContent: 'space-around',
+              }}>
+              <Text style={style.texteGenre}>Vous êtes :</Text>
+              <TouchableOpacity
+                style={style.radioButtonOut}
+                onPress={() => {
+                  setGenre('femme');
+                }}>
+                {genre === 'femme' && <View style={style.radioButtonIn} />}
+              </TouchableOpacity>
+              <Text style={style.texteGenre}>Mme.</Text>
+              <TouchableOpacity
+                style={style.radioButtonOut}
+                onPress={() => {
+                  setGenre('homme');
+                }}>
+                {genre === 'homme' && <View style={style.radioButtonIn} />}
+              </TouchableOpacity>
+              <Text style={style.texteGenre}>M.</Text>
+              <TouchableOpacity
+                style={style.radioButtonOut}
+                onPress={() => {
+                  setGenre('nbinaire');
+                }}>
+                {genre === 'nbinaire' && <View style={style.radioButtonIn} />}
+              </TouchableOpacity>
+              <Text style={style.texteGenre}>Non-binaire</Text>
+            </View>
+
+            {/* Nom */}
+            <TextInput
+              {...inputOptions}
+              placeholder="Nom (obligatoire)"
+              keyboardType="default"
+              value={lastname}
+              onChangeText={value => {
+                setLastName(value);
+                setError({...error, lastname: validateLastName(value)});
+              }}
+              style={
+                error.lastname
+                  ? {...inputOptions.style, borderColor: 'red'}
+                  : inputOptions.style
+              }
+            />
+            {/* {error.lastname ? <Text style={{color: 'red', textAlign:'center'}}>{error.lastname}</Text> : null} */}
+
+            {/* Prenom */}
+            <TextInput
+              {...inputOptions}
+              placeholder="Prénom (obligatoire)"
+              keyboardType="default"
+              value={firstname}
+              onChangeText={value => {
+                setFirstName(value);
+                setError({...error, firstname: validateFirstName(value)});
+              }}
+              style={
+                error.firstname
+                  ? {...inputOptions.style, borderColor: 'red'}
+                  : inputOptions.style
+              }
+            />
+            {/* {error.firstname ? <Text style={{color: 'red', textAlign:'center'}}>{error.firstname}</Text> : null} */}
+
+            {/* numero de telephone */}
+            <TextInput
+              {...inputOptions}
+              placeholder="Numéro de téléphone (obligatoire)"
+              keyboardType="numeric"
+              value={telephone}
+              onChangeText={value => {
+                setTelephone(value);
+                setError({...error, elephone: validateTelephone(value)});
+              }}
+              style={inputOptions.style}
+            />
+
+            {/* code postal */}
+            <TextInput
+              {...inputOptions}
+              placeholder="Code postal"
+              keyboardType="numeric"
+              value={cp}
+              onChangeText={value => {
+                setCodePostal(value);
+                setError({...error, cp: validatePostalCode(value)});
+              }}
+              style={
+                error.cp
+                  ? {...inputOptions.style, borderColor: 'red'}
+                  : inputOptions.style
+              }
+            />
+            {/* {error.cp ? <Text style={{color: 'red', textAlign:'center'}}>{error.cp}</Text> : null} */}
+
+            {/* date de naissance */}
+            <TextInput
+              {...inputOptions}
+              value={formattedDate}
+              editable={false} // Empêche l'utilisateur de taper manuellement dans ce champ
+              placeholder="Date de naissance"
+              onTouchStart={() => setOpen(true)} // Ouvre le date picker lorsque le champ est touché
+            />
+            <DatePicker
+              cancelText="Annuler"
+              confirmText="Confirmer"
+              locale="fr"
+              modal
+              mode="date"
+              minimumDate={new Date(1900, 0, 1)} // 1 Janvier 1900
+              maximumDate={new Date()}
+              open={open}
+              date={date}
+              onConfirm={date => {
+                setOpen(false);
+                setDate(date);
+                const formatted = `${date.getDate()}/${
+                  date.getMonth() + 1
+                }/${date.getFullYear()}`;
+                setFormattedDate(formatted);
+                setError({...error, date: validateDateOfBirth(date)});
+              }}
+              onCancel={() => {
+                setOpen(false);
+              }}
+            />
+          </View>
+
+          {/* numero client SUN */}
+          <View>
+            <Text style={style.label}>Êtes vous client SUN</Text>
+            <TextInput
+              {...inputOptions}
+              placeholder="Votre numéro de compte SUN"
+              keyboardType="numeric"
+              value={idSUN}
+              onChangeText={value => {
+                setIdSun(value);
+                setError({...error, idSUN: validateIdSun(value)});
+              }}
+              style={inputOptions.style}
+            />
+          </View>
+
+          <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+            <Button
+              style={style.btn}
+              textColor={'white'}
+              disabled={
+                lastname === '' ||
+                firstname === '' ||
+                email === '' ||
+                password === '' ||
+                telephone === ''
+
+              }
+              onPress={() => {
+                submitHandler();
+              }}>
+              Suivant
+            </Button>
+          </View>
+
+          <View style={{marginBottom: 50}}>
+            <TouchableOpacity onPress={() => navigation.navigate('login')}>
+              <Text style={style.login}>Vous avez déja un compte ?</Text>
+            </TouchableOpacity>
+          </View>
         </View>
-
-      <View style={{paddingBottom:30}}>
-        {/* Email */}
-      <Text style={style.label}>Votre mail</Text>
-      <TextInput 
-        {...inputOptions}
-        placeholder='exemple.mail@email.com'
-        keyboardType='email-address'
-        value={email}
-        onChangeText={(value) => {
-          setEmail(value);
-          setError({...error, email: validateEmail(value)});
-        }}
-        style={error.email ? {...inputOptions.style, borderColor: 'red'} : inputOptions.style}
-      />
-       {/* {error.email ? <Text style={{color: 'red', textAlign:'center'}}>{error.email}</Text> : null} */}
-    
-    {/* Mot de passe */}
-      <Text style={style.label}>Votre mot de passe</Text>
-      <TextInput 
-        {...inputOptions}
-        placeholder='Mot de passe'
-        secureTextEntry={true}
-        value={password}
-        onChangeText={(value) => {
-          setPassword(value);
-          setError({...error, password: validatePassword(value)});
-        }}
-        style={error.password ? {...inputOptions.style, borderColor: 'red'} : inputOptions.style}
-      />
-      {/* {error.password ? <Text style={{color: 'red', textAlign:'center'}}>{error.password}</Text> : null} */}
-      <Text style={style.reglePwd}>Le mot de passe doit inclure au moins 8 caractères, avec au moins 1 lettre majuscule, 1 minuscule, 1 chiffre et 1 caractère spécial</Text>
-      </View>
-      
-
-      <View style={{marginBottom:30}}>
-      <Text style={style.label}>Votre information personnelle</Text>
-
-      {/* genre */}
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap:5, marginVertical:10, justifyContent:'space-around' }}>
-      <Text style={style.texteGenre}>Vous êtes :</Text>
-      <TouchableOpacity 
-          style={style.radioButtonOut}
-          onPress={() => { setGenre('femme'); }}>
-          {
-            genre === 'femme' &&
-            <View style={style.radioButtonIn} />
-          }
-        </TouchableOpacity>
-        <Text style={style.texteGenre}>Mme.</Text>
-        <TouchableOpacity 
-          style={style.radioButtonOut}
-          onPress={() => { setGenre('homme'); }}>
-          {
-            genre === 'homme' &&
-            <View style={style.radioButtonIn} />
-          }
-        </TouchableOpacity>
-        <Text style={style.texteGenre}>M.</Text>
-        <TouchableOpacity 
-          style={style.radioButtonOut}
-          onPress={() => { setGenre('nbinaire'); }}>
-          {
-            genre === 'nbinaire' &&
-            <View style={style.radioButtonIn} />
-          }
-        </TouchableOpacity>
-        <Text style={style.texteGenre}>Non-binaire</Text>
-      </View>
-
-     {/* Nom */}
-      <TextInput 
-       {...inputOptions}
-        placeholder='Nom'
-        keyboardType='default'
-        value={lastname}
-        onChangeText={(value) => {
-          setLastName(value);
-          setError({...error, lastname: validateLastName(value)});
-        }}
-        style={error.lastname ? {...inputOptions.style, borderColor: 'red'} : inputOptions.style}
-      />
-      {/* {error.lastname ? <Text style={{color: 'red', textAlign:'center'}}>{error.lastname}</Text> : null} */}
-
-     {/* Prenom */}
-      <TextInput 
-        {...inputOptions}
-        placeholder='Prénom'
-        keyboardType='default'
-        value={firstname}
-        onChangeText={(value) => {
-          setFirstName(value);
-          setError({...error, firstname: validateFirstName(value)});
-        }}
-        style={error.firstname ? {...inputOptions.style, borderColor: 'red'} : inputOptions.style}
-      />
-      {/* {error.firstname ? <Text style={{color: 'red', textAlign:'center'}}>{error.firstname}</Text> : null} */}
-
-        {/* code postal */}
-        <TextInput 
-        {...inputOptions}
-        placeholder='Code postal'
-        keyboardType='numeric'
-        value={cp}
-        onChangeText={(value) => {
-          setCodePostal(value);
-          setError({...error, cp: validatePostalCode(value)});
-        }}
-        style={error.cp ? {...inputOptions.style, borderColor: 'red'} : inputOptions.style}
-      />
-      {/* {error.cp ? <Text style={{color: 'red', textAlign:'center'}}>{error.cp}</Text> : null} */}
-
-      {/* date de naissance */}
-      <TextInput 
-          {...inputOptions}
-          value={formattedDate}
-          editable={false}  // Empêche l'utilisateur de taper manuellement dans ce champ
-          placeholder="Date de naissance"
-          onTouchStart={() => setOpen(true)}  // Ouvre le date picker lorsque le champ est touché
-      />
-      <DatePicker
-          cancelText= "Annuler"
-          confirmText="Confirmer"
-          locale="fr"
-          modal
-          mode='date'
-          minimumDate={new Date(1900, 0, 1)}  // 1 Janvier 1900
-          maximumDate={new Date()}
-          open={open}
-          date={date}
-          onConfirm={(date) => {
-            setOpen(false);
-            setDate(date);
-            const formatted = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-            setFormattedDate(formatted);
-            setError({...error, date: validateDateOfBirth(date)});
-        }}        
-          onCancel={() => {
-              setOpen(false);
-          }}
-      />
-
-      </View>
-
-      {/* numero client SUN */}
-      <View>
-        <Text style={style.label}>Êtes vous client SUN</Text>
-        <TextInput 
-          {...inputOptions}
-          placeholder='Votre numéro de compte SUN'
-          keyboardType='numeric'
-          value={idSUN}
-          onChangeText={(value) => {
-            setIdSun(value);
-           setError({...error, idSUN: validateIdSun(value)});
-
-          }}
-          style={inputOptions.style}
-        />
-      </View>
-      
-    <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
-    <Button
-        style={style.btn} 
-        textColor={'white'} 
-        disabled={lastname === "" || firstname === ""||  email === "" ||  password === ""  }
-        onPress={() => {
-          submitHandler()
-        }}
-        >
-      Suivant
-      </Button>
+      </ScrollView>
     </View>
-      
-        <View style={{marginBottom:50}}>
-          <TouchableOpacity onPress={() => navigation.navigate('login')}>
-            <Text style={style.login}>Vous avez déja un compte ?</Text>
-          </TouchableOpacity>
-        </View>
-      
-    </View>
-
-     </ScrollView> 
-</View>
-  )
-}
+  );
+};
 
 const style = StyleSheet.create({
-    container:{
-        flex:1,
-        paddingTop:30,
-        paddingHorizontal:20,
-        justifyContent:'center',
-        //reajustement margin pour laisser de la place au footer
-        // marginBottom:70,
-        backgroundColor:colors.color1
-    },
-  inputOpts : {
-    height:50,
-    marginHorizontal:20,
-    marginVertical:10,
+  container: {
+    flex: 1,
+    paddingTop: 30,
+    paddingHorizontal: 20,
+    justifyContent: 'center',
+    //reajustement margin pour laisser de la place au footer
+    // marginBottom:70,
+    backgroundColor: colors.color1,
+  },
+  inputOpts: {
+    height: 50,
+    marginHorizontal: 20,
+    marginVertical: 10,
   },
   btn: {
     backgroundColor: colors.color2,
     paddingHorizontal: 10,
-    paddingVertical:0,
-    borderRadius:6,
-    marginVertical:10,
+    paddingVertical: 0,
+    borderRadius: 6,
+    marginVertical: 10,
   },
-  back:{
+  back: {
     backgroundColor: colors.color1,
-    width:40,
-    height:40,
-    borderRadius:5,
-    justifyContent:'center',
-    alignItems:'center',
+    width: 40,
+    height: 40,
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  title:{
-    marginVertical:5,
-    color:colors.color6,
-    fontSize:24,
-    fontWeight: "900",
-    fontFamily:fonts.font1,
-    width:"60%"
+  title: {
+    marginVertical: 5,
+    color: colors.color6,
+    fontSize: 24,
+    fontWeight: '900',
+    fontFamily: fonts.font1,
+    width: '60%',
   },
-  login:{
-    textAlign:'center',
-    color:colors.color6,
-    marginVertical:10,
-    textDecorationLine:'underline'
+  login: {
+    textAlign: 'center',
+    color: colors.color6,
+    marginVertical: 10,
+    textDecorationLine: 'underline',
   },
-  label:{
+  label: {
     // marginLeft:20,
-    marginTop:10,
-    color:colors.color2,
-    fontWeight:fonts.font2,
-    fontWeight:"700"
+    marginTop: 10,
+    color: colors.color2,
+    fontWeight: fonts.font2,
+    fontWeight: '700',
   },
-  radioButtonOut:{
+  radioButtonOut: {
     height: 15,
     width: 15,
     borderRadius: 12,
     borderWidth: 2,
-    borderColor:colors.color6,
+    borderColor: colors.color6,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor:colors.color6
+    backgroundColor: colors.color6,
   },
-  radioButtonIn:{
+  radioButtonIn: {
     height: 10,
     width: 10,
     borderRadius: 6,
     backgroundColor: colors.color1,
   },
-  reglePwd:{
+  reglePwd: {
     color: colors.color3,
-    fontSize:10,
-    marginVertical:5
+    fontSize: 10,
+    marginVertical: 5,
   },
-  texteGenre:{
-    color:colors.color6
-  }
-})
+  texteGenre: {
+    color: colors.color6,
+  },
+  visibilityToggle: {
+    // Styles de votre TouchableOpacity
+    paddingHorizontal: 10, // Positionner correctement l'icône dans le TextInput
+  },
+});
 
-export default Signup
+export default Signup;
