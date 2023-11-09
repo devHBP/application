@@ -44,6 +44,12 @@ const EnvieSalee = () => {
             image: [require('../assets/quiche.jpg'), require('../assets/croque.jpg')],
             style: [{ width: 200, height: 80 }, { width: 200, height: 80 }]
         },
+        {
+            title: "Plats Chauds",
+            onPress: () => navigation.navigate('platchaud'),
+            image: require('../assets/painbagnat.jpg'),
+            style: { width: 200, height: 244 }
+        },
     ];
 
     return (

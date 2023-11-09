@@ -17,7 +17,7 @@ import FastImage from 'react-native-fast-image';
 import { getStyle } from '../../Fonctions/stylesFormule';
 
 
-const PageWrap = ({navigation}) => {
+const PagePlatChaud = ({navigation}) => {
 
 
     const [products, setProducts] = useState([]); 
@@ -85,7 +85,7 @@ const PageWrap = ({navigation}) => {
             qty: 0, 
           }));
        
-        const products = updatedProducts.filter(product => product.categorie === "Wraps")
+        const products = updatedProducts.filter(product => product.categorie === "Plats Chauds")
         setProducts(products)
                   
           } catch (error) {
@@ -95,8 +95,8 @@ const PageWrap = ({navigation}) => {
         fetchData(); 
       }, []);
 
-    const openFormuleWrap = () => {
-      navigation.navigate('formulewrap')
+    const openFormulePlatChaud = () => {
+      navigation.navigate('formuleplatschauds')
   }
   const handleCart = () => {
     navigation.navigate('panier')
@@ -120,10 +120,10 @@ const capitalizeIngredients = (ingredients) => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 /> */}
               <FastImage
-              source={require('../../assets/wrap.jpg')}
+              source={require('../../assets/formule_platschauds.jpg')}
               style={{ width: "100%", height: 330, resizeMode:'cover' }}
             />
-             <Text style={styles.titleProduct}>Wrap</Text>
+             <Text style={styles.titleProduct}>Plat Chaud</Text>
              <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
                     <ArrowLeft fill="white"/>
               </TouchableOpacity>
@@ -211,19 +211,19 @@ const capitalizeIngredients = (ingredients) => {
           </View>
           <View style={{margin:30, flexDirection:'column', justifyContent:'flex-start', gap:20}}>
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
-            <TouchableOpacity  onPress={openFormuleWrap} activeOpacity={0.8}>
+            <TouchableOpacity  onPress={openFormulePlatChaud} activeOpacity={0.8}>
               <View style={{width:320}}>
                 {/* <Image
                               source={require('../../assets/Formule32.jpg')} 
                               style={{ resizeMode:'cover',  width: 320, height: 200, }}
                               /> */}
               <FastImage
-              source={require('../../assets/Formule32.jpg')}
+              source={require('../../assets/formule_platschauds.jpg')}
               style={{ resizeMode:'cover',  width: 320, height: 200, }}
               />
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Wrap</Text>
-                        <Text style={styles.textFormule}>Un wrap, un dessert et une boisson</Text>
+                        <Text style={styles.titleFormule}>Formule Plat Chaud</Text>
+                        <Text style={styles.textFormule}>Un plat chaud, un dessert et une boisson</Text>
                     </View>
               </View>
             </TouchableOpacity>
@@ -260,4 +260,4 @@ const capitalizeIngredients = (ingredients) => {
 
 
 
-export default PageWrap
+export default PagePlatChaud

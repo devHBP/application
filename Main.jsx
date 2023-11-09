@@ -50,6 +50,7 @@ import LoaderHome from './Screens/LoaderHome'
 import PagePizza from './Screens/PagesSalees/PagePizza'
 import Antigaspi from './Screens/Antigaspi'
 import PageHome from './Screens/PageHome';
+import PagePlatChaud from './Screens/PagesSalees/PagePlatChaud';
 
 
 const Main = () => {
@@ -142,6 +143,7 @@ const Main = () => {
                     <Stack.Screen name='painbagnat' component={PagePainBagnat}/>
                     <Stack.Screen name='quiche' component={PageQuiche}/>
                     <Stack.Screen name='croque' component={PageCroque}/>
+                    <Stack.Screen name='platchaud' component={PagePlatChaud}/>
                     {/* Formules petit dejeuner */}
                     <Stack.Screen name='artisan' component={FormuleArtisan}/>
                     <Stack.Screen name='petitdej' component={FormulePetitDejeuner}/>
