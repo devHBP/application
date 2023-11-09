@@ -3,7 +3,7 @@ export  const validateLastName = (value) => {
     if (!value) {
       return "Le nom est obligatoire";
     } else if (!regex.test(value) || value.length < 2 || value.length > 30) {
-      return "Le nom doit être composé de 2 à 30 caractères alphabétiques";
+      return "Le nom doit être composé de 2 à 30 lettres";
     } else {
       return "";
     }
@@ -14,7 +14,7 @@ export  const validateFirstName = (value) => {
     if (!value) {
       return "Le prénom est obligatoire";
     } else if (!regex.test(value) || value.length < 2 || value.length > 30) {
-      return "Le prénom doit être composé de 2 à 30 caractères alphabétiques";
+      return "Le prénom doit être composé de 2 à 30 lettres";
     } else {
       return "";
     }
@@ -32,9 +32,9 @@ export const validateEmail = (value) => {
 
   
   export const validatePassword = password => {
-    const pattern = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{5,30}$/
+    const pattern = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,30}$/
     if (!pattern.test(password)) {
-        return "Veuillez entrer une lettre majuscule, une lettre minuscule, un chiffre, un caractère spécial et avoir une longueur de 5 à 30 caractères." 
+        return "Mot de passe non valide" 
     } else {
         return ""
     }
@@ -81,3 +81,15 @@ export const validateIdSun = (value) => {
   }
   return "";
 };
+
+export const validateTelephone = (telephone) => {
+  // regex qui correspond à un numéro de téléphone de 10 chiffres consécutifs sans aucun autre caractère.
+  const phoneRegex = /^\d{10}$/;
+
+  if (!phoneRegex.test(telephone)) {
+    return "Numéro de téléphone non valide";
+  }
+  return "";
+};
+
+
