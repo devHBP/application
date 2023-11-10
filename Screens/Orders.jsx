@@ -64,6 +64,7 @@ const Orders = ({navigation}) => {
             //console.log(response.data)
             if(ordersWithDetails.length > 0){
                 setHasOrder(true)
+                // console.log(ordersWithDetails)
             }
 
             const enrichedOrdersWithStore = await Promise.all(ordersWithDetails.map(async order => {
