@@ -46,7 +46,7 @@ const Panier = ({navigation}) => {
   const [loading, setLoading] = useState(false);
 
   const cart = useSelector((state) => state.cart.cart); //ou cartItems
-
+  console.log('cart', cart)
   const user = useSelector((state) => state.auth.user)
   const emailConfirmOrder = user.email
   const firstnameConfirmOrder = user.firstname
@@ -344,17 +344,19 @@ const updateAntigaspiStock = async () => {
                     let products = [];
                     let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
 
+                  
                     // Traitement des produits fusionnés avec des offres (3+1)
                     aggregatedCartItems.forEach(item => {
                       const productData = {
                         productId: item.productId,
-                        quantity: item.qty
+                        quantity: item.qty,
+                        prix_unitaire:item.prix_unitaire
                       };
 
                       if (item.isFree) {
                         productData.offre = item.offre;
                       }
-
+                      
                       products.push(productData);
                       processedProductIds.push(item.productId); // Ajoutez l'ID du produit à la liste des produits traités
                     });
@@ -363,7 +365,7 @@ const updateAntigaspiStock = async () => {
                       // Si l'ID du produit a déjà été traité, sautez ce produit
                       //pour eviter les doublons dans le panier
                       if (processedProductIds.includes(item.productId)) return;
-
+                
                     // Traitement des produits de type 'formule'
                     if (item.type === 'formule') {
                       ['option1', 'option2', 'option3'].forEach(option => {
@@ -377,16 +379,22 @@ const updateAntigaspiStock = async () => {
                         }
                       });
                     } 
-                    // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée)
-                    else if (!item.offre || (item.offre && item.qty < 4)) {
+                
+                    // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée ou quil y es tune offre, mais c'est un produit antigaspi donc un seul produit)
+                    else if (!item.offre || (item.offre && item.qty < 4)){
                       if (item.productId) { 
                         products.push({
                           productId: item.productId,
-                          quantity: item.qty
+                          quantity: item.qty,
+                          prix_unitaire: item.prix_unitaire,
                         });
                       }
                     }
+
+                  
+                    
                   });
+                
 
                   return products;
 
@@ -437,8 +445,8 @@ const updateAntigaspiStock = async () => {
           throw new Error('Erreur lors de la création de la commande');
         }
       }
-     createOrder()
-     updateAntigaspiStock()
+    createOrder()
+    updateAntigaspiStock()
 
      //console.log('commande créé')
       } else {

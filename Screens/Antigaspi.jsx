@@ -49,6 +49,10 @@ const Antigaspi = ({navigation}) => {
           //produits ayant la valeur "clickandcollect" à true et "antigaspi" à true
           const clickProducts = updatedProducts.filter(product => product.antigaspi === true && product.clickandcollect === true);
           const clickProductNames = clickProducts.map(product => product.libelle)
+          const clickProductPrices = clickProducts.map(product => product.prix_unitaire)
+          console.log(clickProductPrices)
+
+          //ici modifier le prix_unitaire (70% de reduction et le placer dans le champ "option1" dans la table Details products
             //stock sup ou egale à 1
             const updatedStockProducts = clickProducts.filter(product => product.stockantigaspi >= 1)
           setclickProducts(updatedStockProducts)
@@ -102,7 +106,7 @@ const Antigaspi = ({navigation}) => {
     //verifier le stock ?
     const handleCart = async () => {
      
-            dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire * 0.5, qty: 1 , offre: selectedProduct.offre, antigaspi: true}));
+            dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire * 0.3, qty: 1 , offre: selectedProduct.offre, antigaspi: true}));
             Toast.show({
               type: 'success',
               text1: 'Produit ajouté au panier',
@@ -212,7 +216,7 @@ const Antigaspi = ({navigation}) => {
         <View>
           <View style={style.bandeauFormule}>
           <Text style={styleAntigaspi.colorText}>Prix du produit</Text>
-        <Text style={styleAntigaspi.colorText}>{selectedProduct ? (selectedProduct.prix_unitaire * 0.5).toFixed(2) : 0} €</Text>
+        <Text style={styleAntigaspi.colorText}>{selectedProduct ? (selectedProduct.prix_unitaire * 0.3).toFixed(2) : 0} €</Text>
 
           </View>
           {/* <View style={style.bandeauFormule}>
