@@ -311,7 +311,7 @@ const allStores = async () => {
             style={style.short_input} placeholder='Code postal' placeholderTextColor={colors.color5}/>
        </View>
        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-       <TextInput {...inputOptions}  style={style.short_input} placeholder='Date de naissance'placeholderTextColor={colors.color5}/>
+       {/* <TextInput {...inputOptions}  style={style.short_input} placeholder='Date de naissance'placeholderTextColor={colors.color5}/> */}
        <TouchableOpacity style={style.button_passwd}  activeOpacity={0.7} onPress={openPasswordModal}><Text style={style.textPasswd}>*******</Text></TouchableOpacity>
        
        </View>

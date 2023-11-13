@@ -14,6 +14,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import DatePicker from 'react-native-date-picker';
+
 import {
   validateLastName,
   validateFirstName,
@@ -180,6 +181,17 @@ const Signup = ({navigation}) => {
   const handleBack = () => {
     navigation.navigate('login');
   };
+
+  function convertDateFormat(dateString) {
+
+    if (!dateString || dateString.split('-').length !== 3) {
+      return null;
+    }
+
+    const [year, month, day] = dateString.split('-');
+  
+    return `${day}/${month}/${year}`;
+  }
 
   return (
     <View style={style.container}>
@@ -360,9 +372,11 @@ const Signup = ({navigation}) => {
             {/* {error.cp ? <Text style={{color: 'red', textAlign:'center'}}>{error.cp}</Text> : null} */}
 
             {/* date de naissance */}
+            <TouchableOpacity onPress={() => setOpen(true)} activeOpacity={0.8}>
             <TextInput
               {...inputOptions}
-              value={formattedDate}
+              // value={formattedDate}
+              value={convertDateFormat(formattedDate)} 
               editable={false} // Empêche l'utilisateur de taper manuellement dans ce champ
               placeholder="Date de naissance"
               onTouchStart={() => setOpen(true)} // Ouvre le date picker lorsque le champ est touché
@@ -380,9 +394,9 @@ const Signup = ({navigation}) => {
               onConfirm={date => {
                 setOpen(false);
                 setDate(date);
-                const formatted = `${date.getDate()}/${
+                const formatted = `${date.getFullYear()}-${
                   date.getMonth() + 1
-                }/${date.getFullYear()}`;
+                }-${date.getDate()}`;
                 setFormattedDate(formatted);
                 setError({...error, date: validateDateOfBirth(date)});
               }}
@@ -390,6 +404,7 @@ const Signup = ({navigation}) => {
                 setOpen(false);
               }}
             />
+            </TouchableOpacity>
           </View>
 
           {/* numero client SUN */}
