@@ -139,6 +139,7 @@ const Login = ({navigation}) => {
             <Text style={style.label}>Adresse e-mail</Text>
             <TextInput
                 {...inputOptions} 
+                autoCapitalize="none"
                 placeholder='exemple.mail@email.com' 
                 placeholderTextColor={colors.color1}
                 keyboardType='email-address'

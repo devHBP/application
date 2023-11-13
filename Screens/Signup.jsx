@@ -218,6 +218,7 @@ const Signup = ({navigation}) => {
             <Text style={style.label}>Votre mail</Text>
             <TextInput
               {...inputOptions}
+              autoCapitalize="none"
               placeholder="exemple@email.com (obligatoire)" 
               keyboardType="email-address"
               value={email}
