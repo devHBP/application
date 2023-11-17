@@ -320,6 +320,7 @@ const updateAntigaspiStock = async () => {
     }
 
       const orderData = {
+        cart: cart,
         userRole: user.role, 
         firstname_client: user.firstname,
         lastname_client: user.lastname,
