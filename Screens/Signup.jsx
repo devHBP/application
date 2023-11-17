@@ -40,8 +40,8 @@ const Signup = ({navigation}) => {
   const dispatch = useDispatch();
   const selectedStore = useSelector(state => state.auth.selectedStore);
 
-  const [lastname, setLastName] = useState('');
-  const [firstname, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [cp, setCodePostal] = useState('');
@@ -55,8 +55,8 @@ const Signup = ({navigation}) => {
 
 
   const [error, setError] = useState({
-    lastname: '',
-    firstname: '',
+    lastName: '',
+    firstName: '',
     email: '',
     password: '',
     cp: '',
@@ -76,6 +76,11 @@ const Signup = ({navigation}) => {
   };
 
   const submitHandler = async () => {
+
+    //suppression des espaces
+    const firstname= firstName.trim()
+    const lastname = lastName.trim()
+
     const clientData = {
       lastname,
       firstname,
@@ -310,13 +315,13 @@ const Signup = ({navigation}) => {
               {...inputOptions}
               placeholder="Nom (obligatoire)"
               keyboardType="default"
-              value={lastname}
+              value={lastName}
               onChangeText={value => {
                 setLastName(value);
                 setError({...error, lastname: validateLastName(value)});
               }}
               style={
-                error.lastname
+                error.lastName
                   ? {...inputOptions.style, borderColor: 'red'}
                   : inputOptions.style
               }
@@ -328,13 +333,13 @@ const Signup = ({navigation}) => {
               {...inputOptions}
               placeholder="Prénom (obligatoire)"
               keyboardType="default"
-              value={firstname}
+              value={firstName}
               onChangeText={value => {
                 setFirstName(value);
                 setError({...error, firstname: validateFirstName(value)});
               }}
               style={
-                error.firstname
+                error.firstName
                   ? {...inputOptions.style, borderColor: 'red'}
                   : inputOptions.style
               }
@@ -429,8 +434,8 @@ const Signup = ({navigation}) => {
               style={style.btn}
               textColor={'white'}
               disabled={
-                lastname === '' ||
-                firstname === '' ||
+                lastName === '' ||
+                firstName === '' ||
                 email === '' ||
                 password === '' ||
                 telephone === ''
