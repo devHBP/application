@@ -4,6 +4,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Platform
 } from 'react-native';
 import React, {useState} from 'react';
 import {Button, TextInput} from 'react-native-paper';
@@ -236,6 +237,7 @@ const Signup = ({navigation}) => {
                   ? {...inputOptions.style, borderColor: 'red'}
                   : inputOptions.style
               }
+            
             />
             {/* {error.email ? <Text style={{color: 'red', textAlign:'center'}}>{error.email}</Text> : null} */}
 
@@ -468,11 +470,6 @@ const style = StyleSheet.create({
     //reajustement margin pour laisser de la place au footer
     // marginBottom:70,
     backgroundColor: colors.color1,
-  },
-  inputOpts: {
-    height: 50,
-    marginHorizontal: 20,
-    marginVertical: 10,
   },
   btn: {
     backgroundColor: colors.color2,

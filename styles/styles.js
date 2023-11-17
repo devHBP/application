@@ -10,7 +10,7 @@ export const defaultStyle = StyleSheet.create({
 });
 
 export const inputStyling = StyleSheet.create({
-    height: 40,
+    height: Platform.OS === 'android' ? 50 : 40, 
     marginVertical: 5,
     backgroundColor:"white",
     width:"100%"
