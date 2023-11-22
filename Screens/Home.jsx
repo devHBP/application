@@ -394,8 +394,7 @@ const renderCategoryProducts = (categoryName) => {
                  
                  <Image
                     source={require('../assets/promos.png')} 
-                    style={{ width: 15, height: 15, resizeMode:'cover' }}
-                   
+                    style={{ width: 15, height: 15, resizeMode:'cover' }} 
                 />
                 }
                  
