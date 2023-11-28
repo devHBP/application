@@ -1,7 +1,17 @@
 import { checkStockForSingleProduct } from '../CallApi/api.js';
 import { addToCart, decrementOrRemoveFromCart, addFreeProductToCart, removeFromCart , removeMultipleFromCart} from '../reducers/cartSlice.js'
 import Toast from 'react-native-toast-message';
+import axios from 'axios';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const configureAxiosHeaders = async () => {
+  // console.log('je verifie le token')
+  const token = await AsyncStorage.getItem('userToken');
+  // console.log('token axios', token)
+  if (token) {
+    axios.defaults.headers.common['x-access-token'] = token;
+  }
+};
 
 export const decrementhandler = (id, dispatch) => {
   // console.log("Decrementing product with ID:", id);
@@ -160,6 +170,6 @@ async function checkProductAvailability(product, checkStockForSingleProduct, car
 //--- FIN STOCK---//
 
 
-export { checkProductStock, getProductQtyInCart, checkProductAvailability };
+export { checkProductStock, getProductQtyInCart, checkProductAvailability, configureAxiosHeaders };
 
      
