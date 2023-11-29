@@ -256,8 +256,63 @@ const styles = StyleSheet.create({
     color:colors.color6,
     fontFamily:fonts.font2,
     fontWeight:"700"
+  },
+  //antigaspi
+  vignetteAntiGaspi:{
+    width: 325,
+    height: 160,
+    resizeMode: 'contain',
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
+  offerContainer: {
+    position: 'relative', 
+  },
+  fullSizeImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    opacity:0.7,
+    borderRadius:10,
+  },
+  overlayContainer: {
+    position: 'absolute', 
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    justifyContent: 'center', 
+    alignItems: 'center', 
+    zIndex:99
+  },
+  contentPopUp:{
+    backgroundColor:colors.color4,
+    height: "55%",
+    width:"90%",
+    borderRadius:10,
+    justifyContent:'center',
+    alignItems:'center',
+    gap:10,
+    marginBottom:100
+  },
+  countdownText:{
+    color:colors.color1,
+    fontSize:14,
+    fontWeight:'bold'
+  },
+  textRemaining:{
+    color:colors.color4,
+    fontSize:14,
+    fontWeight:'bold'
+  },
+  contentRemaining:{
+    backgroundColor:colors.color5,
+    borderRadius:5,
+    paddingVertical: 10,
+    paddingHorizontal:15,
   }
-  
 });
 
 
