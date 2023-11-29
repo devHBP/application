@@ -24,7 +24,7 @@ const Antigaspi = ({navigation}) => {
   const [clickProducts, setclickProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [familyProductDetails, setFamilyProductDetails] = useState({});
-  const familyProductIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25];  
+  const familyProductIds = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26,27, 28, 29, 30];  
   //ci j'ai mis toutes las familles possibles pour ne plus à avoir à modifier
 
 
@@ -50,7 +50,7 @@ const Antigaspi = ({navigation}) => {
           const clickProducts = updatedProducts.filter(product => product.antigaspi === true && product.clickandcollect === true);
           const clickProductNames = clickProducts.map(product => product.libelle)
           const clickProductPrices = clickProducts.map(product => product.prix_unitaire)
-          console.log(clickProductPrices)
+          // console.log(clickProductPrices)
 
           //ici modifier le prix_unitaire (70% de reduction et le placer dans le champ "option1" dans la table Details products
             //stock sup ou egale à 1
