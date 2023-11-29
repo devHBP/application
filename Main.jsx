@@ -1,9 +1,11 @@
 import React, { useState, useEffect} from 'react'
+import { Alert } from 'react-native'
 import { NavigationContainer } from '@react-navigation/native'
 import { createNativeStackNavigator } from '@react-navigation/native-stack' 
+import { createNavigationContainerRef } from '@react-navigation/native';
 import { useDispatch, useSelector} from 'react-redux'
 import { loginUser, updateSelectedStore } from './reducers/authSlice';
-
+import { configureAxiosHeaders } from './Fonctions/fonctions';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import  Toast  from 'react-native-toast-message'
 import App from './Screens/App'
@@ -51,14 +53,53 @@ import PagePizza from './Screens/PagesSalees/PagePizza'
 import Antigaspi from './Screens/Antigaspi'
 import PageHome from './Screens/PageHome';
 import PagePlatChaud from './Screens/PagesSalees/PagePlatChaud';
+export const navigationRef = createNavigationContainerRef();
+import axios from 'axios';
+import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+
 
 
 const Main = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedin, setIsLoggedin] = useState(false);
-  const dispatch = useDispatch()
 
+  const dispatch = useDispatch();
+
+
+  useEffect(() => {
+    configureAxiosHeaders();
+  
+    axios.interceptors.response.use(
+      response => response,
+      async error => {
+        if (error.response && error.response.status === 401 ) {
+          // console.log('token expiré')
+          // Token expiré ou non autorisé
+          await AsyncStorage.removeItem('userToken');
+          if (navigationRef.current && navigationRef.current.navigate) {
+            navigationRef.current.navigate('login'); 
+            // Afficher l'alerte après un court délai pour s'assurer que la navigation a eu lieu
+            setTimeout(() => {
+              // console.log('pop up')
+              // Alert.alert(
+              //   "Session expirée",
+              //   "Votre session a expiré. Veuillez vous reconnecter.",
+              //   [{ text: "OK" }]
+              // );
+              Toast.show({
+                type: 'error',
+                text1: `Votre session a expiré`,
+                text2: `Veuillez vous reconnecter` 
+              });
+            }, 500);
+          }
+        }
+        return Promise.reject(error);
+      }
+    )}
+  )
+  
   useEffect(() => {
     const checkToken = async () => {
         try {
@@ -81,7 +122,7 @@ const Main = () => {
           }
 
         } catch (error) {
-            console.error("Erreur lors de la vérification du token:", error);
+            // console.error("Erreur lors de la vérification du token:", error);
         } finally {
           
             setIsLoading(false);
@@ -109,7 +150,7 @@ const Main = () => {
       return <LoaderHome />; 
   }
       return (
-        <NavigationContainer linking={linking}>
+        <NavigationContainer linking={linking} ref={navigationRef}>
             {/* <Stack.Navigator initialRouteName='login' screenOptions={{headerShown:false}}> */}
             <Stack.Navigator initialRouteName={isLoggedin ? 'home' : 'login'} screenOptions={{headerShown:false}}>
 

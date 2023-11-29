@@ -84,27 +84,28 @@ const FooterProfile = () => {
     navigation.navigate('orders')
   }
   const openCart = async () => {
-    const token = await AsyncStorage.getItem('userToken');
-     axios.get(`${API_BASE_URL}/verifyToken`, {
-      headers: {
-          'x-access-token': token
-      }
-    })
-    .then(response => {
-      if (response.data.auth) {
-          navigation.navigate('panier')
-      } 
-  })
-  .catch(error => {
-    handleLogout()
-    //console.log('token invalide catch')
-    return Toast.show({
-      type: 'error',
-      text1: 'Session expirée',
-      text2: 'Veuillez vous reconnecter'
-    });
-      // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
-  });
+    navigation.navigate('panier')
+  //   const token = await AsyncStorage.getItem('userToken');
+  //    axios.get(`${API_BASE_URL}/verifyToken`, {
+  //     headers: {
+  //         'x-access-token': token
+  //     }
+  //   })
+  //   .then(response => {
+  //     if (response.data.auth) {
+  //         navigation.navigate('panier')
+  //     } 
+  // })
+  // .catch(error => {
+  //   handleLogout()
+  //   //console.log('token invalide catch')
+  //   return Toast.show({
+  //     type: 'error',
+  //     text1: 'Session expirée',
+  //     text2: 'Veuillez vous reconnecter'
+  //   });
+  //     // console.error('Une erreur s\'est produite lors de la vérification du token :', error);
+  // });
   
 };
   const openProfile = () => {
@@ -125,7 +126,7 @@ const FooterProfile = () => {
       return;
     }
     try {
-      console.log('Récupération du statut de la dernière commande...');
+      // console.log('Récupération du statut de la dernière commande...');
       
       const response = await axios.get(`${API_BASE_URL}/statusLastOrder/${userId}`);
       const orderStatus = response.data.status;
@@ -156,7 +157,7 @@ const FooterProfile = () => {
       }
       
     } catch (error) {
-      console.error("Une erreur s'est produite lors de la récupération du statut de la commande :", error);
+      console.log("Une erreur s'est produite lors de la récupération du statut de la commande footer profile :", error);
     }
   };
   

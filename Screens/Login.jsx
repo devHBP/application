@@ -6,7 +6,7 @@ import { Button, TextInput } from 'react-native-paper'
  import { loginUser, updateSelectedStore } from '../reducers/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-
+import { configureAxiosHeaders } from '../Fonctions/fonctions'
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS, EMAIL_INVITE, PASSWORD_INVITE } from '@env';
 
 
@@ -40,13 +40,17 @@ const Login = ({navigation}) => {
         try{
 
             const res = await axios.post(`${API_BASE_URL}/login`, clientData)
-            //console.log('res', res)
+            // console.log('res', res.data)
             const user = res.data.user
             const token = res.data.token;
 
+
             await AsyncStorage.setItem('userToken', token);
             await AsyncStorage.setItem('userInfo', JSON.stringify(user));
+            await configureAxiosHeaders();
 
+            // console.log('token Login', token)
+            
             const selectedStoreId = user.storeId;
 
             axios.get(`${API_BASE_URL}/getOneStore/${selectedStoreId}`)
@@ -61,12 +65,12 @@ const Login = ({navigation}) => {
                  
                  })
                 .catch(error => {
-                     console.error('Erreur lors de la récupération des informations du magasin:', error);
+                     console.log('Erreur lors de la récupération des informations du magasin:', error);
                 });
   
            
         }catch (error){
-            console.log(error)
+            console.log('erreur connexion login', error)
             return Toast.show({
                 type: 'error',
                 text1: `Echec de connexion`,

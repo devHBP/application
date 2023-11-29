@@ -31,7 +31,7 @@ const PasswordModal = ({ isVisible, onClose, onChangePassword }) => {
       } catch (error) {
         // Gérer les erreurs ici - peut-être afficher une alerte ou un message à l'utilisateur
         Alert.alert('Erreur', 'Une erreur est survenue lors de la mise à jour du mot de passe');
-        console.error(error);
+        // console.error(error);
       } 
     };
   

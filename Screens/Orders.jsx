@@ -22,7 +22,7 @@ import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 //call Api
 import {getStoreById} from '../CallApi/api';
 import ArrowDown from '../SVG/ArrowDown';
-import Antigaspi, {AntiGaspi} from '../SVG/AntiGaspi';
+import {AntiGaspi} from '../SVG/AntiGaspi';
 
 const Orders = ({navigation}) => {
   const user = useSelector(state => state.auth.user);
@@ -68,11 +68,12 @@ const Orders = ({navigation}) => {
 
   const allMyOrders = async () => {
     try {
+
       const response = await axios.get(
         `${API_BASE_URL}/ordersOfUserWithProducts/${userId}`,
       );
       const ordersWithDetails = response.data;
-      //console.log(response.data)
+      // console.log(response.data)
       if (ordersWithDetails.length > 0) {
         setHasOrder(true);
         // console.log(ordersWithDetails)
@@ -94,7 +95,8 @@ const Orders = ({navigation}) => {
         setLoading(false);
       }, 2000);
     } catch (error) {
-      console.error("Une erreur s'est produite :", error);
+      // console.error("Une erreur s'est produite :", error);
+      console.log(error.response.status)
     }
   };
 
@@ -377,6 +379,7 @@ const Orders = ({navigation}) => {
                 <Text style={style.underlineText}>
                   {formatDate(item.createdAt)}
                 </Text>
+                <Text style={style.underlineText}>{item.status}</Text>
               </View>
               <View>
                 <Text
@@ -746,7 +749,8 @@ const style = StyleSheet.create({
   },
   underlineText:{
     color: colors.color5,
-    fontSize: 10
+    fontSize: 10,
+    textTransform: 'capitalize'
   },
   backArrow:{
     backgroundColor: 'white',

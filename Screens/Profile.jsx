@@ -107,7 +107,7 @@ const allStores = async () => {
           console.error("Réponse inattendue de l'API.");
       }
   } catch (error) {
-      console.error("Une erreur s'est produite lors de la récupération des magasins :", error);
+      console.log("Une erreur s'est produite lors de la récupération des magasins  allStores:", error);
   }
 };
 
@@ -127,7 +127,7 @@ const allStores = async () => {
          setPassword(userData.password)
 
       } catch (error) {
-        console.error('Erreur lors de la récupération des informations utilisateur :', error);
+        console.log('Erreur lors de la récupération des informations utilisateur getUserInfo:', error);
       }
     }
     useEffect(() => {
@@ -171,7 +171,7 @@ const allStores = async () => {
           text2: `` 
         });
       } catch (error) {
-        console.error("Une erreur s'est produite lors de la mise à jour de l'utilisateur :", error);
+        console.log("Une erreur s'est produite lors de la mise à jour de l'utilisateur :", error);
       }
       
     };
@@ -384,7 +384,7 @@ const allStores = async () => {
                                   // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
                                   })
                                   .catch(error => {
-                                    console.error('Erreur lors de la mise à jour du choix du magasin dans la base de données - erreur ici:', error);
+                                    console.log('Erreur lors de la mise à jour du choix du magasin dans la base de données - erreur ici:', error);
                                     });
                       } else {
                       console.log('pas de magasin sélectionné encore')

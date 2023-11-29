@@ -49,7 +49,7 @@ const CustomDatePicker = () => {
              dispatch(updateUser(response.data))
           })
           .catch(error => {
-            console.error('Erreur lors de la récupération du rôle de l\'utilisateur:', error);
+            // console.error('Erreur lors de la récupération du rôle de l\'utilisateur:', error);
           });
       }, [])
 
