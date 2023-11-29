@@ -103,7 +103,7 @@ const Login = ({navigation}) => {
                   navigation.navigate('home')
               })
               .catch(error => {
-                  console.error('Erreur lors de la récupération des informations du magasin:', error);
+                  console.log('Erreur lors de la récupération des informations du magasin:', error);
               });
       } catch (error) {
           console.log(error)

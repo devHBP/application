@@ -94,7 +94,7 @@ const Home =  ({navigation}) => {
          dispatch(updateUser(response.data))
       })
       .catch(error => {
-        console.error('Erreur lors de la récupération du rôle de l\'utilisateur:', error);
+        console.log('Erreur lors de la récupération du rôle de l\'utilisateur:', error);
       });
   }, [])
 
