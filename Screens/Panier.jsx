@@ -63,7 +63,7 @@ const Panier = ({navigation}) => {
   const [loading, setLoading] = useState(false);
 
   const cart = useSelector(state => state.cart.cart); //ou cartItems
-  console.log('cart', cart);
+  // console.log('cart', cart);
   const user = useSelector(state => state.auth.user);
   const emailConfirmOrder = user.email;
   const firstnameConfirmOrder = user.firstname;
