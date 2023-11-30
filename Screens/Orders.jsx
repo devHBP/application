@@ -266,7 +266,7 @@ const Orders = ({navigation}) => {
                             <Text style={style.oldPrice}>
                               {(prix_unitaire / 0.3).toFixed(2)}€
                             </Text>
-                            <Text style={style.newPrice}>{prix_unitaire}€</Text>
+                            <Text style={style.newPrice}>{(prix_unitaire).toFixed(2)}€</Text>
                           </View>
                         </View>
                       </View>
@@ -455,7 +455,7 @@ const Orders = ({navigation}) => {
                               <View style={style.orderPrices}>
                                 <Text style={style.oldPrice}>{prix} €</Text>
                                 <Text style={style.newPrice}>
-                                  {prix * 0.8}€
+                                  {(prix * 0.8).toFixed(2)}€
                                 </Text>
                               </View>
                             </View>
@@ -475,7 +475,7 @@ const Orders = ({navigation}) => {
                                   {(prix_unitaire / 0.3).toFixed(2)}€
                                 </Text>
                                 <Text style={style.newPrice}>
-                                  {prix_unitaire}€
+                                  {prix_unitaire.toFixed(2)}€
                                 </Text>
                               </View>
                             </View>
@@ -492,7 +492,7 @@ const Orders = ({navigation}) => {
                               </Text>
                               <View style={style.orderPrices}>
                                 <Text style={style.oldPrice}>
-                                  {prix_unitaire * qty}€
+                                  {(prix_unitaire * qty).toFixed(2)}€
                                 </Text>
                                 <Text style={style.newPrice}>
                                   {(prix_unitaire * qty * 0.8).toFixed(2)}€
