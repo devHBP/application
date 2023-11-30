@@ -31,6 +31,8 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Compteur from '../SVG/Compteur';
 
 const LinkOffres = () => {
+
+
   const openLink = url => {
     if (Platform.OS === 'android') {
       Linking.openURL(url)
@@ -163,72 +165,118 @@ const LinkOffres = () => {
   //   return () => clearInterval(intervalId);
   // }, []);
 
-  //test
+  //test : les 2 fonctionnes 
+  // useEffect(() => {
+  //   const updateCountdown = () => {
+  //     const now = new Date();
+  //     let endTime = new Date();
+
+  //     // Fin du compteur à 20h59m59s
+  //     endTime.setHours(20, 59, 59, 999);
+
+  //     if (now.getHours() >= 21) {
+  //       endTime.setDate(now.getDate() + 1); // Passer au jour suivant après 21h
+  //     }
+
+  //     const difference = endTime - now;
+
+  //     if (difference > 0) {
+  //       const hours = Math.floor(difference / (1000 * 60 * 60));
+  //       const minutes = Math.floor(
+  //         (difference % (1000 * 60 * 60)) / (1000 * 60),
+  //       );
+  //       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+  //       setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
+  //     } else {
+  //       setTimeRemaining('');
+  //     }
+  //   };
+
+  //   updateCountdown();
+  //   const intervalId = setInterval(updateCountdown, 1000);
+
+  //   return () => clearInterval(intervalId);
+  // }, []);
+
+ 
+  // useEffect(() => {
+  //   const updateCountdownVisibility = () => {
+  //     const now = new Date();
+  //     const hours = now.getHours();
+  //     const minutes = now.getMinutes();
+  
+  //     // Afficher le compteur en dehors de 21h à minuit
+  //     setShowCountdown(!(hours >= 21 && hours < 24));
+  //   };
+  
+  //   const calculateIntervalLength = () => {
+  //     const now = new Date();
+  //     const hours = now.getHours();
+  //     const minutes = now.getMinutes();
+  
+  //     // Rafraîchissement toutes les secondes entre 20h50 et 00h10
+  //     if ((hours === 20 && minutes >= 50) || (hours === 0 && minutes <= 2) || (hours === 21 && minutes === 0)) {
+  //       console.log('cest le creneau à 1 seconde')
+  //       return 1000; // 1 seconde
+  //     } else {
+  //       console.log('cest le creneau à 1 minute')
+  //       return 60000; // 60 secondes
+  //     }
+  //   };
+  
+  //   const intervalLength = calculateIntervalLength();
+  //   const intervalId = setInterval(() => {
+  //     updateCountdownVisibility();
+  //   }, intervalLength);
+  
+  //   return () => clearInterval(intervalId);
+  // }, []);
+  
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
       let endTime = new Date();
-
+  
       // Fin du compteur à 20h59m59s
       endTime.setHours(20, 59, 59, 999);
-
+  
       if (now.getHours() >= 21) {
         endTime.setDate(now.getDate() + 1); // Passer au jour suivant après 21h
       }
-
+  
       const difference = endTime - now;
-
+  
       if (difference > 0) {
         const hours = Math.floor(difference / (1000 * 60 * 60));
-        const minutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60),
-        );
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
         setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
       } else {
         setTimeRemaining('');
       }
     };
-
-    updateCountdown();
-    const intervalId = setInterval(updateCountdown, 1000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  useEffect(() => {
+  
     const updateCountdownVisibility = () => {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
-
-      // Ne pas afficher le compteur entre 21h et minuit
-      setShowCountdown(!(hours >= 21 && hours < 24)); 
+  
+      // Afficher le compteur en dehors de 21h à minuit
+      setShowCountdown(!(hours >= 21 && hours < 24));
     };
-
-    // Calculez la différence de temps jusqu'à 21h (ou minuit si après 21h)
-    let nextUpdate = new Date();
-    nextUpdate.setHours(21, 0, 0, 0);
-    if (new Date().getHours() >= 21) {
-      nextUpdate.setDate(nextUpdate.getDate() + 1);
-    }
-    let difference = nextUpdate - new Date();
-
-    // Utiliser un intervalle plus court lorsqu'on est proche de 21h
-    // Toutes les secondes si moins de 2 minutes, sinon toutes les minutes
-    let intervalLength = difference < 2 * 60 * 1000 ? 1000 : 60000; 
-
-    const intervalId = setInterval(() => {
+  
+    const update = () => {
+      updateCountdown();
       updateCountdownVisibility();
-      difference = nextUpdate - new Date();
-      if (difference < 2 * 60 * 1000 && intervalLength === 60000) {
-        clearInterval(intervalId);
-        setInterval(updateCountdownVisibility, 1000);
-      }
-    }, intervalLength);
-
+    };
+  
+    // Mettre à jour toutes les secondes
+    const intervalId = setInterval(update, 1000);
+  
     return () => clearInterval(intervalId);
   }, []);
+  
+  
 
   const handleAntiGaspi = () => {
     const d = new Date();
