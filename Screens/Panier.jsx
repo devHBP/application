@@ -311,6 +311,14 @@ const Panier = ({navigation}) => {
       });
     }
 
+    if (!selectedDateString) {
+      Toast.show({
+        type: 'error',
+        text1: 'Date manquante',
+        text2: 'Veuillez sélectionner une date avant de confirmer.',
+      });
+      return; // Arrêter l'exécution de la fonction si aucune date n'est renseignée
+    }
     setPaiement(newPaiement);
     // const token = await AsyncStorage.getItem('userToken');
 
@@ -361,6 +369,7 @@ const Panier = ({navigation}) => {
               text2: `N'hésitez pas à ajouter des articles `,
             });
           }
+  
 
           const orderData = {
             cart: cart,
@@ -497,15 +506,15 @@ const Panier = ({navigation}) => {
         //   console.log('erreur ici', error);
         // }
       }
-    //   .catch(error => {
-    //     console.log('erreur bug panier page panier', error);
-    //     return Toast.show({
-    //       type: 'error',
-    //       text1: 'Date de livraison manquante',
-    //       text2: 'Veuillez renseigner une date',
-    //     });
-    //   });
-  //};
+      // .catch(error => {
+      //   console.log('erreur bug panier page panier', error);
+      //   return Toast.show({
+      //     type: 'error',
+      //     text1: 'Date de livraison manquante',
+      //     text2: 'Veuillez renseigner une date',
+      //   });
+      // });
+
 
   // Vérifier l'état du paiement
   const checkPaymentStatus = async () => {
