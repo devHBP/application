@@ -185,7 +185,7 @@ const handleIngredients = () => {
             )}
           {/* le infoproduct n'apparait pas pour les boissons */}
             {
-              category!=='Boissons' &&
+            category !== 'Boissons' && ingredients != "" && allergenes != "" &&
              <TouchableOpacity style={{position:'absolute',bottom:10, left:10}} onPress={handleIngredients} activeOpacity={0.8}>
                 <InfoProduct />
                 </TouchableOpacity>
