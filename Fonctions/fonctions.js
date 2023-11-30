@@ -5,12 +5,11 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const configureAxiosHeaders = async () => {
-  // console.log('je verifie le token')
   const token = await AsyncStorage.getItem('userToken');
-  // console.log('token axios', token)
   if (token) {
     axios.defaults.headers.common['x-access-token'] = token;
   }
+  axios.defaults.headers.common['x-access-header'] = "hbpclickandcollect";
 };
 
 export const decrementhandler = (id, dispatch) => {
