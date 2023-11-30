@@ -27,7 +27,7 @@ import { getAllStores, fetchAllProductsClickandCollect } from '../CallApi/api';
 
 const Home =  ({navigation}) => {
   
-
+  // console.log('lancement de la page home')
   const [stores, setStores] = useState([]);
   const [role, setRole] = useState('');
   const [ selectedOnglet, setSelectedOnglet] = useState(null)
@@ -94,7 +94,7 @@ const Home =  ({navigation}) => {
          dispatch(updateUser(response.data))
       })
       .catch(error => {
-        console.log('Erreur lors de la récupération du rôle de l\'utilisateur:', error);
+        console.log('Erreur lors de la récupération du rôle de l\'utilisateur page Home:', error);
       });
   }, [])
 

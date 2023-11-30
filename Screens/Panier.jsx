@@ -436,7 +436,7 @@ const Panier = ({navigation}) => {
               return products;
             })(),
           };
-          console.log('orderdata', orderData);
+          // console.log('orderdata', orderData);
 
           const createOrder = async () => {
             //console.log(dateForDatabase)
@@ -445,7 +445,7 @@ const Panier = ({navigation}) => {
                 `${API_BASE_URL}/createorder`,
                 orderData,
               );
-              console.log('response', response.data);
+              // console.log('response', response.data);
               const numero_commande = response.data.numero_commande;
               dispatch(setNumeroCommande(numero_commande));
               let userRole = user.role;
@@ -454,7 +454,7 @@ const Panier = ({navigation}) => {
               const callApi = await axios.get(
                 `${API_BASE_URL}/getOneStore/${user.storeId}`,
               );
-              console.log('data', callApi.data);
+              // console.log('data', callApi.data);
               const point_de_vente = callApi.data.nom_magasin;
               const email = user.email;
               const firstname = user.firstname;
@@ -470,7 +470,7 @@ const Panier = ({navigation}) => {
                 paiement,
               });
 
-              console.log('response createOrder', response.data);
+              // console.log('response createOrder', response.data);
               const orderId = response.data.orderId;
               dispatch(setOrderId(orderId));
 
@@ -530,7 +530,7 @@ const Panier = ({navigation}) => {
             `${API_BASE_URL}/createPaiement`,
             paymentData,
           );
-          console.log('Response createPaiement:', updateResponse.data);
+          // console.log('Response createPaiement:', updateResponse.data);
           const paymentId = updateResponse.data.paymentId;
 
           const updateData = {numero_commande, status, paymentId};
@@ -539,7 +539,7 @@ const Panier = ({navigation}) => {
             `${API_BASE_URL}/updateOrder`,
             updateData,
           );
-        console.log('response updateOrder', response.data)
+        // console.log('response updateOrder', response.data)
           navigation.navigate('success');
         }
       } catch (error) {
