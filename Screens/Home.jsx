@@ -182,7 +182,8 @@ const refs = {
   'Boules et Pains Spéciaux': useRef(null),
   'Petits déjeuners': useRef(null),
   'Boissons': useRef(null),
-  'Tarterie': useRef(null),
+  'Tartes': useRef(null),
+  // 'Tarterie': useRef(null),
 };
 
 const onglets = Object.keys(refs);
@@ -250,6 +251,7 @@ const handleScroll = (event) => {
 //appel des produits categories
 const renderCategoryProducts = (categoryName) => {
   const categoryProducts = groupedAndSortedProducts[categoryName];
+  // console.log('cat', categoryName)
   let sortedProducts = categoryProducts;
   //Monster et redbull en dernier sur la liste des boissons
   if (categoryName === 'Boissons') {
@@ -453,11 +455,13 @@ const renderCategoryProducts = (categoryName) => {
             <FormulesPetitDejeuner />
             </View>
          
+        
+            {renderCategoryProducts('Tartes')}
             {renderCategoryProducts('Boissons')}
 
                 
             {/* catalogue */}
-            <View onLayout={handleLayout('Tarterie')} style={styles.paddingProduct}>
+            <View style={styles.paddingProduct}>
               <Catalogue />
             </View>
 
