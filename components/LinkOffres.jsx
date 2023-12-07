@@ -18,6 +18,8 @@ import FastImage from 'react-native-fast-image';
 import antigaspiImage from '../assets/antigaspi.jpg';
 import antigaspiImage2 from '../assets/anti.jpg';
 import offre31 from '../assets/Croissant_offre31.jpg';
+import offreNoel from '../assets/offreNoel.jpg';
+import gift from '../assets/gift.png';
 import pastilleAntigaspi from '../assets/pastille_antigaspi.png';
 import offre31Image from '../assets/offre31.jpg';
 import hallesSolanidImage from '../assets/halles_solanid.jpg';
@@ -110,127 +112,6 @@ const LinkOffres = () => {
   const [timeRemaining, setTimeRemaining] = useState('');
   const [showCountdown, setShowCountdown] = useState(true);
 
-  // // 2. Définir la date et l'heure de disponibilité
-  // const availabilityTime = new Date();
-  // availabilityTime.setHours(11, 35, 0);
-
-  // intervalle de décompte
-  // useEffect(() => {
-  //   const updateCountdown = () => {
-  //     const now = new Date();
-  //     const difference = availabilityTime - now;
-
-  //     if (difference > 0) {
-  //       const hours = Math.floor(difference / (1000 * 60 * 60));
-  //       const minutes = Math.floor(
-  //         (difference % (1000 * 60 * 60)) / (1000 * 60),
-  //       );
-  //       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-  //       setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
-  //     } else {
-  //       setTimeRemaining('');
-  //       clearInterval(intervalId);
-  //     }
-  //   };
-
-  //   updateCountdown();
-  //   const intervalId = setInterval(updateCountdown, 1000);
-
-  //   return () => clearInterval(intervalId);
-  // }, []);
-  // useEffect(() => {
-  //   const updateCountdown = () => {
-  //     const now = new Date();
-  //     const endTime = new Date(now);
-  //     endTime.setHours(11, 55, 0); // Heure de fin de l'offre
-
-  //     const difference = endTime - now;
-
-  //     if (difference > 0) {
-  //       // Compte à rebours en cours
-  //       const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-  //       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-  //       setTimeRemaining(`${minutes}m ${seconds}s`);
-  //     } else {
-  //       // Compte à rebours terminé
-  //       setTimeRemaining('');
-  //       clearInterval(intervalId);
-  //     }
-  //   };
-
-  //   updateCountdown();
-  //   const intervalId = setInterval(updateCountdown, 1000);
-
-  //   return () => clearInterval(intervalId);
-  // }, []);
-
-  //test : les 2 fonctionnes 
-  // useEffect(() => {
-  //   const updateCountdown = () => {
-  //     const now = new Date();
-  //     let endTime = new Date();
-
-  //     // Fin du compteur à 20h59m59s
-  //     endTime.setHours(20, 59, 59, 999);
-
-  //     if (now.getHours() >= 21) {
-  //       endTime.setDate(now.getDate() + 1); // Passer au jour suivant après 21h
-  //     }
-
-  //     const difference = endTime - now;
-
-  //     if (difference > 0) {
-  //       const hours = Math.floor(difference / (1000 * 60 * 60));
-  //       const minutes = Math.floor(
-  //         (difference % (1000 * 60 * 60)) / (1000 * 60),
-  //       );
-  //       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-  //       setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
-  //     } else {
-  //       setTimeRemaining('');
-  //     }
-  //   };
-
-  //   updateCountdown();
-  //   const intervalId = setInterval(updateCountdown, 1000);
-
-  //   return () => clearInterval(intervalId);
-  // }, []);
-
- 
-  // useEffect(() => {
-  //   const updateCountdownVisibility = () => {
-  //     const now = new Date();
-  //     const hours = now.getHours();
-  //     const minutes = now.getMinutes();
-  
-  //     // Afficher le compteur en dehors de 21h à minuit
-  //     setShowCountdown(!(hours >= 21 && hours < 24));
-  //   };
-  
-  //   const calculateIntervalLength = () => {
-  //     const now = new Date();
-  //     const hours = now.getHours();
-  //     const minutes = now.getMinutes();
-  
-  //     // Rafraîchissement toutes les secondes entre 20h50 et 00h10
-  //     if ((hours === 20 && minutes >= 50) || (hours === 0 && minutes <= 2) || (hours === 21 && minutes === 0)) {
-  //       console.log('cest le creneau à 1 seconde')
-  //       return 1000; // 1 seconde
-  //     } else {
-  //       console.log('cest le creneau à 1 minute')
-  //       return 60000; // 60 secondes
-  //     }
-  //   };
-  
-  //   const intervalLength = calculateIntervalLength();
-  //   const intervalId = setInterval(() => {
-  //     updateCountdownVisibility();
-  //   }, intervalLength);
-  
-  //   return () => clearInterval(intervalId);
-  // }, []);
   
   useEffect(() => {
     const updateCountdown = () => {
@@ -296,6 +177,10 @@ const LinkOffres = () => {
       });
     }
   };
+  const handleOffreNoel = () => {
+    navigation.navigate('noel');
+  };
+
   const handleHallesSolanid = () => {
     navigation.navigate('solanid');
   };
@@ -314,12 +199,21 @@ const LinkOffres = () => {
   };
 
   const data = [
+    
+ 
     {
       type: 'antigaspi',
       imageUri: antigaspiImage2,
       mainText: "L'offre",
       secondaryText: 'Anti-gaspillage   ',
       pastilleImage: pastilleAntigaspi,
+    },
+    {
+      type: 'custom',
+      imageUri: offreNoel,
+      mainText: "Nouveautés pour       ",
+      secondaryText: 'Les fêtes      ',
+      pastilleImage: gift,
     },
     {
       type: 'offre31',
@@ -357,6 +251,14 @@ const LinkOffres = () => {
         thirdText = item.thirdText;
         pastilleImgSrc = item.pastilleImage;
         break;
+      case 'custom':
+          handlePressFunc = handleOffreNoel;
+          imgSrc = item.imageUri;
+          mainText = item.mainText;
+          secondaryText = item.secondaryText;
+          thirdText = item.thirdText;
+          pastilleImgSrc = item.pastilleImage;
+          break;
       case 'offre31':
         handlePressFunc = handleOffre31;
         imgSrc = item.imageUri;

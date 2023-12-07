@@ -6,7 +6,8 @@ const style = StyleSheet.create({
         fontFamily:fonts.font1,
         fontSize:20,
         paddingBottom:10,
-        color:colors.color1
+        color:colors.color1,
+        fontWeight:'bold'
     },
     descriptionFormule:{
       color:colors.color1
@@ -100,7 +101,8 @@ const style = StyleSheet.create({
       color: "white",
       fontFamily:fonts.font1,
       fontSize:24,
-      width:"80%"
+      width:"80%",
+      fontWeight:'bold'
     },
     btnPaiement:{
       backgroundColor:colors.color9,

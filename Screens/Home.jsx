@@ -181,8 +181,8 @@ const refs = {
   'Pâtisseries': useRef(null),
   'Boules et Pains Spéciaux': useRef(null),
   'Petits déjeuners': useRef(null),
-  'Boissons': useRef(null),
   'Tartes': useRef(null),
+  'Boissons': useRef(null),
   // 'Tarterie': useRef(null),
 };
 

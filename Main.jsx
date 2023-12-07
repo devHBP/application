@@ -55,6 +55,7 @@ import PagePlatChaud from './Screens/PagesSalees/PagePlatChaud';
 export const navigationRef = createNavigationContainerRef();
 import axios from 'axios';
 import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+import OffreNoel from './Screens/OffreNoel';
 // import PageHome from './Screens/PageHome';
 
 
@@ -198,6 +199,7 @@ const Main = () => {
         <Stack.Screen name="antigaspi" component={Antigaspi} />
         <Stack.Screen name="offre31" component={Offre31} />
         <Stack.Screen name="solanid" component={Solanid} />
+        <Stack.Screen name="noel" component={OffreNoel} />
         <Stack.Screen name="details" component={ProductDetails} />
         <Stack.Screen name="profile" component={Profile} />
         <Stack.Screen name="orders" component={Orders} />
