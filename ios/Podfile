@@ -26,10 +26,15 @@ if linkage != nil
 end
 
 target 'MyappReactNative' do
+  
+  pod 'Firebase/Analytics'
+  pod 'Firebase/Messaging'
   config = use_native_modules!
 
   # Flags change depending on the env values.
   flags = get_default_flags()
+  use_frameworks! :linkage => :static
+  $RNFirebaseAsStaticFramework = true
 
   use_react_native!(
     :path => config[:reactNativePath],
@@ -40,7 +45,8 @@ target 'MyappReactNative' do
     #
     # Note that if you have use_frameworks! enabled, Flipper will not work and
     # you should disable the next line.
-    :flipper_configuration => flipper_config,
+    #:flipper_configuration => flipper_config,
+    :flipper_configuration => FlipperConfiguration.disabled,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
@@ -48,6 +54,7 @@ target 'MyappReactNative' do
   target 'MyappReactNativeTests' do
     inherit! :complete
     # Pods for testing
+    
   end
 
   post_install do |installer|

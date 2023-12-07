@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "692328173815",
+    "project_id": "notificationspush-43bff",
+    "storage_bucket": "notificationspush-43bff.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:692328173815:android:a54dec1cb5c36278cac3f2",
+        "android_client_info": {
+          "package_name": "com.myappreactnative"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCjd7wYfP4n70QrLIVW9PGcLsUdH3GJ4_E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
