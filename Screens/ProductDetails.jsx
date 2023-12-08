@@ -303,7 +303,8 @@ const styles = StyleSheet.create({
       color: "white",
       fontFamily:fonts.font1,
       fontSize:24,
-      width:"80%"
+      width:"80%",
+      fontWeight:'bold'
     },
     prixSun:{
       color:colors.color2,
