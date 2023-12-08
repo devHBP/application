@@ -8,7 +8,8 @@ export const styles = StyleSheet.create({
         fontSize:24,
         position:'absolute',
         top:30,
-        left:20
+        left:20,
+        fontWeight:'bold'
     },
     titleOptions:{
         fontSize:20,
