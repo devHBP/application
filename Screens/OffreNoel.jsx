@@ -128,8 +128,8 @@ import {
                       style={{ width: "100%", height: 330, resizeMode:'cover' }}
                   /> */}
             <FastImage
-              source={require('../assets/offreNoel.jpg')}
-              style={{width: '100%', height: 330, resizeMode: 'cover'}}
+              source={require('../assets/offrePageNoel.jpg')}
+              style={{width:"100%", height: 330, resizeMode: 'cover'}}
             />
             {/* <Image
               source={require('../assets/halles_solanid.jpg')}
@@ -149,7 +149,7 @@ import {
                 paddingVertical: 30,
               }}>
               <Text style={{...style.titleProduct, width: '90%'}}>
-                Nos produits de Noël
+                Produits Festifs
               </Text>
               <TouchableOpacity
                 onPress={handleBack}
