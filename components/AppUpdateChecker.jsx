@@ -12,6 +12,7 @@ const AppUpdateChecker = () => {
 
   const openLink = url => {
     if (Platform.OS === 'android') {
+      // console.log('url', url);
       Linking.openURL(url)
         .then(supported => {
           if (!supported) {
@@ -22,7 +23,7 @@ const AppUpdateChecker = () => {
         })
         .catch(err => console.error('An error occurred', err));
     } else if (Platform.OS === 'ios') {
-      console.log('url', url);
+      // console.log('url', url);
       Linking.canOpenURL(url)
         .then(supported => {
           if (!supported) {
