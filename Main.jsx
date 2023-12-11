@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {Alert, Platform} from 'react-native';
+import {Linking} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createNavigationContainerRef} from '@react-navigation/native';
@@ -54,17 +54,21 @@ import Antigaspi from './Screens/Antigaspi';
 import PagePlatChaud from './Screens/PagesSalees/PagePlatChaud';
 export const navigationRef = createNavigationContainerRef();
 import axios from 'axios';
-import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS, BUNDLEID} from '@env';
 import OffreNoel from './Screens/OffreNoel';
+import AppUpdateChecker from './components/AppUpdateChecker';
+import {getLatestAppVersionFromAppStore} from './Fonctions/fonctions';
+import DeviceInfo from 'react-native-device-info';
 // import PageHome from './Screens/PageHome';
 
-
 const Main = () => {
-
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedin, setIsLoggedin] = useState(false);
+  const [isUpdateRequired, setIsUpdateRequired] = useState(false);
 
   const dispatch = useDispatch();
+
+
 
   useEffect(() => {
     configureAxiosHeaders();
@@ -145,17 +149,44 @@ const Main = () => {
     },
   };
 
+  useEffect(() => {
+    const checkForUpdates = async () => {
+      try {
+        // const currentVersion = DeviceInfo.getVersion();
+        const currentVersion = '2.8'
+        const latestVersion = await getLatestAppVersionFromAppStore(BUNDLEID);
+        console.log('version mobile', currentVersion)
+        console.log('version store', latestVersion )
+        if (currentVersion < latestVersion) {
+          setIsUpdateRequired(true); 
+          console.log('mise à jour dispo')
+          console.log(isUpdateRequired)
+
+        }
+      } catch (error) {
+        console.error("Erreur lors de la vérification des mises à jour:", error);
+        setIsUpdateRequired(false);
+      }
+    };
+
+    checkForUpdates();
+  }, []);
+
+
+
   if (isLoading) {
     return <LoaderHome />;
   }
   return (
     <NavigationContainer linking={linking} ref={navigationRef}>
-      {/* <Stack.Navigator initialRouteName='login' screenOptions={{headerShown:false}}> */}
       <Stack.Navigator
-        initialRouteName={isLoggedin ? 'home' : 'login'}
+        initialRouteName={isUpdateRequired ? 'update' : (isLoggedin ? 'home' : 'login')}
         screenOptions={{headerShown: false}}>
         {/* <Stack.Screen name='app' component={App}/> */}
-        <Stack.Screen name="login" component={Login} />
+        {isUpdateRequired && (
+          <Stack.Screen name="update" component={AppUpdateChecker} />
+        )}       
+         <Stack.Screen name="login" component={Login} />
         <Stack.Screen name="signup" component={Signup} />
         <Stack.Screen name="stores" component={Stores} />
         <Stack.Screen name="home" component={Home} />
