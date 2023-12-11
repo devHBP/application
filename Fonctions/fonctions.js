@@ -10,6 +10,8 @@ import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Platform} from 'react-native';
+import { PLAY_STORE_VERSION } from '@env';
+
 
 
 const configureAxiosHeaders = async () => {
@@ -210,34 +212,32 @@ async function checkProductAvailability(
 //--- FIN STOCK---//
 
 //obtenir la version de l'app sur app store
-async function getLatestAppVersionFromAppStore(bundleId) {
-  if (Platform.OS === 'ios') {
-    console.log('version ios');
-    // Pour iOS, utilisez l'API iTunes Search
-    const url = `https://itunes.apple.com/lookup?bundleId=${bundleId}`;
-    try {
-      const response = await fetch(url);
-      const data = await response.json();
-      if (data.resultCount === 0) {
-        throw new Error('Aucune donnée trouvée pour ce Bundle ID');
-      }
-      return data.results[0].version;
-    } catch (error) {
-      console.error(
-        "Erreur lors de la récupération de la version de l'application:",
-        error,
-      );
-      return null;
-    }
-  } else if (Platform.OS === 'android') {
-    console.log('version android');
-  }
-}
+// async function getLatestAppVersionFromAppStore(bundleId) {
+
+//     console.log('version ios');
+//     // Pour iOS, utilisez l'API iTunes Search
+//     const url = `https://itunes.apple.com/lookup?bundleId=${bundleId}`;
+//     try {
+//       const response = await fetch(url);
+//       const data = await response.json();
+//       if (data.resultCount === 0) {
+//         throw new Error('Aucune donnée trouvée pour ce Bundle ID');
+//       }
+//       return data.results[0].version;
+//     } catch (error) {
+//       console.error(
+//         "Erreur lors de la récupération de la version de l'application:",
+//         error,
+//       );
+//       return null;
+//     }
+  
+  
+// }
 
 export {
   checkProductStock,
   getProductQtyInCart,
   checkProductAvailability,
   configureAxiosHeaders,
-  getLatestAppVersionFromAppStore,
 };
