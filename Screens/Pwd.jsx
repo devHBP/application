@@ -12,7 +12,8 @@ const inputOptions = {
   outlineColor:'white',
   borderRadius:5, 
   marginTop:10,
-  marginBottom:30
+  marginBottom:30,
+  color:colors.color1
 }
 
 const Pwd = ({ navigation }) => {
@@ -72,7 +73,7 @@ const Pwd = ({ navigation }) => {
           <Text style={styles.label}>Votre e-mail</Text>
           <TextInput
               {...inputOptions} 
-              placeholder="exemple.mail@email.com"
+              placeholder="  exemple.mail@email.com"
               value={email}
               onChangeText={setEmail}
               placeholderTextColor={colors.color3}
