@@ -4,6 +4,7 @@ import {APPSTORE_URL, PLAYSTORE_URL} from '@env';
 import {colors, fonts} from '../styles/styles';
 
 const AppUpdateChecker = () => {
+  console.log('page mise à jour')
   //verif version app store
   const appStoreUrl = Platform.select({
     ios: APPSTORE_URL,

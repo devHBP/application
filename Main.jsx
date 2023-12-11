@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import {Linking} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createNavigationContainerRef} from '@react-navigation/native';
@@ -54,11 +53,10 @@ import Antigaspi from './Screens/Antigaspi';
 import PagePlatChaud from './Screens/PagesSalees/PagePlatChaud';
 export const navigationRef = createNavigationContainerRef();
 import axios from 'axios';
-import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS, BUNDLEID} from '@env';
 import OffreNoel from './Screens/OffreNoel';
 import AppUpdateChecker from './components/AppUpdateChecker';
-import {getLatestAppVersionFromAppStore} from './Fonctions/fonctions';
 import DeviceInfo from 'react-native-device-info';
+import {API_BASE_URL} from '@env';
 // import PageHome from './Screens/PageHome';
 
 const Main = () => {
@@ -68,11 +66,9 @@ const Main = () => {
 
   const dispatch = useDispatch();
 
-
-
   useEffect(() => {
     configureAxiosHeaders();
-
+    checkForUpdates();
     axios.interceptors.response.use(
       response => response,
       async error => {
@@ -149,30 +145,29 @@ const Main = () => {
     },
   };
 
-  useEffect(() => {
-    const checkForUpdates = async () => {
-      try {
-        // const currentVersion = DeviceInfo.getVersion();
-        const currentVersion = '2.8'
-        const latestVersion = await getLatestAppVersionFromAppStore(BUNDLEID);
-        console.log('version mobile', currentVersion)
-        console.log('version store', latestVersion )
-        if (currentVersion < latestVersion) {
-          setIsUpdateRequired(true); 
-          console.log('mise à jour dispo')
-          console.log(isUpdateRequired)
+  const checkForUpdates = async () => {
+    try {
+      //version actuelle de l'application
+      const currentVersion = DeviceInfo.getVersion();
 
-        }
-      } catch (error) {
-        console.error("Erreur lors de la vérification des mises à jour:", error);
-        setIsUpdateRequired(false);
+
+      const response = await axios.get(`${API_BASE_URL}/versionApp`);
+      const latestVersion = response.data.version.toString();
+      // console.log('response', response.data)
+      // console.log('version mobile', currentVersion);
+      // console.log('version store', latestVersion);
+      if (currentVersion < latestVersion) {
+        setIsUpdateRequired(true);
+        console.log('mise à jour dispo');
+        console.log(isUpdateRequired);
       }
-    };
 
-    checkForUpdates();
-  }, []);
+    } catch (error) {
+      console.error('Erreur lors de la vérification des mises à jour:', error);
+      setIsUpdateRequired(false);
+    }
 
-
+  };
 
   if (isLoading) {
     return <LoaderHome />;
@@ -180,18 +175,18 @@ const Main = () => {
   return (
     <NavigationContainer linking={linking} ref={navigationRef}>
       <Stack.Navigator
-        initialRouteName={isUpdateRequired ? 'update' : (isLoggedin ? 'home' : 'login')}
+        initialRouteName={
+          isUpdateRequired ? 'update' : isLoggedin ? 'home' : 'login'
+        }
         screenOptions={{headerShown: false}}>
         {/* <Stack.Screen name='app' component={App}/> */}
         {isUpdateRequired && (
           <Stack.Screen name="update" component={AppUpdateChecker} />
-        )}       
-         <Stack.Screen name="login" component={Login} />
+        )}
+        <Stack.Screen name="login" component={Login} />
         <Stack.Screen name="signup" component={Signup} />
         <Stack.Screen name="stores" component={Stores} />
         <Stack.Screen name="home" component={Home} />
-        {/* test page Home 2 */}
-        {/* <Stack.Screen name='pagehome' component={PageHome}/> */}
         {/*  Formules  */}
         <Stack.Screen name="formulesandwich" component={FormuleSandwich} />
         <Stack.Screen name="formulepoke" component={FormulePoke} />
