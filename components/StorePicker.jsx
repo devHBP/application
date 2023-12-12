@@ -66,7 +66,7 @@ const StorePicker = () => {
                 const response = await axios.get(`${API_BASE_URL}/getOneStore/${user.storeId}`);
                 if(response.data) {
                     setSelectedStoreDetails(response.data);
-                    console.log(response.data.nom_magasin)
+                    // console.log(response.data.nom_magasin)
                 }
             } catch (error) {
                 console.error("Erreur lors de la récupération des détails du magasin :", error);
