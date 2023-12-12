@@ -12,7 +12,8 @@ const initialState = {
     date_naissance:'',
     idSUN:'',
     allergies:[],
-    preferences_alimentaires:[]
+    preferences_alimentaires:[],
+    storeId:''
   },
   selectedStore: '',
 };

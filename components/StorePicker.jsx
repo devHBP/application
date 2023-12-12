@@ -20,15 +20,18 @@ const StorePicker = () => {
     const dispatch = useDispatch();
     const user = useSelector((state) => state.auth.user);
     //console.log(user.role)
-    const selectedStore = useSelector((state) => state.auth.selectedStore)
+    const [selectedStoreDetails, setSelectedStoreDetails] = useState({});
+
     //console.log('select', selectedStore)
 
 
   useEffect(() => {
+    fetchSelectedStoreDetails();
+
     if (user && user.role) {
         allStores();
     }
-}, [user.role]);
+}, [user.role, user.storeId]);
 
    
     const allStores = async () => {
@@ -46,17 +49,31 @@ const StorePicker = () => {
       };
       
     
-    function formatLabel(label) {
-        const splitLabel = label.split(' '); // Divisez le label par les espaces
-        if (splitLabel.length <= 1) return label; // Si c'est un seul mot, retournez-le tel quel
+    // function formatLabel(label) {
+    //     const splitLabel = label.split(' '); // Divisez le label par les espaces
+    //     if (splitLabel.length <= 1) return label; // Si c'est un seul mot, retournez-le tel quel
     
-        const midPoint = Math.ceil(splitLabel.length / 2); 
-        const firstHalf = splitLabel.slice(0, midPoint).join(' ');
-        const secondHalf = splitLabel.slice(midPoint).join(' ');
+    //     const midPoint = Math.ceil(splitLabel.length / 2); 
+    //     const firstHalf = splitLabel.slice(0, midPoint).join(' ');
+    //     const secondHalf = splitLabel.slice(midPoint).join(' ');
     
-        return `${firstHalf}\n${secondHalf}`; // Retournez les deux moitiés avec un saut de ligne entre elles
-    }
+    //     return `${firstHalf}\n${secondHalf}`; // Retournez les deux moitiés avec un saut de ligne entre elles
+    // }
     
+    const fetchSelectedStoreDetails = async () => {
+        // if(user.storeId) {
+            try {
+                const response = await axios.get(`${API_BASE_URL}/getOneStore/${user.storeId}`);
+                if(response.data) {
+                    setSelectedStoreDetails(response.data);
+                    console.log(response.data.nom_magasin)
+                }
+            } catch (error) {
+                console.error("Erreur lors de la récupération des détails du magasin :", error);
+            }
+        //}
+    };
+
     
     
     return (
@@ -78,14 +95,14 @@ const StorePicker = () => {
                     {
                         Platform.OS === 'android' ? (
                            <SelectDropdown
-
+                           key={selectedStoreDetails.nom_magasin}
                            	data={stores.map(store => store.nom_magasin)}  
                             onSelect={(selectedItem, index) => {
                                 const selected = stores.find(store => store.nom_magasin === selectedItem);
                                      if (selected) {
-                                             dispatch(updateSelectedStore(selected));
                                              dispatch(updateUser({ ...user, storeId: selected.storeId }));
-
+                                            // dispatch(updateSelectedStore(selected));
+                                            setSelectedStoreDetails(selected);
                                              axios.put(`${API_BASE_URL}/updateOneUser/${user.userId}`, {storeId: selected.storeId})
                                                 .then(response => {
                                                  // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
@@ -110,7 +127,7 @@ const StorePicker = () => {
                            	buttonStyle={{backgroundColor:'transparent', width:160, height:30,padding:0,  }}
                            	buttonTextStyle={{fontSize:10, fontWeight:700, color:colors.color2, padding:0}}
                             // defaultButtonText={selectedStore.nom_magasin}
-                            defaultButtonText={selectedStore ? selectedStore.nom_magasin : "faites votre choix"}
+                            defaultButtonText={selectedStoreDetails ? selectedStoreDetails.nom_magasin : "faites votre choix"}
 
                             rowTextStyle={{fontSize:10}}
                             // rowStyle={{width:20}}
@@ -123,14 +140,16 @@ const StorePicker = () => {
                             placeholder={{
                                 label: "Choisissez un magasin"
                             }}
-                            value={selectedStore.nom_magasin}
+                            value={selectedStoreDetails.nom_magasin}
+
+                            // value={selectedStore.nom_magasin}
                             onValueChange={(value) => {
                                 const selected = stores.find((store) => store.nom_magasin === value);
     
                                 if (selected) {
-                                    dispatch(updateSelectedStore(selected));
+                                    // dispatch(updateSelectedStore(selected));
                                     dispatch(updateUser({ ...user, storeId: selected.storeId }));
-    
+                                    setSelectedStoreDetails(selected);
                                     axios.put(`${API_BASE_URL}/updateOneUser/${user.userId}`, {storeId: selected.storeId})
                                     .then(response => {
                                         // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
@@ -158,9 +177,9 @@ const StorePicker = () => {
                     <View style={{flexDirection:'row',justifyContent:'center'}}>
                         <View >
                             <Text style={{fontSize:10, color:colors.color1, width:130}}>
-                                {selectedStore.adresse_magasin}   
+                                {selectedStoreDetails.adresse_magasin}   
                             </Text>
-                            <Text  style={{fontSize:10, color:colors.color1}}>{selectedStore.cp_magasin} {selectedStore.ville_magasin}</Text>
+                            <Text  style={{fontSize:10, color:colors.color1}}>{selectedStoreDetails.cp_magasin} {selectedStoreDetails.ville_magasin}</Text>
                         </View>
                     </View> 
                     } 
@@ -194,4 +213,4 @@ const pickerStyles = Platform.select({
 });
 
 
-export default React.memo(StorePicker);
+export default StorePicker;

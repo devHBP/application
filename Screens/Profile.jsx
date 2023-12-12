@@ -57,7 +57,7 @@ const Profile =  ({navigation}) => {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.auth.user);
   const userId = user.userId
-  const selectedStore = useSelector((state) => state.auth.selectedStore);
+  // const selectedStore = useSelector((state) => state.auth.selectedStore);
      const [firstname, setFirstname] = useState('');
      const [lastname, setLastname] = useState('');
      const [adresse, setAdresse] = useState('');
@@ -68,6 +68,9 @@ const Profile =  ({navigation}) => {
      const [selectedAllergies, setSelectedAllergies] = useState([]);
      const [selectedPreferences, setSelectedPreferences] = useState([]);
      const [password, setPassword] = useState('');
+     const  [store, setStore] = useState('')
+     const [selectedStoreDetails, setSelectedStoreDetails] = useState({});
+
      //ajouter date de naissance
   const [currentSelection, setCurrentSelection] = useState(null);
 
@@ -125,14 +128,15 @@ const allStores = async () => {
          setSelectedAllergies(userData.allergies ? userData.allergies.split(",") : []);
          setSelectedPreferences(userData.preferences_alimentaires ? userData.preferences_alimentaires.split(",") : []);
          setPassword(userData.password)
-
+        setStore(userData.storeId)
       } catch (error) {
         console.log('Erreur lors de la récupération des informations utilisateur getUserInfo:', error);
       }
     }
     useEffect(() => {
       allStores();
-      getUserInfo(user)
+      getUserInfo(user);
+      fetchSelectedStoreDetails()
     }, [user]);
 
     const handleSubmit = async  () => {
@@ -237,6 +241,20 @@ const allStores = async () => {
   const openPasswordModal = () => {
     setModalVisible(true);
   };
+
+  const fetchSelectedStoreDetails = async () => {
+    if(user.storeId) {
+        try {
+            const response = await axios.get(`${API_BASE_URL}/getOneStore/${user.storeId}`);
+            if(response.data) {
+                setSelectedStoreDetails(response.data);
+            }
+        } catch (error) {
+            console.error("Erreur lors de la récupération des détails du magasin :", error);
+        }
+    }
+};
+
    
   return (
     <>
@@ -376,9 +394,9 @@ const allStores = async () => {
               onSelect={(selectedItem, index) => {
                 const selected = stores.find(store => store.nom_magasin === selectedItem);
                       if (selected) {
-                              dispatch(updateSelectedStore(selected));
+                              // dispatch(updateSelectedStore(selected));
                               dispatch(updateUser({ ...user, storeId: selected.storeId }));
-
+                              setSelectedStoreDetails(selected);
                               axios.put(`${API_BASE_URL}/updateOneUser/${user.userId}`, {storeId: selected.storeId})
                                 .then(response => {
                                   // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
@@ -402,7 +420,7 @@ const allStores = async () => {
               }}
               buttonStyle={{backgroundColor:colors.color3, width:"100%", height:40, borderRadius:5}}
               buttonTextStyle={{fontSize:12, fontWeight:700, color:colors.color1}}
-              defaultButtonText={selectedStore.nom_magasin}
+              defaultButtonText={selectedStoreDetails.nom_magasin}
               />
 
         <Text style={style.label}>Vos préférences alimentaires</Text>
