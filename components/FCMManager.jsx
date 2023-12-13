@@ -15,7 +15,7 @@ const FCMManager = () => {
                 userId: user.userId, 
                 fcmToken: fcmToken,
             });
-            console.log('Token envoyé au backend avec succès', response.data);
+            // console.log('Token envoyé au backend avec succès', response.data);
         } catch (error) {
             console.error("Erreur lors de l'envoi du token au backend", error);
         }
@@ -30,9 +30,9 @@ const FCMManager = () => {
                     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
 
                 if (enabled) {
-                    console.log('Authorization status:', authStatus);
+                    // console.log('Authorization status:', authStatus);
                     const token = await messaging().getToken();
-                    console.log('FCM Token dans composant FCM:', token);
+                    // console.log('FCM Token dans composant FCM:', token);
                     if (token) {
                         sendTokenToBackend(token);
                     }
