@@ -57,14 +57,36 @@ import OffreNoel from './Screens/OffreNoel';
 import AppUpdateChecker from './components/AppUpdateChecker';
 import DeviceInfo from 'react-native-device-info';
 import {API_BASE_URL} from '@env';
+import Maintenance from './Screens/Maintenance';
 // import PageHome from './Screens/PageHome';
 
 const Main = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isUpdateRequired, setIsUpdateRequired] = useState(false);
+  // const [ serveurOff, setServeurOff]  = useState(false);    
 
   const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   const checkServerStatus = async () => {
+  //     try {
+  //       const response = await axios.get(`${API_BASE_URL}/status`);
+  //       if (response.status === 200){
+  //         setServeurOff(false)
+
+  //       }
+  //       setServeurOff(true)
+
+  //     } catch (error) {
+  //       setIsMaintenanceMode(true);
+  //     }
+  //   };
+
+  //   const interval = setInterval(checkServerStatus, 10000);
+  //   return () => clearInterval(interval);
+  // }, []);
+
 
   useEffect(() => {
     configureAxiosHeaders();
@@ -178,6 +200,7 @@ const Main = () => {
         initialRouteName={
           isUpdateRequired ? 'update' : isLoggedin ? 'home' : 'login'
         }
+      
         screenOptions={{headerShown: false}}>
         {/* <Stack.Screen name='app' component={App}/> */}
         {isUpdateRequired && (
@@ -187,6 +210,8 @@ const Main = () => {
         <Stack.Screen name="signup" component={Signup} />
         <Stack.Screen name="stores" component={Stores} />
         <Stack.Screen name="home" component={Home} />
+        <Stack.Screen name="maintenance" component={Maintenance} />
+
         {/*  Formules  */}
         <Stack.Screen name="formulesandwich" component={FormuleSandwich} />
         <Stack.Screen name="formulepoke" component={FormulePoke} />
