@@ -61,13 +61,14 @@ const Panier = ({navigation}) => {
   const [productFamilies, setProductFamilies] = useState({});
   const [paiement, setPaiement] = useState('online');
   const [loading, setLoading] = useState(false);
+  const [selectStore, setSelectStore] = useState('');
 
   const cart = useSelector(state => state.cart.cart); //ou cartItems
   // console.log('cart', cart);
   const user = useSelector(state => state.auth.user);
   const emailConfirmOrder = user.email;
   const firstnameConfirmOrder = user.firstname;
-  const selectedStore = useSelector(state => state.auth.selectedStore);
+  // const selectedStore = useSelector(state => state.auth.selectedStore);
   const cartTotal = useSelector(state => state.cart.cartTotal);
 
   const selectedDateString = useSelector(state => state.cart.date);
@@ -99,7 +100,6 @@ const Panier = ({navigation}) => {
   const antigaspiProductsCount = cart.filter(
     product => product.antigaspi,
   ).length;
-  //console.log(antigaspiProductsCount)
 
   const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
 
@@ -237,6 +237,7 @@ const Panier = ({navigation}) => {
   };
 
   // family produits - si une formules = famille "Formules"
+  //va chercher le store à chaque changement dans le store picker
   useEffect(() => {
     const fetchFamilies = async () => {
       const productIds = cart
@@ -270,12 +271,23 @@ const Panier = ({navigation}) => {
           familiesObject[item.productId] = 'Formules';
         }
       });
-
+      const getStore = async () => {
+        try {
+          const response = await axios.get(
+            `${API_BASE_URL}/getOne/${user.userId}`,
+          );
+          setSelectStore(response.data.storeId);
+        } catch (error) {
+          console.error(error);
+          throw new Error('Erreur lors de la recupération du store');
+        }
+      };
+      getStore();
       setProductFamilies(familiesObject);
     };
 
     fetchFamilies();
-  }, [cart]);
+  }, [cart, user.storeId]);
 
   const updateAntigaspiStock = async () => {
     for (const product of cart) {
@@ -319,202 +331,177 @@ const Panier = ({navigation}) => {
       });
       return; // Arrêter l'exécution de la fonction si aucune date n'est renseignée
     }
+
     setPaiement(newPaiement);
-    // const token = await AsyncStorage.getItem('userToken');
 
-    // axios
-    //   .get(`${API_BASE_URL}/verifyToken`, {
-    //     headers: {
-    //       'x-access-token': token,
-    //     },
-    //   })
-    //   .then(response => {
-    //     if (response.data.auth) {
-          dispatch(setProducts(cart));
+    dispatch(setProducts(cart));
 
-          //formater la date chaine de caractère -> format ISO
-          // à l'heure 0:00
-          const [day, month, year] = selectedDateString.split('/').map(Number);
-          const formattedDate = new Date(
-            Date.UTC(year, month - 1, day, 0, 0, 0),
-          );
-          const dateForDatabase = formattedDate.toISOString();
+    //formater la date chaine de caractère -> format ISO
+    // à l'heure 0:00
+    const [day, month, year] = selectedDateString.split('/').map(Number);
+    const formattedDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+    const dateForDatabase = formattedDate.toISOString();
 
-          //prix Sun si collaborateur
-          // totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
+    //prix Sun si collaborateur
+    // totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
 
-          //pour ne pas cumuler deux offres
-          let adjustedTotalPrice = 0;
-          cart.forEach(product => {
-            // Utilisez product.prix si c'est une formule, sinon utilisez product.prix_unitaire
-            let adjustedPrice =
-              product.type === 'formule' ? product.prix : product.prix_unitaire;
+    //pour ne pas cumuler deux offres
+    let adjustedTotalPrice = 0;
+    cart.forEach(product => {
+      // Utilisez product.prix si c'est une formule, sinon utilisez product.prix_unitaire
+      let adjustedPrice =
+        product.type === 'formule' ? product.prix : product.prix_unitaire;
 
-            //si pas de produit anti gaspi
-            if (user.role === 'SUNcollaborateur' && !product.antigaspi) {
-              adjustedPrice *= 0.8;
-            }
+      //si pas de produit anti gaspi
+      if (user.role === 'SUNcollaborateur' && !product.antigaspi) {
+        adjustedPrice *= 0.8;
+      }
 
-            adjustedTotalPrice += adjustedPrice * product.qty;
-          });
+      adjustedTotalPrice += adjustedPrice * product.qty;
+    });
 
-          totalPrice = adjustedTotalPrice.toFixed(2);
+    totalPrice = adjustedTotalPrice.toFixed(2);
 
-          //paiement supérieur à 50cts
-          if (totalPrice < 0.5) {
-            //console.log('en dessous de 1euros')
-            return Toast.show({
-              type: 'error',
-              text1: `Montant inférieur à 50 centimes`,
-              text2: `N'hésitez pas à ajouter des articles `,
+    //paiement supérieur à 50cts
+    if (totalPrice < 0.5) {
+      //console.log('en dessous de 1euros')
+      return Toast.show({
+        type: 'error',
+        text1: `Montant inférieur à 50 centimes`,
+        text2: `N'hésitez pas à ajouter des articles `,
+      });
+    }
+
+    const orderData = {
+      cart: cart,
+      userRole: user.role,
+      firstname_client: user.firstname,
+      lastname_client: user.lastname,
+      prix_total: totalPrice,
+      date: dateForDatabase,
+      heure: selectedTime,
+      userId: user.userId,
+      storeId: selectStore,
+      slotId: null,
+      promotionId: null,
+      paymentMethod: newPaiement,
+      //plus utilisé
+      //transforme mon array de productsIds en chaine de caractères
+      //productIdsString: cartProductId.join(",")
+
+      //plus utilisé
+      //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty }))
+
+      products: (() => {
+        let products = [];
+        let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
+
+        // Traitement des produits fusionnés avec des offres (3+1)
+        aggregatedCartItems.forEach(item => {
+          const productData = {
+            productId: item.productId,
+            quantity: item.qty,
+            prix_unitaire: item.prix_unitaire,
+          };
+
+          if (item.isFree) {
+            productData.offre = item.offre;
+          }
+
+          products.push(productData);
+          processedProductIds.push(item.productId); // Ajoutez l'ID du produit à la liste des produits traités
+        });
+
+        cart.forEach(item => {
+          // Si l'ID du produit a déjà été traité, sautez ce produit
+          //pour eviter les doublons dans le panier
+          if (processedProductIds.includes(item.productId)) return;
+
+          // Traitement des produits de type 'formule'
+          if (item.type === 'formule') {
+            ['option1', 'option2', 'option3'].forEach(option => {
+              if (item[option]) {
+                products.push({
+                  productId: item[option].productId,
+                  quantity: item.qty,
+                  formule: item.libelle,
+                  category: item[option].categorie,
+                });
+              }
             });
           }
-  
 
-          const orderData = {
-            cart: cart,
-            userRole: user.role,
-            firstname_client: user.firstname,
-            lastname_client: user.lastname,
-            prix_total: totalPrice,
-            date: dateForDatabase,
-            heure: selectedTime,
-            userId: user.userId,
-            storeId: selectedStore.storeId,
-            slotId: null,
-            promotionId: null,
-            paymentMethod: newPaiement,
-            //plus utilisé
-            //transforme mon array de productsIds en chaine de caractères
-            //productIdsString: cartProductId.join(",")
-
-            //plus utilisé
-            //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty }))
-
-            products: (() => {
-              let products = [];
-              let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
-
-              // Traitement des produits fusionnés avec des offres (3+1)
-              aggregatedCartItems.forEach(item => {
-                const productData = {
-                  productId: item.productId,
-                  quantity: item.qty,
-                  prix_unitaire: item.prix_unitaire,
-                };
-
-                if (item.isFree) {
-                  productData.offre = item.offre;
-                }
-
-                products.push(productData);
-                processedProductIds.push(item.productId); // Ajoutez l'ID du produit à la liste des produits traités
+          // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée ou quil y es tune offre, mais c'est un produit antigaspi donc un seul produit)
+          else if (!item.offre || (item.offre && item.qty < 4)) {
+            if (item.productId) {
+              products.push({
+                productId: item.productId,
+                quantity: item.qty,
+                prix_unitaire: item.prix_unitaire,
               });
-
-              cart.forEach(item => {
-                // Si l'ID du produit a déjà été traité, sautez ce produit
-                //pour eviter les doublons dans le panier
-                if (processedProductIds.includes(item.productId)) return;
-
-                // Traitement des produits de type 'formule'
-                if (item.type === 'formule') {
-                  ['option1', 'option2', 'option3'].forEach(option => {
-                    if (item[option]) {
-                      products.push({
-                        productId: item[option].productId,
-                        quantity: item.qty,
-                        formule: item.libelle,
-                        category: item[option].categorie,
-                      });
-                    }
-                  });
-                }
-
-                // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée ou quil y es tune offre, mais c'est un produit antigaspi donc un seul produit)
-                else if (!item.offre || (item.offre && item.qty < 4)) {
-                  if (item.productId) {
-                    products.push({
-                      productId: item.productId,
-                      quantity: item.qty,
-                      prix_unitaire: item.prix_unitaire,
-                    });
-                  }
-                }
-              });
-
-              return products;
-            })(),
-          };
-          // console.log('orderdata', orderData);
-
-          const createOrder = async () => {
-            //console.log(dateForDatabase)
-            try {
-              const response = await axios.post(
-                `${API_BASE_URL}/createorder`,
-                orderData,
-              );
-              // console.log('response', response.data);
-              const numero_commande = response.data.numero_commande;
-              dispatch(setNumeroCommande(numero_commande));
-              let userRole = user.role;
-
-              //userId - le store du user
-              const callApi = await axios.get(
-                `${API_BASE_URL}/getOneStore/${user.storeId}`,
-              );
-              // console.log('data', callApi.data);
-              const point_de_vente = callApi.data.nom_magasin;
-              const email = user.email;
-              const firstname = user.firstname;
-
-              setOrderInfo({
-                userRole,
-                cart,
-                user,
-                selectedStore,
-                totalPrice,
-                totalQuantity,
-                dateForDatabase, //(en format ISO))
-                paiement,
-              });
-
-              // console.log('response createOrder', response.data);
-              const orderId = response.data.orderId;
-              dispatch(setOrderId(orderId));
-
-              //envoi de l'email de confirmation de comande
-              const res = await axios.post(`${API_BASE_URL}/confirmOrder`, {
-                email,
-                firstname,
-                numero_commande,
-                date: orderData.date,
-                point_de_vente,
-              });
-
-              return response.data;
-            } catch (error) {
-              console.error(error);
-              throw new Error('Erreur lors de la création de la commande');
             }
-          };
-          createOrder();
-          updateAntigaspiStock();
+          }
+        });
 
-          //console.log('commande créé')
-        // } else {
-        //   console.log('erreur ici', error);
-        // }
+        return products;
+      })(),
+    };
+    console.log('orderdata', orderData);
+
+    const createOrder = async () => {
+      //console.log(dateForDatabase)
+      try {
+        const response = await axios.post(
+          `${API_BASE_URL}/createorder`,
+          orderData,
+        );
+        // console.log('response', response.data);
+        const numero_commande = response.data.numero_commande;
+        dispatch(setNumeroCommande(numero_commande));
+        let userRole = user.role;
+
+        //userId - le store du user
+        const callApi = await axios.get(
+          `${API_BASE_URL}/getOneStore/${user.storeId}`,
+        );
+        // console.log('data', callApi.data);
+        const point_de_vente = callApi.data.nom_magasin;
+        const email = user.email;
+        const firstname = user.firstname;
+
+        setOrderInfo({
+          userRole,
+          cart,
+          user,
+          selectStore,
+          totalPrice,
+          totalQuantity,
+          dateForDatabase, //(en format ISO))
+          paiement,
+        });
+
+        // console.log('response createOrder', response.data);
+        const orderId = response.data.orderId;
+        dispatch(setOrderId(orderId));
+
+        //envoi de l'email de confirmation de comande
+        const res = await axios.post(`${API_BASE_URL}/confirmOrder`, {
+          email,
+          firstname,
+          numero_commande,
+          date: orderData.date,
+          point_de_vente,
+        });
+
+        return response.data;
+      } catch (error) {
+        console.error(error);
+        throw new Error('Erreur lors de la création de la commande');
       }
-      // .catch(error => {
-      //   console.log('erreur bug panier page panier', error);
-      //   return Toast.show({
-      //     type: 'error',
-      //     text1: 'Date de livraison manquante',
-      //     text2: 'Veuillez renseigner une date',
-      //   });
-      // });
-
+    };
+    createOrder();
+    updateAntigaspiStock();
+  };
 
   // Vérifier l'état du paiement
   const checkPaymentStatus = async () => {
@@ -548,7 +535,7 @@ const Panier = ({navigation}) => {
             `${API_BASE_URL}/updateOrder`,
             updateData,
           );
-        // console.log('response updateOrder', response.data)
+          // console.log('response updateOrder', response.data)
           navigation.navigate('success');
         }
       } catch (error) {
