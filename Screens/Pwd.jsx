@@ -13,7 +13,8 @@ const inputOptions = {
   borderRadius:5, 
   marginTop:10,
   marginBottom:30,
-  color:colors.color1
+  color:colors.color1,
+  paddingHorizontal:10,
 }
 
 const Pwd = ({ navigation }) => {
@@ -26,13 +27,11 @@ const Pwd = ({ navigation }) => {
       try {
         // Récupérer le prénom via l'API en utilisant l'email
         const firstNameResponse = await axios.get(`${API_BASE_URL}/getUserByEmail/${email}`);
-    
         // Vérifier si firstname a été retourné dans la réponse
         if (!firstNameResponse.data.firstname) {
           Alert.alert('Erreur', 'Utilisateur introuvable');
           return;
         }
-    
         const firstname = firstNameResponse.data.firstname;
     
         // Utiliser firstname et email dans la requête suivante
@@ -44,12 +43,13 @@ const Pwd = ({ navigation }) => {
         if (response.status === 200) {
           Alert.alert('Succès', 'Vérifiez votre boîte de réception pour les instructions de réinitialisation du mot de passe.');
           navigation.navigate('login')
-        } else {
-          Alert.alert('Erreur', response.data.message || 'Veuillez verifier si le bon email est renseigné');
-         }
+        }
       } catch (error) {
-        console.log('Error Details:', error.response ? error.response.data : 'No response received');
-        Alert.alert('Erreur', (error.response && error.response.data.message) || 'Une erreur est survenue. Veuillez réessayer plus tard.');
+        if (error.response && error.response.status === 404){
+          Alert.alert('Erreur', 'Utilisateur introuvable');        
+        } else {
+          Alert.alert('Erreur', (error.response && error.response.data.message) || 'Une erreur est survenue. Veuillez réessayer plus tard.');
+        }
       }
     
     
