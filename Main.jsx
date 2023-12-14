@@ -64,33 +64,13 @@ const Main = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isUpdateRequired, setIsUpdateRequired] = useState(false);
-  // const [ serveurOff, setServeurOff]  = useState(false);    
 
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   const checkServerStatus = async () => {
-  //     try {
-  //       const response = await axios.get(`${API_BASE_URL}/status`);
-  //       if (response.status === 200){
-  //         setServeurOff(false)
-
-  //       }
-  //       setServeurOff(true)
-
-  //     } catch (error) {
-  //       setIsMaintenanceMode(true);
-  //     }
-  //   };
-
-  //   const interval = setInterval(checkServerStatus, 10000);
-  //   return () => clearInterval(interval);
-  // }, []);
 
 
   useEffect(() => {
     configureAxiosHeaders();
-    checkForUpdates();
+    // checkForUpdates();
     axios.interceptors.response.use(
       response => response,
       async error => {
@@ -167,29 +147,29 @@ const Main = () => {
     },
   };
 
-  const checkForUpdates = async () => {
-    try {
-      //version actuelle de l'application
-      const currentVersion = DeviceInfo.getVersion();
+  // const checkForUpdates = async () => {
+  //   try {
+  //     //version actuelle de l'application
+  //     const currentVersion = DeviceInfo.getVersion().toString();
 
 
-      const response = await axios.get(`${API_BASE_URL}/versionApp`);
-      const latestVersion = response.data.version.toString();
-      // console.log('response', response.data)
-      // console.log('version mobile', currentVersion);
-      // console.log('version store', latestVersion);
-      if (currentVersion < latestVersion) {
-        setIsUpdateRequired(true);
-        console.log('mise à jour dispo');
-        console.log(isUpdateRequired);
-      }
+  //     const response = await axios.get(`${API_BASE_URL}/versionApp`);
+  //     const latestVersion = response.data.version.toString();
+  //     console.log('response', response.data)
+  //     console.log('version mobile', currentVersion);
+  //     console.log('version store', latestVersion);
+  //     if (currentVersion < latestVersion) {
+  //       setIsUpdateRequired(true);
+  //       console.log('mise à jour dispo');
+  //       console.log(isUpdateRequired);
+  //     }
 
-    } catch (error) {
-      console.error('Erreur lors de la vérification des mises à jour:', error);
-      setIsUpdateRequired(false);
-    }
+  //   } catch (error) {
+  //     console.error('Erreur lors de la vérification des mises à jour:', error);
+  //     setIsUpdateRequired(false);
+  //   }
 
-  };
+  // };
 
   if (isLoading) {
     return <LoaderHome />;
