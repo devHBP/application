@@ -159,7 +159,7 @@ const StorePicker = () => {
                                     });
                                 }
                                 else {
-                                    console.log('pas de magasin selectionné encore')
+                                    // console.log('pas de magasin selectionné encore')
                                 }}
                             }
                             items={stores.map((store) => ({
