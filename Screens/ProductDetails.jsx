@@ -129,7 +129,7 @@ const ProductDetails = ({navigation, route}) => {
                 />
                 {/* info product n'apparait pas pour les boissons */}
                  {
-                product.categorie !=='Boissons' &&
+                product.categorie !=='Boissons' &&  product.ingredients != "" && product.allergenes != "" &&
                 <TouchableOpacity style={{position:'absolute',bottom:10, right:10}} onPress={openIngredients}>
                 <InfoProduct />
                 </TouchableOpacity>
