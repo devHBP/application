@@ -49,6 +49,7 @@ import {getFamilyOfProduct} from '../CallApi/api';
 
 //fonctions
 import {decrementhandler, removehandler} from '../Fonctions/fonctions';
+import CardPaiement from '../SVG/CardPaiement';
 
 const Panier = ({navigation}) => {
   const dispatch = useDispatch();
@@ -934,7 +935,7 @@ const Panier = ({navigation}) => {
                     </View>
                   ) : (
                     <View style={{gap: 10}}>
-                      <TouchableOpacity
+                      {/* <TouchableOpacity
                         onPress={() => handleConfirm('onsite')}
                         style={{
                           ...style.btnPaiement,
@@ -954,24 +955,23 @@ const Panier = ({navigation}) => {
                           {' '}
                           Sur place
                         </Text>
-                      </TouchableOpacity>
+                      </TouchableOpacity> */}
                       <TouchableOpacity
                         onPress={() => handleConfirm('online')}
                         style={{
                           ...style.btnPaiement,
-                          backgroundColor: colors.color3,
+                          // backgroundColor: colors.color3,
                           flexDirection: 'row',
                           alignItems: 'center',
                           justifyContent: 'space-around',
                         }}>
-                        <Image
-                          source={require('../assets/paiementenligne.png')}
-                          style={{width: 20, height: 20, resizeMode: 'contain'}}
-                        />
+                        <CardPaiement />
                         <Text
                           style={{
-                            color: colors.color1,
+                            color: colors.color6,
                             fontFamily: fonts.font3,
+                            fontWeight:'bold',
+                            fontSize:14
                           }}>
                           {' '}
                           En ligne
