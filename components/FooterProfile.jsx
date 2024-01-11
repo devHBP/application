@@ -23,6 +23,8 @@ import Profile from '../SVG/Profile';
 import Bug from '../SVG/Bug';
 import LoginInvite from '../SVG/LoginInvite';
 import ModaleInvite from './ModalInvite';
+import FastImage from 'react-native-fast-image';
+
 
 const FooterProfile = () => {
   //on utilise ici useNavigation et non pas navigation car le footer n'est pas dans la pile de screens
@@ -47,29 +49,29 @@ const FooterProfile = () => {
     // allMyOrders()
   }, []);
 
-  //   const openLink = (url) => {
-  //     if (Platform.OS === 'android') {
-  //         Linking.openURL(url)
-  //           .then((supported) => {
-  //             if (!supported) {
-  //               console.log("Can't handle URL: " + url);
-  //             } else {
-  //               return Linking.openURL(url);
-  //             }
-  //           })
-  //           .catch((err) => console.error('An error occurred', err));
-  //     } else if (Platform.OS === 'ios') {
-  //         Linking.canOpenURL(url)
-  //           .then((supported) => {
-  //             if (!supported) {
-  //               console.log("Can't handle URL: " + url);
-  //             } else {
-  //               return Linking.openURL(url);
-  //             }
-  //           })
-  //           .catch((err) => console.error('An error occurred', err));
-  //     }
-  // }
+    const openLink = (url) => {
+      if (Platform.OS === 'android') {
+          Linking.openURL(url)
+            .then((supported) => {
+              if (!supported) {
+                console.log("Can't handle URL: " + url);
+              } else {
+                return Linking.openURL(url);
+              }
+            })
+            .catch((err) => console.error('An error occurred', err));
+      } else if (Platform.OS === 'ios') {
+          Linking.canOpenURL(url)
+            .then((supported) => {
+              if (!supported) {
+                console.log("Can't handle URL: " + url);
+              } else {
+                return Linking.openURL(url);
+              }
+            })
+            .catch((err) => console.error('An error occurred', err));
+      }
+  }
 
   const user = useSelector(state => state.auth.user);
   const userId = user.userId;
@@ -192,12 +194,16 @@ const FooterProfile = () => {
         </TouchableOpacity>
       )}
       {/* icone BUG */}
-      {/* {
+      {
           user.role !== 'invite' &&
-              <TouchableOpacity onPress={() => openLink('https://bit.ly/bug-pdj')}>
-                <Bug color={colors.color6}/>
+              <TouchableOpacity onPress={() => openLink('https://www.help.lepaindujour.io/')}>
+                {/* <Bug color={colors.color6}/> */}
+                <FastImage
+                    source={require('../assets/Question.jpg')}
+                     style={{ width: 30, height: 30, resizeMode:'cover' }}
+                    />
               </TouchableOpacity>
-        } */}
+        }
 
       {user.role == 'invite' && (
         <TouchableOpacity onPress={openPopupInvite}>
