@@ -58,6 +58,7 @@ import AppUpdateChecker from './components/AppUpdateChecker';
 import DeviceInfo from 'react-native-device-info';
 import {API_BASE_URL} from '@env';
 import Maintenance from './Screens/Maintenance';
+import CancelPage from './Screens/CancelPage';
 // import PageHome from './Screens/PageHome';
 
 const Main = () => {
@@ -147,7 +148,7 @@ const Main = () => {
     config: {
       screens: {
         success: 'success',
-        // echec: 'echec',
+        cancel: 'cancel',
         pwd: 'pwd',
         login: 'login',
       },
@@ -240,6 +241,7 @@ const Main = () => {
         {/* <Stack.Screen name='choixpaiement' component={ChoixPaiement}/> */}
         {/* <Stack.Screen name='orderconfirm' component={OrderConfirmation}/> */}
         <Stack.Screen name="success" component={SuccessPage} />
+        <Stack.Screen name="cancel" component={CancelPage} />
         <Stack.Screen name="pwd" component={Pwd} />
         <Stack.Screen name="cookies" component={Cookies} />
         <Stack.Screen name="donnees" component={Donnees} />

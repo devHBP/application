@@ -30,7 +30,7 @@ const style = StyleSheet.create({
     },
     menu:{
       // flex:1, 
-        height:110,
+        height:80,
         backgroundColor: colors.color6,
         padding: 10,
         elevation: 2, 
@@ -45,10 +45,33 @@ const style = StyleSheet.create({
         justifyContent:'center',
         gap:10,
         // marginBottom:65,
-        width:"100%"
+        width:"100%",
     },
     androidMenu:{
-      height:110,
+      height:80,
+    },
+    codePromo:{
+      // flex:1, 
+        height:80,
+        backgroundColor: colors.color6,
+        padding: 10,
+        marginBottom:-5,
+        elevation: 2, 
+        shadowColor: '#000', 
+        shadowOpacity: 0.6, 
+        shadowOffset: { width: 0, height: 1 }, 
+        shadowRadius: 2, 
+        borderTopLeftRadius:10,
+        borderTopRightRadius:10,
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'center',
+        gap:10,
+        // marginBottom:65,
+        width:"100%"
+    },
+    codePromoAndroid:{
+      height:80,
     },
     disabledCheckBox: {
       opacity: 0.2, 
@@ -111,6 +134,17 @@ const style = StyleSheet.create({
       borderRadius:5,
       width:130,
       height:35
+    },
+    pastilleContent:{
+      position: 'absolute',
+      bottom: 200,  
+      right: 20,  
+      width: 40,
+      height: 40,
+      backgroundColor: 'red', 
+      borderRadius: 50,
+      justifyContent: 'center',
+      alignItems: 'center',
     }
   }
 )

@@ -15,8 +15,8 @@ import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import FastImage from 'react-native-fast-image';
-import antigaspiImage from '../assets/antigaspi.jpg';
-import antigaspiImage2 from '../assets/anti.jpg';
+import baguetteSUN from '../assets/offreSUNbaguette.jpg';
+import antigaspiImage2 from '../assets/anti2.jpg';
 import offre31 from '../assets/Croissant_offre31.jpg';
 import offreNoel from '../assets/offreNoel.jpg';
 import gift from '../assets/gift.png';
@@ -31,10 +31,11 @@ import badgeSUN from '../assets/badge_sun.jpg';
 import ScrollIndicators from './ScrollIndicators.';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Compteur from '../SVG/Compteur';
+import {useSelector} from 'react-redux';
+import {fetchAllProductsClickAndCollect} from '../CallApi/api';
+import ModaleOffreSUN from './ModaleOffreSUN';
 
 const LinkOffres = () => {
-
-
   const openLink = url => {
     if (Platform.OS === 'android') {
       Linking.openURL(url)
@@ -64,6 +65,10 @@ const LinkOffres = () => {
   const [solanidProductNames, setSolanidProductNames] = useState([]);
   const [offre31ProductNames, setoffre31ProductNames] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [isModalSunVisible, setIsModalSunVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  const cart = useSelector(state => state.cart.cart);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -112,52 +117,51 @@ const LinkOffres = () => {
   const [timeRemaining, setTimeRemaining] = useState('');
   const [showCountdown, setShowCountdown] = useState(true);
 
-  
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
       let endTime = new Date();
-  
+
       // Fin du compteur à 20h59m59s
       endTime.setHours(20, 59, 59, 999);
-  
+
       if (now.getHours() >= 21) {
         endTime.setDate(now.getDate() + 1); // Passer au jour suivant après 21h
       }
-  
+
       const difference = endTime - now;
-  
+
       if (difference > 0) {
         const hours = Math.floor(difference / (1000 * 60 * 60));
-        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const minutes = Math.floor(
+          (difference % (1000 * 60 * 60)) / (1000 * 60),
+        );
         const seconds = Math.floor((difference % (1000 * 60)) / 1000);
         setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
       } else {
         setTimeRemaining('');
       }
     };
-  
+
     const updateCountdownVisibility = () => {
       const now = new Date();
       const hours = now.getHours();
       const minutes = now.getMinutes();
-  
+
       // Afficher le compteur en dehors de 21h à minuit
       setShowCountdown(!(hours >= 21 && hours < 24));
     };
-  
+
     const update = () => {
       updateCountdown();
       updateCountdownVisibility();
     };
-  
+
     // Mettre à jour toutes les secondes
     const intervalId = setInterval(update, 1000);
-  
+
     return () => clearInterval(intervalId);
   }, []);
-  
-  
 
   const handleAntiGaspi = () => {
     const d = new Date();
@@ -177,6 +181,34 @@ const LinkOffres = () => {
       });
     }
   };
+
+  const handleOffreSun = async () => {
+    // si dans le cart, un produit a type_produit === 'offreSUN"
+    // toasMessage erreur, return
+    const isOffreSunInCart = cart.some(
+      item => item.type_produit === 'offreSUN',
+    );
+    if (isOffreSunInCart) {
+      Toast.show({
+        type: 'error',
+        text1: 'Offre déja ajoutée',
+        text2: "Vous avez déjà une baguette 'offreSUN' dans votre panier",
+      });
+      return;
+    }
+
+    const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
+    const offreSunProduct = allProductsClickandCollect.find(
+      product => product.type_produit === 'offreSUN',
+    );
+
+    // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
+    if (offreSunProduct) {
+      setIsModalSunVisible(true);
+      setSelectedProduct(offreSunProduct);
+    }
+  };
+
   const handleOffreNoel = () => {
     navigation.navigate('noel');
   };
@@ -186,7 +218,6 @@ const LinkOffres = () => {
   };
 
   const handleOffre31 = () => {
-    //console.log(offre31ProductNames)
     navigation.navigate('offre31');
   };
 
@@ -199,8 +230,6 @@ const LinkOffres = () => {
   };
 
   const data = [
-    
- 
     {
       type: 'antigaspi',
       imageUri: antigaspiImage2,
@@ -209,9 +238,16 @@ const LinkOffres = () => {
       pastilleImage: pastilleAntigaspi,
     },
     {
+      type: 'baguetteSUN',
+      imageUri: baguetteSUN,
+      mainText: 'Votre baguette         ',
+      secondaryText: 'Gratuite      ',
+      pastilleImage: badgeSUN,
+    },
+    {
       type: 'custom',
       imageUri: offreNoel,
-      mainText: "Nouveautés pour       ",
+      mainText: 'Nouveautés pour       ',
       secondaryText: 'Les fêtes      ',
       pastilleImage: gift,
     },
@@ -251,14 +287,22 @@ const LinkOffres = () => {
         thirdText = item.thirdText;
         pastilleImgSrc = item.pastilleImage;
         break;
+      case 'baguetteSUN':
+        handlePressFunc = handleOffreSun;
+        imgSrc = item.imageUri;
+        mainText = item.mainText;
+        secondaryText = item.secondaryText;
+        thirdText = item.thirdText;
+        pastilleImgSrc = item.pastilleImage;
+        break;
       case 'custom':
-          handlePressFunc = handleOffreNoel;
-          imgSrc = item.imageUri;
-          mainText = item.mainText;
-          secondaryText = item.secondaryText;
-          thirdText = item.thirdText;
-          pastilleImgSrc = item.pastilleImage;
-          break;
+        handlePressFunc = handleOffreNoel;
+        imgSrc = item.imageUri;
+        mainText = item.mainText;
+        secondaryText = item.secondaryText;
+        thirdText = item.thirdText;
+        pastilleImgSrc = item.pastilleImage;
+        break;
       case 'offre31':
         handlePressFunc = handleOffre31;
         imgSrc = item.imageUri;
@@ -391,6 +435,13 @@ const LinkOffres = () => {
           </View>
         </TouchableOpacity>
       </Modal>
+
+      {/* 2e modale - baguette SUN */}
+      <ModaleOffreSUN
+        modalVisible={isModalSunVisible}
+        setModalVisible={setIsModalSunVisible}
+        product={selectedProduct}
+      />
     </View>
   );
 };

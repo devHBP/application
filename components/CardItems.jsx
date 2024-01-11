@@ -63,7 +63,7 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
     
         <View style={styles.content}> 
           <Text numberOfLines={2} style={styles.details}>{qty - freeCount}x {libelle}</Text>
-          <Text style={styles.price}>{qty - freeCount}x {prix || prix_unitaire }€</Text>  
+          <Text style={styles.price}>{qty - freeCount}x {prix || prix_unitaire.toFixed(2) }€</Text>  
           </View>
       
           <View style={styles.content}>

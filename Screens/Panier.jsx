@@ -18,6 +18,7 @@ import {
   addToCart,
   addFreeProductToCart,
   updateCartTotal,
+  clearCart,
 } from '../reducers/cartSlice';
 import {logoutUser} from '../reducers/authSlice';
 import {
@@ -30,26 +31,37 @@ import CardItemFormule from '../components/CardItemsFormule';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {WebView} from 'react-native-webview';
-import {checkStockFormule, checkStockForSingleProduct} from '../CallApi/api';
+import {
+  checkStockFormule,
+  checkStockForSingleProduct,
+  getFamilyOfProduct,
+  checkIfUserOrderedOffreSUNToday,
+  fetchAllProductsClickAndCollect,
+  updateAntigaspiStock,
+  updateStock,
+} from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ModaleOffre31 from '../components/ModaleOffre31';
+import PulseAnimation from '../components/PulseAnimation';
 import {fonts, colors} from '../styles/styles';
 import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import {style} from '../styles/formules';
 import {stylesInvite} from '../styles/invite';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import ArrowLeft from '../SVG/ArrowLeft';
 import LottieView from 'lottie-react-native';
 import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Svg, {Path} from 'react-native-svg';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-
-import {getFamilyOfProduct} from '../CallApi/api';
+import {} from '../CallApi/api';
 
 //fonctions
 import {decrementhandler, removehandler} from '../Fonctions/fonctions';
 import CardPaiement from '../SVG/CardPaiement';
+import ModaleOffreSUN from '../components/ModaleOffreSUN';
+import {DeleteCode} from '../SVG/DeleteCode';
+import {ApplyCode} from '../SVG/ApplyCode';
 
 const Panier = ({navigation}) => {
   const dispatch = useDispatch();
@@ -63,18 +75,23 @@ const Panier = ({navigation}) => {
   const [paiement, setPaiement] = useState('online');
   const [loading, setLoading] = useState(false);
   const [selectStore, setSelectStore] = useState('');
+  const [isModalSunVisible, setIsModalSunVisible] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [erreurCodePromo, setErreurCodePromo] = useState(false);
+  const [usedPromoCodes, setUsedPromoCodes] = useState([]); 
+  const [erreurCodePromoUsed, setErreurCodePromoUsed] = useState(false);
+
 
   const cart = useSelector(state => state.cart.cart); //ou cartItems
-  // console.log('cart', cart);
   const user = useSelector(state => state.auth.user);
-  const emailConfirmOrder = user.email;
-  const firstnameConfirmOrder = user.firstname;
-  // const selectedStore = useSelector(state => state.auth.selectedStore);
   const cartTotal = useSelector(state => state.cart.cartTotal);
-
   const selectedDateString = useSelector(state => state.cart.date);
   const selectedTime = useSelector(state => state.cart.time);
   const numero_commande = useSelector(state => state.order.numero_commande);
+
+  let userRole = user.role;
+  const emailConfirmOrder = user.email;
+  const firstnameConfirmOrder = user.firstname;
 
   let totalPrice = Number(
     cart
@@ -142,6 +159,7 @@ const Panier = ({navigation}) => {
     navigation.navigate('home');
   };
 
+  // fonction valide l'offre3+1
   const handleAcceptOffer = () => {
     const lastProductAdded = cart[cart.length - 1];
     const freeProduct = {
@@ -152,15 +170,31 @@ const Panier = ({navigation}) => {
     dispatch(addFreeProductToCart(freeProduct));
   };
 
+  // fonction ajout de produit (icone +)
   const incrementhandler = async (productIds, offre) => {
     const id = Array.isArray(productIds) ? productIds[0] : productIds; // Si productIds est un tableau, prenez le premier élément. Sinon, prenez productIds tel quel.
 
-    // const productInCart = cart.find((item) => item.productId === id);
     const productInCart = cart.find(item =>
       Array.isArray(item.productIds)
         ? item.productIds[0] === id
         : item.productId === id,
     );
+
+    const type_produit = productInCart ? productInCart.type_produit : null;
+
+    const isCurrentProductOffreSun = type_produit === 'offreSUN';
+    const isOffreSunInCart = cart.some(
+      item => item.type_produit === 'offreSUN',
+    );
+
+    if (isCurrentProductOffreSun && isOffreSunInCart) {
+      Toast.show({
+        type: 'error',
+        text1: 'Offre déjà ajoutée',
+        text2: "Vous avez déjà une baguette 'offreSUN' dans votre panier",
+      });
+      return;
+    }
 
     try {
       if (productInCart.type === 'formule') {
@@ -208,7 +242,6 @@ const Panier = ({navigation}) => {
                 offre: offre,
               },
             ];
-            //console.log('updated cart', updatedCart)
             const sameOfferProducts = updatedCart.filter(
               item => item.offre === offre,
             );
@@ -237,7 +270,7 @@ const Panier = ({navigation}) => {
     }
   };
 
-  // family produits - si une formules = famille "Formules"
+  // family produits - si une formule = famille "Formules"
   //va chercher le store à chaque changement dans le store picker
   useEffect(() => {
     const fetchFamilies = async () => {
@@ -290,32 +323,260 @@ const Panier = ({navigation}) => {
     fetchFamilies();
   }, [cart, user.storeId]);
 
-  const updateAntigaspiStock = async () => {
-    for (const product of cart) {
-      if (product.antigaspi) {
-        try {
-          await axios.put(`${API_BASE_URL}/getUpdateStockAntigaspi`, {
-            productId: product.productId,
-            quantityPurchased: product.qty,
-          });
-        } catch (error) {
-          console.error(
-            'Erreur lors de la mise à jour du stock antigaspi',
-            error.response || error,
-          );
-          if (error.response) {
-            console.log('Data:', error.response.data);
-            console.log('Status:', error.response.status);
-            console.log('Headers:', error.response.headers);
-          } else {
-            console.log('Error Message:', error.message);
-          }
-        }
-      }
+  const createPaiement = async paymentData => {
+    try {
+      const paiement = await axios.post(
+        `${API_BASE_URL}/createPaiement`,
+        paymentData,
+      );
+      // console.log('paiement data', paiement.data);
+      return paiement.data;
+    } catch (error) {
+      console.error('Erreur lors de la création du paiement :', error);
     }
   };
+  const createOrder = async orderData => {
+    try {
+      const response = await axios.post(
+        `${API_BASE_URL}/createorder`,
+        orderData,
+      );
+      // console.log('response', response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Erreur lors de la creation de la commande :', error);
+    }
+  };
+  const openStripe = async orderInfo => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/checkout_session`, {
+        orderInfo,
+        platform: Platform.OS,
+        isDev: __DEV__,
+      });
+      const sessionUrl = response.data.session;
+      const sessionId = response.data.id;
+      setSessionId(sessionId);
+      const stripeCheckoutUrl = `${sessionUrl}`;
+      setCheckoutSession(stripeCheckoutUrl);
+      Linking.openURL(sessionUrl);
+      return sessionId;
+    } catch (error) {
+      console.error("Erreur lors de l'ouverture de la session Stripe :", error);
+      return null;
+    }
+  };
+  const checkPaymentStatus = async sessionId => {
+    const intervalId = setInterval(async () => {
+      try {
+        const response = await axios.get(
+          `${API_BASE_URL}/paiementStatus?sessionId=${sessionId}`,
+        );
+        const {status, transactionId, method} = response.data;
+        // retour : response data {"status": "paid", "transactionId": "pi_3NOFjcGnFAjiWNhK0KP6l8Nl"}
 
+        // si status paid - je stop la boucle
+        if (status === 'paid') {
+          navigation.navigate('success');
+          clearInterval(intervalId);
+
+          // 1. je crée le paiement
+          const paymentData = {
+            method,
+            status,
+            transactionId,
+          };
+          const respPaiement = await createPaiement(paymentData);
+
+          // 2. je crée la commande
+
+          //formater la date chaine de caractère -> format ISO
+          // à l'heure 0:00
+          const [day, month, year] = selectedDateString.split('/').map(Number);
+          const formattedDate = new Date(
+            Date.UTC(year, month - 1, day, 0, 0, 0),
+          );
+          const dateForDatabase = formattedDate.toISOString();
+
+          //prix Sun si collaborateur
+          // totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
+
+          //pour ne pas cumuler deux offres
+          let adjustedTotalPrice = 0;
+          cart.forEach(product => {
+            // Utilisez product.prix si c'est une formule, sinon utilisez product.prix_unitaire
+            let adjustedPrice =
+              product.type === 'formule' ? product.prix : product.prix_unitaire;
+
+            //si pas de produit anti gaspi
+            if (user.role === 'SUNcollaborateur' && !product.antigaspi) {
+              adjustedPrice *= 0.8;
+            }
+
+            adjustedTotalPrice += adjustedPrice * product.qty;
+          });
+
+          totalPrice = adjustedTotalPrice.toFixed(2);
+          const orderData = {
+            // je veux rajouter le paymentID dans orderData -
+            // qui est dans la reponse de la fonction createPaiement: paiement data {"createdAt": "2024-01-06T00:59:24.922Z",
+            // "method": "card", "paymentId": 26, "status": "paid", "transactionId": "pi_3OVDcWGnFAjiWNhK0Nv3ym6l", "updatedAt": "2024-01-06T00:59:24.922Z"}
+            cart: cart,
+            userRole: user.role,
+            firstname_client: user.firstname,
+            lastname_client: user.lastname,
+            prix_total: totalPrice,
+            date: dateForDatabase,
+            heure: selectedTime,
+            userId: user.userId,
+            storeId: selectStore,
+            slotId: null,
+            promotionId: null,
+            paymentMethod: 'card' ? 'online' : 'onsite',
+            //plus utilisé
+            //transforme mon array de productsIds en chaine de caractères
+            //productIdsString: cartProductId.join(",")
+
+            //plus utilisé
+            //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty }))
+
+            products: (() => {
+              let products = [];
+              let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
+
+              // Traitement des produits fusionnés avec des offres (3+1)
+              aggregatedCartItems.forEach(item => {
+                const productData = {
+                  productId: item.productId,
+                  quantity: item.qty,
+                  prix_unitaire: item.prix_unitaire,
+                };
+
+                if (item.isFree) {
+                  productData.offre = item.offre;
+                }
+
+                products.push(productData);
+                processedProductIds.push(item.productId); // Ajoutez l'ID du produit à la liste des produits traités
+              });
+
+              cart.forEach(item => {
+                // Si l'ID du produit a déjà été traité, sautez ce produit
+                //pour eviter les doublons dans le panier
+                if (processedProductIds.includes(item.productId)) return;
+
+                // Traitement des produits de type 'formule'
+                if (item.type === 'formule') {
+                  ['option1', 'option2', 'option3'].forEach(option => {
+                    if (item[option]) {
+                      products.push({
+                        productId: item[option].productId,
+                        quantity: item.qty,
+                        formule: item.libelle,
+                        category: item[option].categorie,
+                      });
+                    }
+                  });
+                }
+
+                // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée ou quil y es tune offre, mais c'est un produit antigaspi donc un seul produit)
+                else if (!item.offre || (item.offre && item.qty < 4)) {
+                  if (item.productId) {
+                    products.push({
+                      productId: item.productId,
+                      quantity: item.qty,
+                      prix_unitaire: item.prix_unitaire,
+                    });
+                  }
+                }
+              });
+
+              return products;
+            })(),
+          };
+          // console.log('orderdata', orderData);
+
+          const createorder = await createOrder(orderData);
+          // console.log('createorder', createorder);
+
+          // 3. je mets à jour le paymentId dans la commande
+          const numero_commande = createorder.numero_commande;
+          dispatch(setNumeroCommande(numero_commande));
+
+          // console.log('respPaiement', respPaiement);
+          const paymentId = respPaiement.paymentId;
+          // console.log('paymentId', paymentId);
+          // console.log('numero_commande', numero_commande);
+
+          const updateData = {numero_commande, status, paymentId};
+
+          const response = await axios.post(
+            `${API_BASE_URL}/updateOrder`,
+            updateData,
+          );
+          // console.log('response updateOrder', response.data);
+
+          // console.log('paiement ok');
+          // console.log('commande créée');
+          // console.log('commande mise à jour');
+
+          //4. récuperer le magasin du user = userId - le store du user
+          const callApi = await axios.get(
+            `${API_BASE_URL}/getOneStore/${user.storeId}`,
+          );
+          // console.log('data', callApi.data);
+          const point_de_vente = callApi.data.nom_magasin;
+
+          // 5. envoi de l'email de confirmation de commande
+          const res = await axios.post(`${API_BASE_URL}/confirmOrder`, {
+            email: emailConfirmOrder,
+            firstname: firstnameConfirmOrder,
+            numero_commande,
+            date: orderData.date,
+            point_de_vente,
+          });
+
+          // console.log('envoi de l email', res.data);
+
+          // 6. je mets à jour mon stock
+          // stock normal
+          // stock anti gaspi
+          cart.forEach(async item => {
+            console.log(item);
+            await updateAntigaspiStock(item);
+            await updateStock(item);
+          });
+        } else if (status === 'unpaid') {
+          // si status unpaid - retour en arriere
+          // pas de commande a créer
+          navigation.navigate('cancel');
+          clearInterval(intervalId);
+          // vider le panier
+          dispatch(clearCart());
+        } else {
+          console.log(`Status du paiement en attente ou inconnu: ${status}`);
+        }
+      } catch (error) {
+        console.error(
+          "Erreur lors de la vérification de l'état du paiement :",
+          error,
+        );
+      }
+    }, 5000);
+  };
+
+  // 1. je clicque sur le bouton "En ligne"
   const handleConfirm = async newPaiement => {
+    // verif si presence de la date
+    if (!selectedDateString) {
+      Toast.show({
+        type: 'error',
+        text1: 'Date manquante',
+        text2: 'Veuillez sélectionner une date avant de confirmer.',
+      });
+      return;
+    }
+    // verif du role
     if (user.role === 'client') {
       return Toast.show({
         type: 'error',
@@ -324,13 +585,23 @@ const Panier = ({navigation}) => {
       });
     }
 
-    if (!selectedDateString) {
-      Toast.show({
-        type: 'error',
-        text1: 'Date manquante',
-        text2: 'Veuillez sélectionner une date avant de confirmer.',
-      });
-      return; // Arrêter l'exécution de la fonction si aucune date n'est renseignée
+    // verif si une baguette gratuite à deja était prise aujourdhui
+    const checkOffreSUN = await checkIfUserOrderedOffreSUNToday(user.userId);
+
+    if (checkOffreSUN) {
+      // Vérifier si le panier actuel contient le produit 'offreSUN'
+      const offreSUNInCart = cart.some(
+        item => item.type_produit === 'offreSUN',
+      );
+
+      if (offreSUNInCart) {
+        // L'utilisateur a déjà commandé 'offreSUN' aujourd'hui et tente de le commander à nouveau
+        return Toast.show({
+          type: 'error',
+          text1: 'Baguette gratuite déja commandée ...',
+          text2: "Reviens demain pour bénéficier de l'offre à nouveau",
+        });
+      }
     }
 
     setPaiement(newPaiement);
@@ -363,219 +634,269 @@ const Panier = ({navigation}) => {
 
     totalPrice = adjustedTotalPrice.toFixed(2);
 
-    //paiement supérieur à 50cts
-    if (totalPrice < 0.5) {
-      //console.log('en dessous de 1euros')
-      return Toast.show({
-        type: 'error',
-        text1: `Montant inférieur à 50 centimes`,
-        text2: `N'hésitez pas à ajouter des articles `,
-      });
-    }
+    // si présence baguette gratuite  : baguette seule
+    // pas de minimum d'achat,
+    // je n'ouvre pas stripe
+    // je crée la commande
+    // je ne fais pas de paiement
+    // page de success
 
-    const orderData = {
-      cart: cart,
-      userRole: user.role,
-      firstname_client: user.firstname,
-      lastname_client: user.lastname,
-      prix_total: totalPrice,
-      date: dateForDatabase,
-      heure: selectedTime,
-      userId: user.userId,
-      storeId: selectStore,
-      slotId: null,
-      promotionId: null,
-      paymentMethod: newPaiement,
-      //plus utilisé
-      //transforme mon array de productsIds en chaine de caractères
-      //productIdsString: cartProductId.join(",")
+    if (totalPrice === '0.00') {
+      // Vérifier si le panier contient au moins un produit de type "offreSUN"
+      const hasOffreSUN = cart.some(
+        produit => produit.type_produit === 'offreSUN',
+      );
 
-      //plus utilisé
-      //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty }))
+      if (hasOffreSUN) {
+        console.log("Panier contient 'offreSUN' avec un totalPrice de 0.00");
+        // je n'ai que la baguette gratuite ici
+        const orderData = {
+          cart: cart,
+          userRole: user.role,
+          firstname_client: user.firstname,
+          lastname_client: user.lastname,
+          prix_total: totalPrice,
+          date: dateForDatabase,
+          heure: selectedTime,
+          userId: user.userId,
+          storeId: selectStore,
+          slotId: null,
+          promotionId: null,
+          // paymentMethod: 'card' ? 'online' : 'onsite',
 
-      products: (() => {
-        let products = [];
-        let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
+          products: (() => {
+            let products = [];
+            let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
 
-        // Traitement des produits fusionnés avec des offres (3+1)
-        aggregatedCartItems.forEach(item => {
-          const productData = {
-            productId: item.productId,
-            quantity: item.qty,
-            prix_unitaire: item.prix_unitaire,
-          };
+            cart.forEach(item => {
+              // Si l'ID du produit a déjà été traité, sautez ce produit
+              //pour eviter les doublons dans le panier
+              if (processedProductIds.includes(item.productId)) return;
 
-          if (item.isFree) {
-            productData.offre = item.offre;
-          }
-
-          products.push(productData);
-          processedProductIds.push(item.productId); // Ajoutez l'ID du produit à la liste des produits traités
-        });
-
-        cart.forEach(item => {
-          // Si l'ID du produit a déjà été traité, sautez ce produit
-          //pour eviter les doublons dans le panier
-          if (processedProductIds.includes(item.productId)) return;
-
-          // Traitement des produits de type 'formule'
-          if (item.type === 'formule') {
-            ['option1', 'option2', 'option3'].forEach(option => {
-              if (item[option]) {
-                products.push({
-                  productId: item[option].productId,
-                  quantity: item.qty,
-                  formule: item.libelle,
-                  category: item[option].categorie,
-                });
+              if (!item.offre || (item.offre && item.qty < 4)) {
+                if (item.productId) {
+                  products.push({
+                    productId: item.productId,
+                    quantity: item.qty,
+                    prix_unitaire: item.prix_unitaire,
+                  });
+                }
               }
             });
-          }
 
-          // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée ou quil y es tune offre, mais c'est un produit antigaspi donc un seul produit)
-          else if (!item.offre || (item.offre && item.qty < 4)) {
-            if (item.productId) {
-              products.push({
-                productId: item.productId,
-                quantity: item.qty,
-                prix_unitaire: item.prix_unitaire,
-              });
-            }
-          }
-        });
+            return products;
+          })(),
+        };
 
-        return products;
-      })(),
-    };
-    console.log('orderdata', orderData);
+        const createorder = await createOrder(orderData);
 
-    const createOrder = async () => {
-      //console.log(dateForDatabase)
-      try {
-        const response = await axios.post(
-          `${API_BASE_URL}/createorder`,
-          orderData,
-        );
-        // console.log('response', response.data);
-        const numero_commande = response.data.numero_commande;
+        const numero_commande = createorder.numero_commande;
         dispatch(setNumeroCommande(numero_commande));
-        let userRole = user.role;
-
-        //userId - le store du user
         const callApi = await axios.get(
           `${API_BASE_URL}/getOneStore/${user.storeId}`,
         );
         // console.log('data', callApi.data);
         const point_de_vente = callApi.data.nom_magasin;
-        const email = user.email;
-        const firstname = user.firstname;
 
-        setOrderInfo({
-          userRole,
-          cart,
-          user,
-          selectStore,
-          totalPrice,
-          totalQuantity,
-          dateForDatabase, //(en format ISO))
-          paiement,
-        });
-
-        // console.log('response createOrder', response.data);
-        const orderId = response.data.orderId;
-        dispatch(setOrderId(orderId));
-
-        //envoi de l'email de confirmation de comande
         const res = await axios.post(`${API_BASE_URL}/confirmOrder`, {
-          email,
-          firstname,
+          email: emailConfirmOrder,
+          firstname: firstnameConfirmOrder,
           numero_commande,
           date: orderData.date,
           point_de_vente,
         });
 
-        return response.data;
-      } catch (error) {
-        console.error(error);
-        throw new Error('Erreur lors de la création de la commande');
-      }
-    };
-    createOrder();
-    updateAntigaspiStock();
-  };
+        cart.forEach(async item => {
+          await updateStock(item);
+        });
 
-  // Vérifier l'état du paiement
-  const checkPaymentStatus = async () => {
-    const interval = setInterval(async () => {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/paiementStatus?sessionId=${sessionId}`,
-        );
-        const {status, transactionId, method} = response.data;
-        //console.log('response PaiementStatus', response.data)
-        // retour : response data {"status": "paid", "transactionId": "pi_3NOFjcGnFAjiWNhK0KP6l8Nl"}
+        setLoading(true);
 
-        if (status === 'paid') {
-          clearInterval(interval);
-          const paymentData = {
-            method,
-            status,
-            transactionId,
-          };
-
-          const updateResponse = await axios.post(
-            `${API_BASE_URL}/createPaiement`,
-            paymentData,
-          );
-          // console.log('Response createPaiement:', updateResponse.data);
-          const paymentId = updateResponse.data.paymentId;
-
-          const updateData = {numero_commande, status, paymentId};
-
-          const response = await axios.post(
-            `${API_BASE_URL}/updateOrder`,
-            updateData,
-          );
-          // console.log('response updateOrder', response.data)
+        setTimeout(() => {
           navigation.navigate('success');
-        }
-      } catch (error) {
-        console.error(
-          "Erreur lors de la vérification de l'état du paiement :",
-          error,
-        );
-        // navigation.navigate('echec')
+          setLoading(false);
+        }, 2000);
+
+        return;
+      } else {
+        return Toast.show({
+          type: 'error',
+          text1: `Montant inférieur à 50 centimes`,
+          text2: `N'hésitez pas à ajouter des articles `,
+        });
       }
-    }, 5000);
-  };
-
-  //Promotion
-  const handleApplyDiscount = async () => {
-    axios
-      .get(`${API_BASE_URL}/promocodes/${promoCode}`)
-      .then(response => {
-        const data = response.data;
-
-        if (data && data.active) {
-          const percentage = data.percentage;
-
-          const updatedCart = cart.map(item => ({
-            ...item,
-            originalPrice: item.prix_unitaire,
-            prix_unitaire:
-              item.prix_unitaire - (item.prix_unitaire * percentage) / 100,
-          }));
-
-          dispatch(updateCart(updatedCart));
-          setPromoCode('');
-        } else {
-          console.log('Code promo invalide ou non actif.');
-        }
-      })
-      .catch(error => {
-        console.error("Une erreur s'est produite lors de l'appel API :", error);
+      return;
+    } else if (totalPrice < 0.5) {
+      return Toast.show({
+        type: 'error',
+        text1: `Montant inférieur à 50 centimes`,
+        text2: `N'hésitez pas à ajouter des articles `,
       });
+    } else {
+      // 2. je vérifie le stock des produits (hors antigaspi)
+      const checkStock = async () => {
+        for (const item of cart) {
+          if (!item.antigaspi) {
+            try {
+              // Appel à la route backend pour obtenir le stock par productId
+              const response = await axios.get(
+                `${API_BASE_URL}/getStockByProduct/${item.productId}`,
+              );
+              const stockInfo = response.data.find(
+                stock => stock.productId === item.productId,
+              );
+
+              if (stockInfo && stockInfo.quantite >= item.qty) {
+                // console.log(
+                //   `Stock suffisant pour le produit ${item.libelle}. Quantité disponible : ${stockInfo.quantite}`,
+                // );
+              } else {
+                // console.log(
+                //   `Stock insuffisant pour le produit ${
+                //     item.libelle
+                //   }. Quantité disponible : ${
+                //     stockInfo ? stockInfo.quantite : 'Non disponible'
+                //   }`,
+                // );
+                return Toast.show({
+                  type: 'error',
+                  text1: `Le produit ${item.libelle} n'est plus disponible`,
+                  text2: `Victime de son succès, quantité restante: ${stockInfo.quantite}`,
+                });
+              }
+            } catch (error) {
+              console.error(
+                `Erreur lors de la vérification du stock pour le produit ${item.libelle}`,
+                error,
+              );
+            }
+          }
+        }
+      };
+
+      checkStock();
+
+      //3. je vérifie le stock des produits anti gaspi
+      const checkStockAntiGaspi = async () => {
+        // console.log('cart', cart);
+        try {
+          const response = await axios.post(
+            `${API_BASE_URL}/checkStockAntiGaspi`,
+            {
+              cart,
+            },
+          );
+          // console.log('response stockantigaspi', response.data);
+          cart.forEach(item => {
+            if (item.antigaspi) {
+              const stockDisponible = response.data[item.productId];
+
+              if (stockDisponible !== undefined) {
+                if (item.qty <= stockDisponible) {
+                  console.log(
+                    `Stock suffisant pour le produit ${item.libelle}.`,
+                  );
+                  // Logique pour gérer le stock suffisant
+                } else {
+                  console.log(
+                    `Stock insuffisant pour le produit ${item.libelle}.`,
+                  );
+                  return Toast.show({
+                    type: 'error',
+                    text1: `Le produit ${item.libelle} n'est plus disponible`,
+                    text2: `Victime de son succès, quantité maximale: ${stockDisponible}`,
+                  });
+                }
+              } else {
+                console.log(
+                  `Informations de stock non disponibles pour le produit ${item.libelle}.`,
+                );
+                // Logique pour gérer l'absence d'information sur le stock
+              }
+            }
+          });
+        } catch (error) {
+          console.error('Erreur lors da verif du stock antigaspi', error);
+        }
+      };
+      checkStockAntiGaspi();
+
+      // 4. je prépare les infos pour stripe : orderinfo
+      const info = {
+        userRole,
+        cart,
+        user,
+        selectStore,
+        totalPrice,
+        totalQuantity,
+        dateForDatabase,
+        paiement,
+      };
+
+      // 5. j'envoi ces info pouvrir une session Stripe
+      if (paiement === 'online') {
+        const sessionId = await openStripe(info);
+        // console.log('sessionId handleconfirm', sessionId);
+
+        // 6 . j'attends la validation de paiement - je check le status du paiement
+        if (sessionId) {
+          checkPaymentStatus(sessionId);
+        }
+      }
+    }
   };
+
+  // Promotion
+const handleApplyDiscount = async () => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/promocodes/${promoCode}`);
+    const data = response.data;
+    console.log('data', data)
+
+    if (usedPromoCodes.includes(promoCode)) {
+      // console.log('Ce code promo a déjà été utilisé.');
+      setErreurCodePromoUsed(true)
+      // console.log('code promo utilisé', usedPromoCodes)
+
+      return;
+    }
+    // Vérifier si le code promo existe et est actif
+    if (!data || !data.active) {
+      console.log('Code promo invalide ou non actif.');
+      return; // Sortir de la fonction si le code promo n'est pas valide
+    }
+
+    // Appliquer la réduction
+    const percentage = data.percentage || 0;
+    const updatedCart = cart.map(item => {
+      const reducedPrice = item.prix_unitaire - (item.prix_unitaire * percentage) / 100;
+      return {
+        ...item,
+        originalPrice: item.prix_unitaire,
+        prix_unitaire: reducedPrice >= 0 ? reducedPrice : item.prix_unitaire, // Eviter les prix négatifs
+      };
+    });
+
+    dispatch(updateCart(updatedCart));
+    setPromoCode('');
+    setUsedPromoCodes([...usedPromoCodes, promoCode]);
+    setErreurCodePromoUsed(false);
+    setErreurCodePromo(false)
+    // console.log('Réduction appliquée avec succès.');
+    // console.log('code promo utilisé', usedPromoCodes)
+
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      // Gérer spécifiquement l'erreur 404
+      // console.log('Code promo invalide ou non existant.');
+      setErreurCodePromo(true); // Afficher un message d'erreur dans l'interface utilisateur
+    } else {
+      // Gérer les autres erreurs
+      console.error('Erreur lors de l\'application du code promo:', error);
+    }
+  }
+};
+
 
   // Restaurer le prix d'origine
   const handleRemoveDiscount = () => {
@@ -586,6 +907,11 @@ const Panier = ({navigation}) => {
 
     dispatch(updateCart(updatedCart));
     setPromoCode('');
+    setErreurCodePromo(false)
+    setErreurCodePromoUsed(false);
+    setUsedPromoCodes([]);
+    // console.log('code promo utilisé', usedPromoCodes)
+
   };
 
   //filtrage si formule ou produits
@@ -629,44 +955,43 @@ const Panier = ({navigation}) => {
     return acc;
   }, {});
 
-  useEffect(() => {
-    if (orderInfo && paiement === 'online') {
-      const submitOrder = async () => {
-        const response = await axios.post(`${API_BASE_URL}/checkout_session`, {
-          orderInfo,
-          platform: Platform.OS,
-          isDev: __DEV__,
-        });
-        const sessionUrl = response.data.session;
-        const sessionId = response.data.id;
-        setSessionId(sessionId);
-        const stripeCheckoutUrl = `${sessionUrl}`;
-        setCheckoutSession(stripeCheckoutUrl);
-        Linking.openURL(sessionUrl);
-      };
-      submitOrder();
-    }
-  }, [orderInfo, paiement]);
-
-  useEffect(() => {
-    if (paiement === 'online' && sessionId) {
-      checkPaymentStatus();
-    }
-  }, [paiement, sessionId]);
-
-  useEffect(() => {
-    if (orderInfo && paiement === 'onsite') {
-      setLoading(true);
-      setTimeout(() => {
-        setLoading(false);
-        navigation.navigate('success');
-      }, 3000);
-    }
-  }, [orderInfo, paiement]);
+  // useEffect(() => {
+  //   if (orderInfo && paiement === 'onsite') {
+  //     setLoading(true);
+  //     setTimeout(() => {
+  //       setLoading(false);
+  //       navigation.navigate('success');
+  //     }, 3000);
+  //   }
+  // }, [orderInfo, paiement]);
 
   const handleSignup = () => {
     navigation.navigate('signup');
   };
+
+  const handlePress = async () => {
+    const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
+    const offreSunProduct = allProductsClickandCollect.find(
+      product => product.type_produit === 'offreSUN',
+    );
+    // offre dans le panier déja présente ?
+    const isOffreSunInCart = cart.some(
+      item => item.type_produit === 'offreSUN',
+    );
+    // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
+    if (offreSunProduct && !isOffreSunInCart) {
+      setIsModalSunVisible(true);
+      setSelectedProduct(offreSunProduct);
+    }
+    if (isOffreSunInCart) {
+      return Toast.show({
+        type: 'error',
+        text1: 'Offre déjà ajoutée',
+        text2: "Vous avez déjà une baguette 'offreSUN' dans votre panier",
+      });
+    }
+  };
+
   return (
     <>
       <SafeAreaProvider
@@ -844,18 +1169,52 @@ const Panier = ({navigation}) => {
                     );
                   },
                 )}
-              </ScrollView>
-
-              {/* <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-                          <TextInput
-                       value={promoCode}
-                      onChangeText={(value) => setPromoCode(value)}
-                       placeholder="Code promo"
-                       style={{ width: 150, marginVertical: 10, borderWidth: 1, borderColor: 'white', paddingHorizontal: 20, paddingVertical: 10 }}
+                {/* partie code promo à revoir */}
+                <View style={{width: '100%', marginVertical: 15, flexDirection:'column', alignItems:'center'}}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 20,
+                      justifyContent: 'center',
+                      marginVertical: 10,
+                    }}>
+                    <TextInput
+                      value={promoCode}
+                      onChangeText={value => setPromoCode(value)}
+                      placeholder="Code promo"
+                      style={{
+                        width: 150,
+                        borderWidth: 1,
+                        borderColor: colors.color3,
+                        paddingHorizontal: 20,
+                        paddingVertical: 10,
+                        borderRadius: 5,
+                        color: colors.color1,
+                        fontWeight: 'bold',
+                        fontSize: 14,
+                        textAlignVertical: 'center',
+                        backgroundColor: colors.color6,
+                      }}
                     />
-                          <Icon name="done" size={20} color="#900" onPress={handleApplyDiscount} />
-                          <Icon name="clear" size={20} color="#900" onPress={handleRemoveDiscount} />
-                      </View> */}
+                   
+                    <TouchableOpacity
+                      onPress={handleApplyDiscount}
+                      >
+                      <ApplyCode color={colors.color9}/>
+                    </TouchableOpacity>
+               
+                    <TouchableOpacity onPress={handleRemoveDiscount}>
+                      <DeleteCode />
+                    </TouchableOpacity>
+                  </View>
+                  <View>
+                    { erreurCodePromo && promoCode && <Text style={{color:colors.color8}}>Code promo non valide !</Text>}
+                    { erreurCodePromoUsed &&  promoCode && <Text style={{color:colors.color8}}>Code promo déja utilisé ! </Text>}
+
+                  </View>
+                </View>
+              </ScrollView>
 
               <View
                 style={[
@@ -970,8 +1329,8 @@ const Panier = ({navigation}) => {
                           style={{
                             color: colors.color6,
                             fontFamily: fonts.font3,
-                            fontWeight:'bold',
-                            fontSize:14
+                            fontWeight: 'bold',
+                            fontSize: 14,
                           }}>
                           {' '}
                           En ligne
@@ -982,10 +1341,18 @@ const Panier = ({navigation}) => {
                 </View>
               </View>
 
+              <PulseAnimation onPress={handlePress} />
+
               <ModaleOffre31
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
                 handleAcceptOffer={handleAcceptOffer}
+              />
+
+              <ModaleOffreSUN
+                modalVisible={isModalSunVisible}
+                setModalVisible={setIsModalSunVisible}
+                product={selectedProduct}
               />
               <FooterProfile />
             </>

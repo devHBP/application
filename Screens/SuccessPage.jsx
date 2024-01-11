@@ -7,6 +7,10 @@ import FooterProfile from '../components/FooterProfile';
 import { Rating } from 'react-native-ratings';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import axios from 'axios';
+import { ApplyCode } from '../SVG/ApplyCode';
+import ArrowLeft from '../SVG/ArrowLeft';
+import { SimpleArrowLeft } from '../SVG/SimpleArrowLeft';
+import { Success } from '../SVG/Success';
 
 
 
@@ -74,15 +78,21 @@ const SuccessPage = ({navigation}) => {
    
         <View style={style.container}>
 
+            <View>
+                <Success />
+            </View>
+
             <View style={style.centeredTextContainer}>
               <View style={style.centeredText}>
-                  <Text style={style.textColor}>Merci d'avoir commandé chez nous ! </Text>
+                  <Text style={style.text1Color}>Merci d'avoir passé ta commande  </Text>
+                  <Text style={style.text1Color}> au Pain du Jour Mas Guérido </Text>
+
               </View>
               <View style={style.centeredText}>
                 {
                     role === 'SUNcollaborateur' 
-                    ? <Text style={style.textColor}>Votre commande arrivera demain dans la matinée via la tournée du camion</Text>
-                    : <Text style={style.textColor}>Vous recevrez un message quand la commande sera prête à être récupérée </Text>
+                    ? <Text style={style.text2Color}>Ta commande arrivera demain dans la matinée via la tournée de la navette</Text>
+                    : <Text style={style.text2Color}>Vous recevrez un message quand la commande sera prête à être récupérée </Text>
                 }
                   
               </View>
@@ -93,7 +103,8 @@ const SuccessPage = ({navigation}) => {
             <TouchableOpacity onPress={openRatingModal} style={style.btnBack} >
                         <Text style={style.textBtnBack}>Donner son avis</Text>
                     </TouchableOpacity>
-                <TouchableOpacity onPress={submitHandler} style={style.btnBack} >
+                <TouchableOpacity onPress={submitHandler} style={{...style.btnBack, backgroundColor:colors.color1, flexDirection:'row', gap: 10, justifyContent:'space-around'}} >
+                    <SimpleArrowLeft />
                     <Text style={style.textBtnBack}>Retourner à l'accueil</Text>
                 </TouchableOpacity>
             </View>
@@ -113,8 +124,8 @@ const SuccessPage = ({navigation}) => {
                             <TouchableOpacity onPress={closeRatingModal} style={{ position:'absolute', top:0, right:10 }}>
                                 <Text style={{ fontSize: 36 , color:colors.color1}}>&times;</Text>
                             </TouchableOpacity>
-                                <Text style={{fontWeight:"bold", color:colors.color1}}>Votre option nous intéresse !</Text>
-                                <Text style={{color:colors.color1}}>Comment s'est déroulée votre expérience d'achat ?</Text>
+                                <Text style={{fontWeight:"bold", color:colors.color1}}>Ton option nous intéresse !</Text>
+                                <Text style={{color:colors.color1}}>Comment s'est déroulée ton expérience d'achat ?</Text>
                                 <Rating
                                     startingValue={5}
                                     onFinishRating={(rating) => setRatingValue(rating)}
@@ -159,7 +170,7 @@ const style = StyleSheet.create({
         // marginBottom:70,
         backgroundColor:'white', 
         borderRadius:10,
-        gap:150, paddingHorizontal:30
+        gap:60, paddingHorizontal:30
     },
     btnBack: {
         backgroundColor:colors.color9,
@@ -184,7 +195,8 @@ const style = StyleSheet.create({
   centeredText: {
     alignSelf: 'center',
     textAlign: 'center',  
-    width: '100%',       
+    width: '100%', 
+    marginVertical: 20      
   },
   centeredButton: {
       alignSelf: 'center', 
@@ -208,9 +220,15 @@ submitButtonText: {
     color: colors.color6,
     fontSize: 16
 },
-textColor:{
+text2Color:{
     color:colors.color1,
     textAlign:'center'
+},
+text1Color:{
+    color:colors.color2,
+    textAlign:'center',
+    fontWeight:'bold',
+    fontSize:18
 }
 
 
