@@ -79,8 +79,8 @@ const Signup = ({navigation}) => {
   const submitHandler = async () => {
 
     //suppression des espaces
-    const firstname= firstName.trim()
-    const lastname = lastName.trim()
+    const firstname= firstName.trim().replace(/\s+/g, '');
+    const lastname = lastName.trim().replace(/\s+/g, '');
 
     const clientData = {
       lastname,
