@@ -126,7 +126,7 @@ const incrementhandler = async () => {
 
   }
      else if (offre && offre.startsWith('offre31')) {
-        console.log('offre 31')
+        // console.log('offre 31')
         // Get a version of the cart that includes the new product
         const updatedCart = [...cart, { productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre}];
     

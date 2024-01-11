@@ -50,15 +50,15 @@ const CardItemFormule = ({ option1, option2, option3,  incrementhandler, decreme
         
         <View style={{flexDirection:'row', justifyContent:'space-between', alignItems:'center'}}>
           {option1 && <Text style={styles.title}>{qty}x {option1.libelle}</Text>}
-          {option1 &&<Text style={styles.price}>{option1.prix_unitaire.toFixed(2)} €</Text>}
+          {option1 &&<Text style={styles.price}>{option1.prix_unitaire} €</Text>}
         </View>
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
           {option2 &&<Text style={{...styles.title, color:colors.color9}}>{qty}x {option2.libelle}</Text>}
-          {option2 &&<Text style={{...styles.price, color:colors.color9}}>+{option2.prix_formule.toFixed(2)} €</Text>}
+          {option2 &&<Text style={{...styles.price, color:colors.color9}}>+{option2.prix_formule} €</Text>}
         </View>
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
           {option3 &&<Text style={{...styles.title, color:colors.color9}}>{qty}x {option3.libelle}</Text>}
-          {option3 &&<Text style={{...styles.price, color:colors.color9}}>+{option3.prix_formule.toFixed(2)} €</Text>}
+          {option3 &&<Text style={{...styles.price, color:colors.color9}}>+{option3.prix_formule} €</Text>}
         </View>
         
         
