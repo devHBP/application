@@ -135,13 +135,13 @@ const CustomDatePicker = () => {
             return;
           }
 
-          //verification si samedi ou dimanche = pas de commandes possibles
+          //verification si dimanche = pas de commandes possibles
           const dayOfWeek = date.getDay();
-          if (dayOfWeek === 0 || dayOfWeek === 6) {
+          if (dayOfWeek === 0 ) {
             Toast.show({
               type: 'error',
               text1: 'Indisponible',
-              text2: 'Le ClickandCollect est indisponible le week end 📅 ',
+              text2: 'Le ClickandCollect est indisponible le dimanche 📅 ',
             });
             return;
           }

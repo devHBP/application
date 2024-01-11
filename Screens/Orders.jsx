@@ -23,6 +23,7 @@ import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import {getStoreById} from '../CallApi/api';
 import ArrowDown from '../SVG/ArrowDown';
 import {AntiGaspi} from '../SVG/AntiGaspi';
+import { OffreSun } from '../SVG/OffreSun';
 
 const Orders = ({navigation}) => {
   const user = useSelector(state => state.auth.user);
@@ -200,6 +201,7 @@ const Orders = ({navigation}) => {
                     prix_unitaire,
                     libelle,
                     prix,
+                    type_produit
                   } = product;
                   const key = product.id || index;
 
@@ -260,7 +262,7 @@ const Orders = ({navigation}) => {
                         <View style={style.orderDetails}>
                           <Text
                             style={style.textWidth}>
-                            <AntiGaspi /> {qty}x {libelle}
+                            <AntiGaspi color={colors.color8}/> {qty}x {libelle}
                           </Text>
                           <View style={style.orderPrices}>
                             <Text style={style.oldPrice}>
@@ -271,7 +273,26 @@ const Orders = ({navigation}) => {
                         </View>
                       </View>
                     );
-                  } else {
+                  } 
+                  else if (type_produit === 'offreSUN') {
+                    // si produit antigaspi
+                    return (
+                      <View key={key}>
+                        <View style={style.orderDetails}>
+                          <Text
+                            style={style.textWidth}>
+                            <OffreSun /> {qty}x {libelle}
+                          </Text>
+                          <View style={style.orderPrices}>
+                            <Text style={style.oldPrice}>
+                              {(prix_unitaire / 0.3).toFixed(2)}€
+                            </Text>
+                            <Text style={style.newPrice}>{(prix_unitaire).toFixed(2)}€</Text>
+                          </View>
+                        </View>
+                      </View>
+                    );
+                  }else {
                     // Logique de rendu pour les produits classiques
                     return (
                       <View key={key}>
@@ -319,7 +340,7 @@ const Orders = ({navigation}) => {
   const renderLastOrder = (item, index) => {
     const parsedItem = JSON.parse(item.cartString);
     // console.log('parsedItem', parsedItem[0].type);
-    // console.log('item derniere commande', parsedItem);
+     console.log('item derniere commande', parsedItem);
 
     let prixUnitaires;
 
@@ -408,6 +429,7 @@ const Orders = ({navigation}) => {
                         prix_unitaire,
                         libelle,
                         prix,
+                        type_produit
                       } = product;
                       const key = product.id || index;
 
@@ -468,7 +490,7 @@ const Orders = ({navigation}) => {
                             <View style={style.orderDetails}>
                               <Text
                                 style={style.textWidth}>
-                                <AntiGaspi /> {qty}x {libelle}
+                                <AntiGaspi color={colors.color8}/> {qty}x {libelle}
                               </Text>
                               <View style={style.orderPrices}>
                                 <Text style={style.oldPrice}>
@@ -477,6 +499,25 @@ const Orders = ({navigation}) => {
                                 <Text style={style.newPrice}>
                                   {prix_unitaire.toFixed(2)}€
                                 </Text>
+                              </View>
+                            </View>
+                          </View>
+                        );
+                      }
+                      else if (type_produit === 'offreSUN') {
+                        // si produit antigaspi
+                        return (
+                          <View key={key}>
+                            <View style={style.orderDetails}>
+                              <Text
+                                style={style.textWidth}>
+                                <OffreSun /> {qty}x {libelle}
+                              </Text>
+                              <View style={style.orderPrices}>
+                                <Text style={style.oldPrice}>
+                                  {(prix_unitaire / 0.3).toFixed(2)}€
+                                </Text>
+                                <Text style={style.newPrice}>{(prix_unitaire).toFixed(2)}€</Text>
                               </View>
                             </View>
                           </View>

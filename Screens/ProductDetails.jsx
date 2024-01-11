@@ -52,6 +52,12 @@ const ProductDetails = ({navigation, route}) => {
       return total;
     }, 0);
 
+    const productInCart = cart.find(item =>
+      Array.isArray(item.productIds)
+        ? item.productIds[0] === product.productId
+        : item.productId === product.productId,
+    );
+
   
     useEffect(() => {
       const totalPrice = cart.reduce((acc, product) => acc + (product.qty * product.prix_unitaire), 0);
@@ -67,6 +73,22 @@ const ProductDetails = ({navigation, route}) => {
     }; 
     
     const incrementhandler = async () => {
+
+      console.log(cart)
+      const isCurrentProductOffreSun = productInCart && productInCart.type_produit === 'offreSUN';
+
+      const isOffreSunInCart = cart.some(item => item.type_produit === 'offreSUN');
+      console.log(isOffreSunInCart)
+
+      if (isCurrentProductOffreSun && isOffreSunInCart) {
+        Toast.show({
+          type: 'error',
+          text1: 'Offre déjà ajoutée',
+          text2: "Vous avez déjà une baguette 'offreSUN' dans votre panier",
+        });
+        return;
+      }
+
       setProductCount(productCount + 1);
 
       if (currentStock === 0){

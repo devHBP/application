@@ -165,5 +165,109 @@ export const fetchBoissonIds = async () => {
   }
 }
 
+export const checkIfUserOrderedOffreSUNToday = async userId => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}`);
+    const orders = response.data;
+    if (orders.length === 0) {
+      return false;
+    }
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    for (const order of orders) {
+      const createdAt = new Date(order.createdAt);
+      createdAt.setHours(0, 0, 0, 0);
+
+      if (createdAt.getTime() !== today.getTime()) {
+        continue;
+      }
+
+      const cartItems = JSON.parse(order.cartString);
+
+      for (const item of cartItems) {
+        if (item.type_produit === 'offreSUN') {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  } catch (error) {
+    console.error(error);
+    throw new Error(
+      "An error occurred while trying to fetch the user's orders.",
+    );
+  }
+};
+
+export const fetchAllProductsClickAndCollect = async () => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/getAllProductsClickandCollect`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Une erreur s'est produite lors de la récupération des produits:",
+      error,
+    );
+  }
+};
+
+export const updateAntigaspiStock = async item => {
+  if (item.antigaspi) {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/getUpdateStockAntigaspi`,
+        {
+          productId: item.productId,
+          quantityPurchased: item.qty,
+        },
+      );
+
+      if (response.status === 200) {
+        console.log(
+          'Stock antigaspi mis à jour avec succès pour le produit',
+          item.libelle,
+        );
+      }
+    } catch (error) {
+      console.error(
+        'Erreur lors de la mise à jour du stock antigaspi pour le produit',
+        item.libelle,
+        ':',
+        error,
+      );
+    }
+  }
+};
+
+export const updateStock = async item => {
+  if (item) {
+    try {
+      const response = await axios.put(`${API_BASE_URL}/getUpdateStock`, {
+        productId: item.productId,
+        quantityPurchased: item.qty,
+      });
+
+      if (response.status === 200) {
+        console.log(
+          'Stock mis à jour avec succès pour le produit',
+          item.libelle,
+        );
+      }
+    } catch (error) {
+      console.error(
+        'Erreur lors de la mise à jour du stock pour le produit',
+        item.libelle,
+        ':',
+        error,
+      );
+    }
+  }
+};
+
 
 
