@@ -124,7 +124,7 @@ const style = StyleSheet.create({
       color: "white",
       fontFamily:fonts.font1,
       fontSize:24,
-      width:"80%",
+      width:"85%",
       fontWeight:'bold'
     },
     btnPaiement:{

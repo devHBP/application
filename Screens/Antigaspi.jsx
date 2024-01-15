@@ -12,7 +12,6 @@ import axios from 'axios'
 import { getFamilyProductDetails, checkStockForSingleProduct } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
-import LinearGradient from 'react-native-linear-gradient';
 import ProductCard from '../components/ProductCard';
 import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import Cloche from '../SVG/Cloche';
@@ -124,7 +123,7 @@ const Antigaspi = ({navigation}) => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 /> */}
            <FastImage
-              source={require('../assets/offreAntiGaspi.jpg')}
+              source={require('../assets/anti2.jpg')}
               style={{ width: "100%", height: 330, resizeMode:'cover' }}
             />
           <Image
