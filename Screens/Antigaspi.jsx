@@ -52,8 +52,10 @@ const Antigaspi = ({navigation}) => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/getAllProductsClickandCollect`,
+          `${API_BASE_URL}/getAllProducts`,
         );
+
+        // console.log("test1", response.data)
 
         const updatedProducts = response.data.map(product => ({
           ...product,
@@ -68,14 +70,16 @@ const Antigaspi = ({navigation}) => {
         const clickProductPrices = clickProducts.map(
           product => product.prix_unitaire,
         );
-        // console.log(clickProductPrices)
 
         //ici modifier le prix_unitaire (70% de reduction et le placer dans le champ "option1" dans la table Details products
         //stock sup ou egale à 1
         const updatedStockProducts = clickProducts.filter(
           product => product.stockantigaspi >= 1,
         );
+        // console.log('test', updatedStockProducts)
         setclickProducts(updatedStockProducts);
+        //  console.log(updatedStockProducts)
+
       } catch (error) {
         console.error(
           "Une erreur s'est produite lors de la récupération des produits:",
