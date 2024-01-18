@@ -244,6 +244,34 @@ export const updateAntigaspiStock = async item => {
   }
 };
 
+// export const getAddStockAntigaspi = async item => {
+//   if (item.antigaspi) {
+//     try {
+//       const response = await axios.put(
+//         `${API_BASE_URL}/getAddStockAntigaspi`,
+//         {
+//           productId: item.productId,
+//           quantityPurchased: item.qty,
+//         },
+//       );
+
+//       if (response.status === 200) {
+//         console.log(
+//           'Stock antigaspi mis à jour avec succès pour le produit',
+//           item.libelle,
+//         );
+//       }
+//     } catch (error) {
+//       console.error(
+//         'Erreur lors de la mise à jour du stock antigaspi pour le produit',
+//         item.libelle,
+//         ':',
+//         error,
+//       );
+//     }
+//   }
+// };
+
 export const updateStock = async item => {
   if (item) {
     try {

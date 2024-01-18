@@ -20,6 +20,7 @@ import { checkStockForSingleProduct } from '../../CallApi/api.js';
 //fonctions
 import { checkProductAvailability } from '../../Fonctions/fonctions';
 import { getStyle } from '../../Fonctions/stylesFormule';
+import { useCountdown } from '../../components/CountdownContext';
 
 
 const FormulePoke = ({navigation}) => {
@@ -39,6 +40,9 @@ const FormulePoke = ({navigation}) => {
     const scrollViewRef = useRef(null);
 
     const cart = useSelector((state) => state.cart.cart);
+
+    const { resetCountdown} = useCountdown();
+
     const handleBack = () => {
         navigation.navigate('home')
       }
@@ -228,6 +232,7 @@ const FormulePoke = ({navigation}) => {
         qty: 1,
       }
       dispatch(addToCart(formule));
+      resetCountdown()
       navigation.navigate('panier')
     }
       

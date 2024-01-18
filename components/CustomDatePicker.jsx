@@ -183,7 +183,7 @@ const CustomDatePicker = () => {
             setTime(time);
             dispatch(addTime(formatTime(time.toISOString())));
             //converti en chaine de caractères
-            console.log('heure commande', formatTime(time));
+            //console.log('heure commande', formatTime(time));
             //console.log('selection date store redux:', selectedDateString)
             //console.log('selection date chaine de caractère:', selectedDateString)
           }}

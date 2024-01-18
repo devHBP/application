@@ -15,6 +15,7 @@ import FastImage from 'react-native-fast-image'
 import { getStyle } from '../../Fonctions/stylesFormule';
 import Check from '../../SVG/Check';
 import axios from 'axios'
+import { useCountdown } from '../../components/CountdownContext';
 
 const FormulePainBagnat = ({navigation}) => {
 
@@ -27,6 +28,8 @@ const FormulePainBagnat = ({navigation}) => {
     const [selectedBoisson, setSelectedBoisson] = useState(null);
     const [prix, setTotalPrice] = useState(0);
     const [productIds, setProductIds] = useState([]);
+
+    const { resetCountdown} = useCountdown();
 
     const dispatch = useDispatch()
     const scrollViewRef = useRef(null);
@@ -204,6 +207,7 @@ const FormulePainBagnat = ({navigation}) => {
         qty: 1,
       }
       dispatch(addToCart(formule));
+      resetCountdown()
       navigation.navigate('panier')
     }
       

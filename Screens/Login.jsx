@@ -81,7 +81,7 @@ const Login = ({navigation}) => {
           );
         });
     } catch (error) {
-      console.log('erreur connexion login', error);
+      //console.log('erreur connexion login', error);
       return Toast.show({
         type: 'error',
         text1: `Echec de connexion`,

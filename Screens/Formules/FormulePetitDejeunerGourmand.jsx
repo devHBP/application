@@ -159,8 +159,6 @@ if (__DEV__) {
     } else {
         setSelectedBoisson(product); 
         setProductIds([...productIds, product.productId]);
-        console.log('Selected Dessert:', product.libelle);
-        console.log('Price:', product.prix_formule);
     }
   }
 

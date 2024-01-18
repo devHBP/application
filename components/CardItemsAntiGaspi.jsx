@@ -5,13 +5,10 @@ import {fonts, colors} from '../styles/styles';
 import Svg, {Path} from 'react-native-svg';
 import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import {AntiGaspi} from '../SVG/AntiGaspi';
-import {OffreSun} from '../SVG/OffreSun';
 
-const CartItem = ({
+const CartItemAntigaspi = ({
   libelle,
   prix,
-  incrementhandler,
-  decrementhandler,
   image,
   qty,
   prix_unitaire,
@@ -31,43 +28,14 @@ const CartItem = ({
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
+        {/* <AntiGaspi /> */}
         <Text numberOfLines={3} style={styles.titleLibelle}>
           {libelle}
         </Text>
         <View style={styles.actions}>
-          <TouchableOpacity
-            onPress={decrementhandler}
-            style={styles.container_gray}>
-            {/* <Icon name="remove-circle" size={25} color="#000" /> */}
-
-            <Svg width={7} height={4} viewBox="0 0 7 4">
-              <Path
-                d="M0.666748 3.8V0.733337H6.80008V3.8H0.666748Z"
-                fill="#273545"
-              />
-            </Svg>
-          </TouchableOpacity>
-
           <View style={styles.container_gray}>
             <Text style={styles.qty}>{qty}</Text>
           </View>
-
-          <TouchableOpacity
-            onPress={incrementhandler}
-            style={{...styles.container_gray, backgroundColor: colors.color2}}>
-            {/* <Icon name="add-circle" size={25} color="#000" /> */}
-            <Svg
-              width="10"
-              height="10"
-              viewBox="0 0 10 10"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg">
-              <Path
-                d="M10 4.05197V6.48141H6.63702V9.86669H4.14375V6.48141H0.800049V4.05197H4.14375V0.666687H6.63702V4.05197H10Z"
-                fill="#ECECEC"
-              />
-            </Svg>
-          </TouchableOpacity>
 
           <TouchableOpacity
             onPress={removehandler}
@@ -88,19 +56,16 @@ const CartItem = ({
       </View>
 
       <View style={{marginVertical: 10}}>
-        {freeCount > 0 && (
-          <Text style={{color: colors.color1, fontWeight: 'bold'}}>
-            {freeCount}x Promotion 3+1
-          </Text>
-        )}
-
         <View style={styles.content}>
-          <Text numberOfLines={2} style={styles.details}>
-            {qty - freeCount}x {libelle}
-          </Text>
+          <View style={styles.pastilleLibelle}>
+            <AntiGaspi color={colors.color8} />
+            <Text numberOfLines={2} style={styles.details}>
+              {qty}x {libelle}
+            </Text>
+          </View>
+
           <Text style={styles.price}>
-            {' '}
-            {qty - freeCount}x {prix || prix_unitaire}€
+            {qty} x {prix || prix_unitaire}€
           </Text>
         </View>
 
@@ -124,11 +89,7 @@ const CartItem = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    // alignItems: 'center',
-    // justifyContent:'center',
-    // borderBottomWidth: 1,
-    // borderBottomColor: '#ccc',
-    paddingVertical: 20,
+    paddingTop: 20,
     paddingHorizontal: 10,
     width: 340,
   },
@@ -182,6 +143,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.color1,
   },
+  pastilleLibelle:{
+    flexDirection:'row',
+    alignItems:'center',
+    gap: 10
+  }
 });
 
-export default CartItem;
+export default CartItemAntigaspi;

@@ -16,6 +16,7 @@ import FastImage from 'react-native-fast-image'
 import { getStyle } from '../../Fonctions/stylesFormule';
 import Check from '../../SVG/Check';
 import axios from 'axios'
+import { useCountdown } from '../../components/CountdownContext';
 
 const FormulePizzas = ({navigation}) => {
 
@@ -35,6 +36,8 @@ const FormulePizzas = ({navigation}) => {
     const scrollViewRef = useRef(null);
 
     const cart = useSelector((state) => state.cart.cart);
+
+    const { resetCountdown} = useCountdown();
 
     const handleBack = () => {
         navigation.navigate('home')
@@ -209,6 +212,7 @@ const FormulePizzas = ({navigation}) => {
         qty: 1,
       }
       dispatch(addToCart(formule));
+      resetCountdown()
       navigation.navigate('panier')
     }
       

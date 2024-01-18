@@ -185,15 +185,12 @@ const allStores = async () => {
       navigation.navigate('login')
     }
     const handleCookies = () => {
-      console.log('page cookies')
       navigation.navigate('cookies')
     }
     const handleDonnees = () => {
-      console.log('page données')
       navigation.navigate('donnees')
     }
     const handleMentions = () => {
-      console.log('page mentions')
       navigation.navigate('mentions')
     }
 

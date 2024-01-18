@@ -14,7 +14,7 @@ import FastImage from 'react-native-fast-image'
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
 import axios from 'axios'
-
+import { useCountdown } from '../../components/CountdownContext';
 
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
@@ -40,6 +40,8 @@ const FormuleBurger = ({navigation}) => {
     const scrollViewRef = useRef(null);
 
     const cart = useSelector((state) => state.cart.cart);
+
+    const { resetCountdown} = useCountdown();
 
     const handleBack = () => {
         navigation.navigate('home')
@@ -215,6 +217,7 @@ const FormuleBurger = ({navigation}) => {
         qty: 1,
       }
       dispatch(addToCart(formule));
+      resetCountdown()
       navigation.navigate('panier')
     }
       
