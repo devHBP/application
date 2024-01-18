@@ -20,6 +20,8 @@ import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
 import Check from '../../SVG/Check';
 import axios from 'axios'
+import { useCountdown } from '../../components/CountdownContext';
+
 
 
 const FormuleCroques = ({navigation}) => {
@@ -35,6 +37,7 @@ const FormuleCroques = ({navigation}) => {
     const [productIds, setProductIds] = useState([]);
     //const [qty, setQty] = useState(1); 
 
+    const { resetCountdown} = useCountdown();
 
     const dispatch = useDispatch()
     const scrollViewRef = useRef(null);
@@ -216,6 +219,7 @@ const FormuleCroques = ({navigation}) => {
         qty: 1,
       }
       dispatch(addToCart(formule));
+      resetCountdown()
       navigation.navigate('panier')
     }
       

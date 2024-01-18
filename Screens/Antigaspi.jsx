@@ -21,6 +21,7 @@ import axios from 'axios';
 import {
   getFamilyProductDetails,
   checkStockForSingleProduct,
+  updateAntigaspiStock
 } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
@@ -29,6 +30,7 @@ import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Cloche from '../SVG/Cloche';
 import FastImage from 'react-native-fast-image';
 import Check from '../SVG/Check';
+import { useCountdown } from '../components/CountdownContext';
 
 const Antigaspi = ({navigation}) => {
   const [clickProducts, setclickProducts] = useState([]);
@@ -43,56 +45,56 @@ const Antigaspi = ({navigation}) => {
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart.cart);
 
+  const { countdown, resetCountdown} = useCountdown()
+  console.log('page antigaspi countdown', countdown)
+
   const handleBack = () => {
     navigation.navigate('home');
   };
 
+  //les produits ayant le champ "clickandcollect" à true
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(
+        `${API_BASE_URL}/getAllProducts`,
+      );
+
+      const updatedProducts = response.data.map(product => ({
+        ...product,
+        qty: 0,
+      }));
+      //produits ayant la valeur "clickandcollect" à true et "antigaspi" à true
+      const clickProducts = updatedProducts.filter(
+        product =>
+          product.antigaspi === true && product.clickandcollect === true,
+      );
+      const clickProductNames = clickProducts.map(product => product.libelle);
+      const clickProductPrices = clickProducts.map(
+        product => product.prix_unitaire,
+      );
+
+      //ici modifier le prix_unitaire (70% de reduction et le placer dans le champ "option1" dans la table Details products
+      //stock sup ou egale à 1
+      const updatedStockProducts = clickProducts.filter(
+        product => product.stockantigaspi >= 1,
+      );
+      setclickProducts(updatedStockProducts);
+      
+    } catch (error) {
+      console.error(
+        "Une erreur s'est produite lors de la récupération des produits:",
+        error,
+      );
+    }
+  };
   useEffect(() => {
-    //les produits ayant le champ "clickandcollect" à true
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/getAllProducts`,
-        );
-
-        // console.log("test1", response.data)
-
-        const updatedProducts = response.data.map(product => ({
-          ...product,
-          qty: 0,
-        }));
-        //produits ayant la valeur "clickandcollect" à true et "antigaspi" à true
-        const clickProducts = updatedProducts.filter(
-          product =>
-            product.antigaspi === true && product.clickandcollect === true,
-        );
-        const clickProductNames = clickProducts.map(product => product.libelle);
-        const clickProductPrices = clickProducts.map(
-          product => product.prix_unitaire,
-        );
-
-        //ici modifier le prix_unitaire (70% de reduction et le placer dans le champ "option1" dans la table Details products
-        //stock sup ou egale à 1
-        const updatedStockProducts = clickProducts.filter(
-          product => product.stockantigaspi >= 1,
-        );
-        // console.log('test', updatedStockProducts)
-        setclickProducts(updatedStockProducts);
-        //  console.log(updatedStockProducts)
-
-      } catch (error) {
-        console.error(
-          "Une erreur s'est produite lors de la récupération des produits:",
-          error,
-        );
-      }
-    };
+    
 
     fetchData();
   }, []);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const getFamily = async () => {
       try {
         const responses = await Promise.all(
           familyProductIds.map(id => getFamilyProductDetails(id)),
@@ -113,7 +115,7 @@ const Antigaspi = ({navigation}) => {
       }
     };
 
-    fetchData();
+    getFamily();
   }, []);
 
   const handleProduct = product => {
@@ -124,24 +126,63 @@ const Antigaspi = ({navigation}) => {
     }
   };
 
-  //verifier le stock ?
   const handleCart = async () => {
-    dispatch(
-      addToCart({
-        productId: selectedProduct.productId,
-        libelle: selectedProduct.libelle,
-        image: selectedProduct.image,
-        prix_unitaire: selectedProduct.prix_unitaire * 0.3,
-        qty: 1,
-        offre: selectedProduct.offre,
-        antigaspi: true,
-      }),
-    );
-    Toast.show({
-      type: 'success',
-      text1: 'Produit ajouté au panier',
-    });
+    try {
+      // Remplacez 'URL_API' par l'URL de votre serveur et assurez-vous que la route est correcte
+      const response = await axios.get(`${API_BASE_URL}/verifStockAntiGaspi/${selectedProduct.productId}`);
+      const stockAntigaspi = response.data.stockantigaspi;
+      //console.log('response stock', stockAntigaspi)
+
+  
+      if (stockAntigaspi > 0) {
+        dispatch(
+          addToCart({
+            productId: selectedProduct.productId,
+            libelle: selectedProduct.libelle,
+            image: selectedProduct.image,
+            prix_unitaire: selectedProduct.prix_unitaire * 0.3,
+            qty: 1,
+            offre: selectedProduct.offre,
+            antigaspi: true,
+          }),
+        );
+        await updateAntigaspiStock({...selectedProduct, qty: 1});
+        // Nouveau stock
+        setclickProducts(
+          currentProducts =>
+            currentProducts
+              .map(p =>
+                p.productId === selectedProduct.productId
+                  ? {...p, stockantigaspi: Math.max(stockAntigaspi - 1, 0)}
+                  : p,
+              )
+              .filter(p => p.stockantigaspi > 0), // Filtrer les produits épuisés
+        );
+        await fetchData()
+        resetCountdown(); // Déclenche le compteur à 300 secondes - 5min
+        Toast.show({
+          type: 'success',
+          text1: 'Produit ajouté au panier',
+        });
+      } else {
+        // Plus de stock
+        Toast.show({
+          type: 'error',
+          text1: "Ce produit n'est plus en stock",
+        });
+        console.log(stockAntigaspi)
+        await fetchData()
+      }
+    } catch (error) {
+      console.error('Erreur lors de la vérification du stock:', error);
+      // Gérer l'erreur
+      Toast.show({
+        type: 'error',
+        text1: "Erreur lors de la vérification du stock",
+      });
+    }
   };
+  
   return (
     <View style={{flex: 1}}>
       <View style={{paddingTop: 50}}></View>
@@ -281,12 +322,7 @@ const Antigaspi = ({navigation}) => {
               €
             </Text>
           </View>
-          {/* <View style={style.bandeauFormule}>
-            <View style={{flexDirection:'row'}}>
-            <Text>Avec</Text><Image source={require('../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
-            </View>
-         <Text style={{color:colors.color2, fontWeight:"bold"}}>{selectedProduct ?  Number(selectedProduct.prix_remise_collaborateur) : 0} €</Text>
-          </View>*/}
+          
         </View>
         <Button
           style={style.btn}

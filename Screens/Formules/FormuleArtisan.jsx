@@ -160,8 +160,7 @@ if (__DEV__) {
     } else {
         setSelectedBoisson(product); 
         setProductIds([...productIds, product.productId]);
-        console.log('Selected Dessert:', product.libelle);
-        console.log('Price:', product.prix_formule);
+
     }
   }
 
@@ -199,7 +198,6 @@ if (__DEV__) {
         productIds: productIds,
         qty: 1,
       }
-      console.log('formule', formule);
       dispatch(addToCart(formule));
       navigation.navigate('panier')
     }

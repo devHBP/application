@@ -145,6 +145,15 @@ const style = StyleSheet.create({
       borderRadius: 50,
       justifyContent: 'center',
       alignItems: 'center',
+    },
+    contentCountDown:{
+      flexDirection:'row',
+      justifyContent:'center'
+    },
+    countDown:{
+      marginBottom:10,
+      color:colors.color8,
+      fontSize:12
     }
   }
 )

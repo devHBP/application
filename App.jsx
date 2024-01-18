@@ -1,18 +1,17 @@
-import React, { useEffect } from 'react';
-import { Alert } from 'react-native';
-import Main from './Main';
+import React from 'react';
 import { Provider } from 'react-redux';
 import store from './store';
 import FCMManager from './components/FCMManager';
+import { CountdownProvider } from './components/CountdownContext';  
+import Main from './Main';
 
 const App = () => {
-
-  
-
   return (
     <Provider store={store}>
-      <FCMManager />
-      <Main />
+      <CountdownProvider>
+        <FCMManager />
+        <Main />
+      </CountdownProvider>
     </Provider>
   );
 };

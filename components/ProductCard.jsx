@@ -20,6 +20,8 @@ import {checkStockForSingleProduct} from '../CallApi/api.js';
 import {decrementhandler} from '../Fonctions/fonctions';
 import InfoProduct from '../SVG/InfoProduct';
 import ModaleIngredients from './ModaleIngredients';
+import { useCountdown } from '../components/CountdownContext';
+
 
 const ProductCard = ({
   libelle,
@@ -42,6 +44,8 @@ const ProductCard = ({
   const [currentStock, setCurrentStock] = useState(stock);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleIngredients, setModalVisibleIngredients] = useState(false);
+
+  const { resetCountdown} = useCountdown();
 
   // Effet de bord pour mettre à jour le stock
   useEffect(() => {
@@ -101,6 +105,7 @@ const ProductCard = ({
           lastAdded: false,
         };
         dispatch(addToCart(newProduct));
+        resetCountdown()
 
         // dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre, isFree: false}));
 
