@@ -79,8 +79,8 @@ android {
         applicationId "com.myappreactnative"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 26
-        versionName "2.15"
+        versionCode 27
+        versionName "2.16"
     }
     signingConfigs {
         debug {
