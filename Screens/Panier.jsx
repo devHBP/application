@@ -91,7 +91,8 @@ const Panier = ({navigation}) => {
   const selectedTime = useSelector(state => state.cart.time);
   const numero_commande = useSelector(state => state.order.numero_commande);
 
-  const {countDownNull, countdown, resetCountdown, resetForPaiementCountdown} = useCountdown();
+  const {countDownNull, countdown, resetCountdown, resetForPaiementCountdown} =
+    useCountdown();
 
   let userRole = user.role;
   const emailConfirmOrder = user.email;
@@ -857,53 +858,75 @@ const Panier = ({navigation}) => {
   };
 
   // Promotion
+  // const handleApplyDiscount = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${API_BASE_URL}/promocodes/${promoCode}`,
+  //     );
+  //     const data = response.data;
+  //    // console.log('data', data);
+
+  //     if (usedPromoCodes.includes(promoCode)) {
+  //       // console.log('Ce code promo a déjà été utilisé.');
+  //       setErreurCodePromoUsed(true);
+  //       // console.log('code promo utilisé', usedPromoCodes)
+
+  //       return;
+  //     }
+  //     // Vérifier si le code promo existe et est actif
+  //     if (!data || !data.active) {
+  //       console.log('Code promo invalide ou non actif.');
+  //       return; // Sortir de la fonction si le code promo n'est pas valide
+  //     }
+
+  //     // Appliquer la réduction
+  //     const percentage = data.percentage || 0;
+  //     const updatedCart = cart.map(item => {
+  //       const reducedPrice =
+  //         item.prix_unitaire - (item.prix_unitaire * percentage) / 100;
+  //       return {
+  //         ...item,
+  //         originalPrice: item.prix_unitaire,
+  //         prix_unitaire: reducedPrice >= 0 ? reducedPrice : item.prix_unitaire, // Eviter les prix négatifs
+  //       };
+  //     });
+
+  //     dispatch(updateCart(updatedCart));
+  //     setPromoCode('');
+  //     setUsedPromoCodes([...usedPromoCodes, promoCode]);
+  //     setErreurCodePromoUsed(false);
+  //     setErreurCodePromo(false);
+  //     // console.log('Réduction appliquée avec succès.');
+  //     // console.log('code promo utilisé', usedPromoCodes)
+  //   } catch (error) {
+  //     if (error.response && error.response.status === 404) {
+  //       // Gérer spécifiquement l'erreur 404
+  //       // console.log('Code promo invalide ou non existant.');
+  //       setErreurCodePromo(true); // Afficher un message d'erreur dans l'interface utilisateur
+  //     } else {
+  //       // Gérer les autres erreurs
+  //       console.error("Erreur lors de l'application du code promo:", error);
+  //     }
+  //   }
+  // };
+
+  // Test avec montant fixe et pourcentage
   const handleApplyDiscount = async () => {
     try {
-      const response = await axios.get(
-        `${API_BASE_URL}/promocodes/${promoCode}`,
-      );
-      const data = response.data;
-     // console.log('data', data);
-
-      if (usedPromoCodes.includes(promoCode)) {
-        // console.log('Ce code promo a déjà été utilisé.');
-        setErreurCodePromoUsed(true);
-        // console.log('code promo utilisé', usedPromoCodes)
-
-        return;
-      }
-      // Vérifier si le code promo existe et est actif
-      if (!data || !data.active) {
-        console.log('Code promo invalide ou non actif.');
-        return; // Sortir de la fonction si le code promo n'est pas valide
-      }
-
-      // Appliquer la réduction
-      const percentage = data.percentage || 0;
-      const updatedCart = cart.map(item => {
-        const reducedPrice =
-          item.prix_unitaire - (item.prix_unitaire * percentage) / 100;
-        return {
-          ...item,
-          originalPrice: item.prix_unitaire,
-          prix_unitaire: reducedPrice >= 0 ? reducedPrice : item.prix_unitaire, // Eviter les prix négatifs
-        };
+      const response = await axios.post(`${API_BASE_URL}/handleApplyDiscount`, {
+        promoCode,
+        cartItems: cart,
       });
-
+  
+      const updatedCart = response.data;
       dispatch(updateCart(updatedCart));
       setPromoCode('');
-      setUsedPromoCodes([...usedPromoCodes, promoCode]);
-      setErreurCodePromoUsed(false);
-      setErreurCodePromo(false);
-      // console.log('Réduction appliquée avec succès.');
-      // console.log('code promo utilisé', usedPromoCodes)
+     
+      console.log('Réduction appliquée avec succès.');
     } catch (error) {
-      if (error.response && error.response.status === 404) {
-        // Gérer spécifiquement l'erreur 404
-        // console.log('Code promo invalide ou non existant.');
-        setErreurCodePromo(true); // Afficher un message d'erreur dans l'interface utilisateur
+      if (error.response && error.response.status === 400) {
+        console.log(error.response.data.message);
       } else {
-        // Gérer les autres erreurs
         console.error("Erreur lors de l'application du code promo:", error);
       }
     }
@@ -1005,7 +1028,7 @@ const Panier = ({navigation}) => {
   // J'ENELEVE LE PRODUIT DU PANIER
   const removeAntigaspiProduct = productId => {
     const product = cart.find(item => item.productId === productId);
-   
+
     const antigaspiCountBefore = cart.filter(item => item.antigaspi).length;
 
     removehandler(productId, dispatch);
@@ -1085,7 +1108,6 @@ const Panier = ({navigation}) => {
               error,
             );
           }
-
         }
       });
     }
@@ -1098,10 +1120,12 @@ const Panier = ({navigation}) => {
   }, [countdown, cart]);
 
   //transforme le countdown en minutes
-  const formatCountdown = (seconds) => {
+  const formatCountdown = seconds => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes} min ${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+    return `${minutes} min ${
+      remainingSeconds < 10 ? '0' : ''
+    }${remainingSeconds}`;
   };
 
   return (
@@ -1264,7 +1288,10 @@ const Panier = ({navigation}) => {
                                   freeCount={group.freeCount}
                                 />
                                 <View style={style.contentCountDown}>
-                                  <Text style={style.countDown}>Dans mon panier pour {formatCountdown(countdown)}</Text>
+                                  <Text style={style.countDown}>
+                                    Dans mon panier pour{' '}
+                                    {formatCountdown(countdown)}
+                                  </Text>
                                 </View>
                               </>
                             ) : (
