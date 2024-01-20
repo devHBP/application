@@ -195,9 +195,7 @@ const handleLayout = useCallback((onglet) => (event) => {
     const { y } = event.nativeEvent.layout;
     setPositionsY(prev => ({ ...prev, [onglet]: y }));
     const height = event.nativeEvent.layout.height;
-    console.log(`Onglet: ${onglet} | Hauteur de l’élément: ${height}`);
 }, []);
-
 
 
 const ongletButtonHandler = (onglet) => {

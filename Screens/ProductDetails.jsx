@@ -16,6 +16,7 @@ import { API_BASE_URL } from '../config';
 import FastImage from 'react-native-fast-image';
 import { useCountdown } from '../components/CountdownContext';
 
+
 //fonctions
 import { decrementhandler } from '../Fonctions/fonctions'
 import InfoProduct from '../SVG/InfoProduct';
@@ -30,6 +31,7 @@ const ProductDetails = ({navigation, route}) => {
     const [productCount, setProductCount] = useState(0);
     const [modalVisibleIngredients, setModalVisibleIngredients] = useState(false);
     const { resetCountdown} = useCountdown();
+
 
     // Effet de bord pour mettre à jour le stock
     useEffect(() => {
@@ -75,11 +77,13 @@ const ProductDetails = ({navigation, route}) => {
     
     const incrementhandler = async () => {
 
+
       // console.log(cart)
+
       const isCurrentProductOffreSun = productInCart && productInCart.type_produit === 'offreSUN';
 
       const isOffreSunInCart = cart.some(item => item.type_produit === 'offreSUN');
-      console.log(isOffreSunInCart)
+     
 
       if (isCurrentProductOffreSun && isOffreSunInCart) {
         Toast.show({
@@ -107,7 +111,7 @@ const ProductDetails = ({navigation, route}) => {
         if (stockAvailable.length > 0 && remainingStock > 0) {
           resetCountdown()
           dispatch(addToCart({ productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix_unitaire, qty: 1 , offre: product.offre}));
-  
+          resetCountdown()
           if (product.offre && product.offre.startsWith('offre31')) {
             const updatedCart = [...cart, { productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix, qty: 1 , offre: product.offre}];
             const sameOfferProducts = updatedCart.filter((item) => item.offre === product.offre);

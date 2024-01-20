@@ -32,15 +32,14 @@ const ModaleOffre31 = ({modalVisible, setModalVisible, handleAcceptOffer}) => {
           <View style={styles.contentBtns}>
             <TouchableOpacity
               onPress={() => {
-                handleAcceptOffer();
                 setModalVisible(!modalVisible);
               }}
               style={{...styles.btn, backgroundColor: colors.color8}}>
               <Text style={styles.colorTextBtn}>Refuser</Text>
             </TouchableOpacity>
-
             <TouchableOpacity
               onPress={() => {
+                handleAcceptOffer();
                 setModalVisible(!modalVisible);
               }}
               style={styles.btn}>

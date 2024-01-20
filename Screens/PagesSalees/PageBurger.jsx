@@ -86,7 +86,9 @@ const PageBurger = ({navigation}) => {
        
       
         const products = updatedProducts.filter(product => product.categorie === "Burgers")
+
         // console.log(products)
+
         setProducts(products)
           
           } catch (error) {

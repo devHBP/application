@@ -33,6 +33,8 @@ const FormuleSandwich = ({navigation}) => {
     const [prix, setTotalPrice] = useState(0);
     const [productIds, setProductIds] = useState([]);
 
+    const { resetCountdown} = useCountdown();
+
     const dispatch = useDispatch()
     const scrollViewRef = useRef(null);
 

@@ -17,7 +17,6 @@ import ProductCard from '../../components/ProductCard';
 import axios from 'axios'
 import { useCountdown } from '../../components/CountdownContext';
 
-
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 //fonctions

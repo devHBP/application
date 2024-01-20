@@ -40,6 +40,7 @@ import {
   fetchAllProductsClickAndCollect,
   updateAntigaspiStock,
   updateStock,
+  getAddStockAntigaspi,
 } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ModaleOffre31 from '../components/ModaleOffre31';
@@ -56,6 +57,7 @@ import { API_BASE_URL } from '../config';
 // import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Svg, {Path} from 'react-native-svg';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
+
 import {getAddStockAntigaspi,} from '../CallApi/api';
 import {useCountdown} from '../components/CountdownContext';
 import CartItemAntigaspi from '../components/CardItemsAntiGaspi';
@@ -66,6 +68,7 @@ import CardPaiement from '../SVG/CardPaiement';
 import ModaleOffreSUN from '../components/ModaleOffreSUN';
 import {DeleteCode} from '../SVG/DeleteCode';
 import {ApplyCode} from '../SVG/ApplyCode';
+import CartItemAntigaspi from '../components/CardItemsAntiGaspi';
 
 const Panier = ({navigation}) => {
   const dispatch = useDispatch();
@@ -82,9 +85,8 @@ const Panier = ({navigation}) => {
   const [isModalSunVisible, setIsModalSunVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [erreurCodePromo, setErreurCodePromo] = useState(false);
-  const [usedPromoCodes, setUsedPromoCodes] = useState([]); 
+  const [usedPromoCodes, setUsedPromoCodes] = useState([]);
   const [erreurCodePromoUsed, setErreurCodePromoUsed] = useState(false);
-
 
   const cart = useSelector(state => state.cart.cart); //ou cartItems
   const user = useSelector(state => state.auth.user);
@@ -92,6 +94,7 @@ const Panier = ({navigation}) => {
   const selectedDateString = useSelector(state => state.cart.date);
   const selectedTime = useSelector(state => state.cart.time);
   const numero_commande = useSelector(state => state.order.numero_commande);
+
 
   const {countDownNull, countdown, resetCountdown, resetForPaiementCountdown} = useCountdown();
 
@@ -388,7 +391,6 @@ const Panier = ({navigation}) => {
           countDownNull();
           navigation.navigate('success');
           clearInterval(intervalId);
-           
 
           // 1. je crée le paiement
           const paymentData = {
@@ -552,23 +554,26 @@ const Panier = ({navigation}) => {
           // stock normal
           // stock anti gaspi
           cart.forEach(async item => {
-            console.log(item);
-            await updateStock(item);
+
             // await updateAntigaspiStock(item);
             if (!item.antigaspi) {
               await updateStock(item);
             }
+
             // je reset le countdown
           resetCountdown();
+
           });
         } else if (status === 'unpaid') {
           // si status unpaid - retour en arriere
           // pas de commande a créer
           navigation.navigate('cancel');
           clearInterval(intervalId);
+          // je reset le countdown
+          resetCountdown();
           // vider le panier
           // dispatch(clearCart());
-          resetCountdown()
+
         } else {
           console.log(`Status du paiement en attente ou inconnu: ${status}`);
         }
@@ -664,7 +669,7 @@ const Panier = ({navigation}) => {
       );
 
       if (hasOffreSUN) {
-        console.log("Panier contient 'offreSUN' avec un totalPrice de 0.00");
+        //console.log("Panier contient 'offreSUN' avec un totalPrice de 0.00");
         // je n'ai que la baguette gratuite ici
         const orderData = {
           cart: cart,
@@ -811,9 +816,9 @@ const Panier = ({navigation}) => {
 
               if (stockDisponible !== undefined) {
                 if (item.qty <= stockDisponible) {
-                  console.log(
-                    `Stock suffisant pour le produit ${item.libelle}.`,
-                  );
+                  // console.log(
+                  //   `Stock suffisant pour le produit ${item.libelle}.`,
+                  // );
                   // Logique pour gérer le stock suffisant
                 } else {
                   // console.log(
@@ -865,56 +870,79 @@ const Panier = ({navigation}) => {
   };
 
   // Promotion
-const handleApplyDiscount = async () => {
-  try {
-    const response = await axios.get(`${API_BASE_URL}/promocodes/${promoCode}`);
-    const data = response.data;
-    console.log('data', data)
+  // const handleApplyDiscount = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       `${API_BASE_URL}/promocodes/${promoCode}`,
+  //     );
+  //     const data = response.data;
+  //    // console.log('data', data);
 
-    if (usedPromoCodes.includes(promoCode)) {
-      // console.log('Ce code promo a déjà été utilisé.');
-      setErreurCodePromoUsed(true)
-      // console.log('code promo utilisé', usedPromoCodes)
+  //     if (usedPromoCodes.includes(promoCode)) {
+  //       // console.log('Ce code promo a déjà été utilisé.');
+  //       setErreurCodePromoUsed(true);
+  //       // console.log('code promo utilisé', usedPromoCodes)
 
-      return;
+  //       return;
+  //     }
+  //     // Vérifier si le code promo existe et est actif
+  //     if (!data || !data.active) {
+  //       console.log('Code promo invalide ou non actif.');
+  //       return; // Sortir de la fonction si le code promo n'est pas valide
+  //     }
+
+  //     // Appliquer la réduction
+  //     const percentage = data.percentage || 0;
+  //     const updatedCart = cart.map(item => {
+  //       const reducedPrice =
+  //         item.prix_unitaire - (item.prix_unitaire * percentage) / 100;
+  //       return {
+  //         ...item,
+  //         originalPrice: item.prix_unitaire,
+  //         prix_unitaire: reducedPrice >= 0 ? reducedPrice : item.prix_unitaire, // Eviter les prix négatifs
+  //       };
+  //     });
+
+  //     dispatch(updateCart(updatedCart));
+  //     setPromoCode('');
+  //     setUsedPromoCodes([...usedPromoCodes, promoCode]);
+  //     setErreurCodePromoUsed(false);
+  //     setErreurCodePromo(false);
+  //     // console.log('Réduction appliquée avec succès.');
+  //     // console.log('code promo utilisé', usedPromoCodes)
+  //   } catch (error) {
+  //     if (error.response && error.response.status === 404) {
+  //       // Gérer spécifiquement l'erreur 404
+  //       // console.log('Code promo invalide ou non existant.');
+  //       setErreurCodePromo(true); // Afficher un message d'erreur dans l'interface utilisateur
+  //     } else {
+  //       // Gérer les autres erreurs
+  //       console.error("Erreur lors de l'application du code promo:", error);
+  //     }
+  //   }
+  // };
+
+  // Test avec montant fixe et pourcentage
+  const handleApplyDiscount = async () => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/handleApplyDiscount`, {
+        promoCode,
+        cartItems: cart,
+      });
+  
+      const updatedCart = response.data;
+      dispatch(updateCart(updatedCart));
+      setPromoCode('');
+     
+      console.log('Réduction appliquée avec succès.');
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        console.log(error.response.data.message);
+      } else {
+        console.error("Erreur lors de l'application du code promo:", error);
+      }
     }
-    // Vérifier si le code promo existe et est actif
-    if (!data || !data.active) {
-      console.log('Code promo invalide ou non actif.');
-      return; // Sortir de la fonction si le code promo n'est pas valide
-    }
-
-    // Appliquer la réduction
-    const percentage = data.percentage || 0;
-    const updatedCart = cart.map(item => {
-      const reducedPrice = item.prix_unitaire - (item.prix_unitaire * percentage) / 100;
-      return {
-        ...item,
-        originalPrice: item.prix_unitaire,
-        prix_unitaire: reducedPrice >= 0 ? reducedPrice : item.prix_unitaire, // Eviter les prix négatifs
-      };
-    });
-
-    dispatch(updateCart(updatedCart));
-    setPromoCode('');
-    setUsedPromoCodes([...usedPromoCodes, promoCode]);
-    setErreurCodePromoUsed(false);
-    setErreurCodePromo(false)
-    // console.log('Réduction appliquée avec succès.');
-    // console.log('code promo utilisé', usedPromoCodes)
-
-  } catch (error) {
-    if (error.response && error.response.status === 404) {
-      // Gérer spécifiquement l'erreur 404
-      // console.log('Code promo invalide ou non existant.');
-      setErreurCodePromo(true); // Afficher un message d'erreur dans l'interface utilisateur
-    } else {
-      // Gérer les autres erreurs
-      console.error('Erreur lors de l\'application du code promo:', error);
-    }
-  }
-};
-
+  };
 
   // Restaurer le prix d'origine
   const handleRemoveDiscount = () => {
@@ -925,11 +953,10 @@ const handleApplyDiscount = async () => {
 
     dispatch(updateCart(updatedCart));
     setPromoCode('');
-    setErreurCodePromo(false)
+    setErreurCodePromo(false);
     setErreurCodePromoUsed(false);
     setUsedPromoCodes([]);
     // console.log('code promo utilisé', usedPromoCodes)
-
   };
 
   //filtrage si formule ou produits
@@ -1106,10 +1133,12 @@ const handleApplyDiscount = async () => {
   }, [countdown, cart]);
 
   //transforme le countdown en minutes
+
   const formatCountdown = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes} min ${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+
   };
 
   return (
@@ -1272,7 +1301,9 @@ const handleApplyDiscount = async () => {
                                   freeCount={group.freeCount}
                                 />
                                 <View style={style.contentCountDown}>
+
                                   <Text style={style.countDown}>Dans mon panier pour {formatCountdown(countdown)}</Text>
+
                                 </View>
                               </>
                             ) : (
@@ -1316,7 +1347,13 @@ const handleApplyDiscount = async () => {
                   },
                 )}
                 {/* partie code promo à revoir */}
-                <View style={{width: '100%', marginVertical: 15, flexDirection:'column', alignItems:'center'}}>
+                <View
+                  style={{
+                    width: '100%',
+                    marginVertical: 15,
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}>
                   <View
                     style={{
                       flexDirection: 'row',
@@ -1343,21 +1380,26 @@ const handleApplyDiscount = async () => {
                         backgroundColor: colors.color6,
                       }}
                     />
-                   
-                    <TouchableOpacity
-                      onPress={handleApplyDiscount}
-                      >
-                      <ApplyCode color={colors.color9}/>
+
+                    <TouchableOpacity onPress={handleApplyDiscount}>
+                      <ApplyCode color={colors.color9} />
                     </TouchableOpacity>
-               
+
                     <TouchableOpacity onPress={handleRemoveDiscount}>
                       <DeleteCode />
                     </TouchableOpacity>
                   </View>
                   <View>
-                    { erreurCodePromo && promoCode && <Text style={{color:colors.color8}}>Code promo non valide !</Text>}
-                    { erreurCodePromoUsed &&  promoCode && <Text style={{color:colors.color8}}>Code promo déja utilisé ! </Text>}
-
+                    {erreurCodePromo && promoCode && (
+                      <Text style={{color: colors.color8}}>
+                        Code promo non valide !
+                      </Text>
+                    )}
+                    {erreurCodePromoUsed && promoCode && (
+                      <Text style={{color: colors.color8}}>
+                        Code promo déja utilisé !{' '}
+                      </Text>
+                    )}
                   </View>
                 </View>
               </ScrollView>

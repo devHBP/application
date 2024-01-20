@@ -96,7 +96,9 @@ const Signup = ({navigation}) => {
       telephone,
     };
 
+
     // console.log('clientData', clientData);
+
 
     let errors = [];
 
@@ -122,7 +124,9 @@ const Signup = ({navigation}) => {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/signup`, clientData);
+
       // console.log('response.data', response.data);
+
 
       const userId = response.data.id;
       const user = {
@@ -137,7 +141,7 @@ const Signup = ({navigation}) => {
         role: clientData.role,
         telephone,
       };
-      console.log('user', user);
+      //console.log('user', user);
       dispatch(registerUser(user));
 
       //ajout route envoi email de creation de compte

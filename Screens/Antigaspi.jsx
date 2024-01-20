@@ -25,8 +25,8 @@ import {
 } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
-import LinearGradient from 'react-native-linear-gradient';
 import ProductCard from '../components/ProductCard';
+
 // import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import {API_BASE_URL} from '../config';
 import Cloche from '../SVG/Cloche';
@@ -71,7 +71,9 @@ const Antigaspi = ({navigation}) => {
       const clickProductPrices = clickProducts.map(
         product => product.prix_unitaire,
       );
+
       // console.log(clickProductPrices)
+
 
       //ici modifier le prix_unitaire (70% de reduction et le placer dans le champ "option1" dans la table Details products
       //stock sup ou egale à 1
@@ -79,6 +81,7 @@ const Antigaspi = ({navigation}) => {
         product => product.stockantigaspi >= 1,
       );
       setclickProducts(updatedStockProducts);
+
     } catch (error) {
       console.error(
         "Une erreur s'est produite lors de la récupération des produits:",
@@ -88,6 +91,7 @@ const Antigaspi = ({navigation}) => {
   };
 
   useEffect(() => {
+
     fetchData();
   }, []);
 
@@ -124,6 +128,7 @@ const Antigaspi = ({navigation}) => {
     }
   };
 
+
   //verifier le stock ?
   const handleCart = async () => {
     try {
@@ -158,7 +163,9 @@ const Antigaspi = ({navigation}) => {
               )
               .filter(p => p.stockantigaspi > 0), // Filtrer les produits épuisés
         );
+
         await fetchData();
+
         resetCountdown(); // Déclenche le compteur à 300 secondes - 5min
         Toast.show({
           type: 'success',
@@ -170,18 +177,22 @@ const Antigaspi = ({navigation}) => {
           type: 'error',
           text1: "Ce produit n'est plus en stock",
         });
+
         console.log(stockAntigaspi);
         await fetchData();
+
       }
     } catch (error) {
       console.error('Erreur lors de la vérification du stock:', error);
       // Gérer l'erreur
       Toast.show({
         type: 'error',
+
         text1: 'Erreur lors de la vérification du stock',
       });
     }
   };
+  
   return (
     <View style={{flex: 1}}>
       <View style={{paddingTop: 50}}></View>
@@ -285,6 +296,9 @@ const Antigaspi = ({navigation}) => {
                               showButtons={false}
                               ingredients={product.ingredients}
                               showPriceSun={false}
+
+                              overlayStyle={{backgroundColor: 'white'}} //pas d'effet overlay sur les produits antigaspi (stock different)
+
                             />
                             {selectedProduct?.productId ===
                               product.productId && (
@@ -320,12 +334,14 @@ const Antigaspi = ({navigation}) => {
               €
             </Text>
           </View>
+
           {/* <View style={style.bandeauFormule}>
             <View style={{flexDirection:'row'}}>
             <Text>Avec</Text><Image source={require('../assets/sun.jpg')} style={{ width: 50, height: 20, resizeMode:'contain' }}/>
             </View>
          <Text style={{color:colors.color2, fontWeight:"bold"}}>{selectedProduct ?  Number(selectedProduct.prix_remise_collaborateur) : 0} €</Text>
           </View>*/}
+
         </View>
         <Button
           style={style.btn}

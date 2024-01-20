@@ -168,10 +168,12 @@ const Main = () => {
       if (currentVersion < latestVersion) {
         setIsUpdateRequired(true);
         //console.log('mise à jour dispo');
-        console.log(isUpdateRequired);
+
+        //console.log(isUpdateRequired);
+
       }
     } catch (error) {
-      console.error('Erreur lors de la vérification des mises à jour:', error);
+      //console.error('Erreur lors de la vérification des mises à jour:', error);
       setIsUpdateRequired(false);
     }
   };

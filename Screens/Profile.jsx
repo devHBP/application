@@ -186,6 +186,7 @@ const allStores = async () => {
       navigation.navigate('login')
     }
     const handleCookies = () => {
+
       // console.log('page cookies')
       navigation.navigate('cookies')
     }

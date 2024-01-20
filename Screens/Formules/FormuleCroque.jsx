@@ -23,6 +23,7 @@ import Check from '../../SVG/Check';
 import axios from 'axios'
 import { useCountdown } from '../../components/CountdownContext';
 
+
 const FormuleCroques = ({navigation}) => {
 
     const [products, setProducts] = useState([]);
@@ -36,6 +37,7 @@ const FormuleCroques = ({navigation}) => {
     const [productIds, setProductIds] = useState([]);
     //const [qty, setQty] = useState(1); 
 
+    const { resetCountdown} = useCountdown();
 
     const dispatch = useDispatch()
     const scrollViewRef = useRef(null);

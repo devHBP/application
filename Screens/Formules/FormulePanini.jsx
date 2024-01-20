@@ -19,6 +19,7 @@ import axios from 'axios'
 import { useCountdown } from '../../components/CountdownContext';
 
 
+
 const FormulePanini = ({navigation}) => {
 
     const [products, setProducts] = useState([]);
@@ -33,6 +34,9 @@ const FormulePanini = ({navigation}) => {
 
     const dispatch = useDispatch()
     const scrollViewRef = useRef(null);
+
+    const { resetCountdown} = useCountdown();
+
 
     const cart = useSelector((state) => state.cart.cart);
 
