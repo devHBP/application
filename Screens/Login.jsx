@@ -14,15 +14,12 @@ import {loginUser, updateSelectedStore} from '../reducers/authSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {configureAxiosHeaders} from '../Fonctions/fonctions';
-import {
-  API_BASE_URL,
-  API_BASE_URL_ANDROID,
-  API_BASE_URL_IOS,
-  EMAIL_INVITE,
-  PASSWORD_INVITE,
-} from '@env';
+// import {
+//   EMAIL_INVITE,
+//   PASSWORD_INVITE,
+// } from '../config';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import {API_BASE_URL} from '../config';
 import axios from 'axios';
 
 //options des input
@@ -33,7 +30,7 @@ const inputOptions = {
 };
 
 const Login = ({navigation}) => {
-  //console.log("api base url :", API_BASE_URL)
+  console.log('api base url :', API_BASE_URL);
   const dispatch = useDispatch();
   const selectedStoreRedux = useSelector(state => state.auth.selectedStore);
 
@@ -90,12 +87,20 @@ const Login = ({navigation}) => {
     }
   };
   const loginAsGuest = async () => {
-    const clientData = {
-      email: EMAIL_INVITE,
-      password: PASSWORD_INVITE,
-    };
-    //console.log('clientData', clientData)
     try {
+      const getemail = await axios.get(`${API_BASE_URL}/getEmailInvite`);
+      const getpasswd = await axios.get(`${API_BASE_URL}/getPsswInvite`);
+
+      const email = getemail.data.EMAIL_INVITE;
+      console.log('email', email);
+      const password = getpasswd.data.PASSWORD_INVITE;
+      const clientData = {
+        email,
+        password,
+      };
+
+      console.log('clientData', clientData);
+
       const res = await axios.post(`${API_BASE_URL}/login`, clientData);
       const user = res.data.user;
       const token = res.data.token;
@@ -137,91 +142,89 @@ const Login = ({navigation}) => {
       behavior={Platform.OS === 'ios' ? 'padding' : ''}
       style={style.container}>
       <View style={style.container}>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            marginBottom: 20,
+          }}>
+          <Image
+            source={require('../assets/logo_pdj.png')}
+            style={{width: 140, height: 140, resizeMode: 'contain'}}
+          />
+        </View>
 
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          marginBottom: 20,
-        }}>
-        <Image
-          source={require('../assets/logo_pdj.png')}
-          style={{width: 140, height: 140, resizeMode: 'contain'}}
-        />
-      </View>
+        <View style={{marginVertical: 10}}>
+          <Text style={style.title1}>Connexion</Text>
+          <Text style={style.title2}>Connectez vous à votre compte</Text>
+        </View>
 
-      <View style={{marginVertical: 10}}>
-        <Text style={style.title1}>Connexion</Text>
-        <Text style={style.title2}>Connectez vous à votre compte</Text>
-      </View>
-
-      <Text style={style.label}>Adresse e-mail</Text>
-      <TextInput
-        {...inputOptions}
-        autoCapitalize="none"
-        placeholder="exemple.mail@email.com"
-        placeholderTextColor={colors.color1}
-        keyboardType="email-address"
-        value={email}
-        onChangeText={setEmail}
-      />
-
-      <Text style={style.label}>Mot de passe</Text>
-      <View style={{flexDirection: 'row', alignItems: 'center'}}>
+        <Text style={style.label}>Adresse e-mail</Text>
         <TextInput
           {...inputOptions}
-          placeholder="Mot de passe"
+          autoCapitalize="none"
+          placeholder="exemple.mail@email.com"
           placeholderTextColor={colors.color1}
-          secureTextEntry={isPasswordVisible}
-          value={password}
-          onChangeText={setPassword}
+          keyboardType="email-address"
+          value={email}
+          onChangeText={setEmail}
         />
-        <TouchableOpacity
-          style={style.visibilityToggle}
-          onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
-          <Icon
-            name={isPasswordVisible ? 'visibility-off' : 'visibility'}
-            size={24}
-            color="white"
+
+        <Text style={style.label}>Mot de passe</Text>
+        <View style={{flexDirection: 'row', alignItems: 'center'}}>
+          <TextInput
+            {...inputOptions}
+            placeholder="Mot de passe"
+            placeholderTextColor={colors.color1}
+            secureTextEntry={isPasswordVisible}
+            value={password}
+            onChangeText={setPassword}
           />
+          <TouchableOpacity
+            style={style.visibilityToggle}
+            onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
+            <Icon
+              name={isPasswordVisible ? 'visibility-off' : 'visibility'}
+              size={24}
+              color="white"
+            />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity onPress={() => navigation.navigate('pwd')}>
+          <Text style={{...style.signup, fontSize: 12, textAlign: 'left'}}>
+            Mot de passe oublié ?
+          </Text>
         </TouchableOpacity>
-      </View>
-      <TouchableOpacity onPress={() => navigation.navigate('pwd')}>
-        <Text style={{...style.signup, fontSize: 12, textAlign: 'left'}}>
-          Mot de passe oublié ?
-        </Text>
-      </TouchableOpacity>
 
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          gap: 5,
-          paddingVertical: 10,
-        }}>
-        <Button
-          style={{...style.btn, backgroundColor: colors.color5}}
-          textColor={'white'}
-          //inactif si email ou password vide
-          onPress={() => navigation.navigate('signup')}>
-          Inscription
-        </Button>
-        <Button
-          style={style.btn}
-          textColor={'white'}
-          //inactif si email ou password vide
-          disabled={email === '' || password === ''}
-          onPress={submitHandler}>
-          Se connecter
-        </Button>
-      </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            gap: 5,
+            paddingVertical: 10,
+          }}>
+          <Button
+            style={{...style.btn, backgroundColor: colors.color5}}
+            textColor={'white'}
+            //inactif si email ou password vide
+            onPress={() => navigation.navigate('signup')}>
+            Inscription
+          </Button>
+          <Button
+            style={style.btn}
+            textColor={'white'}
+            //inactif si email ou password vide
+            disabled={email === '' || password === ''}
+            onPress={submitHandler}>
+            Se connecter
+          </Button>
+        </View>
 
-      <TouchableOpacity onPress={loginAsGuest}>
-        <Text style={style.signup}>
-          Accédez à l'application en tant qu'invité
-        </Text>
-      </TouchableOpacity>
-
+        <TouchableOpacity onPress={loginAsGuest}>
+          <Text style={style.signup}>
+            Accédez à l'application en tant qu'invité
+          </Text>
+        </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
   );

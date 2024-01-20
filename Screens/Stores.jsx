@@ -6,7 +6,8 @@ import axios from 'axios'
 import { useDispatch, useSelector } from 'react-redux';
 import { updateSelectedStore } from '../reducers/authSlice';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../config';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import ArrowLeft from '../SVG/ArrowLeft';
 import { fonts, colors} from '../styles/styles'
 

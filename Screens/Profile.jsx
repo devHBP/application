@@ -14,7 +14,8 @@ import Avatar from '../SVG/Avatar';
 import { modifyUser } from '../CallApi/api';
 import ArrowLeft from '../SVG/ArrowLeft';
 import Remove from '../SVG/Remove';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../config';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import PasswordModal from '../components/PasswordModal';
 
@@ -185,15 +186,15 @@ const allStores = async () => {
       navigation.navigate('login')
     }
     const handleCookies = () => {
-      console.log('page cookies')
+      // console.log('page cookies')
       navigation.navigate('cookies')
     }
     const handleDonnees = () => {
-      console.log('page données')
+      // console.log('page données')
       navigation.navigate('donnees')
     }
     const handleMentions = () => {
-      console.log('page mentions')
+      // console.log('page mentions')
       navigation.navigate('mentions')
     }
 

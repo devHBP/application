@@ -56,10 +56,11 @@ import axios from 'axios';
 import OffreNoel from './Screens/OffreNoel';
 import AppUpdateChecker from './components/AppUpdateChecker';
 import DeviceInfo from 'react-native-device-info';
-import {API_BASE_URL} from '@env';
 import Maintenance from './Screens/Maintenance';
 import CancelPage from './Screens/CancelPage';
 // import PageHome from './Screens/PageHome';
+// import {API_BASE_URL} from '@env';
+import { API_BASE_URL } from './config';
 
 const Main = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -166,7 +167,7 @@ const Main = () => {
       // console.log('version store', latestVersion);
       if (currentVersion < latestVersion) {
         setIsUpdateRequired(true);
-        console.log('mise à jour dispo');
+        //console.log('mise à jour dispo');
         console.log(isUpdateRequired);
       }
     } catch (error) {

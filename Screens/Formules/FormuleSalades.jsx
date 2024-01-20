@@ -10,11 +10,13 @@ import { styles } from '../../styles/home';
 import FooterProfile from '../../components/FooterProfile';
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../../config';
 import FastImage from 'react-native-fast-image'
 import { getStyle } from '../../Fonctions/stylesFormule';
 import Check from '../../SVG/Check';
 import axios from 'axios'
+import { useCountdown } from '../../components/CountdownContext';
 
 const FormuleSalade = ({navigation}) => {
 
@@ -33,6 +35,7 @@ const FormuleSalade = ({navigation}) => {
     const scrollViewRef = useRef(null);
 
     const cart = useSelector((state) => state.cart.cart);
+    const { resetCountdown} = useCountdown();
 
     const handleBack = () => {
         navigation.navigate('home')
@@ -205,6 +208,7 @@ const FormuleSalade = ({navigation}) => {
         qty: 1,
       }
       dispatch(addToCart(formule));
+      resetCountdown()
       navigation.navigate('panier')
     }
       

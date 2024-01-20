@@ -7,8 +7,10 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { fonts, colors} from '../styles/styles'
 import ModaleOffre31 from '../components/ModaleOffre31';
 import Svg, { Path } from 'react-native-svg';
-import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import { API_BASE_URL } from '../config'; 
 import FastImage from 'react-native-fast-image'
+import { useCountdown } from '../components/CountdownContext';
 
 
 //call API
@@ -26,6 +28,8 @@ const ProductCard = ({libelle, id, image, prix, qty, stock, offre, prixSUN, show
   const [currentStock, setCurrentStock] = useState(stock);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleIngredients, setModalVisibleIngredients] = useState(false);
+
+  const { resetCountdown} = useCountdown();
 
 
   // Effet de bord pour mettre à jour le stock
@@ -92,6 +96,7 @@ const incrementhandler = async () => {
       lastAdded: false  
     };
     dispatch(addToCart(newProduct));
+    resetCountdown()
 
     // dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre, isFree: false}));
 

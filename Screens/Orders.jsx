@@ -17,13 +17,13 @@ import ArrowLeft from '../SVG/ArrowLeft';
 import TextTicker from 'react-native-text-ticker';
 import LottieView from 'lottie-react-native';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
-
+// import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+import {API_BASE_URL} from '../config';
 //call Api
 import {getStoreById} from '../CallApi/api';
 import ArrowDown from '../SVG/ArrowDown';
 import {AntiGaspi} from '../SVG/AntiGaspi';
-import { OffreSun } from '../SVG/OffreSun';
+import {OffreSun} from '../SVG/OffreSun';
 
 const Orders = ({navigation}) => {
   const user = useSelector(state => state.auth.user);
@@ -69,7 +69,6 @@ const Orders = ({navigation}) => {
 
   const allMyOrders = async () => {
     try {
-
       const response = await axios.get(
         `${API_BASE_URL}/ordersOfUserWithProducts/${userId}`,
       );
@@ -97,7 +96,7 @@ const Orders = ({navigation}) => {
       }, 2000);
     } catch (error) {
       // console.error("Une erreur s'est produite :", error);
-      console.log(error.response.status)
+      console.log(error.response.status);
     }
   };
 
@@ -152,9 +151,7 @@ const Orders = ({navigation}) => {
               <Text style={style.title}>
                 {item.status.charAt(0).toUpperCase() + item.status.substring(1)}
               </Text>
-              <Text style={style.underlineText}>
-                OrderID: {item.orderId}
-              </Text>
+              <Text style={style.underlineText}>OrderID: {item.orderId}</Text>
             </View>
             <View style={style.textTicker}>
               <TextTicker
@@ -169,24 +166,19 @@ const Orders = ({navigation}) => {
               </Text>
             </View>
             <View style={style.flexStart}>
-              <Text style={style.newPrice}>
-                {item.prix_total}€
-              </Text>
+              <Text style={style.newPrice}>{item.prix_total}€</Text>
               <Text style={style.underlineText}>
                 {item.productIds.split(',').length}x Articles
               </Text>
             </View>
-            <View
-              style={style.backArrow}>
+            <View style={style.backArrow}>
               <ArrowDown />
             </View>
           </View>
         </TouchableOpacity>
         {expandedOrderIds.includes(item.orderId) && (
           <View style={style.expandedOrders}>
-            <Text style={style.detailsOrderTitle}>
-              Détails de la commande
-            </Text>
+            <Text style={style.detailsOrderTitle}>Détails de la commande</Text>
 
             <View>
               {Array.isArray(cart) &&
@@ -201,7 +193,7 @@ const Orders = ({navigation}) => {
                     prix_unitaire,
                     libelle,
                     prix,
-                    type_produit
+                    type_produit,
                   } = product;
                   const key = product.id || index;
 
@@ -210,9 +202,7 @@ const Orders = ({navigation}) => {
                       <View key={key}>
                         <View style={style.orderFormule}>
                           <View>
-                            <Text style={style.title}>
-                              {libelle}
-                            </Text>
+                            <Text style={style.title}>{libelle}</Text>
                             {option1 && (
                               <View style={style.optionStyle}>
                                 <Text style={style.text}>
@@ -260,45 +250,45 @@ const Orders = ({navigation}) => {
                     return (
                       <View key={key}>
                         <View style={style.orderDetails}>
-                          <Text
-                            style={style.textWidth}>
-                            <AntiGaspi color={colors.color8}/> {qty}x {libelle}
+                          <Text style={style.textWidth}>
+                            <AntiGaspi color={colors.color8} /> {qty}x {libelle}
                           </Text>
                           <View style={style.orderPrices}>
                             <Text style={style.oldPrice}>
                               {(prix_unitaire / 0.3).toFixed(2)}€
                             </Text>
-                            <Text style={style.newPrice}>{(prix_unitaire).toFixed(2)}€</Text>
+                            <Text style={style.newPrice}>
+                              {prix_unitaire.toFixed(2)}€
+                            </Text>
                           </View>
                         </View>
                       </View>
                     );
-                  } 
-                  else if (type_produit === 'offreSUN') {
+                  } else if (type_produit === 'offreSUN') {
                     // si produit antigaspi
                     return (
                       <View key={key}>
                         <View style={style.orderDetails}>
-                          <Text
-                            style={style.textWidth}>
+                          <Text style={style.textWidth}>
                             <OffreSun /> {qty}x {libelle}
                           </Text>
                           <View style={style.orderPrices}>
                             <Text style={style.oldPrice}>
                               {(prix_unitaire / 0.3).toFixed(2)}€
                             </Text>
-                            <Text style={style.newPrice}>{(prix_unitaire).toFixed(2)}€</Text>
+                            <Text style={style.newPrice}>
+                              {prix_unitaire.toFixed(2)}€
+                            </Text>
                           </View>
                         </View>
                       </View>
                     );
-                  }else {
+                  } else {
                     // Logique de rendu pour les produits classiques
                     return (
                       <View key={key}>
                         <View style={style.orderDetails}>
-                          <Text
-                            style={style.textWidth}>
+                          <Text style={style.textWidth}>
                             {qty}x {libelle}
                           </Text>
                           <View style={style.orderPrices}>
@@ -317,18 +307,13 @@ const Orders = ({navigation}) => {
             </View>
 
             <View style={style.rowTotal}>
-              <Text
-                style={style.title}>
-                Votre total:
-              </Text>
+              <Text style={style.title}>Votre total:</Text>
               <View>
                 {/* ici somme des prix unitaire */}
                 {/* <Text style={style.oldPrice}>
                   {sommePrixUnitaires.toFixed(2)}€
                 </Text> */}
-                <Text style={style.newPrice}>
-                  {item.prix_total}€
-                </Text>
+                <Text style={style.newPrice}>{item.prix_total}€</Text>
               </View>
             </View>
           </View>
@@ -340,7 +325,7 @@ const Orders = ({navigation}) => {
   const renderLastOrder = (item, index) => {
     const parsedItem = JSON.parse(item.cartString);
     // console.log('parsedItem', parsedItem[0].type);
-     console.log('item derniere commande', parsedItem);
+    //console.log('item derniere commande', parsedItem);
 
     let prixUnitaires;
 
@@ -385,34 +370,25 @@ const Orders = ({navigation}) => {
     return (
       <>
         <View>
-          <Text
-            style={style.lastOrderTitle}>
-            Votre derniere commande
-          </Text>
-          <View
-            style={style.lastOrderView}>
-            <View
-              style={style.orderDetails}>
+          <Text style={style.lastOrderTitle}>Votre derniere commande</Text>
+          <View style={style.lastOrderView}>
+            <View style={style.orderDetails}>
               <View>
-                <Text style={style.underlineText}>
-                  OrderID: {item.orderId}
-                </Text>
+                <Text style={style.underlineText}>OrderID: {item.orderId}</Text>
                 <Text style={style.underlineText}>
                   {formatDate(item.createdAt)}
                 </Text>
                 <Text style={style.underlineText}>{item.status}</Text>
               </View>
               <View>
-                <Text
-                  style={style.storeTitle}>
+                <Text style={style.storeTitle}>
                   {item.store && item.store.nom_magasin}
                 </Text>
               </View>
             </View>
 
             <View>
-              <Text
-                style={style.detailsOrderTitle}>
+              <Text style={style.detailsOrderTitle}>
                 Details de la commande
               </Text>
               <View>
@@ -429,7 +405,7 @@ const Orders = ({navigation}) => {
                         prix_unitaire,
                         libelle,
                         prix,
-                        type_produit
+                        type_produit,
                       } = product;
                       const key = product.id || index;
 
@@ -488,9 +464,9 @@ const Orders = ({navigation}) => {
                         return (
                           <View key={key}>
                             <View style={style.orderDetails}>
-                              <Text
-                                style={style.textWidth}>
-                                <AntiGaspi color={colors.color8}/> {qty}x {libelle}
+                              <Text style={style.textWidth}>
+                                <AntiGaspi color={colors.color8} /> {qty}x{' '}
+                                {libelle}
                               </Text>
                               <View style={style.orderPrices}>
                                 <Text style={style.oldPrice}>
@@ -503,21 +479,21 @@ const Orders = ({navigation}) => {
                             </View>
                           </View>
                         );
-                      }
-                      else if (type_produit === 'offreSUN') {
+                      } else if (type_produit === 'offreSUN') {
                         // si produit antigaspi
                         return (
                           <View key={key}>
                             <View style={style.orderDetails}>
-                              <Text
-                                style={style.textWidth}>
+                              <Text style={style.textWidth}>
                                 <OffreSun /> {qty}x {libelle}
                               </Text>
                               <View style={style.orderPrices}>
                                 <Text style={style.oldPrice}>
                                   {(prix_unitaire / 0.3).toFixed(2)}€
                                 </Text>
-                                <Text style={style.newPrice}>{(prix_unitaire).toFixed(2)}€</Text>
+                                <Text style={style.newPrice}>
+                                  {prix_unitaire.toFixed(2)}€
+                                </Text>
                               </View>
                             </View>
                           </View>
@@ -527,8 +503,7 @@ const Orders = ({navigation}) => {
                         return (
                           <View key={key}>
                             <View style={style.orderDetails}>
-                              <Text
-                                style={style.textWidth}>
+                              <Text style={style.textWidth}>
                                 {qty}x {libelle}
                               </Text>
                               <View style={style.orderPrices}>
@@ -548,10 +523,7 @@ const Orders = ({navigation}) => {
               </View>
 
               <View style={style.rowTotal}>
-                <Text
-                  style={style.title}>
-                  Votre total:
-                </Text>
+                <Text style={style.title}>Votre total:</Text>
                 <View>
                   {/* ici somme des prix unitaire */}
                   {/* <Text style={style.oldPrice}>
@@ -570,10 +542,7 @@ const Orders = ({navigation}) => {
   const ListHeader = ({lastOrder}) => (
     <View>
       {lastOrder && renderLastOrder(lastOrder)}
-      <Text
-        style={style.lastOrderTitle}>
-        Vos commandes antérieures
-      </Text>
+      <Text style={style.lastOrderTitle}>Vos commandes antérieures</Text>
     </View>
   );
 
@@ -733,7 +702,7 @@ const style = StyleSheet.create({
   text: {
     color: colors.color1,
   },
-  textWidth:{
+  textWidth: {
     width: '70%',
     flexWrap: 'wrap',
     color: colors.color1,
@@ -788,48 +757,47 @@ const style = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'flex-start',
   },
-  underlineText:{
+  underlineText: {
     color: colors.color5,
     fontSize: 10,
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
   },
-  backArrow:{
+  backArrow: {
     backgroundColor: 'white',
     borderRadius: 25,
     justifyContent: 'center',
   },
-  expandedOrders:{
-      flex: 1,
-      paddingLeft: 10,
-      marginVertical: 10,
-      marginHorizontal: 30,
+  expandedOrders: {
+    flex: 1,
+    paddingLeft: 10,
+    marginVertical: 10,
+    marginHorizontal: 30,
   },
-  lastOrderTitle:{
+  lastOrderTitle: {
     paddingLeft: 30,
     marginVertical: 20,
     fontFamily: fonts.font3,
     fontWeight: '600',
     color: colors.color1,
     fontSize: 16,
-  }, 
-  storeTitle:{
+  },
+  storeTitle: {
     color: colors.color1,
     fontSize: 14,
     fontWeight: 'bold',
   },
-  detailsOrderTitle:{
+  detailsOrderTitle: {
     marginVertical: 10,
     color: colors.color2,
     fontFamily: fonts.font2,
     fontWeight: '700',
   },
-  lastOrderView:{
+  lastOrderView: {
     backgroundColor: colors.color6,
     padding: 20,
     marginHorizontal: 20,
     borderRadius: 10,
   },
-  
 });
 
 export default Orders;

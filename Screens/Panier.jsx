@@ -19,6 +19,7 @@ import {
   addFreeProductToCart,
   updateCartTotal,
   clearCart,
+  removeFromCart,
 } from '../reducers/cartSlice';
 import {logoutUser} from '../reducers/authSlice';
 import {
@@ -51,10 +52,13 @@ import {stylesInvite} from '../styles/invite';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ArrowLeft from '../SVG/ArrowLeft';
 import LottieView from 'lottie-react-native';
-import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+import { API_BASE_URL } from '../config';
+// import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Svg, {Path} from 'react-native-svg';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {} from '../CallApi/api';
+import {getAddStockAntigaspi,} from '../CallApi/api';
+import {useCountdown} from '../components/CountdownContext';
+import CartItemAntigaspi from '../components/CardItemsAntiGaspi';
 
 //fonctions
 import {decrementhandler, removehandler} from '../Fonctions/fonctions';
@@ -88,6 +92,9 @@ const Panier = ({navigation}) => {
   const selectedDateString = useSelector(state => state.cart.date);
   const selectedTime = useSelector(state => state.cart.time);
   const numero_commande = useSelector(state => state.order.numero_commande);
+
+  const {countDownNull, countdown, resetCountdown, resetForPaiementCountdown} = useCountdown();
+
 
   let userRole = user.role;
   const emailConfirmOrder = user.email;
@@ -377,8 +384,11 @@ const Panier = ({navigation}) => {
 
         // si status paid - je stop la boucle
         if (status === 'paid') {
+          // le countdown passe a null
+          countDownNull();
           navigation.navigate('success');
           clearInterval(intervalId);
+           
 
           // 1. je crée le paiement
           const paymentData = {
@@ -543,8 +553,13 @@ const Panier = ({navigation}) => {
           // stock anti gaspi
           cart.forEach(async item => {
             console.log(item);
-            await updateAntigaspiStock(item);
             await updateStock(item);
+            // await updateAntigaspiStock(item);
+            if (!item.antigaspi) {
+              await updateStock(item);
+            }
+            // je reset le countdown
+          resetCountdown();
           });
         } else if (status === 'unpaid') {
           // si status unpaid - retour en arriere
@@ -552,7 +567,8 @@ const Panier = ({navigation}) => {
           navigation.navigate('cancel');
           clearInterval(intervalId);
           // vider le panier
-          dispatch(clearCart());
+          // dispatch(clearCart());
+          resetCountdown()
         } else {
           console.log(`Status du paiement en attente ou inconnu: ${status}`);
         }
@@ -733,6 +749,8 @@ const Panier = ({navigation}) => {
         text2: `N'hésitez pas à ajouter des articles `,
       });
     } else {
+      //remets 20 min sur le countdown pour le paiement
+      resetForPaiementCountdown();
       // 2. je vérifie le stock des produits (hors antigaspi)
       const checkStock = async () => {
         for (const item of cart) {
@@ -798,9 +816,9 @@ const Panier = ({navigation}) => {
                   );
                   // Logique pour gérer le stock suffisant
                 } else {
-                  console.log(
-                    `Stock insuffisant pour le produit ${item.libelle}.`,
-                  );
+                  // console.log(
+                  //   `Stock insuffisant pour le produit ${item.libelle}.`,
+                  // );
                   return Toast.show({
                     type: 'error',
                     text1: `Le produit ${item.libelle} n'est plus disponible`,
@@ -992,6 +1010,108 @@ const handleApplyDiscount = async () => {
     }
   };
 
+  // J'ENELEVE LE PRODUIT DU PANIER
+  const removeAntigaspiProduct = productId => {
+    const product = cart.find(item => item.productId === productId);
+
+    const antigaspiCountBefore = cart.filter(item => item.antigaspi).length;
+
+    removehandler(productId, dispatch);
+    if (product && product.antigaspi) {
+      // getAddStockAntigaspi({
+      //   productId: product.productId,
+      //   quantityPurchased: product.qty,
+      // });
+
+      // Toast.show({
+      //   type: 'success',
+      //   text1: 'Produit supprimé du panier',
+      // });
+
+      axios
+        .put(`${API_BASE_URL}/getAddStockAntigaspi`, {
+          productId: product.productId,
+          quantityPurchased: product.qty,
+        })
+        .then(response => {
+          // console.log(
+          //   'Stock antigaspi mis à jour avec succès pour le produit',
+          //   product.libelle,
+          // );
+          Toast.show({
+            type: 'success',
+            text1: 'Produit supprimé du panier',
+          });
+        })
+        .catch(error => {
+          console.error(
+            'Erreur lors de la mise à jour du stock antigaspi pour le produit',
+            product.libelle,
+            ':',
+            error,
+          );
+        });
+      // console.log('antigaspiCountBefore', antigaspiCountBefore);
+    }
+  };
+  useEffect(() => {
+    const antigaspiCountAfter = cart.filter(item => item.antigaspi).length;
+    // console.log('antigaspiCountAfter', antigaspiCountAfter);
+
+    if (antigaspiCountAfter === 0) {
+      countDownNull();
+    }
+  }, [cart]); // Ici, cart est la dépendance de l'effet
+
+  // JE VIDE LE PANIER SI COMPTEUR EXPIRÉ = 0
+  const removeCart = () => {
+    if (countdown === 0) {
+      cart.forEach(async item => {
+        if (item.antigaspi) {
+          dispatch(removeFromCart({productId: item.productId}));
+          // Je remets le stock du produit
+          try {
+            const response = await axios.put(
+              `${API_BASE_URL}/getAddStockAntigaspi`,
+              {
+                productId: item.productId,
+                quantityPurchased: item.qty,
+              },
+            );
+
+            if (response.status === 200) {
+              console.log(
+                'Stock antigaspi mis à jour avec succès pour le produit',
+                item.libelle,
+              );
+            }
+          } catch (error) {
+            console.error(
+              'Erreur lors de la mise à jour du stock antigaspi pour le produit',
+              item.libelle,
+              ':',
+              error,
+            );
+          }
+
+        }
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (countdown === 0) {
+      removeCart();
+    }
+  }, [countdown, cart]);
+
+  //transforme le countdown en minutes
+  const formatCountdown = (seconds) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes} min ${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+  };
+
   return (
     <>
       <SafeAreaProvider
@@ -1130,39 +1250,65 @@ const handleApplyDiscount = async () => {
                               borderRadius: 10,
                               marginVertical: 5,
                             }}>
-                            <CartItem
-                              libelle={group.items[0].libelle}
-                              prix_unitaire={
-                                group.items[0].prix ||
-                                group.items[0].prix_unitaire
-                              }
-                              qty={group.items.reduce(
-                                (acc, item) => acc + item.qty,
-                                0,
-                              )}
-                              incrementhandler={() =>
-                                incrementhandler(
-                                  group.items[0].productId,
-                                  group.items[0].offre,
-                                )
-                              }
-                              decrementhandler={() =>
-                                decrementhandler(
-                                  group.items[0].productId,
-                                  dispatch,
-                                )
-                              }
-                              removehandler={() =>
-                                removehandler(
-                                  group.items[0].productId,
-                                  dispatch,
-                                )
-                              }
-                              // image={group.items[0].image}
-                              index={index}
-                              isFree={group.items[0].isFree}
-                              freeCount={group.freeCount}
-                            />
+                            {group.items[0].antigaspi ? (
+                              <>
+                                <CartItemAntigaspi
+                                  libelle={group.items[0].libelle}
+                                  prix_unitaire={
+                                    group.items[0].prix ||
+                                    group.items[0].prix_unitaire
+                                  }
+                                  qty={group.items.reduce(
+                                    (acc, item) => acc + item.qty,
+                                    0,
+                                  )}
+                                  removehandler={() =>
+                                    removeAntigaspiProduct(
+                                      group.items[0].productId,
+                                    )
+                                  }
+                                  index={index}
+                                  isFree={group.items[0].isFree}
+                                  freeCount={group.freeCount}
+                                />
+                                <View style={style.contentCountDown}>
+                                  <Text style={style.countDown}>Dans mon panier pour {formatCountdown(countdown)}</Text>
+                                </View>
+                              </>
+                            ) : (
+                              <CartItem
+                                libelle={group.items[0].libelle}
+                                prix_unitaire={
+                                  group.items[0].prix ||
+                                  group.items[0].prix_unitaire
+                                }
+                                qty={group.items.reduce(
+                                  (acc, item) => acc + item.qty,
+                                  0,
+                                )}
+                                incrementhandler={() =>
+                                  incrementhandler(
+                                    group.items[0].productId,
+                                    group.items[0].offre,
+                                  )
+                                }
+                                decrementhandler={() =>
+                                  decrementhandler(
+                                    group.items[0].productId,
+                                    dispatch,
+                                  )
+                                }
+                                removehandler={() =>
+                                  removehandler(
+                                    group.items[0].productId,
+                                    dispatch,
+                                  )
+                                }
+                                index={index}
+                                isFree={group.items[0].isFree}
+                                freeCount={group.freeCount}
+                              />
+                            )}
                           </View>
                         ))}
                       </View>

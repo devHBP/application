@@ -3,8 +3,10 @@ import React from 'react'
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { fonts, colors} from '../styles/styles'
 import Svg, { Path } from 'react-native-svg';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
-
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../config';
+import {AntiGaspi} from '../SVG/AntiGaspi';
+import {OffreSun} from '../SVG/OffreSun';
 
 const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty, prix_unitaire, isFree, freeCount, removehandler }) => {
 

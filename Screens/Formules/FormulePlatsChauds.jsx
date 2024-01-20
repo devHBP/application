@@ -8,13 +8,14 @@ import { getProductsByCategory, fetchOneProduct, fetchDessertIds, fetchBoissonId
 import { style } from '../../styles/formules'; 
 import { styles } from '../../styles/home'; 
 import FooterProfile from '../../components/FooterProfile';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../../config';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image'
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
 import Check from '../../SVG/Check';
 import axios from 'axios'
-
+import { useCountdown } from '../../components/CountdownContext';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 //fonctions
@@ -39,6 +40,9 @@ const FormulePoke = ({navigation}) => {
     const scrollViewRef = useRef(null);
 
     const cart = useSelector((state) => state.cart.cart);
+
+    const { resetCountdown} = useCountdown();
+
     const handleBack = () => {
         navigation.navigate('home')
       }
@@ -228,6 +232,7 @@ const FormulePoke = ({navigation}) => {
         qty: 1,
       }
       dispatch(addToCart(formule));
+      resetCountdown()
       navigation.navigate('panier')
     }
       

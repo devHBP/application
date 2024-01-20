@@ -8,7 +8,8 @@ import {updateUser} from '../reducers/authSlice';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {addDate, addTime} from '../reducers/cartSlice';
 import axios from 'axios';
-import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+import { API_BASE_URL } from '../config';
+// import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import DateLogo from '../SVG/DateLogo';
 
 const CustomDatePicker = () => {
@@ -183,7 +184,7 @@ const CustomDatePicker = () => {
             setTime(time);
             dispatch(addTime(formatTime(time.toISOString())));
             //converti en chaine de caractères
-            console.log('heure commande', formatTime(time));
+            //console.log('heure commande', formatTime(time));
             //console.log('selection date store redux:', selectedDateString)
             //console.log('selection date chaine de caractère:', selectedDateString)
           }}

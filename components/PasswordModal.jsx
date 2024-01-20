@@ -2,7 +2,8 @@ import { View, Text, Modal, TextInput, StyleSheet, Alert, TouchableOpacity } fro
 import React, { useState} from 'react';
 import { Button  } from 'react-native-paper'
 import {fonts, colors} from '../styles/styles'
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../config'; 
 import { useSelector, useDispatch } from 'react-redux'
 import axios from 'axios'
 

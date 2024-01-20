@@ -12,11 +12,13 @@ import { checkProductAvailability } from '../../Fonctions/fonctions';
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../../config';
 import FastImage from 'react-native-fast-image'
 import Check from '../../SVG/Check';
 import { getStyle } from '../../Fonctions/stylesFormule';
 import axios from 'axios'
+import { useCountdown } from '../../components/CountdownContext';
 
 const FormuleSandwich = ({navigation}) => {
 
@@ -35,6 +37,8 @@ const FormuleSandwich = ({navigation}) => {
     const scrollViewRef = useRef(null);
 
     const cart = useSelector((state) => state.cart.cart);
+
+    const { resetCountdown} = useCountdown();
 
     const handleBack = () => {
         navigation.navigate('home')
@@ -224,6 +228,7 @@ const FormuleSandwich = ({navigation}) => {
         qty: 1,
       }
       dispatch(addToCart(formule));
+      resetCountdown()
       navigation.navigate('panier')
     }
       

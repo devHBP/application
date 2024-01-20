@@ -12,7 +12,8 @@ import ArrowLeft from '../../SVG/ArrowLeft';
 //call API
 import { checkStockForSingleProduct } from '../../CallApi/api.js';
 import ProductCard from '../../components/ProductCard';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../../config';
 import FastImage from 'react-native-fast-image';
 import { getStyle } from '../../Fonctions/stylesFormule';
 

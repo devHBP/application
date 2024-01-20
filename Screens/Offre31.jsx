@@ -13,10 +13,12 @@ import FooterProfile from '../components/FooterProfile';
 import ModalePageOffre31 from '../components/ModalePageOffre';
 import ArrowLeft from '../SVG/ArrowLeft';
 import ProductCard from '../components/ProductCard';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../config';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import { getStyle } from '../Fonctions/stylesFormule';
 import FastImage from 'react-native-fast-image';
 import Check from '../SVG/Check';
+import { useCountdown } from '../components/CountdownContext';
 
 const Offre31 = ({navigation}) => {
   
@@ -30,6 +32,7 @@ const Offre31 = ({navigation}) => {
  
     const dispatch = useDispatch()
     const cart = useSelector((state) => state.cart.cart);
+    const { resetCountdown} = useCountdown();
 
     const handleBack = () => {
         navigation.navigate('home')
@@ -140,6 +143,7 @@ catch (error) {
 
 const handleCart = () => {
   setModalVisible(true);
+  resetCountdown()
 }
   return (
 
