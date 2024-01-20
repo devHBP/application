@@ -53,11 +53,15 @@ import {stylesInvite} from '../styles/invite';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ArrowLeft from '../SVG/ArrowLeft';
 import LottieView from 'lottie-react-native';
-import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+import { API_BASE_URL } from '../config';
+// import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Svg, {Path} from 'react-native-svg';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
-import {} from '../CallApi/api';
+
+import {getAddStockAntigaspi,} from '../CallApi/api';
 import {useCountdown} from '../components/CountdownContext';
+import CartItemAntigaspi from '../components/CardItemsAntiGaspi';
+
 //fonctions
 import {decrementhandler, removehandler} from '../Fonctions/fonctions';
 import CardPaiement from '../SVG/CardPaiement';
@@ -91,8 +95,9 @@ const Panier = ({navigation}) => {
   const selectedTime = useSelector(state => state.cart.time);
   const numero_commande = useSelector(state => state.order.numero_commande);
 
-  const {countDownNull, countdown, resetCountdown, resetForPaiementCountdown} =
-    useCountdown();
+
+  const {countDownNull, countdown, resetCountdown, resetForPaiementCountdown} = useCountdown();
+
 
   let userRole = user.role;
   const emailConfirmOrder = user.email;
@@ -382,10 +387,11 @@ const Panier = ({navigation}) => {
 
         // si status paid - je stop la boucle
         if (status === 'paid') {
-          navigation.navigate('success');
-          clearInterval(intervalId);
           // le countdown passe a null
           countDownNull();
+          navigation.navigate('success');
+          clearInterval(intervalId);
+
           // 1. je crée le paiement
           const paymentData = {
             method,
@@ -548,10 +554,15 @@ const Panier = ({navigation}) => {
           // stock normal
           // stock anti gaspi
           cart.forEach(async item => {
+
             // await updateAntigaspiStock(item);
             if (!item.antigaspi) {
               await updateStock(item);
             }
+
+            // je reset le countdown
+          resetCountdown();
+
           });
         } else if (status === 'unpaid') {
           // si status unpaid - retour en arriere
@@ -562,6 +573,7 @@ const Panier = ({navigation}) => {
           resetCountdown();
           // vider le panier
           // dispatch(clearCart());
+
         } else {
           console.log(`Status du paiement en attente ou inconnu: ${status}`);
         }
@@ -1108,6 +1120,7 @@ const Panier = ({navigation}) => {
               error,
             );
           }
+
         }
       });
     }
@@ -1120,12 +1133,12 @@ const Panier = ({navigation}) => {
   }, [countdown, cart]);
 
   //transforme le countdown en minutes
-  const formatCountdown = seconds => {
+
+  const formatCountdown = (seconds) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes} min ${
-      remainingSeconds < 10 ? '0' : ''
-    }${remainingSeconds}`;
+    return `${minutes} min ${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
+
   };
 
   return (
@@ -1288,10 +1301,9 @@ const Panier = ({navigation}) => {
                                   freeCount={group.freeCount}
                                 />
                                 <View style={style.contentCountDown}>
-                                  <Text style={style.countDown}>
-                                    Dans mon panier pour{' '}
-                                    {formatCountdown(countdown)}
-                                  </Text>
+
+                                  <Text style={style.countDown}>Dans mon panier pour {formatCountdown(countdown)}</Text>
+
                                 </View>
                               </>
                             ) : (

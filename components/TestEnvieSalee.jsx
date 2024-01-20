@@ -3,7 +3,6 @@ import React from 'react'
 import { styles} from '../styles/home'; 
 import { useNavigation } from '@react-navigation/native';
 import FastImage from 'react-native-fast-image';
-import {API_BASE_URL,} from '@env';
 
 const TestEnvieSalee = () => {
 

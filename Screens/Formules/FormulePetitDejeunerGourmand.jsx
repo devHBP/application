@@ -9,7 +9,8 @@ import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct } from '../../CallApi/api.js'
 import { style } from '../../styles/formules'; 
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../../config';
 
 const FormulePetitDejeunerGourmand = ({navigation}) => {
 

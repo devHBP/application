@@ -30,7 +30,8 @@ import CustomDatePicker from '../components/CustomDatePicker';
 import ArrowDown from '../SVG/ArrowDown';
 import LoaderHome from './LoaderHome';
 import SearchModal from '../components/SearchModal';
-import {API_BASE_URL} from '@env';
+// import {API_BASE_URL} from '@env';
+import { API_BASE_URL } from '../config';
 import Search from '../SVG/Search';
 import ProductFlatList from '../components/ProductFlatList';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
@@ -219,16 +220,16 @@ const Home = ({navigation}) => {
 
   //liste d'onglets differents si collab ou non
   const refs = {
-    Promos: useRef(null),
-    Baguettes: useRef(null),
-    Viennoiseries: useRef(null),
-    Formules: useRef(null),
+    'Promos': useRef(null),
+    'Baguettes': useRef(null),
+    'Viennoiseries': useRef(null),
+    'Formules': useRef(null),
     'Produits Salés': useRef(null),
-    Pâtisseries: useRef(null),
+    'Pâtisseries': useRef(null),
     'Boules et Pains Spéciaux': useRef(null),
     'Petits déjeuners': useRef(null),
-    Tartes: useRef(null),
-    Boissons: useRef(null),
+    'Tartes': useRef(null),
+    'Boissons': useRef(null),
     // 'Tarterie': useRef(null),
   };
 

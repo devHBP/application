@@ -11,7 +11,8 @@ import { colors, fonts} from '../styles/styles'
 import Svg, { Path } from 'react-native-svg';
 import { style } from '../styles/formules'; 
 import { Button} from 'react-native-paper'
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../config';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image';
 import { useCountdown } from '../components/CountdownContext';
 
@@ -76,7 +77,9 @@ const ProductDetails = ({navigation, route}) => {
     
     const incrementhandler = async () => {
 
-     
+
+      // console.log(cart)
+
       const isCurrentProductOffreSun = productInCart && productInCart.type_produit === 'offreSUN';
 
       const isOffreSunInCart = cart.some(item => item.type_produit === 'offreSUN');
@@ -106,6 +109,7 @@ const ProductDetails = ({navigation, route}) => {
         const remainingStock = stockAvailable[0].quantite - productQuantity;
   
         if (stockAvailable.length > 0 && remainingStock > 0) {
+          resetCountdown()
           dispatch(addToCart({ productId: product.productId, libelle: product.libelle, image: product.image, prix_unitaire: product.prix_unitaire, qty: 1 , offre: product.offre}));
           resetCountdown()
           if (product.offre && product.offre.startsWith('offre31')) {

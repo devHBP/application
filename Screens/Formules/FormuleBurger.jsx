@@ -9,7 +9,8 @@ import { getProductsByCategory, fetchOneProduct, fetchDessertIds, fetchBoissonId
 import { style } from '../../styles/formules'; 
 import { styles } from '../../styles/home'; 
 import FooterProfile from '../../components/FooterProfile';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../../config';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image'
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';

@@ -4,8 +4,8 @@ import { View, Text,TextInput, StyleSheet, Alert, TouchableOpacity } from 'react
 import axios from 'axios';
 import ArrowLeft from '../SVG/ArrowLeft';
 import { inputStyling, colors, fonts } from '../styles/styles'
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
-
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../config';
 const inputOptions = {
   style:inputStyling,
   mode:"outlined",

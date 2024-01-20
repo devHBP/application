@@ -1,14 +1,18 @@
 import {View, Text, Button, Linking, Platform, StyleSheet, Pressable} from 'react-native';
 import React from 'react';
-import {APPSTORE_URL, PLAYSTORE_URL} from '@env';
+import {APPSTORE_URL, PLAYSTORE_URL}  from '../config'
 import {colors, fonts} from '../styles/styles';
 
 const AppUpdateChecker = () => {
+
+  // console.log('page mise à jour')
+
   //verif version app store
   const appStoreUrl = Platform.select({
     ios: APPSTORE_URL,
     android: PLAYSTORE_URL,
   });
+
 
   const openLink = url => {
     if (Platform.OS === 'android') {

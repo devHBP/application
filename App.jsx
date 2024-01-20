@@ -1,9 +1,10 @@
 import React from 'react';
-import { Provider } from 'react-redux';
+import Main from './Main';
+import {Provider} from 'react-redux';
 import store from './store';
 import FCMManager from './components/FCMManager';
 import { CountdownProvider } from './components/CountdownContext';  
-import Main from './Main';
+
 
 const App = () => {
   return (

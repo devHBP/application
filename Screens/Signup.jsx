@@ -28,8 +28,8 @@ import {
   validateTelephone,
 } from '../validation/validationInput';
 import ArrowLeft from '../SVG/ArrowLeft';
-import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
-
+// import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+import { API_BASE_URL } from '../config';
 
 const inputOptions = {
   style: inputStyling,
@@ -96,7 +96,9 @@ const Signup = ({navigation}) => {
       telephone,
     };
 
-    //console.log('clientData', clientData);
+
+    // console.log('clientData', clientData);
+
 
     let errors = [];
 
@@ -122,7 +124,9 @@ const Signup = ({navigation}) => {
 
     try {
       const response = await axios.post(`${API_BASE_URL}/signup`, clientData);
-      //console.log('response.data', response.data);
+
+      // console.log('response.data', response.data);
+
 
       const userId = response.data.id;
       const user = {

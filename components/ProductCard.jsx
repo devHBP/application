@@ -11,9 +11,13 @@ import {useSelector, useDispatch} from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {fonts, colors} from '../styles/styles';
 import ModaleOffre31 from '../components/ModaleOffre31';
-import Svg, {Path} from 'react-native-svg';
-import {API_BASE_URL, API_BASE_URL_ANDROID} from '@env';
-import FastImage from 'react-native-fast-image';
+
+import Svg, { Path } from 'react-native-svg';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
+import { API_BASE_URL } from '../config'; 
+import FastImage from 'react-native-fast-image'
+import { useCountdown } from '../components/CountdownContext';
+
 //call API
 import {checkStockForSingleProduct} from '../CallApi/api.js';
 //fonctions
@@ -67,9 +71,68 @@ const ProductCard = ({
     return total;
   }, 0);
 
-  useEffect(() => {
-    const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
-  }, [cart]);
+
+    useEffect(() => {
+      const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
+    }, [cart]);
+ 
+
+    const handleAcceptOffer = () => {
+      dispatch(addFreeProductToCart(product));
+    };
+   
+const incrementhandler = async () => {
+  if (currentStock === 0){
+    return Toast.show({
+      type: 'error',
+      text1: `Victime de son succès`,
+      text2: 'Plus de stock disponible' 
+    });
+  }
+  try {
+    const stockAvailable = await checkStockForSingleProduct(id);
+    
+    // Get the product from the cart
+    const productInCart = cart.find((item) => item.productId === id);
+   
+    // Calculate the remaining stock after accounting for the items in the cart
+  const remainingStock = stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
+
+
+  if (stockAvailable.length > 0 && remainingStock > 0) {
+
+
+    const newProduct = { 
+      productId: id, 
+      libelle, 
+      image, 
+      prix_unitaire: prix, 
+      qty: 1, 
+      offre: offre,
+      isFree: false,
+      lastAdded: false  
+    };
+    dispatch(addToCart(newProduct));
+    resetCountdown()
+
+    // dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre, isFree: false}));
+
+    // Maintenant, récupérons à nouveau les produits du panier avec la même offre, en tenant compte de la nouvelle pizza
+    const updatedCart = [...cart, { productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre, isFree: false }];
+
+
+    if (offre && offre.startsWith('offre31_Petite')) {
+
+    const sameOfferProducts = updatedCart.filter((item) => item.offre && item.offre.startsWith('offre31_Petite'));
+  
+    // Calculez la quantité totale pour cette offre spécifique APRÈS avoir ajouté la nouvelle pizza
+    const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
+  
+    // Si la quantité totale est un multiple de 4, rendez la dernière pizza ajoutée gratuite
+    if (totalQuantity % 4 === 0) {
+      dispatch(makeLastSmallPizzaFree());
+    }
+
 
   const handleAcceptOffer = () => {
     dispatch(addFreeProductToCart(product));

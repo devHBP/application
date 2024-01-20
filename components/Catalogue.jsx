@@ -5,8 +5,8 @@ import { Button } from 'react-native-paper';
 import axios from 'axios';
 import RNFS from 'react-native-fs';
 import { byteLength, fromByteArray, toByteArray } from 'base64-js';
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
-
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../config';
 
 
 const Catalogue = () => {

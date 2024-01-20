@@ -10,8 +10,9 @@ import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Platform} from 'react-native';
-import {PLAY_STORE_VERSION} from '@env';
-import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+// import {PLAY_STORE_VERSION} from '@env';
+// import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
+import { API_BASE_URL } from './config';
 
 const configureAxiosHeaders = async () => {
   const token = await AsyncStorage.getItem('userToken');

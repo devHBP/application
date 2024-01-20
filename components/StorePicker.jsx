@@ -11,7 +11,8 @@ import { styles } from '../styles/home';
 
 //import { pickerSelectStyles } from '../styles/home';
 
-import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
+import { API_BASE_URL } from '../config'; 
 import Location from '../SVG/Location';
 
 const StorePicker = () => {

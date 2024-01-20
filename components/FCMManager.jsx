@@ -3,7 +3,8 @@ import { Alert } from 'react-native';
 import messaging from '@react-native-firebase/messaging';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
-import { API_BASE_URL } from '@env';
+// import { API_BASE_URL } from '@env';
+import { API_BASE_URL } from '../config';
 
 const FCMManager = () => {
     const user = useSelector((state) => state.auth.user);
