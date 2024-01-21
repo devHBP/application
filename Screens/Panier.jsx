@@ -40,7 +40,6 @@ import {
   fetchAllProductsClickAndCollect,
   updateAntigaspiStock,
   updateStock,
-  getAddStockAntigaspi,
 } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ModaleOffre31 from '../components/ModaleOffre31';
@@ -68,7 +67,7 @@ import CardPaiement from '../SVG/CardPaiement';
 import ModaleOffreSUN from '../components/ModaleOffreSUN';
 import {DeleteCode} from '../SVG/DeleteCode';
 import {ApplyCode} from '../SVG/ApplyCode';
-import CartItemAntigaspi from '../components/CardItemsAntiGaspi';
+
 
 const Panier = ({navigation}) => {
   const dispatch = useDispatch();

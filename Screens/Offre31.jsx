@@ -34,7 +34,6 @@ const Offre31 = ({navigation}) => {
     const cart = useSelector((state) => state.cart.cart);
     const { resetCountdown} = useCountdown();
 
-    const { resetCountdown} = useCountdown();
 
 
     const handleBack = () => {

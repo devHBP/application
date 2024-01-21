@@ -37,8 +37,6 @@ const FormulePainBagnat = ({navigation}) => {
 
     const cart = useSelector((state) => state.cart.cart);
 
-    const { resetCountdown} = useCountdown();
-
     const handleBack = () => {
         navigation.navigate('home')
       }

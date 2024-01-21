@@ -24,7 +24,7 @@ import {checkStockForSingleProduct} from '../CallApi/api.js';
 import {decrementhandler} from '../Fonctions/fonctions';
 import InfoProduct from '../SVG/InfoProduct';
 import ModaleIngredients from './ModaleIngredients';
-import { useCountdown } from '../components/CountdownContext';
+
 
 
 const ProductCard = ({
@@ -132,75 +132,6 @@ const incrementhandler = async () => {
     if (totalQuantity % 4 === 0) {
       dispatch(makeLastSmallPizzaFree());
     }
-
-
-  const handleAcceptOffer = () => {
-    dispatch(addFreeProductToCart(product));
-  };
-
-  const incrementhandler = async () => {
-    if (currentStock === 0) {
-      return Toast.show({
-        type: 'error',
-        text1: `Victime de son succès`,
-        text2: 'Plus de stock disponible',
-      });
-    }
-    try {
-      const stockAvailable = await checkStockForSingleProduct(id);
-
-      // Get the product from the cart
-      const productInCart = cart.find(item => item.productId === id);
-
-      // Calculate the remaining stock after accounting for the items in the cart
-      const remainingStock =
-        stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
-
-      if (stockAvailable.length > 0 && remainingStock > 0) {
-        const newProduct = {
-          productId: id,
-          libelle,
-          image,
-          prix_unitaire: prix,
-          qty: 1,
-          offre: offre,
-          isFree: false,
-          lastAdded: false,
-        };
-        dispatch(addToCart(newProduct));
-        resetCountdown()
-
-        // dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre, isFree: false}));
-
-        // Maintenant, récupérons à nouveau les produits du panier avec la même offre, en tenant compte de la nouvelle pizza
-        const updatedCart = [
-          ...cart,
-          {
-            productId: id,
-            libelle,
-            image,
-            prix_unitaire: prix,
-            qty: 1,
-            offre: offre,
-            isFree: false,
-          },
-        ];
-
-        if (offre && offre.startsWith('offre31_Petite')) {
-          const sameOfferProducts = updatedCart.filter(
-            item => item.offre && item.offre.startsWith('offre31_Petite'),
-          );
-
-          // Calculez la quantité totale pour cette offre spécifique APRÈS avoir ajouté la nouvelle pizza
-          const totalQuantity = sameOfferProducts.reduce(
-            (total, product) => total + product.qty,
-            0,
-          );
-
-          // Si la quantité totale est un multiple de 4, rendez la dernière pizza ajoutée gratuite
-          if (totalQuantity % 4 === 0) {
-            dispatch(makeLastSmallPizzaFree());
-          }
         } else if (offre && offre.startsWith('offre31_Grande')) {
           const sameOfferProducts = updatedCart.filter(
             item => item.offre && item.offre.startsWith('offre31_Grande'),

@@ -11,19 +11,6 @@ import {OffreSun} from '../SVG/OffreSun';
 
 const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty, prix_unitaire, isFree, freeCount, removehandler }) => {
 
-
-const CartItem = ({
-  libelle,
-  prix,
-  incrementhandler,
-  decrementhandler,
-  image,
-  qty,
-  prix_unitaire,
-  isFree,
-  freeCount,
-  removehandler,
-}) => {
   return (
     <View style={styles.container}>
       {/* <Image source={{ uri: `${API_BASE_URL}/${image}` }} style={styles.image} 
