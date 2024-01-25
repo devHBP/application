@@ -480,7 +480,7 @@ const Orders = ({navigation}) => {
                           </View>
                         );
                       } else if (type_produit === 'offreSUN') {
-                        // si produit antigaspi
+                        // si baguette gratuite
                         return (
                           <View key={key}>
                             <View style={style.orderDetails}>
