@@ -324,6 +324,15 @@ export const updateStock = async item => {
 //   }
 // };
 
-
+// recuperer info prefcommande d'un user
+export const getPrefCommande = async (userId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/getInfoPrefCommande/${userId}`);
+    return response.data;
+  } catch (error) {
+    console.error('Une erreur s est produite lors de la récupération des infos du user :', error);
+    return null;
+  }
+};
 
 

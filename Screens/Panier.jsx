@@ -29,7 +29,6 @@ import {
 } from '../reducers/orderSlice';
 import CartItem from '../components/CardItems';
 import CardItemFormule from '../components/CardItemsFormule';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {WebView} from 'react-native-webview';
 import {
@@ -40,6 +39,7 @@ import {
   fetchAllProductsClickAndCollect,
   updateAntigaspiStock,
   updateStock,
+  getPrefCommande
 } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ModaleOffre31 from '../components/ModaleOffre31';
@@ -52,12 +52,11 @@ import {stylesInvite} from '../styles/invite';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import ArrowLeft from '../SVG/ArrowLeft';
 import LottieView from 'lottie-react-native';
-import { API_BASE_URL } from '../config';
+import {API_BASE_URL} from '../config';
 // import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import Svg, {Path} from 'react-native-svg';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 
-import {getAddStockAntigaspi,} from '../CallApi/api';
 import {useCountdown} from '../components/CountdownContext';
 import CartItemAntigaspi from '../components/CardItemsAntiGaspi';
 
@@ -67,7 +66,7 @@ import CardPaiement from '../SVG/CardPaiement';
 import ModaleOffreSUN from '../components/ModaleOffreSUN';
 import {DeleteCode} from '../SVG/DeleteCode';
 import {ApplyCode} from '../SVG/ApplyCode';
-
+import ModaleModifProfile from '../components/ModaleModifProfile';
 
 const Panier = ({navigation}) => {
   const dispatch = useDispatch();
@@ -86,6 +85,9 @@ const Panier = ({navigation}) => {
   const [erreurCodePromo, setErreurCodePromo] = useState(false);
   const [usedPromoCodes, setUsedPromoCodes] = useState([]);
   const [erreurCodePromoUsed, setErreurCodePromoUsed] = useState(false);
+  const [modalProfile, setModalProfile] = useState(false);
+  const [appliedPromo, setAppliedPromo] = useState(null);
+  const [currentPromoCode, setCurrentPromoCode] = useState(null);
 
   const cart = useSelector(state => state.cart.cart); //ou cartItems
   const user = useSelector(state => state.auth.user);
@@ -94,9 +96,11 @@ const Panier = ({navigation}) => {
   const selectedTime = useSelector(state => state.cart.time);
   const numero_commande = useSelector(state => state.order.numero_commande);
 
+  const {countDownNull, countdown, resetCountdown, resetForPaiementCountdown} =
+    useCountdown();
 
-  const {countDownNull, countdown, resetCountdown, resetForPaiementCountdown} = useCountdown();
-
+  // panier vide
+  const isCartEmpty = cart.length === 0;
 
   let userRole = user.role;
   const emailConfirmOrder = user.email;
@@ -332,18 +336,6 @@ const Panier = ({navigation}) => {
     fetchFamilies();
   }, [cart, user.storeId]);
 
-  const createPaiement = async paymentData => {
-    try {
-      const paiement = await axios.post(
-        `${API_BASE_URL}/createPaiement`,
-        paymentData,
-      );
-      // console.log('paiement data', paiement.data);
-      return paiement.data;
-    } catch (error) {
-      console.error('Erreur lors de la création du paiement :', error);
-    }
-  };
   const createOrder = async orderData => {
     try {
       const response = await axios.post(
@@ -381,7 +373,7 @@ const Panier = ({navigation}) => {
         const response = await axios.get(
           `${API_BASE_URL}/paiementStatus?sessionId=${sessionId}`,
         );
-        const {status, transactionId, method} = response.data;
+        const {status, transactionId, method, orderID} = response.data;
         // retour : response data {"status": "paid", "transactionId": "pi_3NOFjcGnFAjiWNhK0KP6l8Nl"}
 
         // si status paid - je stop la boucle
@@ -391,188 +383,25 @@ const Panier = ({navigation}) => {
           navigation.navigate('success');
           clearInterval(intervalId);
 
-          // 1. je crée le paiement
-          const paymentData = {
-            method,
-            status,
-            transactionId,
-          };
-          const respPaiement = await createPaiement(paymentData);
-
-          // 2. je crée la commande
-
-          //formater la date chaine de caractère -> format ISO
-          // à l'heure 0:00
-          const [day, month, year] = selectedDateString.split('/').map(Number);
-          const formattedDate = new Date(
-            Date.UTC(year, month - 1, day, 0, 0, 0),
-          );
-          const dateForDatabase = formattedDate.toISOString();
-
-          //prix Sun si collaborateur
-          // totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
-
-          //pour ne pas cumuler deux offres
-          let adjustedTotalPrice = 0;
-          cart.forEach(product => {
-            // Utilisez product.prix si c'est une formule, sinon utilisez product.prix_unitaire
-            let adjustedPrice =
-              product.type === 'formule' ? product.prix : product.prix_unitaire;
-
-            //si pas de produit anti gaspi
-            if (user.role === 'SUNcollaborateur' && !product.antigaspi) {
-              adjustedPrice *= 0.8;
-            }
-
-            adjustedTotalPrice += adjustedPrice * product.qty;
-          });
-
-          totalPrice = adjustedTotalPrice.toFixed(2);
-          const orderData = {
-            // je veux rajouter le paymentID dans orderData -
-            // qui est dans la reponse de la fonction createPaiement: paiement data {"createdAt": "2024-01-06T00:59:24.922Z",
-            // "method": "card", "paymentId": 26, "status": "paid", "transactionId": "pi_3OVDcWGnFAjiWNhK0Nv3ym6l", "updatedAt": "2024-01-06T00:59:24.922Z"}
-            cart: cart,
-            userRole: user.role,
-            firstname_client: user.firstname,
-            lastname_client: user.lastname,
-            prix_total: totalPrice,
-            date: dateForDatabase,
-            heure: selectedTime,
-            userId: user.userId,
-            storeId: selectStore,
-            slotId: null,
-            promotionId: null,
-            paymentMethod: 'card' ? 'online' : 'onsite',
-            //plus utilisé
-            //transforme mon array de productsIds en chaine de caractères
-            //productIdsString: cartProductId.join(",")
-
-            //plus utilisé
-            //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty }))
-
-            products: (() => {
-              let products = [];
-              let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
-
-              // Traitement des produits fusionnés avec des offres (3+1)
-              aggregatedCartItems.forEach(item => {
-                const productData = {
-                  productId: item.productId,
-                  quantity: item.qty,
-                  prix_unitaire: item.prix_unitaire,
-                };
-
-                if (item.isFree) {
-                  productData.offre = item.offre;
-                }
-
-                products.push(productData);
-                processedProductIds.push(item.productId); // Ajoutez l'ID du produit à la liste des produits traités
-              });
-
-              cart.forEach(item => {
-                // Si l'ID du produit a déjà été traité, sautez ce produit
-                //pour eviter les doublons dans le panier
-                if (processedProductIds.includes(item.productId)) return;
-
-                // Traitement des produits de type 'formule'
-                if (item.type === 'formule') {
-                  ['option1', 'option2', 'option3'].forEach(option => {
-                    if (item[option]) {
-                      products.push({
-                        productId: item[option].productId,
-                        quantity: item.qty,
-                        formule: item.libelle,
-                        category: item[option].categorie,
-                      });
-                    }
-                  });
-                }
-
-                // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée ou quil y es tune offre, mais c'est un produit antigaspi donc un seul produit)
-                else if (!item.offre || (item.offre && item.qty < 4)) {
-                  if (item.productId) {
-                    products.push({
-                      productId: item.productId,
-                      quantity: item.qty,
-                      prix_unitaire: item.prix_unitaire,
-                    });
-                  }
-                }
-              });
-
-              return products;
-            })(),
-          };
-          // console.log('orderdata', orderData);
-
-          const createorder = await createOrder(orderData);
-          // console.log('createorder', createorder);
-
-          // 3. je mets à jour le paymentId dans la commande
-          const numero_commande = createorder.numero_commande;
-          dispatch(setNumeroCommande(numero_commande));
-
-          // console.log('respPaiement', respPaiement);
-          const paymentId = respPaiement.paymentId;
-          // console.log('paymentId', paymentId);
-          // console.log('numero_commande', numero_commande);
-
-          const updateData = {numero_commande, status, paymentId};
-
-          const response = await axios.post(
-            `${API_BASE_URL}/updateOrder`,
-            updateData,
-          );
-          // console.log('response updateOrder', response.data);
-
-          // console.log('paiement ok');
-          // console.log('commande créée');
-          // console.log('commande mise à jour');
-
-          //4. récuperer le magasin du user = userId - le store du user
-          const callApi = await axios.get(
-            `${API_BASE_URL}/getOneStore/${user.storeId}`,
-          );
-          // console.log('data', callApi.data);
-          const point_de_vente = callApi.data.nom_magasin;
-
-          // 5. envoi de l'email de confirmation de commande
-          const res = await axios.post(`${API_BASE_URL}/confirmOrder`, {
-            email: emailConfirmOrder,
-            firstname: firstnameConfirmOrder,
-            numero_commande,
-            date: orderData.date,
-            point_de_vente,
-          });
-
-          // console.log('envoi de l email', res.data);
-
-          // 6. je mets à jour mon stock
-          // stock normal
-          // stock anti gaspi
+          // je mets à jour mon stock normal
           cart.forEach(async item => {
-
-            // await updateAntigaspiStock(item);
             if (!item.antigaspi) {
               await updateStock(item);
             }
-
-            // je reset le countdown
-          resetCountdown();
-
           });
+          // vider le panier 
+          dispatch(clearCart());
         } else if (status === 'unpaid') {
           // si status unpaid - retour en arriere
-          // pas de commande a créer
           navigation.navigate('cancel');
           clearInterval(intervalId);
           // je reset le countdown
           resetCountdown();
-          // vider le panier
-          // dispatch(clearCart());
 
+          // suppression de la commande (orderId)
+          const deleteResponse = await axios.delete(
+            `${API_BASE_URL}/deleteOneOrder/${orderID}`,
+          );
         } else {
           console.log(`Status du paiement en attente ou inconnu: ${status}`);
         }
@@ -584,6 +413,17 @@ const Panier = ({navigation}) => {
       }
     }, 5000);
   };
+
+  const verfiPrefCommande = async (userId) => {
+    const prefCommande = await getPrefCommande(userId);
+    if (prefCommande.preference_commande == null){
+      setModalProfile(true)
+    }
+  }
+  useEffect(() => {
+    verfiPrefCommande(user.userId)
+  }, []);
+
 
   // 1. je clicque sur le bouton "En ligne"
   const handleConfirm = async newPaiement => {
@@ -745,7 +585,6 @@ const Panier = ({navigation}) => {
           text2: `N'hésitez pas à ajouter des articles `,
         });
       }
-      return;
     } else if (totalPrice < 0.5) {
       return Toast.show({
         type: 'error',
@@ -843,6 +682,114 @@ const Panier = ({navigation}) => {
       };
       checkStockAntiGaspi();
 
+      // creation de la commande
+      const [day, month, year] = selectedDateString.split('/').map(Number);
+      const formattedDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+      const dateForDatabase = formattedDate.toISOString();
+
+      //prix Sun si collaborateur
+      // totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
+
+      //pour ne pas cumuler deux offres
+      let adjustedTotalPrice = 0;
+      cart.forEach(product => {
+        // Utilisez product.prix si c'est une formule, sinon utilisez product.prix_unitaire
+        let adjustedPrice =
+          product.type === 'formule' ? product.prix : product.prix_unitaire;
+
+        //si pas de produit anti gaspi
+        if (user.role === 'SUNcollaborateur' && !product.antigaspi) {
+          adjustedPrice *= 0.8;
+        }
+
+        adjustedTotalPrice += adjustedPrice * product.qty;
+      });
+
+      totalPrice = adjustedTotalPrice.toFixed(2);
+      const orderData = {
+        // je veux rajouter le paymentID dans orderData -
+        // qui est dans la reponse de la fonction createPaiement: paiement data {"createdAt": "2024-01-06T00:59:24.922Z",
+        // "method": "card", "paymentId": 26, "status": "paid", "transactionId": "pi_3OVDcWGnFAjiWNhK0Nv3ym6l", "updatedAt": "2024-01-06T00:59:24.922Z"}
+        cart: cart,
+        userRole: user.role,
+        firstname_client: user.firstname,
+        lastname_client: user.lastname,
+        prix_total: totalPrice,
+        date: dateForDatabase,
+        heure: selectedTime,
+        userId: user.userId,
+        storeId: selectStore,
+        slotId: null,
+        promotionId: null,
+        paymentMethod: 'card' ? 'online' : 'onsite',
+        //plus utilisé
+        //transforme mon array de productsIds en chaine de caractères
+        //productIdsString: cartProductId.join(",")
+
+        //plus utilisé
+        //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty }))
+
+        products: (() => {
+          let products = [];
+          let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
+
+          // Traitement des produits fusionnés avec des offres (3+1)
+          aggregatedCartItems.forEach(item => {
+            const productData = {
+              productId: item.productId,
+              quantity: item.qty,
+              prix_unitaire: item.prix_unitaire,
+            };
+
+            if (item.isFree) {
+              productData.offre = item.offre;
+            }
+
+            products.push(productData);
+            processedProductIds.push(item.productId); // Ajoutez l'ID du produit à la liste des produits traités
+          });
+
+          cart.forEach(item => {
+            // Si l'ID du produit a déjà été traité, sautez ce produit
+            //pour eviter les doublons dans le panier
+            if (processedProductIds.includes(item.productId)) return;
+
+            // Traitement des produits de type 'formule'
+            if (item.type === 'formule') {
+              ['option1', 'option2', 'option3'].forEach(option => {
+                if (item[option]) {
+                  products.push({
+                    productId: item[option].productId,
+                    quantity: item.qty,
+                    formule: item.libelle,
+                    category: item[option].categorie,
+                  });
+                }
+              });
+            }
+
+            // Traitement des produits réguliers (qui n'ont pas d'offre ou dont l'offre n'a pas été utilisée ou quil y es tune offre, mais c'est un produit antigaspi donc un seul produit)
+            else if (!item.offre || (item.offre && item.qty < 4)) {
+              if (item.productId) {
+                products.push({
+                  productId: item.productId,
+                  quantity: item.qty,
+                  prix_unitaire: item.prix_unitaire,
+                });
+              }
+            }
+          });
+
+          return products;
+        })(),
+      };
+      // console.log('orderdata', orderData);
+      setCurrentPromoCode(null); // je remets à null l'utilisation des codes promo
+      const createorder = await createOrder(orderData);
+      console.log('createOrder', createorder);
+      const orderId = createorder.orderId;
+      const numero_commande = createorder.numero_commande;
+
       // 4. je prépare les infos pour stripe : orderinfo
       const info = {
         userRole,
@@ -853,6 +800,8 @@ const Panier = ({navigation}) => {
         totalQuantity,
         dateForDatabase,
         paiement,
+        orderId,
+        numero_commande,
       };
 
       // 5. j'envoi ces info pouvrir une session Stripe
@@ -868,75 +817,46 @@ const Panier = ({navigation}) => {
     }
   };
 
-  // Promotion
-  // const handleApplyDiscount = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       `${API_BASE_URL}/promocodes/${promoCode}`,
-  //     );
-  //     const data = response.data;
-  //    // console.log('data', data);
-
-  //     if (usedPromoCodes.includes(promoCode)) {
-  //       // console.log('Ce code promo a déjà été utilisé.');
-  //       setErreurCodePromoUsed(true);
-  //       // console.log('code promo utilisé', usedPromoCodes)
-
-  //       return;
-  //     }
-  //     // Vérifier si le code promo existe et est actif
-  //     if (!data || !data.active) {
-  //       console.log('Code promo invalide ou non actif.');
-  //       return; // Sortir de la fonction si le code promo n'est pas valide
-  //     }
-
-  //     // Appliquer la réduction
-  //     const percentage = data.percentage || 0;
-  //     const updatedCart = cart.map(item => {
-  //       const reducedPrice =
-  //         item.prix_unitaire - (item.prix_unitaire * percentage) / 100;
-  //       return {
-  //         ...item,
-  //         originalPrice: item.prix_unitaire,
-  //         prix_unitaire: reducedPrice >= 0 ? reducedPrice : item.prix_unitaire, // Eviter les prix négatifs
-  //       };
-  //     });
-
-  //     dispatch(updateCart(updatedCart));
-  //     setPromoCode('');
-  //     setUsedPromoCodes([...usedPromoCodes, promoCode]);
-  //     setErreurCodePromoUsed(false);
-  //     setErreurCodePromo(false);
-  //     // console.log('Réduction appliquée avec succès.');
-  //     // console.log('code promo utilisé', usedPromoCodes)
-  //   } catch (error) {
-  //     if (error.response && error.response.status === 404) {
-  //       // Gérer spécifiquement l'erreur 404
-  //       // console.log('Code promo invalide ou non existant.');
-  //       setErreurCodePromo(true); // Afficher un message d'erreur dans l'interface utilisateur
-  //     } else {
-  //       // Gérer les autres erreurs
-  //       console.error("Erreur lors de l'application du code promo:", error);
-  //     }
-  //   }
-  // };
 
   // Test avec montant fixe et pourcentage
   const handleApplyDiscount = async () => {
+    if (currentPromoCode) {
+      alert("Un code promo est déjà appliqué à cette commande.");
+      return;
+    }
     try {
       const response = await axios.post(`${API_BASE_URL}/handleApplyDiscount`, {
         promoCode,
         cartItems: cart,
       });
-  
       const updatedCart = response.data;
       dispatch(updateCart(updatedCart));
       setPromoCode('');
-     
-      console.log('Réduction appliquée avec succès.');
-    } catch (error) {
+
+      // Déterminer le type de réduction et la stocker
+      const updatedCartItems = response.data;
+      const promoInfo = updatedCartItems[0].promo;
+
+      let promoType, promoValue;
+      if (promoInfo && promoInfo.percentage != null) {
+        promoType = 'percentage';
+        promoValue = promoInfo.percentage;
+        // console.log('Type de promo : pourcentage');
+      } else if (promoInfo && promoInfo.fixedAmount != null) {
+        promoType = 'fixedAmount';
+        promoValue = promoInfo.fixedAmount;
+        // console.log('Type de promo : montant fixe');
+      }
+  
+      setAppliedPromo({ code: promoCode, type: promoType, value: promoValue });
+      setCurrentPromoCode(promoCode);
+        } catch (error) {
       if (error.response && error.response.status === 400) {
-        console.log(error.response.data.message);
+        // console.log(error.response.data.message);
+        return Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
       } else {
         console.error("Erreur lors de l'application du code promo:", error);
       }
@@ -945,17 +865,15 @@ const Panier = ({navigation}) => {
 
   // Restaurer le prix d'origine
   const handleRemoveDiscount = () => {
-    const updatedCart = cart.map(item => ({
+    const restoredCart = cart.map(item => ({
       ...item,
-      prix_unitaire: item.originalPrice,
+      prix_unitaire: item.originalPrice || item.prix_unitaire, 
     }));
-
-    dispatch(updateCart(updatedCart));
+  
+    dispatch(updateCart(restoredCart));
+    setAppliedPromo(null)
+    setCurrentPromoCode(null);
     setPromoCode('');
-    setErreurCodePromo(false);
-    setErreurCodePromoUsed(false);
-    setUsedPromoCodes([]);
-    // console.log('code promo utilisé', usedPromoCodes)
   };
 
   //filtrage si formule ou produits
@@ -1119,7 +1037,6 @@ const Panier = ({navigation}) => {
               error,
             );
           }
-
         }
       });
     }
@@ -1133,11 +1050,12 @@ const Panier = ({navigation}) => {
 
   //transforme le countdown en minutes
 
-  const formatCountdown = (seconds) => {
+  const formatCountdown = seconds => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
-    return `${minutes} min ${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-
+    return `${minutes} min ${
+      remainingSeconds < 10 ? '0' : ''
+    }${remainingSeconds}`;
   };
 
   return (
@@ -1300,9 +1218,10 @@ const Panier = ({navigation}) => {
                                   freeCount={group.freeCount}
                                 />
                                 <View style={style.contentCountDown}>
-
-                                  <Text style={style.countDown}>Dans mon panier pour {formatCountdown(countdown)}</Text>
-
+                                  <Text style={style.countDown}>
+                                    Dans mon panier pour{' '}
+                                    {formatCountdown(countdown)}
+                                  </Text>
                                 </View>
                               </>
                             ) : (
@@ -1357,7 +1276,7 @@ const Panier = ({navigation}) => {
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
-                      gap: 20,
+                      gap: 10,
                       justifyContent: 'center',
                       marginVertical: 10,
                     }}>
@@ -1379,15 +1298,29 @@ const Panier = ({navigation}) => {
                         backgroundColor: colors.color6,
                       }}
                     />
-
-                    <TouchableOpacity onPress={handleApplyDiscount}>
-                      <ApplyCode color={colors.color9} />
+                    <TouchableOpacity 
+                        onPress={handleApplyDiscount}   
+                        disabled={isCartEmpty}
+                      >
+                      <ApplyCode color={isCartEmpty? colors.color3 : colors.color9} />
                     </TouchableOpacity>
 
-                    <TouchableOpacity onPress={handleRemoveDiscount}>
-                      <DeleteCode />
+                    <TouchableOpacity 
+                        onPress={handleRemoveDiscount}
+                        disabled={isCartEmpty}
+                        >
+                      <DeleteCode color={isCartEmpty? colors.color3 : colors.color5}/>
                     </TouchableOpacity>
                   </View>
+                  {appliedPromo && !isCartEmpty && (
+                  <Text style={{ color:colors.color2, fontSize:12 }}>
+                    Réduction de {
+                      appliedPromo.type === 'percentage' ? 
+                      `${appliedPromo.value}%` : 
+                      `${appliedPromo.value}€`
+                    } sur votre panier
+                  </Text>
+                )}
                   <View>
                     {erreurCodePromo && promoCode && (
                       <Text style={{color: colors.color8}}>
@@ -1526,6 +1459,13 @@ const Panier = ({navigation}) => {
                     </View>
                   )}
                 </View>
+                {
+                modalProfile && 
+                <ModaleModifProfile
+                modalVisible={modalProfile}
+                setModalVisible={setModalProfile}
+                />
+              }
               </View>
 
               <PulseAnimation onPress={handlePress} />
@@ -1541,6 +1481,7 @@ const Panier = ({navigation}) => {
                 setModalVisible={setIsModalSunVisible}
                 product={selectedProduct}
               />
+              
               <FooterProfile />
             </>
           )}

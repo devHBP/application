@@ -13,7 +13,8 @@ const initialState = {
     idSUN:'',
     allergies:[],
     preferences_alimentaires:[],
-    storeId:''
+    storeId:'',
+    preferenceCommande: false,
   },
   selectedStore: '',
 };
@@ -51,9 +52,12 @@ const authSlice = createSlice({
         ...action.payload,
       };
     },
+    setPreferenceCommande: (state, action) => {
+      state.preferenceCommande = action.payload;
+    },
   },
 });
 
-export const { registerUser, loginUser, logoutUser, updateSelectedStore, updateUser } = authSlice.actions;
+export const { registerUser, loginUser, logoutUser, updateSelectedStore, updateUser, setPreferenceCommande } = authSlice.actions;
 
 export default authSlice.reducer;

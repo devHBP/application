@@ -37,9 +37,9 @@ import ProductFlatList from '../components/ProductFlatList';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import LogoFond from '../SVG/LogoFond';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
-import {getAllStores, fetchAllProductsClickandCollect, fetchAllProductsClickAndCollect} from '../CallApi/api';
+import {getAllStores, fetchAllProductsClickandCollect, fetchAllProductsClickAndCollect, getPrefCommande} from '../CallApi/api';
 import ModaleOffreSUN from '../components/ModaleOffreSUN';
-import {Toast} from 'react-native-toast-message/lib/src/Toast';
+import ModaleModifProfile from '../components/ModaleModifProfile';
 
 const Home = ({navigation}) => {
   // console.log('lancement de la page home')
@@ -56,12 +56,14 @@ const Home = ({navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isManualScrolling, setIsManualScrolling] = useState(false);
   const [isModalSunVisible, setIsModalSunVisible] = useState(false);
+  const [isModalProfileVisible, setIsModalProfileVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
-
+  const [isPref, setIsPref] = useState(null);
   const [orders, setOrders] = useState([]);
   const [readyOrders, setReadyOrders] = useState([]);
 
   const user = useSelector(state => state.auth.user);
+  const userId = user.userId
   const cart = useSelector(state => state.cart.cart);
 
   // produit offreSUN
@@ -124,8 +126,10 @@ const Home = ({navigation}) => {
     const timer = setTimeout(() => {
       handleOffreSun();
     }, 3000);
-  
-    return () => clearTimeout(timer);
+
+    return () => {
+      clearTimeout(timer);
+    };
   }, [products]);
 
   useEffect(() => {
@@ -306,7 +310,6 @@ const Home = ({navigation}) => {
     if (categoryName === 'Baguettes') {
       // je n'affiche pas la baguette gratuite
       sortedProducts = sortedProducts.filter(product => product.type_produit !== 'offreSUN');
-
     }
     //Monster et redbull en dernier sur la liste des boissons
     if (categoryName === 'Boissons') {
@@ -637,11 +640,13 @@ const Home = ({navigation}) => {
                 </TouchableOpacity>
               </View>
             </ScrollView>
+            
             <ModaleOffreSUN
-        modalVisible={isModalSunVisible}
-        setModalVisible={setIsModalSunVisible}
-        product={selectedProduct}
-      />
+              modalVisible={isModalSunVisible}
+              setModalVisible={setIsModalSunVisible}
+              product={selectedProduct}
+            />
+            
             <FooterProfile />
           </SafeAreaProvider>
         )}
