@@ -59,10 +59,11 @@ import DeviceInfo from 'react-native-device-info';
 import Maintenance from './Screens/Maintenance';
 import CancelPage from './Screens/CancelPage';
 // import PageHome from './Screens/PageHome';
-// import {API_BASE_URL} from '@env';
+//import {API_BASE_URL} from '@env';
 import { API_BASE_URL } from './config';
 
 const Main = () => {
+
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isUpdateRequired, setIsUpdateRequired] = useState(false);

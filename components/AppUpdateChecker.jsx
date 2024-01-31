@@ -1,18 +1,29 @@
-import {View, Text, Button, Linking, Platform, StyleSheet, Pressable} from 'react-native';
-import React from 'react';
+import {View, Text, Linking, Platform, StyleSheet, Pressable, BackHandler, Alert} from 'react-native';
+import React, { useEffect} from 'react';
 import {APPSTORE_URL, PLAYSTORE_URL}  from '../config'
 import {colors, fonts} from '../styles/styles';
 
 const AppUpdateChecker = () => {
 
-  // console.log('page mise à jour')
+  // empeche l'action sur le bouton arriere pour android
+  useEffect(() => {
+    const backAction = () => {
+      Alert.alert("Mise à jour requise", "Veuillez mettre à jour l'application pour continuer.", [
+        { text: "OK" }
+      ]);
+      return true;
+    };
+
+    const backHandler = BackHandler.addEventListener("hardwareBackPress", backAction);
+
+    return () => backHandler.remove();
+  }, []);
 
   //verif version app store
   const appStoreUrl = Platform.select({
     ios: APPSTORE_URL,
     android: PLAYSTORE_URL,
   });
-
 
   const openLink = url => {
     if (Platform.OS === 'android') {

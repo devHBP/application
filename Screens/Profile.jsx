@@ -7,9 +7,10 @@ import {
   Switch,
   Image,
   Linking,
+  Animated,
 } from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useRef, useCallback} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {updateUser, updateSelectedStore} from '../reducers/authSlice';
 import {
@@ -31,6 +32,7 @@ import {API_BASE_URL} from '../config';
 // import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import PasswordModal from '../components/PasswordModal';
+import { useRoute } from '@react-navigation/native';
 
 //options des input
 const inputOptions = {
@@ -41,6 +43,33 @@ const inputOptions = {
 };
 
 const Profile = ({navigation}) => {
+  
+
+  //animation
+  const blinkingAnimation = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(blinkingAnimation, {
+          toValue: 1,
+          duration: 500,
+          useNativeDriver: false,
+        }),
+        Animated.timing(blinkingAnimation, {
+          toValue: 0,
+          duration: 600,
+          useNativeDriver: false,
+        }),
+      ]),
+    ).start();
+  }, [blinkingAnimation]);
+
+  const borderColorAnimation = blinkingAnimation.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['transparent', colors.color2], 
+  });
+
   const openLink = url => {
     if (Platform.OS === 'android') {
       Linking.openURL(url)
@@ -82,9 +111,8 @@ const Profile = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [store, setStore] = useState('');
   const [selectedStoreDetails, setSelectedStoreDetails] = useState({});
-  const [preferences, setPreferences] = useState([]); // la liste des pref coté back
-  const [allergies, setAllergies] = useState([]); // la liste des allergies coté back
-
+  const [preferences, setPreferences] = useState([]); 
+  const [allergies, setAllergies] = useState([]); 
   const [preferenceCommande, setPreferenceCommande] = useState(null);
 
   //ajouter date de naissance
@@ -104,6 +132,33 @@ const Profile = ({navigation}) => {
 
   const [isModalVisible, setModalVisible] = useState(false);
 
+  const route = useRoute();
+  const scrollViewRef = useRef();
+  const section2Ref = useRef();
+
+  //scroll section
+  useEffect(() => {
+    if (route.params?.scrollToSection) {
+      let sectionRef;
+      switch (route.params.scrollToSection) {
+        case 'section':
+          sectionRef = section2Ref;
+          break;
+        // Plus de cas si nécessaire
+      }
+
+      if (sectionRef && sectionRef.current) {
+        sectionRef.current.measureLayout(
+          scrollViewRef.current,
+          (x, y, width, height) => {
+            scrollViewRef.current.scrollTo({ x: 0, y: y, animated: true });
+          }
+        );
+      }
+    }
+  }, [route.params?.scrollToSection]);
+
+
   const handleBack = () => {
     navigation.navigate('home');
   };
@@ -112,6 +167,14 @@ const Profile = ({navigation}) => {
       allStores();
     }
   }, [user.role]);
+
+  const handleLayout = useCallback(
+    section => event => {
+      const {y} = event.nativeEvent.layout;
+      setPositionsY(prev => ({...prev, [section]: y}));
+    },
+    [],
+  );
 
   //   const ROLE_STORES = {
   //     SUNcollaborateur: [3,4,5],
@@ -285,7 +348,9 @@ const Profile = ({navigation}) => {
         style={{flex: 1, paddingTop: 50, backgroundColor: colors.color4}}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{marginHorizontal: 20, marginTop: 30}}>
+          style={{marginHorizontal: 20, marginTop: 30}}
+          ref={scrollViewRef}
+        >
           <View style={{marginBottom: 20}}>
             <View
               style={{
@@ -641,60 +706,82 @@ const Profile = ({navigation}) => {
              </Text>
         </Text> */}
 
+
             <View
               style={{
                 flexDirection: 'column',
                 gap: 10,
                 marginVertical: 20,
-              }}>
-              <Text style={style.label}>
-                Choisissez une option en cas d'absence d'un produit dans votre
-                commande{' '}
-              </Text>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: 10,
-                }}>
-                <TouchableOpacity
-                  style={style.radioButtonOut}
-                  onPress={() => {
-                    if (preferenceCommande === 'remplacement') {
-                      setPreferenceCommande(null);
-                    } else {
-                      setPreferenceCommande('remplacement');
+              }}
+              ref={section2Ref}>
+              <Animated.View
+                style={
+                  preferenceCommande === null ?
+                  {
+                  marginVertical:10,
+                  borderWidth: 2,
+                  borderColor: borderColorAnimation,
+                  padding: 10,
+                  borderRadius:10,}
+                  : 
+                    {
+                      borderWidth: 2,
+                      borderColor: 'transparent', 
+                      padding: 10,
+                      borderRadius: 10,
                     }
-                  }}>
-                  {preferenceCommande === 'remplacement' && (
-                    <View style={style.radioButtonIn} />
-                  )}
-                </TouchableOpacity>
-                <Text style={style.textlabel}>Produit de remplacement</Text>
-              </View>
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  gap: 10,
-                }}>
-                <TouchableOpacity
-                  style={style.radioButtonOut}
-                  onPress={() => {
-                    if (preferenceCommande === 'remboursement') {
-                      setPreferenceCommande(null);
-                    } else {
-                      setPreferenceCommande('remboursement');
-                    }
-                  }}>
-                  {preferenceCommande === 'remboursement' && (
-                    <View style={style.radioButtonIn} />
-                  )}
-                </TouchableOpacity>
-                <Text style={{...style.textlabel, marginRight: 10}}>
-                  Remboursement
+                  
+                }>
+                <Text style={style.label}>
+                  Choisissez une option en cas d'absence d'un produit dans votre
+                  commande{' '}
                 </Text>
-              </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    gap: 10,
+                  }}>
+                  <TouchableOpacity
+                    style={style.radioButtonOut}
+                    onPress={() => {
+                      if (preferenceCommande === 'remplacement') {
+                        setPreferenceCommande(null);
+                      } else {
+                        setPreferenceCommande('remplacement');
+                      }
+                    }}>
+                    {preferenceCommande === 'remplacement' && (
+                      <View style={style.radioButtonIn} />
+                    )}
+                  </TouchableOpacity>
+                  <Text style={style.textlabel}>Produit de remplacement</Text>
+                </View>
+
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    gap: 10,
+                  }}>
+                  <TouchableOpacity
+                    style={style.radioButtonOut}
+                    onPress={() => {
+                      if (preferenceCommande === 'remboursement') {
+                        setPreferenceCommande(null);
+                      } else {
+                        setPreferenceCommande('remboursement');
+                      }
+                    }}>
+                    {preferenceCommande === 'remboursement' && (
+                      <View style={style.radioButtonIn} />
+                    )}
+                  </TouchableOpacity>
+                  <Text style={{...style.textlabel, marginRight: 10}}>
+                    Remboursement
+                  </Text>
+                </View>
+              </Animated.View>
             </View>
+
 
             <View style={{marginVertical: 10}}>
               <Text style={style.label}>Notifications</Text>

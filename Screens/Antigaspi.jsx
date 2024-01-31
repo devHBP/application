@@ -291,13 +291,13 @@ const Antigaspi = ({navigation}) => {
                               prix={product.prix_unitaire}
                               prixSUN={product.prix_remise_collaborateur}
                               qty={product.qty}
-                              stock={product.stock}
+                              stock={product.stockantigaspi}
                               offre={product.offre}
                               showButtons={false}
                               ingredients={product.ingredients}
                               showPriceSun={false}
 
-                              overlayStyle={{backgroundColor: 'white'}} //pas d'effet overlay sur les produits antigaspi (stock different)
+                              overlayStyle={{backgroundColor: 'transparent'}} //pas d'effet overlay sur les produits antigaspi (stock different)
 
                             />
                             {selectedProduct?.productId ===

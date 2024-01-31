@@ -497,8 +497,8 @@ const style = StyleSheet.create({
     right: 0,
     bottom: 0,
     left: 0,
-    backgroundColor: 'gray',
-    opacity: 0.5,
+    backgroundColor: 'lightgray',
+    opacity: 0.8,
     borderRadius: 5,
   },
   increment: {
