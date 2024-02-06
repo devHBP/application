@@ -111,3 +111,51 @@ if (user.fonction === 'gerant'){
     return
   }
   
+
+  // check stock antigaspi en doublon
+
+   //3. je vérifie le stock des produits anti gaspi
+      const checkStockAntiGaspi = async () => {
+        // console.log('cart', cart);
+        try {
+          const response = await axios.post(
+            `${API_BASE_URL}/checkStockAntiGaspi`,
+            {
+              cart,
+            },
+          );
+          // console.log('response stockantigaspi', response.data);
+          cart.forEach(item => {
+            if (item.antigaspi) {
+              const stockDisponible = response.data[item.productId];
+              console.log('stock', stockDisponible)
+              if (stockDisponible !== undefined) {
+                if (item.qty <= stockDisponible) {
+                  // console.log(
+                  //   `Stock suffisant pour le produit ${item.libelle}.`,
+                  // );
+                  // Logique pour gérer le stock suffisant
+                } else {
+                  // console.log(
+                  //   `Stock insuffisant pour le produit ${item.libelle}.`,
+                  // );
+                  return Toast.show({
+                    type: 'error',
+                    text1: `Le produit ${item.libelle} n'est plus disponible`,
+                    text2: `Victime de son succès, quantité maximale: ${stockDisponible}`,
+                  });
+                }
+              } else {
+                console.log(
+                  `Informations de stock non disponibles pour le produit ${item.libelle}.`,
+                );
+                // Logique pour gérer l'absence d'information sur le stock
+              }
+            }
+          });
+          
+        } catch (error) {
+          console.error('Erreur lors da verif du stock antigaspi', error);
+        }
+      };
+      checkStockAntiGaspi();

@@ -39,7 +39,7 @@ import {
   fetchAllProductsClickAndCollect,
   updateAntigaspiStock,
   updateStock,
-  getPrefCommande
+  getPrefCommande,
 } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ModaleOffre31 from '../components/ModaleOffre31';
@@ -383,13 +383,7 @@ const Panier = ({navigation}) => {
           navigation.navigate('success');
           clearInterval(intervalId);
 
-          // je mets à jour mon stock normal
-          cart.forEach(async item => {
-            if (!item.antigaspi) {
-              await updateStock(item);
-            }
-          });
-          // vider le panier 
+          // vider le panier
           dispatch(clearCart());
         } else if (status === 'unpaid') {
           // si status unpaid - retour en arriere
@@ -414,16 +408,15 @@ const Panier = ({navigation}) => {
     }, 5000);
   };
 
-  const verfiPrefCommande = async (userId) => {
+  const verfiPrefCommande = async userId => {
     const prefCommande = await getPrefCommande(userId);
-    if (prefCommande.preference_commande == null){
-      setModalProfile(true)
+    if (prefCommande.preference_commande == null) {
+      setModalProfile(true);
     }
-  }
+  };
   useEffect(() => {
-    verfiPrefCommande(user.userId)
+    verfiPrefCommande(user.userId);
   }, []);
-
 
   // 1. je clicque sur le bouton "En ligne"
   const handleConfirm = async newPaiement => {
@@ -594,6 +587,7 @@ const Panier = ({navigation}) => {
     } else {
       //remets 20 min sur le countdown pour le paiement
       resetForPaiementCountdown();
+
       // 2. je vérifie le stock des produits (hors antigaspi)
       const checkStock = async () => {
         for (const item of cart) {
@@ -607,23 +601,15 @@ const Panier = ({navigation}) => {
                 stock => stock.productId === item.productId,
               );
 
-              if (stockInfo && stockInfo.quantite >= item.qty) {
-                // console.log(
-                //   `Stock suffisant pour le produit ${item.libelle}. Quantité disponible : ${stockInfo.quantite}`,
-                // );
-              } else {
-                // console.log(
-                //   `Stock insuffisant pour le produit ${
-                //     item.libelle
-                //   }. Quantité disponible : ${
-                //     stockInfo ? stockInfo.quantite : 'Non disponible'
-                //   }`,
-                // );
-                return Toast.show({
+              if (!stockInfo || stockInfo.quantite < item.qty) {
+                Toast.show({
                   type: 'error',
                   text1: `Le produit ${item.libelle} n'est plus disponible`,
-                  text2: `Victime de son succès, quantité restante: ${stockInfo.quantite}`,
+                  text2: `Victime de son succès, quantité restante: ${
+                    stockInfo?.quantite ?? 0
+                  }`,
                 });
+                return false; //stock insuffisant
               }
             } catch (error) {
               console.error(
@@ -633,62 +619,20 @@ const Panier = ({navigation}) => {
             }
           }
         }
+        return true; // pas de souci de stock
       };
 
-      checkStock();
-
-      //3. je vérifie le stock des produits anti gaspi
-      const checkStockAntiGaspi = async () => {
-        // console.log('cart', cart);
-        try {
-          const response = await axios.post(
-            `${API_BASE_URL}/checkStockAntiGaspi`,
-            {
-              cart,
-            },
-          );
-          // console.log('response stockantigaspi', response.data);
-          cart.forEach(item => {
-            if (item.antigaspi) {
-              const stockDisponible = response.data[item.productId];
-
-              if (stockDisponible !== undefined) {
-                if (item.qty <= stockDisponible) {
-                  // console.log(
-                  //   `Stock suffisant pour le produit ${item.libelle}.`,
-                  // );
-                  // Logique pour gérer le stock suffisant
-                } else {
-                  // console.log(
-                  //   `Stock insuffisant pour le produit ${item.libelle}.`,
-                  // );
-                  return Toast.show({
-                    type: 'error',
-                    text1: `Le produit ${item.libelle} n'est plus disponible`,
-                    text2: `Victime de son succès, quantité maximale: ${stockDisponible}`,
-                  });
-                }
-              } else {
-                console.log(
-                  `Informations de stock non disponibles pour le produit ${item.libelle}.`,
-                );
-                // Logique pour gérer l'absence d'information sur le stock
-              }
-            }
-          });
-        } catch (error) {
-          console.error('Erreur lors da verif du stock antigaspi', error);
-        }
-      };
-      checkStockAntiGaspi();
+      // checkStock();
+      const stockIsOk = await checkStock();
+      console.log('stockIsOk', stockIsOk)
+      if (!stockIsOk) {
+        return; // Arrêtez le processus si le stock n'est pas suffisant
+      }
 
       // creation de la commande
       const [day, month, year] = selectedDateString.split('/').map(Number);
       const formattedDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
       const dateForDatabase = formattedDate.toISOString();
-
-      //prix Sun si collaborateur
-      // totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
 
       //pour ne pas cumuler deux offres
       let adjustedTotalPrice = 0;
@@ -722,12 +666,6 @@ const Panier = ({navigation}) => {
         slotId: null,
         promotionId: null,
         paymentMethod: 'card' ? 'online' : 'onsite',
-        //plus utilisé
-        //transforme mon array de productsIds en chaine de caractères
-        //productIdsString: cartProductId.join(",")
-
-        //plus utilisé
-        //products: cartItems.map(item => ({ productId: item.productId, quantity: item.qty }))
 
         products: (() => {
           let products = [];
@@ -817,11 +755,10 @@ const Panier = ({navigation}) => {
     }
   };
 
-
   // Test avec montant fixe et pourcentage
   const handleApplyDiscount = async () => {
     if (currentPromoCode) {
-      alert("Un code promo est déjà appliqué à cette commande.");
+      alert('Un code promo est déjà appliqué à cette commande.');
       return;
     }
     try {
@@ -847,10 +784,10 @@ const Panier = ({navigation}) => {
         promoValue = promoInfo.fixedAmount;
         // console.log('Type de promo : montant fixe');
       }
-  
-      setAppliedPromo({ code: promoCode, type: promoType, value: promoValue });
+
+      setAppliedPromo({code: promoCode, type: promoType, value: promoValue});
       setCurrentPromoCode(promoCode);
-        } catch (error) {
+    } catch (error) {
       if (error.response && error.response.status === 400) {
         // console.log(error.response.data.message);
         return Toast.show({
@@ -867,11 +804,11 @@ const Panier = ({navigation}) => {
   const handleRemoveDiscount = () => {
     const restoredCart = cart.map(item => ({
       ...item,
-      prix_unitaire: item.originalPrice || item.prix_unitaire, 
+      prix_unitaire: item.originalPrice || item.prix_unitaire,
     }));
-  
+
     dispatch(updateCart(restoredCart));
-    setAppliedPromo(null)
+    setAppliedPromo(null);
     setCurrentPromoCode(null);
     setPromoCode('');
   };
@@ -1298,29 +1235,31 @@ const Panier = ({navigation}) => {
                         backgroundColor: colors.color6,
                       }}
                     />
-                    <TouchableOpacity 
-                        onPress={handleApplyDiscount}   
-                        disabled={isCartEmpty}
-                      >
-                      <ApplyCode color={isCartEmpty? colors.color3 : colors.color9} />
+                    <TouchableOpacity
+                      onPress={handleApplyDiscount}
+                      disabled={isCartEmpty}>
+                      <ApplyCode
+                        color={isCartEmpty ? colors.color3 : colors.color9}
+                      />
                     </TouchableOpacity>
 
-                    <TouchableOpacity 
-                        onPress={handleRemoveDiscount}
-                        disabled={isCartEmpty}
-                        >
-                      <DeleteCode color={isCartEmpty? colors.color3 : colors.color5}/>
+                    <TouchableOpacity
+                      onPress={handleRemoveDiscount}
+                      disabled={isCartEmpty}>
+                      <DeleteCode
+                        color={isCartEmpty ? colors.color3 : colors.color5}
+                      />
                     </TouchableOpacity>
                   </View>
                   {appliedPromo && !isCartEmpty && (
-                  <Text style={{ color:colors.color2, fontSize:12 }}>
-                    Réduction de {
-                      appliedPromo.type === 'percentage' ? 
-                      `${appliedPromo.value}%` : 
-                      `${appliedPromo.value}€`
-                    } sur votre panier
-                  </Text>
-                )}
+                    <Text style={{color: colors.color2, fontSize: 12}}>
+                      Réduction de{' '}
+                      {appliedPromo.type === 'percentage'
+                        ? `${appliedPromo.value}%`
+                        : `${appliedPromo.value}€`}{' '}
+                      sur votre panier
+                    </Text>
+                  )}
                   <View>
                     {erreurCodePromo && promoCode && (
                       <Text style={{color: colors.color8}}>
@@ -1459,13 +1398,12 @@ const Panier = ({navigation}) => {
                     </View>
                   )}
                 </View>
-                {
-                modalProfile && 
-                <ModaleModifProfile
-                modalVisible={modalProfile}
-                setModalVisible={setModalProfile}
-                />
-              }
+                {modalProfile && (
+                  <ModaleModifProfile
+                    modalVisible={modalProfile}
+                    setModalVisible={setModalProfile}
+                  />
+                )}
               </View>
 
               <PulseAnimation onPress={handlePress} />
@@ -1481,7 +1419,7 @@ const Panier = ({navigation}) => {
                 setModalVisible={setIsModalSunVisible}
                 product={selectedProduct}
               />
-              
+
               <FooterProfile />
             </>
           )}
