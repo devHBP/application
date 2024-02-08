@@ -245,13 +245,13 @@ const LinkOffres = () => {
       secondaryText: 'Gratuite      ',
       pastilleImage: badgeSUN,
     },
-    {
-      type: 'custom',
-      imageUri: offreNoel,
-      mainText: 'Nouveautés pour       ',
-      secondaryText: 'Les fêtes      ',
-      pastilleImage: gift,
-    },
+    // {
+    //   type: 'custom',
+    //   imageUri: offreNoel,
+    //   mainText: 'Nouveautés pour       ',
+    //   secondaryText: 'Les fêtes      ',
+    //   pastilleImage: gift,
+    // },
     {
       type: 'offre31',
       imageUri: offre31,
