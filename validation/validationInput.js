@@ -83,6 +83,7 @@ export const validateIdSun = (value) => {
 };
 
 export const validateTelephone = (telephone) => {
+  if (telephone === "") return "";
   // regex qui correspond à un numéro de téléphone de 10 chiffres consécutifs sans aucun autre caractère.
   const phoneRegex = /^\d{10}$/;
 

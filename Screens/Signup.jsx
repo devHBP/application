@@ -355,7 +355,7 @@ const Signup = ({navigation}) => {
             {/* numero de telephone */}
             <TextInput
               {...inputOptions}
-              placeholder="Numéro de téléphone (obligatoire)"
+              placeholder="Numéro de téléphone"
               keyboardType="numeric"
               value={telephone}
               onChangeText={value => {
@@ -420,7 +420,7 @@ const Signup = ({navigation}) => {
           </View>
 
           {/* numero client SUN */}
-          <View>
+          {/* <View>
             <Text style={style.label}>Êtes vous client SUN</Text>
             <TextInput
               {...inputOptions}
@@ -433,7 +433,7 @@ const Signup = ({navigation}) => {
               }}
               style={inputOptions.style}
             />
-          </View>
+          </View> */}
 
           <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
             <Button
@@ -443,9 +443,7 @@ const Signup = ({navigation}) => {
                 lastName === '' ||
                 firstName === '' ||
                 email === '' ||
-                password === '' ||
-                telephone === ''
-
+                password === '' 
               }
               onPress={() => {
                 submitHandler();
