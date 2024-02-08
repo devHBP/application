@@ -555,7 +555,6 @@ const Orders = ({navigation}) => {
           loop
           style={{
             width: 300,
-            aspectRatio: 300 / 600,
             flexGrow: 1,
             alignSelf: 'center',
           }}
