@@ -334,7 +334,7 @@ const Profile = ({navigation}) => {
           setSelectedStoreDetails(response.data);
         }
       } catch (error) {
-        console.error(
+        console.log(
           'Erreur lors de la récupération des détails du magasin :',
           error,
         );

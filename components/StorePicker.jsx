@@ -70,7 +70,7 @@ const StorePicker = () => {
                     // console.log(response.data.nom_magasin)
                 }
             } catch (error) {
-                console.error("Erreur lors de la récupération des détails du magasin :", error);
+                console.log("Erreur lors de la récupération des détails du magasin :", error);
             }
         //}
     };
