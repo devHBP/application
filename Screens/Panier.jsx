@@ -392,10 +392,10 @@ const Panier = ({navigation}) => {
           // je reset le countdown
           resetCountdown();
 
-          // suppression de la commande (orderId)
-          const deleteResponse = await axios.delete(
-            `${API_BASE_URL}/deleteOneOrder/${orderID}`,
-          );
+          // annulation de la suppression de la commande (orderId)
+          // const deleteResponse = await axios.delete(
+          //   `${API_BASE_URL}/deleteOneOrder/${orderID}`,
+          // );
         } else {
           console.log(`Status du paiement en attente ou inconnu: ${status}`);
         }
@@ -589,42 +589,87 @@ const Panier = ({navigation}) => {
       resetForPaiementCountdown();
 
       // 2. je vérifie le stock des produits (hors antigaspi)
+      // const checkStock = async () => {
+      //   for (const item of cart) {
+      //     if (!item.antigaspi) {
+      //       try {
+      //         // Appel à la route backend pour obtenir le stock par productId
+      //         const response = await axios.get(
+      //           `${API_BASE_URL}/getStockByProduct/${item.productId}`,
+      //         );
+      //         const stockInfo = response.data.find(
+      //           stock => stock.productId === item.productId,
+      //         );
+      //         console.log('cart', cart)
+      //           console.log('stockInfo', stockInfo)
+      //         if (!stockInfo || stockInfo.quantite < item.qty) {
+      //           Toast.show({
+      //             type: 'error',
+      //             text1: `Le produit ${item.libelle} n'est plus disponible`,
+      //             text2: `Victime de son succès, quantité restante: ${
+      //               stockInfo?.quantite ?? 0
+      //             }`,
+      //           });
+      //           return false; //stock insuffisant
+      //         }
+      //       } catch (error) {
+      //         console.error(
+      //           `Erreur lors de la vérification du stock pour le produit ${item.libelle}`,
+      //           error,
+      //         );
+      //       }
+      //     }
+      //   }
+      //   return true; // pas de souci de stock
+      // };
+
       const checkStock = async () => {
         for (const item of cart) {
-          if (!item.antigaspi) {
-            try {
-              // Appel à la route backend pour obtenir le stock par productId
-              const response = await axios.get(
-                `${API_BASE_URL}/getStockByProduct/${item.productId}`,
-              );
-              const stockInfo = response.data.find(
-                stock => stock.productId === item.productId,
-              );
-
-              if (!stockInfo || stockInfo.quantite < item.qty) {
-                Toast.show({
-                  type: 'error',
-                  text1: `Le produit ${item.libelle} n'est plus disponible`,
-                  text2: `Victime de son succès, quantité restante: ${
-                    stockInfo?.quantite ?? 0
-                  }`,
-                });
-                return false; //stock insuffisant
+          if (item.type === "formule") {
+            // Gérer les éléments de formule
+            for (let i = 1; i <= 3; i++) {
+              const option = item[`option${i}`];
+              if (option && option.productId) {
+                const isStockAvailable = await checkProductStock(option.productId, option.qty);
+                if (!isStockAvailable) return false;
               }
-            } catch (error) {
-              console.error(
-                `Erreur lors de la vérification du stock pour le produit ${item.libelle}`,
-                error,
-              );
+            }
+          } else {
+            // Gérer les produits standards
+            if (!item.antigaspi) {
+              const isStockAvailable = await checkProductStock(item.productId, item.qty);
+              if (!isStockAvailable) return false;
             }
           }
         }
         return true; // pas de souci de stock
       };
+      
+      const checkProductStock = async (productId, qty) => {
+        try {
+          const response = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
+          const stockInfo = response.data.find(stock => stock.productId === productId);
+          // console.log('stockInfo', stockInfo);
+      
+          if (!stockInfo || stockInfo.quantite < qty) {
+            Toast.show({
+              type: 'error',
+              text1: `Le produit ${stockInfo.libelle} n'est plus disponible`,
+              text2: `Victime de son succès, quantité restante: ${stockInfo?.quantite ?? 0}`,
+            });
+            return false; // stock insuffisant
+          }
+          return true; // stock suffisant
+        } catch (error) {
+          console.error(`Erreur lors de la vérification du stock pour le produit ${productId}`, error);
+          return false;
+        }
+      };
+      
 
       // checkStock();
       const stockIsOk = await checkStock();
-      console.log('stockIsOk', stockIsOk)
+      // console.log('stockIsOk', stockIsOk)
       if (!stockIsOk) {
         return; // Arrêtez le processus si le stock n'est pas suffisant
       }
@@ -724,7 +769,7 @@ const Panier = ({navigation}) => {
       // console.log('orderdata', orderData);
       setCurrentPromoCode(null); // je remets à null l'utilisation des codes promo
       const createorder = await createOrder(orderData);
-      console.log('createOrder', createorder);
+      // console.log('createOrder', createorder);
       const orderId = createorder.orderId;
       const numero_commande = createorder.numero_commande;
 
