@@ -74,29 +74,25 @@ const Solanid = ({navigation}) => {
   };
 
   useEffect(() => {
-    //les produits ayant une offre 3+1
+    //les produits reference fournisseur Solanid
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `${API_BASE_URL}/getAllProductsClickandCollect`,
+          `${API_BASE_URL}/getProductsSolanid`,
         );
 
-        const updatedProducts = response.data.map(product => ({
-          ...product,
-          qty: 0,
-        }));
-        //produits offre 3+1
-        const solanidProducts = updatedProducts.filter(
-          product => product.reference_fournisseur === 'Solanid',
-        );
+        const solanidProducts  = response.data
+       
         const sortedProducts = sortProductsByCategory(solanidProducts);
+
         const solanidProductNames = solanidProducts.map(
           product => product.libelle,
         );
+
         setSolanidProductNames(sortedProducts);
       } catch (error) {
         console.error(
-          "Une erreur s'est produite lors de la récupération des produits:",
+          "Une erreur s'est produite lors de la récupération des produits Solanid:",
           error,
         );
       }
@@ -119,36 +115,6 @@ const Solanid = ({navigation}) => {
   const handleCart = async () => {
     navigation.navigate('panier');
 
-    // try{
-    //   const productStock = await checkStockForSingleProduct(selectedProduct.productId);
-    //   const cartQty = cart.reduce((sum, cartItem) => {
-    //     return cartItem.productId === selectedProduct.productId ? sum + cartItem.qty : sum;
-    //   }, 0);
-    //   const remainingStock = productStock[0]?.quantite - cartQty || 0;
-
-    //   if ( remainingStock > 0) {
-
-    //       dispatch(addToCart({ productId: selectedProduct.productId, libelle: selectedProduct.libelle, image: selectedProduct.image, prix_unitaire: selectedProduct.prix_unitaire, qty: 1 , offre: selectedProduct.offre}));
-
-    //       Toast.show({
-    //         type: 'success',
-    //         text1: 'Produit ajouté au panier',
-    //       });
-
-    //     }else {
-    //       Toast.show({
-    //         type: 'error',
-    //         position: 'bottom',
-    //         text1: 'Victime de son succès',
-    //         text2: `Quantité maximale: ${productStock[0].quantite}`,
-
-    //       });
-    //     }
-
-    // }  catch (error) {
-    //   console.error("Une erreur s'est produite lors de la vérification du stock :", error);
-
-    // }
   };
   return (
     <View style={{flex: 1}}>
