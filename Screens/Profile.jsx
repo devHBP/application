@@ -348,7 +348,7 @@ const Profile = ({navigation}) => {
         style={{flex: 1, paddingTop: 50, backgroundColor: colors.color4}}>
         <ScrollView
           showsVerticalScrollIndicator={false}
-          style={{marginHorizontal: 20, marginTop: 30}}
+          style={{marginHorizontal: 15, marginTop: 30}}
           ref={scrollViewRef}
         >
           <View style={{marginBottom: 20}}>

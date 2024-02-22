@@ -14,7 +14,7 @@ import {styles} from '../styles/home';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
 // import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
-import { API_BASE_URL } from '../config';
+import {API_BASE_URL} from '../config';
 import FastImage from 'react-native-fast-image';
 import baguetteSUN from '../assets/offreSUNbaguette.jpg';
 import antigaspiImage2 from '../assets/anti2.jpg';
@@ -127,7 +127,7 @@ const LinkOffres = () => {
       endTime.setHours(20, 59, 59, 999);
 
       if (now.getHours() >= 21) {
-        endTime.setDate(now.getDate() + 1); // Passer au jour suivant après 21h
+        endTime.setDate(now.getDate() + 1);
       }
 
       const difference = endTime - now;
@@ -164,21 +164,25 @@ const LinkOffres = () => {
     return () => clearInterval(intervalId);
   }, []);
 
-  const handleAntiGaspi = () => {
-    const d = new Date();
-    const hours = d.getHours();
-    const minutes = d.getMinutes();
-    //ouverture de la vignette - offre de 12h à 12h02
-    if (hours >= 21 && hours < 24) {
-      navigation.navigate('antigaspi');
-    } else {
-      // console.log('ce nest pas encore lheure')
-      // console.log(`${hours}:${minutes}`);
+  const handleAntiGaspi = async () => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/checkAntiGaspi`);
+      console.log(response.data)
+      if (response.data.accessible === true) {
+        navigation.navigate('antigaspi');
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: `Un peu de patience...`,
+          text2: `L'offre arrive à partir de 21h`,
+          visibilityTime: 6000,
+        });
+      }
+    } catch (error) {
+      console.error("Erreur lors de la vérification de l'accès à l'antigaspi", error);
       Toast.show({
         type: 'error',
-        text1: `Une peu de patience...`,
-        text2: `L'offre arrive à partir de 21h`,
-        visibilityTime: 6000,
+        text1: 'Erreur de communication avec le serveur',
       });
     }
   };
