@@ -180,10 +180,17 @@ const cartSlice = createSlice({
       groupedItems: action.payload.groupedItemsArray,
       formules: action.payload.formules
     };
-  }
+  },
+  addPromo: (state, action) => {
+    state.promotionId = action.payload;
+  },
+  resetPromo: (state) => {
+    state.promotionId = null; 
+  },
 },
 });
 
 export const { addToCart, removeFromCart, updateCart, clearCart, addDate, clearDate,addTime,resetDateTime,clearTime,
-   addPaiement, decrementOrRemoveFromCart, addFreeProductToCart, incrementProductQty, updateCartTotal, removeMultipleFromCart, makeLastSmallPizzaFree, makeLastBigPizzaFree } = cartSlice.actions;
+   addPaiement, decrementOrRemoveFromCart, addFreeProductToCart, incrementProductQty, updateCartTotal, removeMultipleFromCart, 
+   makeLastSmallPizzaFree, makeLastBigPizzaFree, addPromo, resetPromo } = cartSlice.actions;
 export default cartSlice.reducer;

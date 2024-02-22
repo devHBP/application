@@ -20,8 +20,9 @@ import {
   updateCartTotal,
   clearCart,
   removeFromCart,
+  addPromo,
+  resetPromo
 } from '../reducers/cartSlice';
-import {logoutUser} from '../reducers/authSlice';
 import {
   setNumeroCommande,
   setProducts,
@@ -30,7 +31,6 @@ import {
 import CartItem from '../components/CardItems';
 import CardItemFormule from '../components/CardItemsFormule';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
-import {WebView} from 'react-native-webview';
 import {
   checkStockFormule,
   checkStockForSingleProduct,
@@ -49,7 +49,6 @@ import StorePicker from '../components/StorePicker';
 import CustomDatePicker from '../components/CustomDatePicker';
 import {style} from '../styles/formules';
 import {stylesInvite} from '../styles/invite';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import ArrowLeft from '../SVG/ArrowLeft';
 import LottieView from 'lottie-react-native';
 import {API_BASE_URL} from '../config';
@@ -90,6 +89,7 @@ const Panier = ({navigation}) => {
   const [currentPromoCode, setCurrentPromoCode] = useState(null);
 
   const cart = useSelector(state => state.cart.cart); //ou cartItems
+  const promotionId = useSelector(state => state.cart.promotionId);
   const user = useSelector(state => state.auth.user);
   const cartTotal = useSelector(state => state.cart.cartTotal);
   const selectedDateString = useSelector(state => state.cart.date);
@@ -588,41 +588,6 @@ const Panier = ({navigation}) => {
       //remets 20 min sur le countdown pour le paiement
       resetForPaiementCountdown();
 
-      // 2. je vérifie le stock des produits (hors antigaspi)
-      // const checkStock = async () => {
-      //   for (const item of cart) {
-      //     if (!item.antigaspi) {
-      //       try {
-      //         // Appel à la route backend pour obtenir le stock par productId
-      //         const response = await axios.get(
-      //           `${API_BASE_URL}/getStockByProduct/${item.productId}`,
-      //         );
-      //         const stockInfo = response.data.find(
-      //           stock => stock.productId === item.productId,
-      //         );
-      //         console.log('cart', cart)
-      //           console.log('stockInfo', stockInfo)
-      //         if (!stockInfo || stockInfo.quantite < item.qty) {
-      //           Toast.show({
-      //             type: 'error',
-      //             text1: `Le produit ${item.libelle} n'est plus disponible`,
-      //             text2: `Victime de son succès, quantité restante: ${
-      //               stockInfo?.quantite ?? 0
-      //             }`,
-      //           });
-      //           return false; //stock insuffisant
-      //         }
-      //       } catch (error) {
-      //         console.error(
-      //           `Erreur lors de la vérification du stock pour le produit ${item.libelle}`,
-      //           error,
-      //         );
-      //       }
-      //     }
-      //   }
-      //   return true; // pas de souci de stock
-      // };
-
       const checkStock = async () => {
         for (const item of cart) {
           if (item.type === "formule") {
@@ -709,7 +674,7 @@ const Panier = ({navigation}) => {
         userId: user.userId,
         storeId: selectStore,
         slotId: null,
-        promotionId: null,
+        promotionId: promotionId,
         paymentMethod: 'card' ? 'online' : 'onsite',
 
         products: (() => {
@@ -766,10 +731,10 @@ const Panier = ({navigation}) => {
           return products;
         })(),
       };
-      // console.log('orderdata', orderData);
+      console.log('orderdata', orderData);
       setCurrentPromoCode(null); // je remets à null l'utilisation des codes promo
       const createorder = await createOrder(orderData);
-      // console.log('createOrder', createorder);
+      //console.log('createOrder', createorder);
       const orderId = createorder.orderId;
       const numero_commande = createorder.numero_commande;
 
@@ -786,6 +751,7 @@ const Panier = ({navigation}) => {
         orderId,
         numero_commande,
       };
+      dispatch(resetPromo())
 
       // 5. j'envoi ces info pouvrir une session Stripe
       if (paiement === 'online') {
@@ -814,7 +780,6 @@ const Panier = ({navigation}) => {
       const updatedCart = response.data;
       dispatch(updateCart(updatedCart));
       setPromoCode('');
-
       // Déterminer le type de réduction et la stocker
       const updatedCartItems = response.data;
       const promoInfo = updatedCartItems[0].promo;
@@ -823,15 +788,16 @@ const Panier = ({navigation}) => {
       if (promoInfo && promoInfo.percentage != null) {
         promoType = 'percentage';
         promoValue = promoInfo.percentage;
-        // console.log('Type de promo : pourcentage');
       } else if (promoInfo && promoInfo.fixedAmount != null) {
         promoType = 'fixedAmount';
         promoValue = promoInfo.fixedAmount;
-        // console.log('Type de promo : montant fixe');
       }
+      // ajout du promotionId dans le store redux
+      dispatch(addPromo(promoInfo.promotionId));
 
       setAppliedPromo({code: promoCode, type: promoType, value: promoValue});
       setCurrentPromoCode(promoCode);
+
     } catch (error) {
       if (error.response && error.response.status === 400) {
         // console.log(error.response.data.message);
@@ -856,6 +822,8 @@ const Panier = ({navigation}) => {
     setAppliedPromo(null);
     setCurrentPromoCode(null);
     setPromoCode('');
+     // retire le promotionId dans le store redux
+     dispatch(resetPromo());
   };
 
   //filtrage si formule ou produits
@@ -944,26 +912,13 @@ const Panier = ({navigation}) => {
 
     removehandler(productId, dispatch);
     if (product && product.antigaspi) {
-      // getAddStockAntigaspi({
-      //   productId: product.productId,
-      //   quantityPurchased: product.qty,
-      // });
-
-      // Toast.show({
-      //   type: 'success',
-      //   text1: 'Produit supprimé du panier',
-      // });
-
+    
       axios
         .put(`${API_BASE_URL}/getAddStockAntigaspi`, {
           productId: product.productId,
           quantityPurchased: product.qty,
         })
         .then(response => {
-          // console.log(
-          //   'Stock antigaspi mis à jour avec succès pour le produit',
-          //   product.libelle,
-          // );
           Toast.show({
             type: 'success',
             text1: 'Produit supprimé du panier',
@@ -977,17 +932,15 @@ const Panier = ({navigation}) => {
             error,
           );
         });
-      // console.log('antigaspiCountBefore', antigaspiCountBefore);
     }
   };
   useEffect(() => {
     const antigaspiCountAfter = cart.filter(item => item.antigaspi).length;
-    // console.log('antigaspiCountAfter', antigaspiCountAfter);
 
     if (antigaspiCountAfter === 0) {
       countDownNull();
     }
-  }, [cart]); // Ici, cart est la dépendance de l'effet
+  }, [cart]); 
 
   // JE VIDE LE PANIER SI COMPTEUR EXPIRÉ = 0
   const removeCart = () => {
@@ -1031,7 +984,6 @@ const Panier = ({navigation}) => {
   }, [countdown, cart]);
 
   //transforme le countdown en minutes
-
   const formatCountdown = seconds => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
