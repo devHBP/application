@@ -5,10 +5,10 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Image,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {fonts, colors} from '../styles/styles';
+import {style} from '../styles/orders';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useSelector} from 'react-redux';
 import axios from 'axios';
@@ -35,6 +35,97 @@ const Orders = ({navigation}) => {
   const [hasOrder, setHasOrder] = useState(false);
   const [isDisabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(true);
+
+  //test
+  const [currentPage, setCurrentPage] = useState(1);
+  const [ordersPerPage] = useState(5);
+
+  // Calcul des commandes à afficher
+  const indexOfLastOrder = currentPage * ordersPerPage;
+  const indexOfFirstOrder = indexOfLastOrder - ordersPerPage;
+  const currentOrders = previousOrders.slice(
+    indexOfFirstOrder,
+    indexOfLastOrder,
+  );
+
+  const paginate = pageNumber => setCurrentPage(pageNumber);
+
+  const pageNumbers = Array.from(
+    {length: Math.ceil(previousOrders.length / ordersPerPage)},
+    (_, i) => i + 1,
+  );
+
+  const handlePreviousBtn = () => {
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+  };
+
+  const handleNextBtn = () => {
+    setCurrentPage(prevPage => Math.min(prevPage + 1, pageNumbers.length));
+  };
+
+  const renderPageNumbers = previousOrders.length > ordersPerPage && (
+    <View style={style.paginationContainer}>
+      <TouchableOpacity
+        onPress={handlePreviousBtn}
+        disabled={currentPage === 1}>
+        <Text
+          style={[
+            style.pageNumberText,
+            {opacity: currentPage === 1 ? 0.5 : 1},
+          ]}>
+          {'<'}
+        </Text>
+      </TouchableOpacity>
+
+      {pageNumbers.map(number => {
+        if (
+          number === 1 ||
+          number === pageNumbers.length ||
+          (number >= currentPage - 1 && number <= currentPage + 1)
+        ) {
+          return (
+            <TouchableOpacity
+              key={number}
+              onPress={() => paginate(number)}
+              style={[
+                style.pageNumber,
+                currentPage === number && style.activePageNumber,
+              ]}>
+              <Text
+                style={[
+                  style.pageNumberText,
+                  currentPage === number && style.activePageNumberText,
+                ]}>
+                {number}
+              </Text>
+            </TouchableOpacity>
+          );
+        } else if (number === currentPage - 2 || number === currentPage + 2) {
+          return (
+            <Text key={number} style={style.pageNumberText}>
+              ...
+            </Text>
+          );
+        } else {
+          return null;
+        }
+      })}
+
+      <TouchableOpacity
+        onPress={handleNextBtn}
+        disabled={currentPage === pageNumbers.length}>
+        <Text
+          style={[
+            style.pageNumberText,
+            {opacity: currentPage === pageNumbers.length ? 0.5 : 1},
+          ]}>
+          {'>'}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
+  // fin test
 
   const handleBack = () => {
     navigation.navigate('home');
@@ -73,7 +164,6 @@ const Orders = ({navigation}) => {
         `${API_BASE_URL}/ordersOfUserWithProducts/${userId}`,
       );
       const ordersWithDetails = response.data;
-      // console.log(response.data)
       if (ordersWithDetails.length > 0) {
         setHasOrder(true);
         // console.log(ordersWithDetails)
@@ -95,7 +185,6 @@ const Orders = ({navigation}) => {
         setLoading(false);
       }, 2000);
     } catch (error) {
-      // console.error("Une erreur s'est produite :", error);
       console.log(error.response.status);
     }
   };
@@ -143,7 +232,6 @@ const Orders = ({navigation}) => {
             } else {
               setExpandedOrderIds(prevIds => [...prevIds, item.orderId]);
             }
-            // console.log('exp', expandedOrderIds);
           }}
           activeOpacity={1}>
           <View style={style.contentOlderOder}>
@@ -151,7 +239,10 @@ const Orders = ({navigation}) => {
               <Text style={style.title}>
                 {item.status.charAt(0).toUpperCase() + item.status.substring(1)}
               </Text>
-              <Text style={style.underlineText}>OrderID: {item.orderId}</Text>
+              <Text style={style.underlineText}>N°: {item.orderId}</Text>
+              <Text style={style.underlineText}>
+                Payée: {item.paid === true ? 'Oui' : 'Non'}
+              </Text>
             </View>
             <View style={style.textTicker}>
               <TextTicker
@@ -161,14 +252,15 @@ const Orders = ({navigation}) => {
                 marqueeDelay={1000}>
                 {item.store && item.store.nom_magasin}
               </TextTicker>
-              <Text style={style.underlineText}>
-                {formatDate(item.createdAt)}
-              </Text>
+              <Text style={style.underlineText}>{formatDate(item.date)}</Text>
             </View>
             <View style={style.flexStart}>
               <Text style={style.newPrice}>{item.prix_total}€</Text>
-              <Text style={style.underlineText}>
-                {item.productIds.split(',').length}x Articles
+              <Text style={style.detailsArticles}>
+                {item.productIds.split(',').length}x{' '}
+                {item.productIds.split(',').length === 1
+                  ? `Article`
+                  : `Articles`}
               </Text>
             </View>
             <View style={style.backArrow}>
@@ -265,7 +357,7 @@ const Orders = ({navigation}) => {
                       </View>
                     );
                   } else if (type_produit === 'offreSUN') {
-                    // si produit antigaspi
+                    // si baguette offreSUN
                     return (
                       <View key={key}>
                         <View style={style.orderDetails}>
@@ -374,11 +466,19 @@ const Orders = ({navigation}) => {
           <View style={style.lastOrderView}>
             <View style={style.orderDetails}>
               <View>
-                <Text style={style.underlineText}>OrderID: {item.orderId}</Text>
                 <Text style={style.underlineText}>
-                  {formatDate(item.createdAt)}
+                  N° commande: {item.orderId}
                 </Text>
-                <Text style={style.underlineText}>{item.status}</Text>
+                <Text style={style.underlineText}>
+                  Passée le : {formatDate(item.createdAt)}
+                </Text>
+                <Text style={style.underlineText}>
+                  Pour le : {formatDate(item.date)}
+                </Text>
+                <Text style={style.underlineText}>Status: {item.status}</Text>
+                <Text style={style.underlineText}>
+                  Payée: {item.paid === true ? 'Oui' : 'Non'}
+                </Text>
               </View>
               <View>
                 <Text style={style.storeTitle}>
@@ -560,27 +660,9 @@ const Orders = ({navigation}) => {
           }}
         />
       ) : hasOrder ? (
-        <SafeAreaProvider
-          style={{flex: 1, paddingTop: 50, backgroundColor: colors.color4}}>
-          {/* <View style={{ alignItems: 'center', backgroundColor:colors.color3}}> */}
-
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginHorizontal: 30,
-              marginVertical: 10,
-              justifyContent: 'space-between',
-            }}>
-            <Text
-              style={{
-                fontSize: 24,
-                fontWeight: 'bold',
-                fontFamily: fonts.font1,
-                color: colors.color1,
-              }}>
-              Vos commandes
-            </Text>
+        <SafeAreaProvider style={style.viewContentTitlePage}>
+          <View style={style.contentTitlePage}>
+            <Text style={style.titlePage}>Vos commandes</Text>
 
             <TouchableOpacity
               onPress={handleBack}
@@ -589,55 +671,39 @@ const Orders = ({navigation}) => {
               <ArrowLeft fill={colors.color1} />
             </TouchableOpacity>
           </View>
-          <FlatList
+
+          {/* sans pagination */}
+          {/* <FlatList
             data={previousOrders}
             renderItem={({item, index}) => renderOrder(item, index)}
             keyExtractor={item => item.orderId.toString()}
             ListHeaderComponent={
               lastOrder ? <ListHeader lastOrder={lastOrder} /> : null
             }
-          />
+          /> */}
 
-          {/* </View> */}
+          {/* avec paganiation */}
+          <FlatList
+            data={currentOrders} // Utilisez les commandes actuelles pour la pagination
+            renderItem={({item, index}) => renderOrder(item, index)}
+            keyExtractor={item => item.orderId.toString()}
+            ListHeaderComponent={
+              lastOrder ? <ListHeader lastOrder={lastOrder} /> : null
+            }
+            ListFooterComponent={renderPageNumbers} // Ajoutez le rendu des numéros de page ici
+          />
         </SafeAreaProvider>
       ) : (
-        <View
-          style={{
-            flex: 1,
-            alignItems: 'center',
-            backgroundColor: colors.color3,
-          }}>
+        <View style={style.viewContentTitlePageNoOrder}>
           <View>
-            <View
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 70,
-                marginVertical: 30,
-              }}>
-              <Text
-                style={{
-                  fontSize: 20,
-                  fontWeight: 'bold',
-                  fontFamily: fonts.font1,
-                }}>
-                Vos commandes
-              </Text>
+            <View style={style.contentTitlePageNoOrders}>
+              <Text style={style.titlePageNoOrders}>Vos commandes</Text>
               <TouchableOpacity onPress={handleBack} style={style.back}>
                 <Icon name="keyboard-arrow-left" size={30} color="#fff" />
               </TouchableOpacity>
             </View>
 
-            <View
-              style={{
-                backgroundColor: 'white',
-                flex: 1,
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignItems: 'center',
-                marginBottom: 100,
-                borderRadius: 20,
-              }}>
+            <View style={style.noOrders}>
               <Text style={{color: colors.color1}}>
                 Pas de commandes encore
               </Text>
@@ -650,153 +716,5 @@ const Orders = ({navigation}) => {
     </>
   );
 };
-
-const style = StyleSheet.create({
-  btn: {
-    backgroundColor: colors.color2,
-    borderRadius: 5,
-    paddingHorizontal: 5,
-    paddingVertical: 5,
-  },
-  back: {
-    backgroundColor: colors.color1,
-    width: 40,
-    height: 40,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 25,
-  },
-  btnReorder: {
-    backgroundColor: colors.color2,
-    borderRadius: 5,
-    paddingHorizontal: 5,
-    paddingVertical: 5,
-  },
-  oldPrice: {
-    textDecorationLine: 'line-through',
-    textDecorationColor: colors.color5,
-    color: colors.color5,
-  },
-  newPrice: {
-    color: colors.color2,
-    fontWeight: 'bold',
-  },
-  orderDetails: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginVertical: 10,
-  },
-  orderFormule: {
-    marginVertical: 10,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  orderPrices: {
-    flexDirection: 'column',
-    alignItems: 'flex-end',
-  },
-  text: {
-    color: colors.color1,
-  },
-  textWidth: {
-    width: '70%',
-    flexWrap: 'wrap',
-    color: colors.color1,
-  },
-  title: {
-    color: colors.color1,
-    fontWeight: 'bold',
-  },
-  optionFormule: {
-    color: colors.color9,
-  },
-  optionStyle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  rowTotal: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginVertical: 10,
-  },
-  oldOrderRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    padding: 10,
-    alignItems: 'center',
-    gap: 10,
-  },
-  backOldOrder: {
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-    backgroundColor: colors.color6,
-    marginVertical: 5,
-  },
-  contentOlderOder: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    width: '100%',
-    alignItems: 'center',
-    gap: 20,
-    height: 70,
-  },
-  textTicker: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-    borderLeftWidth: 1,
-    borderRightWidth: 1,
-    borderColor: colors.color4,
-    paddingHorizontal: 10,
-    width: 125,
-  },
-  flexStart: {
-    flexDirection: 'column',
-    justifyContent: 'flex-start',
-  },
-  underlineText: {
-    color: colors.color5,
-    fontSize: 10,
-    textTransform: 'capitalize',
-  },
-  backArrow: {
-    backgroundColor: 'white',
-    borderRadius: 25,
-    justifyContent: 'center',
-  },
-  expandedOrders: {
-    flex: 1,
-    paddingLeft: 10,
-    marginVertical: 10,
-    marginHorizontal: 30,
-  },
-  lastOrderTitle: {
-    paddingLeft: 30,
-    marginVertical: 20,
-    fontFamily: fonts.font3,
-    fontWeight: '600',
-    color: colors.color1,
-    fontSize: 16,
-  },
-  storeTitle: {
-    color: colors.color1,
-    fontSize: 14,
-    fontWeight: 'bold',
-  },
-  detailsOrderTitle: {
-    marginVertical: 10,
-    color: colors.color2,
-    fontFamily: fonts.font2,
-    fontWeight: '700',
-  },
-  lastOrderView: {
-    backgroundColor: colors.color6,
-    padding: 20,
-    marginHorizontal: 20,
-    borderRadius: 10,
-  },
-});
 
 export default Orders;
