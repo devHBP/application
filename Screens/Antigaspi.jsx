@@ -26,7 +26,6 @@ import {
 import FooterProfile from '../components/FooterProfile';
 import ArrowLeft from '../SVG/ArrowLeft';
 import ProductCard from '../components/ProductCard';
-
 // import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import {API_BASE_URL} from '../config';
 import Cloche from '../SVG/Cloche';
@@ -140,18 +139,19 @@ const Antigaspi = ({navigation}) => {
       //console.log('response stock', stockAntigaspi)
 
       if (stockAntigaspi > 0) {
-        dispatch(
-          addToCart({
-            productId: selectedProduct.productId,
-            libelle: selectedProduct.libelle,
-            image: selectedProduct.image,
-            prix_unitaire: selectedProduct.prix_unitaire * 0.3,
-            qty: 1,
-            offre: selectedProduct.offre,
-            antigaspi: true,
-          }),
-        );
-        await updateAntigaspiStock({...selectedProduct, qty: 1});
+        const newProduct = { 
+          productId: selectedProduct.productId,
+          libelle: selectedProduct.libelle,
+          image: selectedProduct.image,
+          prix_unitaire: selectedProduct.prix_unitaire * 0.3,
+          qty: 1, 
+          offre: selectedProduct.offre,
+          antigaspi: true,
+          type:'antigaspi'
+        };
+        dispatch(addToCart(newProduct));
+        // console.log('selectproduct ajouté', newProduct)
+        await updateAntigaspiStock({...newProduct, qty: 1});
         // Nouveau stock
         setclickProducts(
           currentProducts =>
@@ -178,7 +178,7 @@ const Antigaspi = ({navigation}) => {
           text1: "Ce produit n'est plus en stock",
         });
 
-        console.log(stockAntigaspi);
+        //console.log(stockAntigaspi);
         await fetchData();
 
       }

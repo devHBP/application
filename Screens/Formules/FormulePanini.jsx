@@ -17,8 +17,8 @@ import { getStyle } from '../../Fonctions/stylesFormule';
 import Check from '../../SVG/Check';
 import axios from 'axios'
 import { useCountdown } from '../../components/CountdownContext';
-
-
+import {checkProductAvailability} from '../../Fonctions/fonctions';
+import {checkStockForSingleProduct, updateStock} from '../../CallApi/api.js';
 
 const FormulePanini = ({navigation}) => {
 
@@ -127,7 +127,15 @@ const FormulePanini = ({navigation}) => {
         
       }, []);
 
-    const handleSandwich = (product) => {
+    const handleSandwich = async (product) => {
+      const isAvailable = await checkProductAvailability(
+        product,
+        checkStockForSingleProduct,
+        cart,
+      );
+      if (!isAvailable) {
+        return;
+      }
       if (selectedProduct?.productId === product.productId) {
           setSelectedProduct(null); 
           setProductIds(productIds.filter(productId => productId !== product.productId));
@@ -139,7 +147,17 @@ const FormulePanini = ({navigation}) => {
           }, 400);
       }
   }
-  const handleDessert = (product) => {
+  const handleDessert = async (product) => {
+    const isAvailable = await checkProductAvailability(
+      product,
+      checkStockForSingleProduct,
+      cart,
+    );
+
+    if (!isAvailable) {
+      return;
+    }
+
     if(!selectedProduct ) {
       Toast.show({
           type: 'error',
@@ -159,7 +177,17 @@ const FormulePanini = ({navigation}) => {
         }, 400);
     }
   }
-  const handleBoisson = (product) => {
+  const handleBoisson = async (product) => {
+    const isAvailable = await checkProductAvailability(
+      product,
+      checkStockForSingleProduct,
+      cart,
+    );
+
+    if (!isAvailable) {
+      return;
+    }
+
     if(!selectedProduct ) {
       Toast.show({
           type: 'error',
@@ -199,7 +227,7 @@ const FormulePanini = ({navigation}) => {
         setTotalPrice(prix);
     };
 
-    const handleFormuleSelection = () => {
+    const handleFormuleSelection = async () => {
       const formule = {
         id: `formule-${Date.now()}`,
         type: 'formule',
@@ -214,6 +242,13 @@ const FormulePanini = ({navigation}) => {
       }
       dispatch(addToCart(formule));
       resetCountdown()
+      const options = [formule.option1, formule.option2, formule.option3].filter(
+        option => option !== null,
+      );
+  
+      for (const option of options) {
+        await updateStock({productId: option.productId, qty: 1});
+      }
       navigation.navigate('panier')
     }
       

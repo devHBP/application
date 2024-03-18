@@ -197,7 +197,7 @@ if (__DEV__) {
         productIds: productIds,
         qty: 1,
       }
-      console.log('formule', formule);
+      // console.log('formule', formule);
       dispatch(addToCart(formule));
       navigation.navigate('panier')
     }

@@ -162,7 +162,7 @@ const LinkOffres = () => {
     const intervalId = setInterval(update, 1000);
 
     return () => clearInterval(intervalId);
-  }, []);
+  }, [cart]);
 
   const handleAntiGaspi = async () => {
     try {
@@ -190,6 +190,8 @@ const LinkOffres = () => {
   const handleOffreSun = async () => {
     // si dans le cart, un produit a type_produit === 'offreSUN"
     // toasMessage erreur, return
+
+    //console.log('cart', cart)
     const isOffreSunInCart = cart.some(
       item => item.type_produit === 'offreSUN',
     );

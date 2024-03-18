@@ -146,14 +146,23 @@ const style = StyleSheet.create({
       justifyContent: 'center',
       alignItems: 'center',
     },
-    contentCountDown:{
-      flexDirection:'row',
-      justifyContent:'center'
+    contentGlobal: {
+      justifyContent: 'center', 
+      alignItems: 'center', 
+      marginBottom:15
+    }, 
+    contentCountDown: {
+      flexDirection: 'row',
+      justifyContent: 'center',
+      alignItems:'center',
+      backgroundColor: colors.color2,
+      width: 180,
+      height: 25,
+      borderRadius:5
     },
     countDown:{
-      marginBottom:10,
-      color:colors.color8,
-      fontSize:12
+      color:colors.color6,
+      fontSize:12,
     }
   }
 )

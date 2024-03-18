@@ -60,13 +60,15 @@ import Maintenance from './Screens/Maintenance';
 import CancelPage from './Screens/CancelPage';
 // import PageHome from './Screens/PageHome';
 //import {API_BASE_URL} from '@env';
-import { API_BASE_URL } from './config';
+import {API_BASE_URL} from './config';
 
 const Main = () => {
-
   const [isLoading, setIsLoading] = useState(true);
   const [isLoggedin, setIsLoggedin] = useState(false);
   const [isUpdateRequired, setIsUpdateRequired] = useState(false);
+  const user = useSelector(state => state.auth.user);
+  const userId = user.userId
+  //console.log('userId', userId)
 
   const dispatch = useDispatch();
 
@@ -157,21 +159,54 @@ const Main = () => {
     },
   };
 
+  useEffect(() => {
+    const updateAppVersionInUserTable = async () => {
+      const currentVersion = DeviceInfo.getVersion();
+      //const currentVersion = '2.20';
+      //console.log('currentVersion', currentVersion);
+  
+      if (userId) {
+        try {
+          // la version de l'utilisateur depuis la BDD
+          const userVersionResponse = await axios.get(`${API_BASE_URL}/getUserVersion`, {
+            params: {
+              userId,
+            },
+          });
+          const userVersion = userVersionResponse.data.versionApp;
+          //console.log('Version in DB:', userVersion);
+  
+          // Comparaison des versions
+          if (currentVersion !== userVersion) {
+            // mettre à jour la version si nécessaire
+            const updateResponse = await axios.post(`${API_BASE_URL}/updateVersion`, {
+              userId,
+              versionApp: currentVersion,
+            });
+            console.log('Update response:', updateResponse.data);
+          } else {
+            // console.log('La version de l\'app est déjà à jour dans la BDD.');
+          }
+        } catch (error) {
+          console.error('Erreur lors de la récupération ou de la mise à jour de la version', error);
+        }
+      }
+    };
+  
+    updateAppVersionInUserTable();
+  }, [userId]);
+  
+
   const checkForUpdates = async () => {
     try {
       //version actuelle de l'application
       const currentVersion = DeviceInfo.getVersion();
       const response = await axios.get(`${API_BASE_URL}/versionApp`);
       const latestVersion = response.data.version;
-      // console.log('response', response.data.version)
+      // console.log('response', latestVersion);
       // console.log('version mobile', currentVersion);
-      // console.log('version store', latestVersion);
       if (currentVersion < latestVersion) {
         setIsUpdateRequired(true);
-        //console.log('mise à jour dispo');
-
-        //console.log(isUpdateRequired);
-
       }
     } catch (error) {
       //console.error('Erreur lors de la vérification des mises à jour:', error);

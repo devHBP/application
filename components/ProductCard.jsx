@@ -6,26 +6,25 @@ import {
   addFreeProductToCart,
   makeLastSmallPizzaFree,
   makeLastBigPizzaFree,
+  acceptOffer
 } from '../reducers/cartSlice';
 import {useSelector, useDispatch} from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {fonts, colors} from '../styles/styles';
 import ModaleOffre31 from '../components/ModaleOffre31';
 
-import Svg, { Path } from 'react-native-svg';
+import Svg, {Path} from 'react-native-svg';
 // import {  API_BASE_URL, API_BASE_URL_ANDROID } from '@env';
-import { API_BASE_URL } from '../config'; 
-import FastImage from 'react-native-fast-image'
-import { useCountdown } from '../components/CountdownContext';
+import {API_BASE_URL} from '../config';
+import FastImage from 'react-native-fast-image';
+import {useCountdown} from './CountdownContext';
 
 //call API
-import {checkStockForSingleProduct} from '../CallApi/api.js';
+import {checkStockForSingleProduct, updateStock} from '../CallApi/api.js';
 //fonctions
-import {decrementhandler} from '../Fonctions/fonctions';
+import {decrementhandler, handleOfferCalculation} from '../Fonctions/fonctions';
 import InfoProduct from '../SVG/InfoProduct';
 import ModaleIngredients from './ModaleIngredients';
-
-
 
 const ProductCard = ({
   libelle,
@@ -42,14 +41,14 @@ const ProductCard = ({
   showPriceSun = true,
   allergenes,
   category,
-  overlayStyle
+  overlayStyle,
 }) => {
   // Déclaration de l'état du stock
   const [currentStock, setCurrentStock] = useState(stock);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleIngredients, setModalVisibleIngredients] = useState(false);
 
-  const { resetCountdown} = useCountdown();
+  const {resetCountdown} = useCountdown();
 
   // Effet de bord pour mettre à jour le stock
   useEffect(() => {
@@ -57,136 +56,137 @@ const ProductCard = ({
       const stock = await checkStockForSingleProduct(id);
       setCurrentStock(stock[0].quantite);
     };
-
     fetchStock();
   }, [id]);
 
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart.cart);
+  const group = cart;
   const product = cart.find(item => item.productId === id);
+  // const productQuantity = cart.reduce((total, item) => {
+  //   if (item.productId === id) {
+  //     return total + item.qty;
+  //   }
+  //   return total;
+  // }, 0);
+
   const productQuantity = cart.reduce((total, item) => {
-    if (item.productId === id) {
+    if (item.productId === id && item.type !== 'antigaspi') {
       return total + item.qty;
     }
     return total;
   }, 0);
 
+  useEffect(() => {
+    const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
+  }, [cart]);
 
-    useEffect(() => {
-      const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
-    }, [cart]);
  
 
-    const handleAcceptOffer = () => {
-      dispatch(addFreeProductToCart(product));
-    };
-   
-const incrementhandler = async () => {
-  if (currentStock === 0){
-    return Toast.show({
-      type: 'error',
-      text1: `Victime de son succès`,
-      text2: 'Plus de stock disponible' 
-    });
-  }
-  try {
-    const stockAvailable = await checkStockForSingleProduct(id);
-    
-    // Get the product from the cart
-    const productInCart = cart.find((item) => item.productId === id);
-   
-    // Calculate the remaining stock after accounting for the items in the cart
-  const remainingStock = stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
+  const handleAcceptOffer = () => {
+    dispatch(acceptOffer({productId: product.productId, offre: product.offre}))
+    updateStock({...product, qty: 1});
+  };
 
-
-  if (stockAvailable.length > 0 && remainingStock > 0) {
-
-
-    const newProduct = { 
-      productId: id, 
-      libelle, 
-      image, 
-      prix_unitaire: prix, 
-      qty: 1, 
-      offre: offre,
-      isFree: false,
-      lastAdded: false  
-    };
-    dispatch(addToCart(newProduct));
-    resetCountdown()
-
-    // dispatch(addToCart({ productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre, isFree: false}));
-
-    // Maintenant, récupérons à nouveau les produits du panier avec la même offre, en tenant compte de la nouvelle pizza
-    const updatedCart = [...cart, { productId: id, libelle, image, prix_unitaire: prix, qty: 1 , offre: offre, isFree: false }];
-
-
-    if (offre && offre.startsWith('offre31_Petite')) {
-
-    const sameOfferProducts = updatedCart.filter((item) => item.offre && item.offre.startsWith('offre31_Petite'));
-  
-    // Calculez la quantité totale pour cette offre spécifique APRÈS avoir ajouté la nouvelle pizza
-    const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
-  
-    // Si la quantité totale est un multiple de 4, rendez la dernière pizza ajoutée gratuite
-    if (totalQuantity % 4 === 0) {
-      dispatch(makeLastSmallPizzaFree());
+  const incrementhandler = async () => {
+    if (currentStock === 0) {
+      return Toast.show({
+        type: 'error',
+        text1: `Victime de son succès`,
+        text2: 'Plus de stock disponible',
+      });
     }
-        } else if (offre && offre.startsWith('offre31_Grande')) {
-          const sameOfferProducts = updatedCart.filter(
-            item => item.offre && item.offre.startsWith('offre31_Grande'),
-          );
+    try {
+      const stockAvailable = await checkStockForSingleProduct(id);
+      // console.log(`stock pour ${id}`, stockAvailable)
 
-          // Calculez la quantité totale pour cette offre spécifique APRÈS avoir ajouté la nouvelle pizza
-          const totalQuantity = sameOfferProducts.reduce(
-            (total, product) => total + product.qty,
-            0,
-          );
+      const productsOutOfStocks = stockAvailable
+        .filter(stock => stock.quantite < 1)
+        .map(stock => stock.productId);
 
-          // Si la quantité totale est un multiple de 4, rendez la dernière pizza ajoutée gratuite
-          if (totalQuantity % 4 === 0) {
-            dispatch(makeLastBigPizzaFree());
-          }
-        } else if (offre && offre.startsWith('offre31')) {
-          // console.log('offre 31')
-          // Get a version of the cart that includes the new product
-          const updatedCart = [
-            ...cart,
-            {
-              productId: id,
-              libelle,
-              image,
-              prix_unitaire: prix,
-              qty: 1,
-              offre: offre,
-            },
-          ];
+      //console.log('produitsEnRupture', productsOutOfStocks)
 
-          // Filter products that have the same offer as the currently added product
-          const sameOfferProducts = updatedCart.filter(
-            item => item.offre === offre,
-          );
-
-          // Calculate the total quantity for this specific offer
-          const totalQuantity = sameOfferProducts.reduce(
-            (total, product) => total + product.qty,
-            0,
-          );
-
-          // if (totalQuantity > 0 && totalQuantity % 3 === 0)
-          if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
-            //MODALE 4E produit
-            setModalVisible(true);
-          }
-        }
-      } else {
-        // The stock is insufficient
-        //console.log(`Le stock est insuffisant pour ajouter la quantité spécifiée.,Quantités max: ${stockAvailable[0].quantite}`);
+      if (productsOutOfStocks.length > 0) {
         return Toast.show({
           type: 'error',
           text1: `Victime de son succès`,
-          text2: `Quantité maximale: ${stockAvailable[0].quantite}`,
+          text2: `Plus de stock disponible`,
         });
+      }
+
+      const isPetitePizza = offre && offre.startsWith('offre31_Petite');
+
+      const newProduct = {
+        productId: id,
+        libelle,
+        image,
+        prix_unitaire: prix,
+        qty: 1,
+        offre: offre,
+        isFree: false,
+        lastAdded: false,
+        type: isPetitePizza ? 'petitepizza' : 'product', 
+      };
+      dispatch(addToCart(newProduct));
+      resetCountdown();
+
+      // j'enleve du stock
+      await updateStock({...newProduct, qty: 1});
+
+      // Maintenant, récupérons à nouveau les produits du panier avec la même offre, en tenant compte de la nouvelle pizza
+      const updatedCart = [
+        ...cart,
+        {
+          productId: id,
+          libelle,
+          image,
+          prix_unitaire: prix,
+          qty: 1,
+          offre: offre,
+          isFree: false,
+        },
+      ];
+
+      if (offre && offre.startsWith('offre31_Petite')) {
+        
+  
+        const updatedCart = [...cart, newProduct];
+  
+        // Appel de la fonction pour gérer le calcul de l'offre
+        handleOfferCalculation(updatedCart, dispatch);
+
+      
+      } else if (offre && offre.startsWith('offre31')) {
+        // console.log('offre 31')
+        // Get a version of the cart that includes the new product
+        const updatedCart = [
+          ...cart,
+          {
+            productId: id,
+            libelle,
+            image,
+            prix_unitaire: prix,
+            qty: 1,
+            offre: offre,
+          },
+        ];
+
+        // Filter products that have the same offer as the currently added product
+        const sameOfferProducts = updatedCart.filter(
+          item => item.offre === offre,
+        );
+
+        // Calculate the total quantity for this specific offer
+        const totalQuantity = sameOfferProducts.reduce(
+          (total, product) => total + product.qty,
+          0,
+        );
+
+        // if (totalQuantity > 0 && totalQuantity % 3 === 0)
+        if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
+          //MODALE 4E produit
+          setModalVisible(true);
+        }
       }
     } catch (error) {
       console.error(
@@ -237,12 +237,13 @@ const incrementhandler = async () => {
 
         <View style={style.qtyContainer}>
           <TouchableOpacity
-            onPress={() => decrementhandler(id, dispatch)}
+            onPress={() => decrementhandler('product', id, group, dispatch)}
             style={
               showButtons
                 ? style.decrement
                 : {...style.decrement, opacity: 0, height: 0, width: 0}
-            }>
+            }
+            disabled={productQuantity === 0}>
             <View>
               <Svg width={7} height={4} viewBox="0 0 7 4">
                 <Path
@@ -252,7 +253,6 @@ const incrementhandler = async () => {
               </Svg>
             </View>
           </TouchableOpacity>
-          {/* <Text style={style.qtyText}>{cart[index].qty}</Text> */}
           <TouchableOpacity
             style={
               showButtons
@@ -262,11 +262,9 @@ const incrementhandler = async () => {
             <Text style={{color: colors.color1, fontWeight: '600'}}>
               {productQuantity}
             </Text>
-            {/* <Text >{product ? product.qty : 0}</Text> */}
           </TouchableOpacity>
 
           <TouchableOpacity
-            // onPress={() => incrementhandler(id, dispatch, cart, currentStock, offre)}
             onPress={incrementhandler}
             style={
               showButtons
@@ -498,8 +496,7 @@ const style = StyleSheet.create({
     bottom: 0,
     left: 0,
     backgroundColor: 'lightgray',
-    opacity: 0.8,
-    borderRadius: 5,
+    opacity: 0.7,
   },
   increment: {
     backgroundColor: colors.color2,
