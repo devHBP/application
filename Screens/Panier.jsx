@@ -21,7 +21,8 @@ import {
   clearCart,
   removeFromCart,
   addPromo,
-  resetPromo
+  resetPromo,
+  acceptOffer
 } from '../reducers/cartSlice';
 import {
   setNumeroCommande,
@@ -60,12 +61,18 @@ import {useCountdown} from '../components/CountdownContext';
 import CartItemAntigaspi from '../components/CardItemsAntiGaspi';
 
 //fonctions
-import {decrementhandler, removehandler} from '../Fonctions/fonctions';
+import {
+  decrementhandler,
+  removehandler,
+  removeCart,
+  handleOfferCalculation,
+} from '../Fonctions/fonctions';
 import CardPaiement from '../SVG/CardPaiement';
 import ModaleOffreSUN from '../components/ModaleOffreSUN';
 import {DeleteCode} from '../SVG/DeleteCode';
 import {ApplyCode} from '../SVG/ApplyCode';
 import ModaleModifProfile from '../components/ModaleModifProfile';
+import CartItemSUN from '../components/CardItemsSUN';
 
 const Panier = ({navigation}) => {
   const dispatch = useDispatch();
@@ -105,6 +112,8 @@ const Panier = ({navigation}) => {
   let userRole = user.role;
   const emailConfirmOrder = user.email;
   const firstnameConfirmOrder = user.firstname;
+
+  // console.log('cart panier', cart)
 
   let totalPrice = Number(
     cart
@@ -180,11 +189,17 @@ const Panier = ({navigation}) => {
       qty: 1,
       prix_unitaire: 0,
     };
-    dispatch(addFreeProductToCart(freeProduct));
+    dispatch(acceptOffer({productId: freeProduct.productId, offre: freeProduct.offre}))
+    updateStock({...freeProduct, qty: 1});
   };
 
   // fonction ajout de produit (icone +)
-  const incrementhandler = async (productIds, offre) => {
+  const incrementhandler = async (productIds, offre, type, item) => {
+    // console.log('productIds', productIds);
+    // console.log('offre', offre);
+    // console.log('type', type);
+    // console.log('item', item);
+    resetCountdown();
     const id = Array.isArray(productIds) ? productIds[0] : productIds; // Si productIds est un tableau, prenez le premier élément. Sinon, prenez productIds tel quel.
 
     const productInCart = cart.find(item =>
@@ -192,7 +207,7 @@ const Panier = ({navigation}) => {
         ? item.productIds[0] === id
         : item.productId === id,
     );
-
+    // console.log('productInCart', productInCart);
     const type_produit = productInCart ? productInCart.type_produit : null;
 
     const isCurrentProductOffreSun = type_produit === 'offreSUN';
@@ -210,70 +225,122 @@ const Panier = ({navigation}) => {
     }
 
     try {
-      if (productInCart.type === 'formule') {
-        const stocks = await checkStockFormule(productInCart.productIds);
+      if (type === 'formule') {
+        // verif des stocks pour chaque produit
+        const stocks = await checkStockFormule(item.productIds);
 
-        for (let stock of stocks) {
-          if (stock[0].quantite <= productInCart.qty) {
+        // console.log('stocks', stocks);
+
+        const productsOutOfStocks = stocks
+          .filter(stock => stock[0].quantite < 1)
+          .map(stock => stock[0].productId);
+
+        // console.log('produitsEnRupture', productsOutOfStocks);
+
+        if (productsOutOfStocks.length > 0) {
+          const idsQuery = productsOutOfStocks.join(',');
+          try {
+            const response = await axios.get(
+              `${API_BASE_URL}/getLibelleProduct?ids=${idsQuery}`,
+            );
+            const libelles = response.data.map(obj => obj.libelle);
+
             return Toast.show({
               type: 'error',
               text1: `Victime de son succès`,
-              text2: 'Plus de stock disponible',
+              text2: `Plus de stock disponible pour : ${libelles.join(', ')}`,
             });
+          } catch (error) {
+            console.error(
+              'Erreur lors de la récupération des libellés des produits:',
+              error,
+            );
           }
         }
 
-        productInCart.qty = 1;
-        dispatch(addToCart(productInCart));
-      } else {
+        item.productIds.forEach(productId => {
+          // console.log('productId dans la formule:', productId);
+          updateStock({productId: productId, qty: 1});
+        });
+        dispatch(addToCart(item));
+      } else if (type === 'petitepizza') {
+
         const stockAvailable = await checkStockForSingleProduct(id);
+        // console.log(`stock pour ${id}`, stockAvailable);
 
-        const remainingStock =
-          stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
+        const productsOutOfStocks = stockAvailable
+          .filter(stock => stock.quantite < 1)
+          .map(stock => stock.productId);
 
-        if (stockAvailable.length > 0 && remainingStock > 0) {
-          dispatch(
-            addToCart({
-              productId: id,
-              libelle: productInCart.libelle,
-              image: productInCart.image,
-              prix_unitaire: productInCart.prix_unitaire,
-              qty: 1,
-              offre: offre,
-            }),
-          );
+        // console.log('produitsEnRupture', productsOutOfStocks);
 
-          if (offre && offre.startsWith('offre31')) {
-            const updatedCart = [
-              ...cart,
-              {
-                productId: id,
-                libelle: productInCart.libelle,
-                image: productInCart.image,
-                prix_unitaire: productInCart.prix,
-                qty: 1,
-                offre: offre,
-              },
-            ];
-            const sameOfferProducts = updatedCart.filter(
-              item => item.offre === offre,
-            );
-            const totalQuantity = sameOfferProducts.reduce(
-              (total, product) => total + product.qty,
-              0,
-            );
-
-            if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
-              setModalVisible(true);
-            }
-          }
-        } else {
+        if (productsOutOfStocks.length > 0) {
           return Toast.show({
             type: 'error',
             text1: `Victime de son succès`,
-            text2: `Quantité maximale: ${stockAvailable[0].quantite}`,
+            text2: `Plus de stock disponible`,
           });
         }
+
+        dispatch(addToCart(item));
+
+        await updateStock({productId: item.productId, qty: 1});
+
+        const updatedCart = [...cart, {...item, qty: 1}]; // Simuler l'ajout de l'item au panier pour la mise à jour
+  
+        // Appel de handleOfferCalculation avec le panier mis à jour et dispatch
+        handleOfferCalculation(updatedCart, dispatch);
+
+      } else if (type === 'product') {
+        const stockAvailable = await checkStockForSingleProduct(id);
+        console.log(`stock pour ${id}`, stockAvailable);
+
+        const productsOutOfStocks = stockAvailable
+          .filter(stock => stock.quantite < 1)
+          .map(stock => stock.productId);
+
+        // console.log('produitsEnRupture', productsOutOfStocks);
+
+        if (productsOutOfStocks.length > 0) {
+          return Toast.show({
+            type: 'error',
+            text1: `Victime de son succès`,
+            text2: `Plus de stock disponible`,
+          });
+        }
+
+        dispatch(addToCart(item));
+        await updateStock({productId: item.productId, qty: 1});
+
+        // a rvoir ici = offre 3+1
+        if (offre && offre.startsWith('offre31')) {
+
+          const updatedCart = [
+            ...cart,
+            {
+              productId: id,
+              libelle: productInCart.libelle,
+              image: productInCart.image,
+              prix_unitaire: productInCart.prix,
+              qty: 1,
+              offre: offre,
+            },
+          ];
+          const sameOfferProducts = updatedCart.filter(
+            item => item.offre === offre,
+          );
+          const totalQuantity = sameOfferProducts.reduce(
+            (total, product) => total + product.qty,
+            0,
+          );
+
+          if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
+            setModalVisible(true);
+            console.log('ici')
+          }
+        }
+      } else if (type === 'antigaspi') {
+        console.log('cas antigaspi');
       }
     } catch (error) {
       console.error(
@@ -590,47 +657,61 @@ const Panier = ({navigation}) => {
 
       const checkStock = async () => {
         for (const item of cart) {
-          if (item.type === "formule") {
+          if (item.type === 'formule') {
             // Gérer les éléments de formule
             for (let i = 1; i <= 3; i++) {
               const option = item[`option${i}`];
               if (option && option.productId) {
-                const isStockAvailable = await checkProductStock(option.productId, option.qty);
+                const isStockAvailable = await checkProductStock(
+                  option.productId,
+                  option.qty,
+                );
                 if (!isStockAvailable) return false;
               }
             }
           } else {
             // Gérer les produits standards
             if (!item.antigaspi) {
-              const isStockAvailable = await checkProductStock(item.productId, item.qty);
+              const isStockAvailable = await checkProductStock(
+                item.productId,
+                item.qty,
+              );
               if (!isStockAvailable) return false;
             }
           }
         }
         return true; // pas de souci de stock
       };
-      
+
       const checkProductStock = async (productId, qty) => {
         try {
-          const response = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
-          const stockInfo = response.data.find(stock => stock.productId === productId);
+          const response = await axios.get(
+            `${API_BASE_URL}/getStockByProduct/${productId}`,
+          );
+          const stockInfo = response.data.find(
+            stock => stock.productId === productId,
+          );
           // console.log('stockInfo', stockInfo);
-      
+
           if (!stockInfo || stockInfo.quantite < qty) {
             Toast.show({
               type: 'error',
               text1: `Le produit ${stockInfo.libelle} n'est plus disponible`,
-              text2: `Victime de son succès, quantité restante: ${stockInfo?.quantite ?? 0}`,
+              text2: `Victime de son succès, quantité restante: ${
+                stockInfo?.quantite ?? 0
+              }`,
             });
             return false; // stock insuffisant
           }
           return true; // stock suffisant
         } catch (error) {
-          console.error(`Erreur lors de la vérification du stock pour le produit ${productId}`, error);
+          console.error(
+            `Erreur lors de la vérification du stock pour le produit ${productId}`,
+            error,
+          );
           return false;
         }
       };
-      
 
       // checkStock();
       const stockIsOk = await checkStock();
@@ -731,7 +812,7 @@ const Panier = ({navigation}) => {
           return products;
         })(),
       };
-      console.log('orderdata', orderData);
+      // console.log('orderdata', orderData);
       setCurrentPromoCode(null); // je remets à null l'utilisation des codes promo
       const createorder = await createOrder(orderData);
       //console.log('createOrder', createorder);
@@ -751,7 +832,7 @@ const Panier = ({navigation}) => {
         orderId,
         numero_commande,
       };
-      dispatch(resetPromo())
+      dispatch(resetPromo());
 
       // 5. j'envoi ces info pouvrir une session Stripe
       if (paiement === 'online') {
@@ -797,7 +878,6 @@ const Panier = ({navigation}) => {
 
       setAppliedPromo({code: promoCode, type: promoType, value: promoValue});
       setCurrentPromoCode(promoCode);
-
     } catch (error) {
       if (error.response && error.response.status === 400) {
         // console.log(error.response.data.message);
@@ -822,8 +902,8 @@ const Panier = ({navigation}) => {
     setAppliedPromo(null);
     setCurrentPromoCode(null);
     setPromoCode('');
-     // retire le promotionId dans le store redux
-     dispatch(resetPromo());
+    // retire le promotionId dans le store redux
+    dispatch(resetPromo());
   };
 
   //filtrage si formule ou produits
@@ -904,82 +984,13 @@ const Panier = ({navigation}) => {
     }
   };
 
-  // J'ENELEVE LE PRODUIT DU PANIER
-  const removeAntigaspiProduct = productId => {
-    const product = cart.find(item => item.productId === productId);
-
-    const antigaspiCountBefore = cart.filter(item => item.antigaspi).length;
-
-    removehandler(productId, dispatch);
-    if (product && product.antigaspi) {
-    
-      axios
-        .put(`${API_BASE_URL}/getAddStockAntigaspi`, {
-          productId: product.productId,
-          quantityPurchased: product.qty,
-        })
-        .then(response => {
-          Toast.show({
-            type: 'success',
-            text1: 'Produit supprimé du panier',
-          });
-        })
-        .catch(error => {
-          console.error(
-            'Erreur lors de la mise à jour du stock antigaspi pour le produit',
-            product.libelle,
-            ':',
-            error,
-          );
-        });
-    }
-  };
   useEffect(() => {
-    const antigaspiCountAfter = cart.filter(item => item.antigaspi).length;
-
-    if (antigaspiCountAfter === 0) {
+    if (countdown === 0) {
+      // removeCart();
+      removeCart(cart, countdown, dispatch);
+    }
+    if (isCartEmpty) {
       countDownNull();
-    }
-  }, [cart]); 
-
-  // JE VIDE LE PANIER SI COMPTEUR EXPIRÉ = 0
-  const removeCart = () => {
-    if (countdown === 0) {
-      cart.forEach(async item => {
-        if (item.antigaspi) {
-          dispatch(removeFromCart({productId: item.productId}));
-          // Je remets le stock du produit
-          try {
-            const response = await axios.put(
-              `${API_BASE_URL}/getAddStockAntigaspi`,
-              {
-                productId: item.productId,
-                quantityPurchased: item.qty,
-              },
-            );
-
-            if (response.status === 200) {
-              console.log(
-                'Stock antigaspi mis à jour avec succès pour le produit',
-                item.libelle,
-              );
-            }
-          } catch (error) {
-            console.error(
-              'Erreur lors de la mise à jour du stock antigaspi pour le produit',
-              item.libelle,
-              ':',
-              error,
-            );
-          }
-        }
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (countdown === 0) {
-      removeCart();
     }
   }, [countdown, cart]);
 
@@ -1075,6 +1086,7 @@ const Panier = ({navigation}) => {
                     Formules
                   </Text>
                 )}
+
                 {formules.map((item, index) => {
                   if (item.type === 'formule') {
                     return (
@@ -1091,13 +1103,24 @@ const Panier = ({navigation}) => {
                           option3={item.option3}
                           prix_unitaire={item.prix}
                           incrementhandler={() =>
-                            incrementhandler(item.productIds, item.offre)
+                            incrementhandler(
+                              item.productIds,
+                              item.offre,
+                              'formule',
+                              item,
+                            )
                           }
                           decrementhandler={() =>
-                            decrementhandler(item.productIds, dispatch)
+                            decrementhandler('formule', item.id, item, dispatch)
                           }
                           removehandler={() =>
-                            removehandler(item.id, dispatch, 'formule')
+                            removehandler(
+                              'formule',
+                              item.id,
+                              item,
+                              dispatch,
+                              item.qty,
+                            )
                           }
                           image={item.formuleImage}
                           qty={item.qty}
@@ -1112,8 +1135,10 @@ const Panier = ({navigation}) => {
                 {/* - produits seuls ou avec offre - */}
                 {Object.entries(itemsGroupedByFamily).map(
                   ([familyName, items], index) => {
+                    // console.log('Famille:', familyName); // Affiche la famille actuelle
+                    // console.log('Items:', items);
                     return (
-                      <View key={index}>
+                      <View key={familyName}>
                         <Text
                           style={{
                             paddingVertical: 5,
@@ -1122,78 +1147,183 @@ const Panier = ({navigation}) => {
                           }}>
                           {familyName}
                         </Text>
-                        {items.map((group, groupIndex) => (
-                          <View
-                            key={groupIndex}
-                            style={{
-                              backgroundColor: 'white',
-                              borderRadius: 10,
-                              marginVertical: 5,
-                            }}>
-                            {group.items[0].antigaspi ? (
-                              <>
-                                <CartItemAntigaspi
-                                  libelle={group.items[0].libelle}
-                                  prix_unitaire={
-                                    group.items[0].prix ||
-                                    group.items[0].prix_unitaire
-                                  }
-                                  qty={group.items.reduce(
-                                    (acc, item) => acc + item.qty,
-                                    0,
-                                  )}
-                                  removehandler={() =>
-                                    removeAntigaspiProduct(
-                                      group.items[0].productId,
-                                    )
-                                  }
-                                  index={index}
-                                  isFree={group.items[0].isFree}
-                                  freeCount={group.freeCount}
-                                />
-                                <View style={style.contentCountDown}>
-                                  <Text style={style.countDown}>
-                                    Dans mon panier pour{' '}
-                                    {formatCountdown(countdown)}
-                                  </Text>
-                                </View>
-                              </>
-                            ) : (
-                              <CartItem
-                                libelle={group.items[0].libelle}
-                                prix_unitaire={
-                                  group.items[0].prix ||
-                                  group.items[0].prix_unitaire
+                        {items.map((group, groupIndex) => {
+                          // console.log('group', group)
+
+                          const consolidatedItems = group.items.reduce(
+                            (acc, item) => {
+                              // Clé unique pour chaque combinaison de produit et offre.
+                              const key = `${item.productId}_${item.offre}_${item.type}`;
+                              if (!acc[key]) {
+                                // Si c'est le premier item de ce type, l'initialiser.
+                                acc[key] = {
+                                  ...item,
+                                  qty: 0,
+                                  totalFree: 0,
+                                  totalPrice: 0,
+                                };
+                              }
+                              // Ajouter la quantité de cet item à la quantité totale.
+                              acc[key].qty += item.qty;
+                              // S'assurer que le prix total est correct (quantité totale * prix unitaire).
+                              // acc[key].prix_unitaire = item.prix_unitaire;
+                              if (item.prix_unitaire > 0) {
+                                acc[key].totalPrice +=
+                                  item.prix_unitaire * item.qty;
+                              }
+                              // Comptez le nombre d'items gratuits.
+                              if (item.prix_unitaire === 0) {
+                                acc[key].totalFree += item.qty;
+                              }
+                              return acc;
+                            },
+                            {},
+                          );
+
+                          // On transforme ensuite l'objet en tableau pour le rendu.
+                          // const consolidatedItemsArray = Object.values(consolidatedItems);
+                          const consolidatedItemsArray = Object.values(
+                            consolidatedItems,
+                          ).map(item => {
+                            const nonFreeQty = item.qty - item.totalFree; // Calculer la quantité d'éléments non gratuits.
+                            return {
+                              ...item,
+                              // Diviser le prix total par la quantité d'éléments non gratuits pour obtenir le prix_unitaire moyen.
+                              prix_unitaire:
+                                nonFreeQty > 0
+                                  ? item.totalPrice / nonFreeQty
+                                  : 0,
+                            };
+                          });
+
+                          return (
+                            <View key={groupIndex}>
+                              {consolidatedItemsArray.map((item, itemIndex) => {
+                                // console.log('Item:', item);
+                                const qty = item.qty;
+                                const itemKey = `item-${item.productId}-${itemIndex}-${item.type}`;
+                                if (item.type === 'antigaspi') {
+                                  return (
+                                    <CartItemAntigaspi
+                                      key={itemKey}
+                                      libelle={item.libelle}
+                                      prix_unitaire={item.prix_unitaire}
+                                      qty={qty}
+                                      removehandler={() =>
+                                        removehandler(
+                                          'antigaspi',
+                                          item.productId,
+                                          group,
+                                          dispatch,
+                                          qty,
+                                        )
+                                      }
+                                      index={index}
+                                      isFree={item.isFree}
+                                      freeCount={item.totalFree}
+                                    />
+                                  );
+                                } else if (item.type === 'product') {
+                                  // console.log('item cardItem', item)
+                                  return (
+                                    <CartItem
+                                      key={itemKey}
+                                      libelle={item.libelle}
+                                      prix_unitaire={item.prix_unitaire}
+                                      qty={qty}
+                                      incrementhandler={() =>
+                                        incrementhandler(
+                                          item.productId,
+                                          item.offre,
+                                          'product',
+                                          item,
+                                        )
+                                      }
+                                      decrementhandler={() =>
+                                        decrementhandler(
+                                          'product',
+                                          item.productId,
+                                          group,
+                                          dispatch,
+                                        )
+                                      }
+                                      removehandler={() =>
+                                        removehandler(
+                                          'product',
+                                          item.productId,
+                                          group,
+                                          dispatch,
+                                          item.qty,
+                                        )
+                                      }
+                                      index={index}
+                                      isFree={item.isFree}
+                                      // isFree={item.isFree}
+                                      freeCount={item.totalFree}
+                                    />
+                                  );
+                                } else if (item.type === 'offreSUN') {
+                                  return (
+                                    <CartItemSUN
+                                      key={itemKey}
+                                      libelle={item.libelle}
+                                      qty={qty}
+                                      removehandler={() =>
+                                        removehandler(
+                                          'offreSUN',
+                                          item.productId,
+                                          group,
+                                          dispatch,
+                                          item.qty,
+                                        )
+                                      }
+                                    />
+                                  );
+                                } else if (item.type === 'petitepizza') {
+                                  return (
+                                    <CartItem
+                                      key={itemKey}
+                                      libelle={item.libelle}
+                                      prix_unitaire={item.prix_unitaire}
+                                      qty={qty}
+                                      incrementhandler={() =>
+                                        incrementhandler(
+                                          item.productId,
+                                          item.offre,
+                                          'petitepizza',
+                                          item,
+                                        )
+                                      }
+                                      decrementhandler={() =>
+                                        decrementhandler(
+                                          'petitepizza',
+                                          item.productId,
+                                          group,
+                                          dispatch,
+                                        )
+                                      }
+                                      removehandler={() =>
+                                        removehandler(
+                                          'petitepizza',
+                                          item.productId,
+                                          group,
+                                          dispatch,
+                                          item.qty,
+                                        )
+                                      }
+                                      index={index}
+                                      isFree={item.isFree}
+                                      // isFree={item.isFree}
+                                      freeCount={item.totalFree}
+                                    />
+                                  );
+                                } else {
+                                  return null;
                                 }
-                                qty={group.items.reduce(
-                                  (acc, item) => acc + item.qty,
-                                  0,
-                                )}
-                                incrementhandler={() =>
-                                  incrementhandler(
-                                    group.items[0].productId,
-                                    group.items[0].offre,
-                                  )
-                                }
-                                decrementhandler={() =>
-                                  decrementhandler(
-                                    group.items[0].productId,
-                                    dispatch,
-                                  )
-                                }
-                                removehandler={() =>
-                                  removehandler(
-                                    group.items[0].productId,
-                                    dispatch,
-                                  )
-                                }
-                                index={index}
-                                isFree={group.items[0].isFree}
-                                freeCount={group.freeCount}
-                              />
-                            )}
-                          </View>
-                        ))}
+                              })}
+                            </View>
+                          );
+                        })}
                       </View>
                     );
                   },
@@ -1271,6 +1401,16 @@ const Panier = ({navigation}) => {
                   </View>
                 </View>
               </ScrollView>
+
+              {!isCartEmpty && (
+                <View style={style.contentGlobal}>
+                  <View style={style.contentCountDown}>
+                    <Text style={style.countDown}>
+                      Délai du panier: {formatCountdown(countdown)}
+                    </Text>
+                  </View>
+                </View>
+              )}
 
               <View
                 style={[

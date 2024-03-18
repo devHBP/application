@@ -131,8 +131,14 @@ const FormuleBurger = ({navigation}) => {
 
     const handleSandwich = async (product) => {
 
-       await checkProductAvailability(product, checkStockForSingleProduct, cart);
-
+      const isAvailable = await checkProductAvailability(
+        product,
+        checkStockForSingleProduct,
+        cart,
+      );
+      if (!isAvailable) {
+        return;
+      }
       if (selectedProduct?.productId === product.productId) {
           setSelectedProduct(null); 
           setProductIds(productIds.filter(productId => productId !== product.productId));
@@ -144,7 +150,16 @@ const FormuleBurger = ({navigation}) => {
           }, 400);
       }
   }
-  const handleDessert = (product) => {
+  const handleDessert = async (product) => {
+    const isAvailable = await checkProductAvailability(
+      product,
+      checkStockForSingleProduct,
+      cart,
+    );
+
+    if (!isAvailable) {
+      return;
+    }
     if(!selectedProduct ) {
       Toast.show({
           type: 'error',
@@ -164,7 +179,17 @@ const FormuleBurger = ({navigation}) => {
         }, 400);
     }
   }
-  const handleBoisson = (product) => {
+  const handleBoisson = async (product) => {
+    const isAvailable = await checkProductAvailability(
+      product,
+      checkStockForSingleProduct,
+      cart,
+    );
+
+    if (!isAvailable) {
+      return;
+    }
+
     if(!selectedProduct ) {
       Toast.show({
           type: 'error',
@@ -204,7 +229,7 @@ const FormuleBurger = ({navigation}) => {
         setTotalPrice(prix);
     };
 
-    const handleFormuleSelection = () => {
+    const handleFormuleSelection = async () => {
       const formule = {
         id: `formule-${Date.now()}`,
         type: 'formule',
@@ -219,6 +244,15 @@ const FormuleBurger = ({navigation}) => {
       }
       dispatch(addToCart(formule));
       resetCountdown()
+
+      // mis a jour des stocks - qty: 1 pour chaque option si presente
+    const options = [formule.option1, formule.option2, formule.option3].filter(
+      option => option !== null,
+    );
+
+    for (const option of options) {
+      await updateStock({productId: option.productId, qty: 1});
+    }
       navigation.navigate('panier')
     }
       

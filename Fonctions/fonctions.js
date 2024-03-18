@@ -1,18 +1,17 @@
-import {checkStockForSingleProduct} from '../CallApi/api.js';
+import {addStock, checkStockForSingleProduct, addStockAntigaspi} from '../CallApi/api.js';
 import {
   addToCart,
   decrementOrRemoveFromCart,
   addFreeProductToCart,
   removeFromCart,
   removeMultipleFromCart,
+  popLastItemOfType,
+  makeLastSmallPizzaFree
 } from '../reducers/cartSlice.js';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Platform} from 'react-native';
-// import {PLAY_STORE_VERSION} from '@env';
-// import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
-import { API_BASE_URL } from './config';
+
 
 const configureAxiosHeaders = async () => {
   const token = await AsyncStorage.getItem('userToken');
@@ -22,128 +21,91 @@ const configureAxiosHeaders = async () => {
   axios.defaults.headers.common['x-access-header'] = 'hbpclickandcollect';
 };
 
-export const decrementhandler = (id, dispatch) => {
-  // console.log("Decrementing product with ID:", id);
-  const productId = Array.isArray(id) ? id[0] : id;
+export const decrementhandler = (type, id, group, dispatch) => {
+  // console.log('type', type);
+  // console.log('id', id);
+  // console.log('group decrement', group);
+  // const lastItem = (group.items).filter(item => item.productId === id).pop();
+  let itemsArray;
+  if (group.items) {
+    // Si group a une propriété items, utilisez-la
+    itemsArray = group.items;
+  } else if (Array.isArray(group)) {
+    // Si group est lui-même un tableau
+    itemsArray = group;
+  } else {
+    // Si group représente un seul produit, créez un tableau avec ce produit
+    itemsArray = [group];
+  }
 
-  dispatch(decrementOrRemoveFromCart({productId: productId, qty: 1}));
+  const lastItem = itemsArray.filter(item => item.productId === id).pop();
+  if (lastItem) {
+    console.log('offre', lastItem.offre);
+  }
+
+  if (type === 'product' || type === 'petitepizza') {
+    // console.log('group type product', group)
+    dispatch(popLastItemOfType({type, offre: lastItem.offre}));
+    addStock({productId: id, qty: 1});
+  }
+  if (type === 'formule') {
+    // console.log('on agit sur une formule');
+    dispatch(decrementOrRemoveFromCart({id: group.id}));
+    if (group.productIds && Array.isArray(group.productIds)) {
+      group.productIds.forEach(productId => {
+        // console.log('productId dans la formule:', productId);
+        addStock({productId: productId, qty: 1});
+      });
+    }
+  }
 };
 
-// export const removehandler = (id, dispatch) => {
-//   // console.log("Decrementing product with ID:", id);
-//   const productId = Array.isArray(id) ? id[0] : id;
 
-//     dispatch(removeFromCart({ productId: productId}));
-//   };
+export const removehandler = (type, id, item, dispatch, qty  ) => {
+  // console.log('type', type);
+  // console.log('id', id);
+  // console.log('item', item);
+  //console.log('qty', qty);
 
-//   export const removehandler = (ids, dispatch, type) => {
-//     console.log('ids', ids);
-//     if (type === "formule") {
-//         // Supprimez la formule complète en utilisant son ID unique.
-//         dispatch(removeMultipleFromCart({ formuleId: ids }));
-//     } else  {
-//         // Supprimez le produit individuel en utilisant son ID.
-//         dispatch(removeFromCart({ productId: ids }));
-//     }
-// };
+  let lastItemOffre;
 
-export const removehandler = (id, dispatch, type = 'product') => {
+  // Si "item" contient une propriété "items", qui est un tableau, alors obtenez le dernier produit avec le "productId" correspondant.
+  if (item.items && Array.isArray(item.items)) {
+    const lastItem = item.items.filter(item => item.productId === id).pop();
+    if (lastItem) {
+      lastItemOffre = lastItem.offre;
+    }
+  }
   if (type === 'formule') {
     dispatch(removeMultipleFromCart({formuleId: id}));
-  } else {
-    if (Array.isArray(id)) {
-      id.forEach(productId => {
-        dispatch(removeFromCart({productId}));
-      });
-    } else {
-      dispatch(removeFromCart({productId: id}));
-    }
-  }
-};
-
-//fonctionne pour les produits individuals - pas pour les formule
-export const incrementhandler = async (
-  id,
-  dispatch,
-  cart,
-  currentStock,
-  offre,
-) => {
-  if (currentStock === 0) {
-    return Toast.show({
-      type: 'error',
-      text1: `Victime de son succès`,
-      text2: 'Plus de stock disponible',
+    item.productIds.forEach(productId => {
+      addStock({productId: productId, qty: qty});
+      // console.log(`je remets le stock de ${qty} pour ${productId}`)
     });
+  } 
+
+  if (type === 'antigaspi'){
+    dispatch(removeFromCart({productId: id, type}));
+    addStockAntigaspi({productId: id, qty: qty});
+    // console.log(`je remets le stock de ${qty} pour ${id}`)
+
   }
-  try {
-    const stockAvailable = await checkStockForSingleProduct(id);
 
-    // Get the product from the cart
-    const productInCart = cart.find(item => item.productId === id);
-
-    // Calculate the remaining stock after accounting for the items in the cart
-    const remainingStock =
-      stockAvailable[0].quantite - (productInCart ? productInCart.qty : 0);
-
-    if (stockAvailable.length > 0 && remainingStock > 0) {
-      // The stock is sufficient, add the product to the cart
-      dispatch(
-        addToCart({
-          productId: id,
-          libelle,
-          image,
-          prix_unitaire: prix,
-          qty: 1,
-          offre: offre,
-        }),
-      );
-
-      if (offre && offre.startsWith('offre31')) {
-        // Get a version of the cart that includes the new product
-        const updatedCart = [
-          ...cart,
-          {
-            productId: id,
-            libelle,
-            image,
-            prix_unitaire: prix,
-            qty: 1,
-            offre: offre,
-          },
-        ];
-
-        // Filter products that have the same offer as the currently added product
-        const sameOfferProducts = updatedCart.filter(
-          item => item.offre === offre,
-        );
-
-        // Calculate the total quantity for this specific offer
-        const totalQuantity = sameOfferProducts.reduce(
-          (total, product) => total + product.qty,
-          0,
-        );
-
-        // if (totalQuantity > 0 && totalQuantity % 3 === 0)
-        if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
-          //MODALE 4E produit
-          setModalVisible(true);
-        }
-      }
-    } else {
-      // The stock is insufficient
-      //console.log(`Le stock est insuffisant pour ajouter la quantité spécifiée.,Quantités max: ${stockAvailable[0].quantite}`);
-      return Toast.show({
-        type: 'error',
-        text1: `Victime de son succès`,
-        text2: `Quantité maximale: ${stockAvailable[0].quantite}`,
-      });
-    }
-  } catch (error) {
-    console.error(
-      "Une erreur s'est produite lors de l'incrémentation du stock :",
-      error,
-    );
+  if (type === 'product'){
+    // console.log('item', item)
+    dispatch(removeFromCart({productId: id, type}));
+    addStock({productId: id, qty: qty});
+    // console.log(`je remets le stock de ${qty} pour ${id}`)
+  }
+  if (type === 'offreSUN'){
+    // console.log('item', item)
+    dispatch(removeFromCart({productId: id, type}));
+  }
+  if (type === 'petitepizza'){
+    //console.log('item', item)
+    dispatch(removeFromCart({productId: id, type}));
+    addStock({productId: id, qty: qty});
+    // console.log(`je remets le stock de ${qty} pour ${id}`)
   }
 };
 
@@ -209,30 +171,75 @@ async function checkProductAvailability(
 
   return true;
 }
-//--- FIN STOCK---//
 
-//obtenir la version de l'app sur app store
-// async function getLatestAppVersionFromAppStore(bundleId) {
 
-//     console.log('version ios');
-//     // Pour iOS, utilisez l'API iTunes Search
-//     const url = `https://itunes.apple.com/lookup?bundleId=${bundleId}`;
-//     try {
-//       const response = await fetch(url);
-//       const data = await response.json();
-//       if (data.resultCount === 0) {
-//         throw new Error('Aucune donnée trouvée pour ce Bundle ID');
-//       }
-//       return data.results[0].version;
-//     } catch (error) {
-//       console.error(
-//         "Erreur lors de la récupération de la version de l'application:",
-//         error,
-//       );
-//       return null;
-//     }
+export const removeCart = (cart, countdown, dispatch) => {
+  // console.log('countdown', countdown);
+  if (countdown === 0) {
+    // console.log('cart', cart);
 
-// }
+    const groupedItems = cart.reduce((acc, item) => {
+      // Déterminer le type de l'article
+      let type = 'product'; // La valeur par défaut est 'product'
+      let key;
+
+      // Vérifier si l'article est de type 'antigaspi' ou 'formule', sinon garder 'product'
+      if (item.antigaspi) {
+        type = 'antigaspi';
+        key = `${item.productId}-${type}`; // Utilisez productId pour antigaspi
+      } else if (item.type && item.type === 'formule') {
+        type = 'formule';
+        const formuleId = item.id; // Assumption: item.id est l'identifiant unique de la formule
+        key = `${formuleId}-${type}`; // Utilisez formuleId pour les formules
+      }else if (item.type && item.type === 'petitepizza') {
+        type = 'petitepizza';
+        key = `${item.productId}-${type}`; // Utilisez formuleId pour les formules
+      } else {
+        key = `${item.productId}-${type}`; // Utilisez productId pour les produits standards
+      }
+
+      // Initialiser le groupe si nécessaire
+      if (!acc[key]) {
+        acc[key] = { ...item, qty: 0, type, id: item.id || item.productId }; // Inclure id pour gérer les formules
+      }
+
+      // Ajouter la quantité de l'article au total du groupe
+      acc[key].qty += item.qty;
+
+      return acc;
+    }, {});
+
+    // Maintenant, vous pouvez traiter chaque groupe d'articles
+    Object.values(groupedItems).forEach(group => {
+      // console.log('grouped item', group);
+      // console.log('qty removecart', group.qty);
+
+      // Ici, pour les formules, l'id doit être passé correctement à removehandler
+      const idForHandler = group.type === 'formule' ? group.id : group.productId;
+      removehandler(group.type, idForHandler, group, dispatch, group.qty);
+    });
+  }
+};
+
+export const  handleOfferCalculation = (cart, dispatch) => {
+  // console.log('fonction handleoffre')
+  const sameOfferProducts = cart.filter(
+    item => item.offre && item.offre.startsWith('offre31_Petite'),
+  );
+  // Calculez la quantité totale pour cette offre spécifique
+  const totalQuantity = sameOfferProducts.reduce((total, product) => total + product.qty, 0);
+
+  // Si la quantité totale est un multiple de 4, rendez la dernière pizza ajoutée gratuite
+  if (totalQuantity % 4 === 0) {
+    // console.log('4e pizza gratuite');
+    dispatch(makeLastSmallPizzaFree());
+  }
+}
+
+
+
+
+
 
 export {
   checkProductStock,

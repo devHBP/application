@@ -5,6 +5,8 @@ import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import { addToCart} from '../../reducers/cartSlice';
 import { useSelector, useDispatch } from 'react-redux'
 import { getProductsByCategory, fetchOneProduct, fetchDessertIds, fetchBoissonIds } from '../../CallApi/api.js'
+import {checkStockForSingleProduct, updateStock} from '../../CallApi/api.js';
+import {checkProductAvailability} from '../../Fonctions/fonctions';
 import { style } from '../../styles/formules'; 
 import { styles } from '../../styles/home'; 
 import FooterProfile from '../../components/FooterProfile';
@@ -122,7 +124,16 @@ const FormulePainBagnat = ({navigation}) => {
         
       }, []);
 
-    const handleSandwich = (product) => {
+    const handleSandwich = async (product) => {
+      const isAvailable = await checkProductAvailability(
+        product,
+        checkStockForSingleProduct,
+        cart,
+      );
+      if (!isAvailable) {
+        return;
+      }
+
       if (selectedProduct?.productId === product.productId) {
           setSelectedProduct(null); 
           setProductIds(productIds.filter(productId => productId !== product.productId));
@@ -134,7 +145,16 @@ const FormulePainBagnat = ({navigation}) => {
           }, 400);
       }
   }
-  const handleDessert = (product) => {
+  const handleDessert = async (product) => {
+    const isAvailable = await checkProductAvailability(
+      product,
+      checkStockForSingleProduct,
+      cart,
+    );
+
+    if (!isAvailable) {
+      return;
+    }
     if(!selectedProduct ) {
       Toast.show({
           type: 'error',
@@ -154,7 +174,17 @@ const FormulePainBagnat = ({navigation}) => {
         }, 400);
     }
   }
-  const handleBoisson = (product) => {
+  const handleBoisson = async (product) => {
+    const isAvailable = await checkProductAvailability(
+      product,
+      checkStockForSingleProduct,
+      cart,
+    );
+
+    if (!isAvailable) {
+      return;
+    }
+
     if(!selectedProduct ) {
       Toast.show({
           type: 'error',
@@ -194,7 +224,7 @@ const FormulePainBagnat = ({navigation}) => {
         setTotalPrice(prix);
     };
 
-    const handleFormuleSelection = () => {
+    const handleFormuleSelection = async () => {
       const formule = {
         id: `formule-${Date.now()}`,
         type: 'formule',
@@ -209,6 +239,13 @@ const FormulePainBagnat = ({navigation}) => {
       }
       dispatch(addToCart(formule));
       resetCountdown()
+      const options = [formule.option1, formule.option2, formule.option3].filter(
+        option => option !== null,
+      );
+  
+      for (const option of options) {
+        await updateStock({productId: option.productId, qty: 1});
+      }
       navigation.navigate('panier')
     }
       

@@ -1,34 +1,21 @@
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 import {fonts, colors} from '../styles/styles';
 import Svg, {Path} from 'react-native-svg';
-import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
-import {AntiGaspi} from '../SVG/AntiGaspi';
 
-const CartItemAntigaspi = ({
+const CartItemSUN = ({
   libelle,
-  prix,
-  image,
   qty,
-  prix_unitaire,
-  isFree,
-  freeCount,
   removehandler,
 }) => {
   return (
     <View style={styles.container}>
-      {/* <Image source={{ uri: `${API_BASE_URL}/${image}` }} style={styles.image} 
-    //   onPress={() => navigate.navigate("productdetails", { id })}
-    /> */}
-
       <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
         }}>
-        {/* <AntiGaspi /> */}
         <Text numberOfLines={3} style={styles.titleLibelle}>
           {libelle}
         </Text>
@@ -40,7 +27,6 @@ const CartItemAntigaspi = ({
           <TouchableOpacity
             onPress={removehandler}
             style={{...styles.container_gray, backgroundColor: 'transparent'}}>
-            {/* <Icon name="add-circle" size={25} color="#000" /> */}
             <Svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -55,32 +41,10 @@ const CartItemAntigaspi = ({
         </View>
       </View>
 
-      <View style={{marginVertical: 10}}>
-        <View style={styles.content}>
-          <View style={styles.pastilleLibelle}>
-            <AntiGaspi color={colors.color8} />
-            <Text numberOfLines={2} style={styles.details}>
-              {qty}x {libelle}
-            </Text>
-          </View>
-
-          <Text style={styles.price}>
-            {qty} x {prix || prix_unitaire}€
-          </Text>
-        </View>
-
-        <View style={styles.content}>
-          {
-            (isFree = 'true' && freeCount > 0 && (
-              <>
-                <Text style={{...styles.details, color: colors.color9}}>
-                  {`${freeCount} x ${libelle}`}
-                </Text>
-                <Text style={{color: colors.color9}}>+0€</Text>
-              </>
-            ))
-          }
-        </View>
+      <View style={{marginVertical: 0}}>
+        <Text style={{color: colors.color1, fontWeight: 'bold'}}>
+          Offre SUN
+        </Text>
       </View>
     </View>
   );
@@ -89,11 +53,11 @@ const CartItemAntigaspi = ({
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    padding:10,
+    padding: 10,
     width: 340,
-    borderRadius:5,
-    marginVertical:5,
-    backgroundColor: 'white'
+    marginVertical: 5,
+    backgroundColor: 'white',
+    borderRadius: 5,
   },
   image: {
     width: 80,
@@ -145,13 +109,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.color1,
   },
-  pastilleLibelle:{
-    flexDirection:'row',
-    alignItems:'center',
-    gap: 10
-  }
 });
 
-
-export default CartItemAntigaspi;
-
+export default CartItemSUN;

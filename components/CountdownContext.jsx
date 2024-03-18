@@ -21,11 +21,13 @@ export const CountdownProvider = ({ children }) => {
     }, [isActive, countdown]);
 
     const resetCountdown = () => {
-        setCountdown(300);
+        // setCountdown(300);
+        setCountdown(20);
         setIsActive(true);
     };
 
     const stopCountdown = () => {
+        // console.log('je stop mon compteur')
         setCountdown(0);
         setIsActive(false);
     };
@@ -35,6 +37,7 @@ export const CountdownProvider = ({ children }) => {
         setIsActive(false);
     };
     const resetForPaiementCountdown = () => {
+        // console.log('je relance 20 mon compteur')
         setCountdown(1200);
         setIsActive(true);
     };

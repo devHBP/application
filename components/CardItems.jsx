@@ -1,22 +1,25 @@
 import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import React from 'react';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import {fonts, colors} from '../styles/styles';
+import Svg, {Path} from 'react-native-svg';
 
-import { fonts, colors} from '../styles/styles'
-import Svg, { Path } from 'react-native-svg';
-// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
-import { API_BASE_URL } from '../config';
-import {AntiGaspi} from '../SVG/AntiGaspi';
-import {OffreSun} from '../SVG/OffreSun';
+const CartItem = ({
+  libelle,
+  prix,
+  incrementhandler,
+  decrementhandler,
+  image,
+  qty,
+  prix_unitaire,
+  isFree,
+  freeCount,
+  removehandler,
+  
+}) => {
 
-const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty, prix_unitaire, isFree, freeCount, removehandler }) => {
-
+ 
   return (
     <View style={styles.container}>
-      {/* <Image source={{ uri: `${API_BASE_URL}/${image}` }} style={styles.image} 
-    //   onPress={() => navigate.navigate("productdetails", { id })}
-    /> */}
-
       <View
         style={{
           flexDirection: 'row',
@@ -30,8 +33,6 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
           <TouchableOpacity
             onPress={decrementhandler}
             style={styles.container_gray}>
-            {/* <Icon name="remove-circle" size={25} color="#000" /> */}
-
             <Svg width={7} height={4} viewBox="0 0 7 4">
               <Path
                 d="M0.666748 3.8V0.733337H6.80008V3.8H0.666748Z"
@@ -47,7 +48,6 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
           <TouchableOpacity
             onPress={incrementhandler}
             style={{...styles.container_gray, backgroundColor: colors.color2}}>
-            {/* <Icon name="add-circle" size={25} color="#000" /> */}
             <Svg
               width="10"
               height="10"
@@ -64,7 +64,6 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
           <TouchableOpacity
             onPress={removehandler}
             style={{...styles.container_gray, backgroundColor: 'transparent'}}>
-            {/* <Icon name="add-circle" size={25} color="#000" /> */}
             <Svg
               xmlns="http://www.w3.org/2000/svg"
               width="20"
@@ -87,12 +86,14 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
         )}
 
         <View style={styles.content}>
+          
           <Text numberOfLines={2} style={styles.details}>
             {qty - freeCount}x {libelle}
           </Text>
           <Text style={styles.price}>
             {' '}
-            {qty - freeCount}x {prix || prix_unitaire}€
+            {qty - freeCount}x {prix_unitaire}€ 
+            
           </Text>
         </View>
 
@@ -116,13 +117,11 @@ const CartItem = ({libelle, prix, incrementhandler, decrementhandler, image, qty
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'column',
-    // alignItems: 'center',
-    // justifyContent:'center',
-    // borderBottomWidth: 1,
-    // borderBottomColor: '#ccc',
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    padding: 10,
     width: 340,
+    marginVertical: 5,
+    backgroundColor: 'white',
+    borderRadius: 5,
   },
   image: {
     width: 80,

@@ -92,14 +92,14 @@ const Login = ({navigation}) => {
       const getpasswd = await axios.get(`${API_BASE_URL}/getPsswInvite`);
 
       const email = getemail.data.EMAIL_INVITE;
-      console.log('email', email);
+      // console.log('email', email);
       const password = getpasswd.data.PASSWORD_INVITE;
       const clientData = {
         email,
         password,
       };
 
-      console.log('clientData', clientData);
+      // console.log('clientData', clientData);
 
       const res = await axios.post(`${API_BASE_URL}/login`, clientData);
       const user = res.data.user;

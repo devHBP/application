@@ -11,14 +11,27 @@ import {colors} from '../styles/styles';
 import {useDispatch} from 'react-redux';
 import {addToCart} from '../reducers/cartSlice';
 import logoSun from '../assets/logoSUNPremium.jpg';
+import {useCountdown} from '../components/CountdownContext';
 
 const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
+  const {resetCountdown} = useCountdown();
   const dispatch = useDispatch();
 
   const handleAcceptOffer = () => {
-    if (product) {
-      dispatch(addToCart(product));
-    }
+    const newProduct = {
+      productId: product.productId,
+      libelle: product.libelle,
+      image: product.image,
+      prix_unitaire: product.prix_unitaire,
+      qty: 1,
+      type: 'offreSUN',
+      type_produit:"offreSUN"
+    };
+    // console.log('newproduct', newProduct);
+    dispatch(addToCart(newProduct));
+    resetCountdown();
+
+   
   };
   return (
     <Modal
@@ -33,7 +46,10 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
           <Image source={logoSun} style={styles.logoSUN} />
           <View style={styles.textContent}>
             <Text style={styles.textColor}>Je veux bénéficier de </Text>
-            <Text style={styles.textColor}> ma baguette du jour gratuite !</Text>
+            <Text style={styles.textColor}>
+              {' '}
+              ma baguette du jour gratuite !
+            </Text>
           </View>
 
           <View style={styles.contentBtns}>

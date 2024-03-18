@@ -1,5 +1,4 @@
 import axios from 'axios';
-// import {  API_BASE_URL } from '@env';
 import { API_BASE_URL } from '../config';
 //check des stocks par produits
 // export const checkStock = async (productId) => {
@@ -13,7 +12,6 @@ import { API_BASE_URL } from '../config';
 //   }
 // }
 
-// Dans votre fichier API (par exemple apiService.js)
 
 export const getAllStores = async () => {
   try {
@@ -243,34 +241,35 @@ export const updateAntigaspiStock = async item => {
   }
 };
 
-// export const getAddStockAntigaspi = async item => {
-//   if (item.antigaspi) {
-//     try {
-//       const response = await axios.put(
-//         `${API_BASE_URL}/getAddStockAntigaspi`,
-//         {
-//           productId: item.productId,
-//           quantityPurchased: item.qty,
-//         },
-//       );
+export const addStockAntigaspi = async item => {
+  if (item) {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/getAddStockAntigaspi`,
+        {
+          productId: item.productId,
+          quantityPurchased: item.qty,
+        },
+      );
 
-//       if (response.status === 200) {
-//         console.log(
-//           'Stock antigaspi mis à jour avec succès pour le produit',
-//           item.libelle,
-//         );
-//       }
-//     } catch (error) {
-//       console.error(
-//         'Erreur lors de la mise à jour du stock antigaspi pour le produit',
-//         item.libelle,
-//         ':',
-//         error,
-//       );
-//     }
-//   }
-// };
+      if (response.status === 200) {
+        console.log(
+          `Stock antigaspi mis à jour ( + ${item.qty}) avec succès pour le produit`,
+          item.productId,
+        );
+      }
+    } catch (error) {
+      console.error(
+        'Erreur lors de la mise à jour du stock antigaspi pour le produit',
+        item.libelle,
+        ':',
+        error,
+      );
+    }
+  }
+};
 
+// j'enleve du stock
 export const updateStock = async item => {
   if (item) {
     try {
@@ -278,11 +277,12 @@ export const updateStock = async item => {
         productId: item.productId,
         quantityPurchased: item.qty,
       });
+      // console.log('response', response.data)
 
       if (response.status === 200) {
         console.log(
-          'Stock mis à jour avec succès pour le produit',
-          item.libelle,
+          `Stock mis à jour avec succès(- ${item.qty})  pour le produit`,
+          item.productId,
         );
       }
     } catch (error) {
@@ -295,33 +295,38 @@ export const updateStock = async item => {
     }
   }
 };
-// export const getAddStockAntigaspi = async item => {
-//   if (item.antigaspi) {
-//     try {
-//       const response = await axios.put(
-//         `${API_BASE_URL}/getAddStockAntigaspi`,
-//         {
-//           productId: item.productId,
-//           quantityPurchased: item.qty,
-//         },
-//       );
 
-//       if (response.status === 200) {
-//         console.log(
-//           'Stock antigaspi mis à jour avec succès pour le produit',
-//           item.libelle,
-//         );
-//       }
-//     } catch (error) {
-//       console.error(
-//         'Erreur lors de la mise à jour du stock antigaspi pour le produit',
-//         item.libelle,
-//         ':',
-//         error,
-//       );
-//     }
-//   }
-// };
+// j'ajoute du stock
+export const addStock = async item => {
+  // console.log('jajoute du stock')
+  if (item) {
+    // console.log('item addstock', item)
+    try {
+      const response = await axios.put(`${API_BASE_URL}/getAddStock`, {
+        productId: item.productId,
+        quantityPurchased: item.qty,
+      }, {
+        headers: {
+          'Content-Type': 'application/json', 
+        }
+      });
+      if (response.status === 200) {
+        console.log(
+          `Stock mis à jour avec succès(+ ${item.qty})  pour le produit id`,
+          item.productId,
+        );
+      }
+    } catch (error) {
+      console.error(
+        'Erreur lors de la mise à jour du stock pour le produit',
+        item.productId,
+        ':',
+        error,
+      );
+    }
+  }
+};
+
 
 // recuperer info prefcommande d'un user
 export const getPrefCommande = async (userId) => {

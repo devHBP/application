@@ -221,7 +221,7 @@ const FormulePoke = ({navigation}) => {
         setTotalPrice(prix);
     };
 
-    const handleFormuleSelection = () => {
+    const handleFormuleSelection = async () => {
       const formule = {
         id: `formule-${Date.now()}`,
         type: 'formule',
@@ -236,6 +236,13 @@ const FormulePoke = ({navigation}) => {
       }
       dispatch(addToCart(formule));
       resetCountdown()
+      const options = [formule.option1, formule.option2, formule.option3].filter(
+        option => option !== null,
+      );
+  
+      for (const option of options) {
+        await updateStock({productId: option.productId, qty: 1});
+      }
       navigation.navigate('panier')
     }
       

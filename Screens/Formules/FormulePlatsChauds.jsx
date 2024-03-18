@@ -17,14 +17,12 @@ import Check from '../../SVG/Check';
 import axios from 'axios'
 import { useCountdown } from '../../components/CountdownContext';
 //call API
-import { checkStockForSingleProduct } from '../../CallApi/api.js';
+import { checkStockForSingleProduct, updateStock } from '../../CallApi/api.js';
 //fonctions
 import { checkProductAvailability } from '../../Fonctions/fonctions';
 import { getStyle } from '../../Fonctions/stylesFormule';
 
-
-
-const FormulePoke = ({navigation}) => {
+const FormulePlatChaud = ({navigation}) => {
 
 
     const [ products, setProducts] = useState([]);
@@ -219,7 +217,7 @@ const FormulePoke = ({navigation}) => {
         setTotalPrice(prix);
     };
 
-    const handleFormuleSelection = () => {
+    const handleFormuleSelection = async () => {
       const formule = {
         id: `formule-${Date.now()}`,
         type: 'formule',
@@ -234,6 +232,14 @@ const FormulePoke = ({navigation}) => {
       }
       dispatch(addToCart(formule));
       resetCountdown()
+       // mis a jour des stocks - qty: 1 pour chaque option si presente
+    const options = [formule.option1, formule.option2, formule.option3].filter(
+      option => option !== null,
+    );
+
+    for (const option of options) {
+      await updateStock({productId: option.productId, qty: 1});
+    }
       navigation.navigate('panier')
     }
       
@@ -411,4 +417,4 @@ const FormulePoke = ({navigation}) => {
   )
 }
 
-export default FormulePoke
+export default FormulePlatChaud
