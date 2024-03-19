@@ -21,8 +21,8 @@ export const CountdownProvider = ({ children }) => {
     }, [isActive, countdown]);
 
     const resetCountdown = () => {
-        // setCountdown(300);
-        setCountdown(20);
+        setCountdown(300);
+        // setCountdown(60);
         setIsActive(true);
     };
 
