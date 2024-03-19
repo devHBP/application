@@ -286,12 +286,20 @@ export const updateStock = async item => {
         );
       }
     } catch (error) {
-      console.error(
-        'Erreur lors de la mise à jour du stock pour le produit',
-        item.libelle,
-        ':',
-        error,
-      );
+      // Vérification spécifique pour les erreurs HTTP (status code 400)
+      if (error.response && error.response.status === 400) {
+        console.error(
+          `Stock insuffisant pour le produit ${item.libelle}.`
+        );
+      } else {
+        // Gestion des autres types d'erreurs
+        console.error(
+          'Erreur lors de la mise à jour du stock pour le produit',
+          item.libelle,
+          ':',
+          error,
+        );
+      }
     }
   }
 };

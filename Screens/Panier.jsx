@@ -336,7 +336,6 @@ const Panier = ({navigation}) => {
 
           if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
             setModalVisible(true);
-            console.log('ici')
           }
         }
       } else if (type === 'antigaspi') {

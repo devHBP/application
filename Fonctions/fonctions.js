@@ -40,7 +40,7 @@ export const decrementhandler = (type, id, group, dispatch) => {
 
   const lastItem = itemsArray.filter(item => item.productId === id).pop();
   if (lastItem) {
-    console.log('offre', lastItem.offre);
+    // console.log('offre', lastItem.offre);
   }
 
   if (type === 'product' || type === 'petitepizza') {

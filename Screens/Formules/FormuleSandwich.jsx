@@ -272,7 +272,7 @@ const FormuleSandwich = ({navigation}) => {
       productIds: productIds,
       qty: 1,
     };
-    console.log(formule.option1);
+    // console.log(formule.option1);
     dispatch(addToCart(formule));
     resetCountdown();
 
