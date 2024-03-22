@@ -364,7 +364,8 @@ const Profile = ({navigation}) => {
               <TouchableOpacity
                 onPress={handleBack}
                 activeOpacity={0.8}
-                style={{backgroundColor: 'white', borderRadius: 25}}>
+                style={{backgroundColor: 'white', borderRadius: 25}}
+                >
                 <ArrowLeft fill={colors.color1} />
               </TouchableOpacity>
             </View>
@@ -976,15 +977,6 @@ const style = StyleSheet.create({
   role: {
     color: colors.color2,
   },
-  back: {
-    backgroundColor: colors.color6,
-    width: 40,
-    height: 40,
-    borderRadius: 5,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 25,
-  },
   title_section: {
     fontWeight: 'bold',
     color: colors.color2,
@@ -1008,7 +1000,6 @@ const style = StyleSheet.create({
   btn_cookies: {
     backgroundColor: colors.color4,
     margin: 5,
-    paddingHorizontal: 2,
     borderRadius: 6,
     borderColor: colors.color5,
     borderWidth: 1,

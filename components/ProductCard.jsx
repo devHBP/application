@@ -315,7 +315,6 @@ const ProductCard = ({
           <TextTicker
             style={{
               fontSize: 14,
-              fontWeight: '300',
               width: '100%',
               color: colors.color1,
               fontFamily: fonts.font2,
