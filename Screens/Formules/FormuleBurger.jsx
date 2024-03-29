@@ -18,7 +18,7 @@ import axios from 'axios'
 import { useCountdown } from '../../components/CountdownContext';
 
 //call API
-import { checkStockForSingleProduct } from '../../CallApi/api.js';
+import { checkStockForSingleProduct, updateStock } from '../../CallApi/api.js';
 //fonctions
 import { checkProductAvailability } from '../../Fonctions/fonctions';
 import { getStyle } from '../../Fonctions/stylesFormule';

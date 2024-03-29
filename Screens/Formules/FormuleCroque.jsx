@@ -13,7 +13,7 @@ import { API_BASE_URL } from '../../config';
 import FastImage from 'react-native-fast-image'
 
 //call API
-import { checkStockForSingleProduct } from '../../CallApi/api.js';
+import { checkStockForSingleProduct, updateStock } from '../../CallApi/api.js';
 //fonctions
 import { checkProductAvailability } from '../../Fonctions/fonctions';
 import { getStyle } from '../../Fonctions/stylesFormule';
