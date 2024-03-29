@@ -58,8 +58,9 @@ import AppUpdateChecker from './components/AppUpdateChecker';
 import DeviceInfo from 'react-native-device-info';
 import Maintenance from './Screens/Maintenance';
 import CancelPage from './Screens/CancelPage';
+import LinkSUN from './Screens/LinkSUN';
+
 // import PageHome from './Screens/PageHome';
-//import {API_BASE_URL} from '@env';
 import {API_BASE_URL} from './config';
 
 const Main = () => {
@@ -68,7 +69,6 @@ const Main = () => {
   const [isUpdateRequired, setIsUpdateRequired] = useState(false);
   const user = useSelector(state => state.auth.user);
   const userId = user.userId
-  //console.log('userId', userId)
 
   const dispatch = useDispatch();
 
@@ -285,6 +285,9 @@ const Main = () => {
         <Stack.Screen name="cookies" component={Cookies} />
         <Stack.Screen name="donnees" component={Donnees} />
         <Stack.Screen name="mentions" component={Mentions} />
+        {/* Page de Connexion SUN */}
+        <Stack.Screen name="linkSun" component={LinkSUN} />
+
       </Stack.Navigator>
 
       <Toast position="bottom" />
