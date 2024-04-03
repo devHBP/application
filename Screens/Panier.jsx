@@ -113,7 +113,7 @@ const Panier = ({navigation}) => {
   const emailConfirmOrder = user.email;
   const firstnameConfirmOrder = user.firstname;
 
-  // console.log('cart panier', cart)
+  //console.log('cart panier', cart)
 
   let totalPrice = Number(
     cart
@@ -811,7 +811,7 @@ const Panier = ({navigation}) => {
           return products;
         })(),
       };
-      // console.log('orderdata', orderData);
+      //console.log('orderdata', orderData);
       setCurrentPromoCode(null); // je remets à null l'utilisation des codes promo
       const createorder = await createOrder(orderData);
       //console.log('createOrder', createorder);
@@ -1090,7 +1090,7 @@ const Panier = ({navigation}) => {
                   if (item.type === 'formule') {
                     return (
                       <View
-                        key={index}
+                      key={item.id}
                         style={{
                           backgroundColor: 'white',
                           borderRadius: 10,
