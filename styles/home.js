@@ -3,6 +3,12 @@ import { colors, fonts } from '../styles/styles'
 
 const headerSectionHeight = 250;
 
+const baseBadge = {
+  position: 'absolute',
+  top: -5,
+  right: -5,
+  zIndex: 99,
+};
 const styles = StyleSheet.create({
   bandeau: {
     flexDirection: 'row',
@@ -312,7 +318,15 @@ const styles = StyleSheet.create({
     borderRadius:5,
     paddingVertical: 10,
     paddingHorizontal:15,
-  }
+  },// connexion pdj-sun
+  linkPendingFromSun: {
+    ...baseBadge,
+    backgroundColor: colors.color2,
+  },
+  linkConfirmFromSun: {
+    ...baseBadge,
+    backgroundColor: colors.color9,
+  },
 });
 
 
