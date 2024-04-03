@@ -25,41 +25,65 @@ const cartSlice = createSlice({
     // },
     addToCart: (state, action) => {
       const newItem = action.payload;
-      // Recherchez un produit existant avec le même productId et offre
-      const existingIndex = state.cart.findIndex(item =>
-        item.productId === newItem.productId && 
-        item.offre === newItem.offre &&
-        item.type === newItem.type 
-      );
-    
-      if (existingIndex !== -1) {
-        // Un article existant a été trouvé, incrémente la quantité.
-        // state.cart[existingIndex].qty += newItem.qty;
-        state.cart[existingIndex].qty += 1;
 
+      if (newItem.type === 'formule') {
+        // Créez une clé unique basée sur les IDs des options de la formule.
+        const formuleKey = `${newItem.option1?.productId ?? 'none'}-${
+          newItem.option2?.productId ?? 'none'
+        }-${newItem.option3?.productId ?? 'none'}`;
+
+        // Recherchez une formule existante avec la même clé unique.
+        const existingFormuleIndex = state.cart.findIndex(
+          item => item.type === 'formule' && item.formuleKey === formuleKey,
+        );
+
+        if (existingFormuleIndex !== -1) {
+          // Une formule identique a été trouvée, incrémente la quantité.
+          state.cart[existingFormuleIndex].qty += newItem.qty;
+        } else {
+          // Aucune formule identique, ajoutez la nouvelle formule au panier.
+          state.cart.push({...newItem, formuleKey: formuleKey});
+        }
       } else {
-        // Aucun article existant, ajoute le nouvel article.
-        state.cart.push(newItem);
+        // Recherchez un produit existant avec le même productId et offre
+        const existingIndex = state.cart.findIndex(
+          item =>
+            item.productId === newItem.productId &&
+            item.offre === newItem.offre &&
+            item.type === newItem.type,
+        );
+
+        if (existingIndex !== -1) {
+          // Un article existant a été trouvé, incrémente la quantité.
+          // state.cart[existingIndex].qty += newItem.qty;
+          state.cart[existingIndex].qty += 1;
+        } else {
+          // Aucun article existant, ajoute le nouvel article.
+          state.cart.push(newItem);
+        }
       }
     },
     acceptOffer: (state, action) => {
-      const { productId, offre } = action.payload;
+      const {productId, offre} = action.payload;
       // console.log('productId', productId)
       // console.log('offre', offre)
-      const existingIndex = state.cart.findIndex(item =>
-        item.productId === productId && item.offre === offre
+      const existingIndex = state.cart.findIndex(
+        item => item.productId === productId && item.offre === offre,
       );
-    
+
       if (existingIndex !== -1) {
         // L'utilisateur a accepté l'offre pour le produit existant, ajoutez donc un produit supplémentaire gratuitement.
-        const newItem = { ...state.cart[existingIndex], qty: 1, prix_unitaire: 0 };
+        const newItem = {
+          ...state.cart[existingIndex],
+          qty: 1,
+          prix_unitaire: 0,
+        };
         state.cart.push(newItem);
       } else {
         // Gérer l'erreur ou la situation où le produit n'existe pas si nécessaire.
       }
     },
 
-    
     // makeLastSmallPizzaFree: (state, action) => {
     //   //console.log('jeneleve le prix dune pizza')
     //   const lastPizzaIndex = state.cart.length - 1;
@@ -72,35 +96,41 @@ const cartSlice = createSlice({
     //   }
     // },
     makeLastSmallPizzaFree: (state, action) => {
-      const eligibleProducts = state.cart.filter(product => product.offre && product.offre.startsWith('offre31_Petite'));
-    
-      // S'assure que les produits éligibles sont considérés individuellement, même s'ils ont été ajoutés en tant que quantités multiples
-      const individualEligibleProducts = eligibleProducts.flatMap(product => 
-        Array(product.qty).fill().map((_, index) => ({
-          ...product,
-          qty: 1,
-          isFree: index === product.qty - 1 // Marque le dernier produit comme gratuit s'il est le quatrième dans un lot
-        }))
+      const eligibleProducts = state.cart.filter(
+        product => product.offre && product.offre.startsWith('offre31_Petite'),
       );
-    
+
+      // S'assure que les produits éligibles sont considérés individuellement, même s'ils ont été ajoutés en tant que quantités multiples
+      const individualEligibleProducts = eligibleProducts.flatMap(product =>
+        Array(product.qty)
+          .fill()
+          .map((_, index) => ({
+            ...product,
+            qty: 1,
+            isFree: index === product.qty - 1, // Marque le dernier produit comme gratuit s'il est le quatrième dans un lot
+          })),
+      );
+
       // Retrouver tous les produits marqués comme gratuits et les mettre à jour dans le panier
       individualEligibleProducts.forEach((product, index) => {
-        if ((index + 1) % 4 === 0) { // Trouve chaque quatrième produit
+        if ((index + 1) % 4 === 0) {
+          // Trouve chaque quatrième produit
           product.isFree = true;
           product.prix_unitaire = 0; // Met à jour le prix à 0 pour le produit gratuit
         } else {
           product.isFree = false; // Assure que les autres produits ne sont pas marqués comme gratuits
         }
       });
-    
+
       // Reconstitue le panier avec les produits individuels éligibles mis à jour et les autres produits non éligibles
       state.cart = [
-        ...state.cart.filter(product => !product.offre || !product.offre.startsWith('offre31_Petite')), // Exclut les produits éligibles existants
-        ...individualEligibleProducts // Ajoute les produits éligibles mis à jour
+        ...state.cart.filter(
+          product =>
+            !product.offre || !product.offre.startsWith('offre31_Petite'),
+        ), // Exclut les produits éligibles existants
+        ...individualEligibleProducts, // Ajoute les produits éligibles mis à jour
       ];
     },
-    
-    
 
     makeLastBigPizzaFree: (state, action) => {
       //console.log('jeneleve le prix dune pizza')
@@ -193,15 +223,14 @@ const cartSlice = createSlice({
     //   //console.log('cart apres suppression', state.cart);
     // },
     removeFromCart: (state, action) => {
-      const { productId, type } = action.payload;
-    // console.log('type reducer', type)
+      const {productId, type} = action.payload;
+      // console.log('type reducer', type)
       state.cart = state.cart.filter(item => {
         // Gardez tous les éléments qui ne correspondent pas exactement au productId ET au type
         return item.productId !== productId || item.type !== type;
       });
-    
     },
-    
+
     removeMultipleFromCart: (state, action) => {
       const formuleId = action.payload.formuleId;
       //console.log("Removing formule:", formuleId);
@@ -270,6 +299,6 @@ export const {
   addPromo,
   resetPromo,
   popLastItemOfType,
-  acceptOffer
+  acceptOffer,
 } = cartSlice.actions;
 export default cartSlice.reducer;
