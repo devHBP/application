@@ -35,7 +35,7 @@ const style = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginVertical: 10,
+    marginVertical: 0,
   },
   orderFormule: {
     marginVertical: 10,
@@ -65,6 +65,7 @@ const style = StyleSheet.create({
   optionStyle: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    marginLeft:10,
   },
   rowTotal: {
     flexDirection: 'row',
