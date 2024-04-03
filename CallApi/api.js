@@ -347,4 +347,56 @@ export const getPrefCommande = async (userId) => {
   }
 };
 
+export const getStatusSUN = async (userId) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/getStatusSun/${userId}`);
+    return response.data.statusSUN;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de la récupération du status SUN", error);
+    throw error;
+  }
+};
 
+// response
+export const RefusApresDemandeSun = async (idSUN, userId) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/RefusApresDemandeSun`, {idSUN, userId});
+    return response.data;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de la réinitialisation du status et de l'id SUN", error);
+    throw error;
+  }
+};
+
+// response
+export const ConfirmationDemandeSun = async (userId, idSUN) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/ConfirmationDemandeSun`, { userId, idSUN});
+    return response.data;
+  } catch (error) {
+    console.error("Une erreur s'est produite l'envoi de l'id SUN et userId", error);
+    throw error;
+  }
+};
+
+
+export const DemandeConnexionPdjToSun = async (userId, email) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/DemandeConnexionPdjToSun`, { userId, email});
+    return response.data;
+  } catch (error) {
+    console.error("Une erreur s'est produite l'envoi de l userId et l'email", error);
+    throw error;
+  }
+};
+
+
+export const AnnulationApresErreurPdj = async (userId) => {
+  try {
+    const response = await axios.post(`${API_BASE_URL}/AnnulationApresErreurPdj`, { userId});
+    return response.data;
+  } catch (error) {
+    console.error("Une erreur s'est produite lors de l AnnulationApresErreurPdj", error);
+    throw error;
+  }
+};
