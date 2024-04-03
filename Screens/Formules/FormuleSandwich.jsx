@@ -260,8 +260,10 @@ const FormuleSandwich = ({navigation}) => {
   };
 
   const handleFormuleSelection = async () => {
+    const formuleKey = `${selectedSandwich?.productId ?? 'none'}-${selectedDessert?.productId ?? 'none'}-${selectedBoisson?.productId ?? 'none'}`;
     const formule = {
-      id: `formule-${Date.now()}`,
+      // id: `formule-${Date.now()}`,
+      id: formuleKey,
       type: 'formule',
       option1: selectedSandwich,
       option2: selectedDessert ? selectedDessert : null,

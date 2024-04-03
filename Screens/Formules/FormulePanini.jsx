@@ -228,8 +228,10 @@ const FormulePanini = ({navigation}) => {
     };
 
     const handleFormuleSelection = async () => {
+      const formuleKey = `${selectedProduct?.productId ?? 'none'}-${selectedDessert?.productId ?? 'none'}-${selectedBoisson?.productId ?? 'none'}`;
       const formule = {
-        id: `formule-${Date.now()}`,
+        // id: `formule-${Date.now()}`,
+        id: formuleKey, 
         type: 'formule',
         option1: selectedProduct,
         option2: selectedDessert ? selectedDessert : null,
