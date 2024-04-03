@@ -58,7 +58,9 @@ import AppUpdateChecker from './components/AppUpdateChecker';
 import DeviceInfo from 'react-native-device-info';
 import Maintenance from './Screens/Maintenance';
 import CancelPage from './Screens/CancelPage';
-import LinkSUN from './Screens/LinkSUN';
+import SunConnect from './Screens/SunConnect';
+import PdjConnect from './Screens/PdjConnect';
+
 
 // import PageHome from './Screens/PageHome';
 import {API_BASE_URL} from './config';
@@ -286,7 +288,9 @@ const Main = () => {
         <Stack.Screen name="donnees" component={Donnees} />
         <Stack.Screen name="mentions" component={Mentions} />
         {/* Page de Connexion SUN */}
-        <Stack.Screen name="linkSun" component={LinkSUN} />
+        <Stack.Screen name="sunconnect" component={SunConnect} />
+        <Stack.Screen name="pdjconnect" component={PdjConnect} />
+
 
       </Stack.Navigator>
 
