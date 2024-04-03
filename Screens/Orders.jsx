@@ -417,7 +417,7 @@ const Orders = ({navigation}) => {
   const renderLastOrder = (item, index) => {
     const parsedItem = JSON.parse(item.cartString);
     //console.log('parsedItem', parsedItem[0].type);
-    console.log('item derniere commande', parsedItem);
+    //console.log('item derniere commande', parsedItem);
 
     let prixUnitaires;
 
