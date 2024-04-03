@@ -17,7 +17,7 @@ import React, {
   useCallback,
 } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {updateUser} from '../reducers/authSlice';
+import {linkFromSUN, updateUser} from '../reducers/authSlice';
 import axios from 'axios';
 import FooterProfile from '../components/FooterProfile';
 import FormulesSalees from '../components/FormulesSalees';
@@ -31,15 +31,24 @@ import ArrowDown from '../SVG/ArrowDown';
 import LoaderHome from './LoaderHome';
 import SearchModal from '../components/SearchModal';
 // import {API_BASE_URL} from '@env';
-import { API_BASE_URL } from '../config';
+import {API_BASE_URL} from '../config';
 import Search from '../SVG/Search';
 import ProductFlatList from '../components/ProductFlatList';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import LogoFond from '../SVG/LogoFond';
 import {useRoute, useFocusEffect} from '@react-navigation/native';
-import {getAllStores, fetchAllProductsClickandCollect, fetchAllProductsClickAndCollect, getPrefCommande} from '../CallApi/api';
+import {
+  getAllStores,
+  fetchAllProductsClickandCollect,
+  fetchAllProductsClickAndCollect,
+  getPrefCommande,
+  getStatusSUN,
+} from '../CallApi/api';
 import ModaleOffreSUN from '../components/ModaleOffreSUN';
 import ModaleModifProfile from '../components/ModaleModifProfile';
+import FastImage from 'react-native-fast-image';
+import {Badge} from 'react-native-paper';
+
 
 const Home = ({navigation}) => {
   // console.log('lancement de la page home')
@@ -63,18 +72,23 @@ const Home = ({navigation}) => {
   const [readyOrders, setReadyOrders] = useState([]);
 
   const user = useSelector(state => state.auth.user);
-  const userId = user.userId
+  // const userId = user.userId;
+  // const idSUN = user.idSUN;
   const cart = useSelector(state => state.cart.cart);
+  const status = useSelector(state => state.auth.user.statusSUN);
+
+  useEffect(() => {
+    console.log("Le status SUN a changé:", status);
+  }, [status]);
 
   // produit offreSUN
   const handleOffreSun = async () => {
-
-  const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
+    const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
     const offreSunProduct = allProductsClickandCollect.find(
       product => product.type_produit === 'offreSUN',
     );
     // offre dans le panier déja présente ?
-     const isOffreSunInCart = cart.some(
+    const isOffreSunInCart = cart.some(
       item => item.type_produit === 'offreSUN',
     );
     // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
@@ -82,7 +96,7 @@ const Home = ({navigation}) => {
       setIsModalSunVisible(true);
       setSelectedProduct(offreSunProduct);
     }
-    }
+  };
   const route = useRoute();
 
   const totalPrice = Number(
@@ -121,8 +135,18 @@ const Home = ({navigation}) => {
       }
     };
 
+    const getStatusSun = async () => {
+      try {
+        const statusSUN = await getStatusSUN(user.userId);
+        dispatch(linkFromSUN(statusSUN));
+      } catch (error) {
+        console.error("Une erreur s'est produite, coté  statusSUn :", error);
+      }
+    };
+
     fetchStores();
-    
+    getStatusSun();
+
     const timer = setTimeout(() => {
       handleOffreSun();
     }, 3000);
@@ -130,7 +154,7 @@ const Home = ({navigation}) => {
     return () => {
       clearTimeout(timer);
     };
-  }, [products]);
+  }, [products, status]);
 
   useEffect(() => {
     axios
@@ -224,16 +248,16 @@ const Home = ({navigation}) => {
 
   //liste d'onglets differents si collab ou non
   const refs = {
-    'Promos': useRef(null),
-    'Baguettes': useRef(null),
-    'Viennoiseries': useRef(null),
-    'Formules': useRef(null),
+    Promos: useRef(null),
+    Baguettes: useRef(null),
+    Viennoiseries: useRef(null),
+    Formules: useRef(null),
     'Produits Salés': useRef(null),
-    'Pâtisseries': useRef(null),
+    Pâtisseries: useRef(null),
     'Boules et Pains Spéciaux': useRef(null),
     'Petits déjeuners': useRef(null),
-    'Tartes': useRef(null),
-    'Boissons': useRef(null),
+    Tartes: useRef(null),
+    Boissons: useRef(null),
     // 'Tarterie': useRef(null),
   };
 
@@ -309,7 +333,9 @@ const Home = ({navigation}) => {
     let sortedProducts = categoryProducts;
     if (categoryName === 'Baguettes') {
       // je n'affiche pas la baguette gratuite
-      sortedProducts = sortedProducts.filter(product => product.type_produit !== 'offreSUN');
+      sortedProducts = sortedProducts.filter(
+        product => product.type_produit !== 'offreSUN',
+      );
     }
     //Monster et redbull en dernier sur la liste des boissons
     if (categoryName === 'Boissons') {
@@ -342,6 +368,23 @@ const Home = ({navigation}) => {
       )
     );
   };
+
+
+  // // Déterminer le style en fonction du statusSUN
+  let badgeStyle;
+
+  switch (status) {
+    case 'en attente sun':
+      badgeStyle = styles.linkPendingFromSun;
+      break;
+    case 'confirmé':
+      badgeStyle = styles.linkConfirmFromSun;
+      break;
+    default:
+      badgeStyle = null; 
+  }
+
+
 
   return (
     <>
@@ -389,6 +432,35 @@ const Home = ({navigation}) => {
                             {user.firstname}
                           </Text>
                         </View>
+
+                        {/* Connexion SUN */}
+                        <TouchableOpacity
+                          onPress={() => {
+                            if (status === 'en attente sun') {
+                              navigation.navigate('sunconnect');
+                            } else {
+                              navigation.navigate('pdjconnect');
+                            }
+                          }}
+                          activeOpacity={0.8}
+                          style={{
+                            backgroundColor: colors.color6,
+                            borderRadius: 50,
+                            width: 50,
+                            height: 50,
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                          }}>
+                          <>
+                            {badgeStyle && (
+                              <Badge size={18} style={badgeStyle}></Badge>
+                            )}
+                          </>
+                          <FastImage
+                            source={require('../assets/start_union.jpg')}
+                            style={{width: 30, height: 30, resizeMode: 'cover'}}
+                          />
+                        </TouchableOpacity>
 
                         {/* SearchBar */}
                         <TouchableOpacity
@@ -640,7 +712,7 @@ const Home = ({navigation}) => {
                 </TouchableOpacity>
               </View>
             </ScrollView>
-            
+
             <ModaleOffreSUN
               modalVisible={isModalSunVisible}
               setModalVisible={setIsModalSunVisible}
