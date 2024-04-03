@@ -15,6 +15,7 @@ const initialState = {
     preferences_alimentaires:[],
     storeId:'',
     preferenceCommande: false,
+    statusSUN:null
   },
   selectedStore: '',
 };
@@ -55,9 +56,18 @@ const authSlice = createSlice({
     setPreferenceCommande: (state, action) => {
       state.preferenceCommande = action.payload;
     },
-  },
+    linkFromSUN: (state, action) => {
+      state.user.statusSUN = action.payload
+    },
+    cancelLink: (state) => {
+      state.user.statusSUN = null;
+    },
+    linkToSUN: (state, action) => {
+      state.user.statusSUN = action.payload
+    },
+  }
 });
 
-export const { registerUser, loginUser, logoutUser, updateSelectedStore, updateUser, setPreferenceCommande } = authSlice.actions;
+export const { registerUser, loginUser, logoutUser, updateSelectedStore, updateUser, setPreferenceCommande, linkFromSUN, cancelLink, linkToSUN } = authSlice.actions;
 
 export default authSlice.reducer;
