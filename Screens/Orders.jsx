@@ -294,11 +294,11 @@ const Orders = ({navigation}) => {
                       <View key={key}>
                         <View style={style.orderFormule}>
                           <View>
-                            <Text style={style.title}>{libelle}</Text>
+                            <Text style={style.title}>{product.qty } x {libelle}</Text>
                             {option1 && (
                               <View style={style.optionStyle}>
                                 <Text style={style.text}>
-                                  {option1.libelle}
+                                {product.qty } x {option1.libelle}
                                 </Text>
                                 <Text style={style.text}>
                                   {/* {option1.prix_unitaire}€ */}
@@ -308,7 +308,7 @@ const Orders = ({navigation}) => {
                             {option2 && (
                               <View style={style.optionStyle}>
                                 <Text style={style.text}>
-                                  {option2.libelle}
+                                {product.qty } x {option2.libelle}
                                 </Text>
                                 {/* <Text style={style.optionFormule}>
                                 {option2.prix_formule}€
@@ -318,7 +318,7 @@ const Orders = ({navigation}) => {
                             {option3 && (
                               <View style={style.optionStyle}>
                                 <Text style={style.text}>
-                                  {option3.libelle}
+                                {product.qty } x {option3.libelle}
                                 </Text>
                                 {/* <Text style={style.optionFormule}>
                                 {option3.prix_formule}€
@@ -331,7 +331,7 @@ const Orders = ({navigation}) => {
                               {prix.toFixed(2)}€
                             </Text>
                             <Text style={style.newPrice}>
-                              {(prix * 0.8).toFixed(2)}€
+                           {(prix * 0.8 * product.qty).toFixed(2)}€
                             </Text>
                           </View>
                         </View>
@@ -416,8 +416,8 @@ const Orders = ({navigation}) => {
   //derniere commande
   const renderLastOrder = (item, index) => {
     const parsedItem = JSON.parse(item.cartString);
-    // console.log('parsedItem', parsedItem[0].type);
-    //console.log('item derniere commande', parsedItem);
+    //console.log('parsedItem', parsedItem[0].type);
+    console.log('item derniere commande', parsedItem);
 
     let prixUnitaires;
 
@@ -517,12 +517,12 @@ const Orders = ({navigation}) => {
                               <View>
                                 <Text
                                   style={{...style.text, fontWeight: 'bold'}}>
-                                  {libelle}
+                                  {product.qty } x {libelle}
                                 </Text>
                                 {option1 && (
                                   <View style={style.optionStyle}>
                                     <Text style={style.text}>
-                                      {option1.libelle}
+                                    {product.qty } x {option1.libelle}
                                     </Text>
                                     {/* <Text style={style.text}>
                                     {option1.prix_unitaire}€
@@ -532,7 +532,7 @@ const Orders = ({navigation}) => {
                                 {option2 && (
                                   <View style={style.optionStyle}>
                                     <Text style={style.text}>
-                                      {option2.libelle}
+                                    {product.qty } x {option2.libelle}
                                     </Text>
                                     {/* <Text style={style.optionFormule}>
                                     {option2.prix_formule}€
@@ -542,7 +542,7 @@ const Orders = ({navigation}) => {
                                 {option3 && (
                                   <View style={style.optionStyle}>
                                     <Text style={style.text}>
-                                      {option3.libelle}
+                                    {product.qty } x {option3.libelle}
                                     </Text>
                                     {/* <Text style={style.optionFormule}>
                                     {option3.prix_formule}€
@@ -553,7 +553,7 @@ const Orders = ({navigation}) => {
                               <View style={style.orderPrices}>
                                 <Text style={style.oldPrice}>{prix} €</Text>
                                 <Text style={style.newPrice}>
-                                  {(prix * 0.8).toFixed(2)}€
+                                {(prix * 0.8 * product.qty).toFixed(2)}€
                                 </Text>
                               </View>
                             </View>
