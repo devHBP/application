@@ -1,13 +1,7 @@
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import TextTicker from 'react-native-text-ticker';
 import React, {useState, useEffect} from 'react';
-import {
-  addToCart,
-  addFreeProductToCart,
-  makeLastSmallPizzaFree,
-  makeLastBigPizzaFree,
-  acceptOffer
-} from '../reducers/cartSlice';
+import {addToCart, acceptOffer} from '../reducers/cartSlice';
 import {useSelector, useDispatch} from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {fonts, colors} from '../styles/styles';
@@ -63,12 +57,6 @@ const ProductCard = ({
   const cart = useSelector(state => state.cart.cart);
   const group = cart;
   const product = cart.find(item => item.productId === id);
-  // const productQuantity = cart.reduce((total, item) => {
-  //   if (item.productId === id) {
-  //     return total + item.qty;
-  //   }
-  //   return total;
-  // }, 0);
 
   const productQuantity = cart.reduce((total, item) => {
     if (item.productId === id && item.type !== 'antigaspi') {
@@ -81,10 +69,8 @@ const ProductCard = ({
     const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
   }, [cart]);
 
- 
-
   const handleAcceptOffer = () => {
-    dispatch(acceptOffer({productId: product.productId, offre: product.offre}))
+    dispatch(acceptOffer({productId: product.productId, offre: product.offre}));
     updateStock({...product, qty: 1});
   };
 
@@ -125,67 +111,29 @@ const ProductCard = ({
         offre: offre,
         isFree: false,
         lastAdded: false,
-        type: isPetitePizza ? 'petitepizza' : 'product', 
+        type: isPetitePizza ? 'petitepizza' : 'product',
       };
-      dispatch(addToCart(newProduct));
       resetCountdown();
 
-      // j'enleve du stock
-      await updateStock({...newProduct, qty: 1});
-
-      // Maintenant, récupérons à nouveau les produits du panier avec la même offre, en tenant compte de la nouvelle pizza
-      const updatedCart = [
-        ...cart,
-        {
-          productId: id,
-          libelle,
-          image,
-          prix_unitaire: prix,
-          qty: 1,
-          offre: offre,
-          isFree: false,
-        },
-      ];
-
       if (offre && offre.startsWith('offre31_Petite')) {
-        
-  
         const updatedCart = [...cart, newProduct];
-  
+
         // Appel de la fonction pour gérer le calcul de l'offre
         handleOfferCalculation(updatedCart, dispatch);
-
-      
       } else if (offre && offre.startsWith('offre31')) {
-        // console.log('offre 31')
-        // Get a version of the cart that includes the new product
-        const updatedCart = [
-          ...cart,
-          {
-            productId: id,
-            libelle,
-            image,
-            prix_unitaire: prix,
-            qty: 1,
-            offre: offre,
-          },
-        ];
+        const totalQuantity = cart
+          .filter(item => item.offre === offre)
+          .reduce((total, product) => total + product.qty, 0);
 
-        // Filter products that have the same offer as the currently added product
-        const sameOfferProducts = updatedCart.filter(
-          item => item.offre === offre,
-        );
+        // Inclure le produit actuellement en cours d'ajout pour calculer la future quantité totale
+        const futureTotalQuantity = totalQuantity + 1;
 
-        // Calculate the total quantity for this specific offer
-        const totalQuantity = sameOfferProducts.reduce(
-          (total, product) => total + product.qty,
-          0,
-        );
-
-        // if (totalQuantity > 0 && totalQuantity % 3 === 0)
-        if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
-          //MODALE 4E produit
+        // Si la quantité future (incluant le produit actuellement ajouté) est un multiple de 4, afficher la modal
+        if (futureTotalQuantity % 4 === 0) {
           setModalVisible(true);
+        } else {
+          dispatch(addToCart(newProduct));
+          await updateStock({...newProduct, qty: 1});
         }
       }
     } catch (error) {
