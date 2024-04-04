@@ -434,7 +434,7 @@ const Home = ({navigation}) => {
                         </View>
 
                         {/* Connexion SUN */}
-                        <TouchableOpacity
+                        {/* <TouchableOpacity
                           onPress={() => {
                             if (status === 'en attente sun') {
                               navigation.navigate('sunconnect');
@@ -460,7 +460,7 @@ const Home = ({navigation}) => {
                             source={require('../assets/start_union.jpg')}
                             style={{width: 30, height: 30, resizeMode: 'cover'}}
                           />
-                        </TouchableOpacity>
+                        </TouchableOpacity> */}
 
                         {/* SearchBar */}
                         <TouchableOpacity
