@@ -78,7 +78,7 @@ const Home = ({navigation}) => {
   const status = useSelector(state => state.auth.user.statusSUN);
 
   useEffect(() => {
-    console.log("Le status SUN a changé:", status);
+    // console.log("Le status SUN a changé:", status);
   }, [status]);
 
   // produit offreSUN
