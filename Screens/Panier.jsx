@@ -324,6 +324,10 @@ const Panier = ({navigation}) => {
             dispatch(addToCart({...item, qty: 1}));
             await updateStock({productId: item.productId, qty: 1});
           }
+        } 
+        else {
+          dispatch(addToCart({...item, qty: 1}));
+          await updateStock({productId: item.productId, qty: 1});
         }
       } else if (type === 'antigaspi') {
         console.log('cas antigaspi');
