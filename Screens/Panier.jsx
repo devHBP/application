@@ -22,7 +22,7 @@ import {
   removeFromCart,
   addPromo,
   resetPromo,
-  acceptOffer
+  acceptOffer,
 } from '../reducers/cartSlice';
 import {
   setNumeroCommande,
@@ -183,14 +183,19 @@ const Panier = ({navigation}) => {
 
   // fonction valide l'offre3+1
   const handleAcceptOffer = () => {
+
     const lastProductAdded = cart[cart.length - 1];
+   
     const freeProduct = {
       ...lastProductAdded,
       qty: 1,
       prix_unitaire: 0,
     };
-    dispatch(acceptOffer({productId: freeProduct.productId, offre: freeProduct.offre}))
+    dispatch(
+      acceptOffer({productId: freeProduct.productId, offre: freeProduct.offre}),
+    );
     updateStock({...freeProduct, qty: 1});
+    
   };
 
   // fonction ajout de produit (icone +)
@@ -264,7 +269,6 @@ const Panier = ({navigation}) => {
         });
         dispatch(addToCart(item));
       } else if (type === 'petitepizza') {
-
         const stockAvailable = await checkStockForSingleProduct(id);
         // console.log(`stock pour ${id}`, stockAvailable);
 
@@ -287,13 +291,12 @@ const Panier = ({navigation}) => {
         await updateStock({productId: item.productId, qty: 1});
 
         const updatedCart = [...cart, {...item, qty: 1}]; // Simuler l'ajout de l'item au panier pour la mise à jour
-  
+
         // Appel de handleOfferCalculation avec le panier mis à jour et dispatch
         handleOfferCalculation(updatedCart, dispatch);
-
       } else if (type === 'product') {
         const stockAvailable = await checkStockForSingleProduct(id);
-        console.log(`stock pour ${id}`, stockAvailable);
+        // console.log(`stock pour ${id}`, stockAvailable);
 
         const productsOutOfStocks = stockAvailable
           .filter(stock => stock.quantite < 1)
@@ -314,7 +317,6 @@ const Panier = ({navigation}) => {
 
         // a rvoir ici = offre 3+1
         if (offre && offre.startsWith('offre31')) {
-
           const updatedCart = [
             ...cart,
             {
@@ -326,6 +328,7 @@ const Panier = ({navigation}) => {
               offre: offre,
             },
           ];
+
           const sameOfferProducts = updatedCart.filter(
             item => item.offre === offre,
           );
@@ -334,9 +337,11 @@ const Panier = ({navigation}) => {
             0,
           );
 
-          if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
+          if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0 ) {
             setModalVisible(true);
           }
+
+         
         }
       } else if (type === 'antigaspi') {
         console.log('cas antigaspi');
@@ -1090,7 +1095,7 @@ const Panier = ({navigation}) => {
                   if (item.type === 'formule') {
                     return (
                       <View
-                      key={item.id}
+                        key={item.id}
                         style={{
                           backgroundColor: 'white',
                           borderRadius: 10,
