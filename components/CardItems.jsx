@@ -92,7 +92,7 @@ const CartItem = ({
           </Text>
           <Text style={styles.price}>
             {' '}
-            {qty - freeCount}x {prix_unitaire}€ 
+            {qty - freeCount}x {prix_unitaire.toFixed(2)}€ 
             
           </Text>
         </View>
