@@ -183,9 +183,8 @@ const Panier = ({navigation}) => {
 
   // fonction valide l'offre3+1
   const handleAcceptOffer = () => {
-
     const lastProductAdded = cart[cart.length - 1];
-   
+
     const freeProduct = {
       ...lastProductAdded,
       qty: 1,
@@ -195,7 +194,6 @@ const Panier = ({navigation}) => {
       acceptOffer({productId: freeProduct.productId, offre: freeProduct.offre}),
     );
     updateStock({...freeProduct, qty: 1});
-    
   };
 
   // fonction ajout de produit (icone +)
@@ -296,13 +294,10 @@ const Panier = ({navigation}) => {
         handleOfferCalculation(updatedCart, dispatch);
       } else if (type === 'product') {
         const stockAvailable = await checkStockForSingleProduct(id);
-        // console.log(`stock pour ${id}`, stockAvailable);
 
         const productsOutOfStocks = stockAvailable
           .filter(stock => stock.quantite < 1)
           .map(stock => stock.productId);
-
-        // console.log('produitsEnRupture', productsOutOfStocks);
 
         if (productsOutOfStocks.length > 0) {
           return Toast.show({
@@ -312,36 +307,23 @@ const Panier = ({navigation}) => {
           });
         }
 
-        dispatch(addToCart(item));
-        await updateStock({productId: item.productId, qty: 1});
-
-        // a rvoir ici = offre 3+1
         if (offre && offre.startsWith('offre31')) {
-          const updatedCart = [
-            ...cart,
-            {
-              productId: id,
-              libelle: productInCart.libelle,
-              image: productInCart.image,
-              prix_unitaire: productInCart.prix,
-              qty: 1,
-              offre: offre,
-            },
-          ];
+          const totalQuantity = cart
+            .filter(item => item.offre === offre)
+            .reduce((total, product) => total + product.qty, 0);
 
-          const sameOfferProducts = updatedCart.filter(
-            item => item.offre === offre,
-          );
-          const totalQuantity = sameOfferProducts.reduce(
-            (total, product) => total + product.qty,
-            0,
-          );
+          // Inclure le produit actuellement en cours d'ajout pour calculer la future quantité totale
+          const futureTotalQuantity = totalQuantity + 1;
 
-          if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0 ) {
+          // Si la quantité future est un multiple de 4, cela signifie que nous devons ajouter un produit gratuit ensuite
+          if (futureTotalQuantity % 4 === 0) {
+            // Déclencher la modal pour offrir le produit gratuit
             setModalVisible(true);
+          } else {
+            // Ajouter le produit au panier et mettre à jour le stock normalement.
+            dispatch(addToCart({...item, qty: 1}));
+            await updateStock({productId: item.productId, qty: 1});
           }
-
-         
         }
       } else if (type === 'antigaspi') {
         console.log('cas antigaspi');

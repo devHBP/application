@@ -146,34 +146,26 @@ const ProductDetails = ({navigation, route}) => {
           offre: product.offre,
           type:'product'
         };
-        dispatch(addToCart(newProduct));
         resetCountdown();
 
-        await updateStock({...newProduct, qty: 1});
+        // await updateStock({...newProduct, qty: 1});
+        // dispatch(addToCart(newProduct));
 
         if (product.offre && product.offre.startsWith('offre31')) {
-          const updatedCart = [
-            ...cart,
-            {
-              productId: product.productId,
-              libelle: product.libelle,
-              image: product.image,
-              prix_unitaire: product.prix,
-              qty: 1,
-              offre: product.offre,
-            },
-          ];
-          const sameOfferProducts = updatedCart.filter(
-            item => item.offre === product.offre,
-          );
-          const totalQuantity = sameOfferProducts.reduce(
-            (total, product) => total + product.qty,
-            0,
-          );
+          const totalQuantity = cart
+          .filter(item => item.offre === product.offre)
+          .reduce((total, currentProduct) => total + currentProduct.qty, 0);
 
-          if (totalQuantity === 3 || (totalQuantity - 3) % 4 === 0) {
-            setModalVisible(true);
-          }
+        // Inclure le produit actuellement en cours d'ajout pour calculer la future quantité totale
+        const futureTotalQuantity = totalQuantity + 1;
+
+        // Si la quantité future (incluant le produit actuellement ajouté) est un multiple de 4, afficher la modal
+        if (futureTotalQuantity % 4 === 0) {
+          setModalVisible(true);
+        } else {
+          dispatch(addToCart(newProduct));
+          await updateStock({...newProduct, qty: 1});
+        }
         }
       
     } catch (error) {
