@@ -24,7 +24,7 @@ import FastImage from 'react-native-fast-image';
 import {useCountdown} from '../components/CountdownContext';
 
 //fonctions
-import {decrementhandler} from '../Fonctions/fonctions';
+import {decrementhandler, handleOfferCalculation} from '../Fonctions/fonctions';
 import InfoProduct from '../SVG/InfoProduct';
 import ModaleIngredients from '../components/ModaleIngredients';
 
@@ -85,12 +85,11 @@ const ProductDetails = ({navigation, route}) => {
   };
 
   const handleAcceptOffer = () => {
-    dispatch(acceptOffer({productId: product.productId, offre: product.offre}))
+    dispatch(acceptOffer({productId: product.productId, offre: product.offre}));
     updateStock({...product, qty: 1});
   };
 
   const incrementhandler = async () => {
-
     const isCurrentProductOffreSun =
       productInCart && productInCart.type_produit === 'offreSUN';
 
@@ -131,28 +130,35 @@ const ProductDetails = ({navigation, route}) => {
 
       if (productsOutOfStocks.length > 0) {
         return Toast.show({
-            type: 'error',
-            text1: `Victime de son succès`,
-            text2: `Plus de stock disponible`,
+          type: 'error',
+          text1: `Victime de son succès`,
+          text2: `Plus de stock disponible`,
         });
-    }
+      }
+      const isPetitePizza =
+        product.offre && product.offre.startsWith('offre31_Petite');
 
-        const newProduct = {
-          productId: product.productId,
-          libelle: product.libelle,
-          image: product.image,
-          prix_unitaire: product.prix_unitaire,
-          qty: 1,
-          offre: product.offre,
-          type:'product'
-        };
-        resetCountdown();
+      const newProduct = {
+        productId: product.productId,
+        libelle: product.libelle,
+        image: product.image,
+        prix_unitaire: product.prix_unitaire,
+        qty: 1,
+        offre: product.offre,
+        type: isPetitePizza ? 'petitepizza' : 'product',
+      };
+      resetCountdown();
 
-        // await updateStock({...newProduct, qty: 1});
-        // dispatch(addToCart(newProduct));
-
-        if (product.offre && product.offre.startsWith('offre31')) {
-          const totalQuantity = cart
+      // await updateStock({...newProduct, qty: 1});
+      // dispatch(addToCart(newProduct));
+      if (product.offre && product.offre.startsWith('offre31_Petite')) {
+        const updatedCart = [...cart, newProduct];
+        dispatch(addToCart(newProduct));
+        await updateStock({...newProduct, qty: 1});
+        // Appel de la fonction pour gérer le calcul de l'offre
+        handleOfferCalculation(updatedCart, dispatch);
+      } else if (product.offre && product.offre.startsWith('offre31')) {
+        const totalQuantity = cart
           .filter(item => item.offre === product.offre)
           .reduce((total, currentProduct) => total + currentProduct.qty, 0);
 
@@ -166,8 +172,10 @@ const ProductDetails = ({navigation, route}) => {
           dispatch(addToCart(newProduct));
           await updateStock({...newProduct, qty: 1});
         }
-        }
-      
+      } else {
+        dispatch(addToCart(newProduct));
+        await updateStock({...newProduct, qty: 1});
+      }
     } catch (error) {
       console.error(
         "Une erreur s'est produite lors de l'incrémentation du stock :",
