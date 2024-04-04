@@ -117,9 +117,12 @@ const ProductCard = ({
 
       if (offre && offre.startsWith('offre31_Petite')) {
         const updatedCart = [...cart, newProduct];
-
+        dispatch(addToCart(newProduct));
+        await updateStock({...newProduct, qty: 1});
         // Appel de la fonction pour gérer le calcul de l'offre
         handleOfferCalculation(updatedCart, dispatch);
+      
+      
       } else if (offre && offre.startsWith('offre31')) {
         const totalQuantity = cart
           .filter(item => item.offre === offre)
@@ -135,6 +138,10 @@ const ProductCard = ({
           dispatch(addToCart(newProduct));
           await updateStock({...newProduct, qty: 1});
         }
+      }
+      else {
+        dispatch(addToCart(newProduct));
+        await updateStock({...newProduct, qty: 1});
       }
     } catch (error) {
       console.error(
