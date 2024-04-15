@@ -79,7 +79,7 @@ const Formule = ({route, navigation}) => {
         setProducts(updatedProducts);
       } catch (error) {
         console.error(
-          "Une erreur s'est produite lors de la récupération des produits:",
+          "Une erreur s'est produite lors de la récupération des produits principaux:",
           error,
         );
       }
@@ -94,7 +94,7 @@ const Formule = ({route, navigation}) => {
         const response = await axios.get(
           `${API_BASE_URL}/getAllProductsClickandCollect`,
         );
-        let allProducts = response.data; // Je suppose que vos produits sont dans le champ 'data' de la réponse.
+        let allProducts = response.data; 
 
         // 2. Filtrer les produits avec fetchDessertIds
         const dessertIds = await fetchDessertIds();
@@ -118,7 +118,7 @@ const Formule = ({route, navigation}) => {
         setDesserts(updtatedDesserts);
       } catch (error) {
         console.error(
-          "Une erreur s'est produite lors de la récupération du produit:",
+          "Une erreur s'est produite lors de la récupération des desserts:",
           error,
         );
       }
@@ -132,13 +132,12 @@ const Formule = ({route, navigation}) => {
         const response = await axios.get(
           `${API_BASE_URL}/getAllProductsClickandCollect`,
         );
-        let allProducts = response.data; // Je suppose que vos produits sont dans le champ 'data' de la réponse.
+        let allProducts = response.data; 
         // 2. Filtrer les produits avec fetchDessertIds
         const boissonIds = await fetchBoissonIds();
         let filteredProducts = allProducts.filter(product =>
           boissonIds.includes(product.productId),
         );
-
         // 3. Obtenir les détails pour chaque ID filtré
         const productPromises = filteredProducts.map(product =>
           fetchOneProduct(product.productId),
@@ -152,7 +151,7 @@ const Formule = ({route, navigation}) => {
         setBoissons(updatedBoissons);
       } catch (error) {
         console.error(
-          "Une erreur s'est produite lors de la récupération du produit:",
+          "Une erreur s'est produite lors de la récupération des boissons:",
           error,
         );
       }
@@ -197,7 +196,7 @@ const Formule = ({route, navigation}) => {
       Toast.show({
         type: 'error',
         text1: 'Attention',
-        text2: `Veuillez d'abord choisir votre plat principal pour continuer.`,
+        text2: `Choisis d'abord ton plat principal pour continuer.`,
       });
       return;
     }
@@ -229,7 +228,7 @@ const Formule = ({route, navigation}) => {
       Toast.show({
         type: 'error',
         text1: 'Attention',
-        text2: `Veuillez d'abord choisir votre plat principal pour continuer.`,
+        text2: `Choisis d'abord ton plat principal pour continuer.`,
       });
       return;
     }
