@@ -1,60 +1,73 @@
 import axios from 'axios';
-import { API_BASE_URL } from '../config';
+import {API_BASE_URL} from '../config';
 //check des stocks par produits
 // export const checkStock = async (productId) => {
 //   try {
 //     const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
 //     const stockByProduct = stockResponse.data;
 //     console.log('res', stockByProduct.data)
-//     return stockByProduct; 
+//     return stockByProduct;
 //   } catch (error) {
 //     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
 //   }
 // }
-
 
 export const getAllStores = async () => {
   try {
     const response = await axios.get(`${API_BASE_URL}/getAllStores`);
     return response.data;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de la récupération des magasins:", error);
+    console.error(
+      "Une erreur s'est produite lors de la récupération des magasins:",
+      error,
+    );
     throw error; // Renvoie l'erreur pour permettre au composant appelant de la gérer
   }
 };
 
-
 export const fetchAllProductsClickandCollect = async () => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
+    const response = await axios.get(
+      `${API_BASE_URL}/getAllProductsClickandCollect`,
+    );
     return response.data;
   } catch (error) {
-    console.error('Une erreur s\'est produite, error products :', error);
+    console.error("Une erreur s'est produite, error products :", error);
     throw error; // Pour propager l'erreur et
   }
-}
+};
 
-export const checkStockFormule = async (productIds) => {
+export const checkStockFormule = async productIds => {
   try {
     let stocks = [];
     for (let productId of productIds) {
-      const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
+      const stockResponse = await axios.get(
+        `${API_BASE_URL}/getStockByProduct/${productId}`,
+      );
       stocks.push(stockResponse.data);
     }
     return stocks;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de la récupération du stock formule:", error);
+    console.error(
+      "Une erreur s'est produite lors de la récupération du stock formule:",
+      error,
+    );
   }
-}
-export const checkStockForSingleProduct = async (productId) => {
+};
+export const checkStockForSingleProduct = async productId => {
   try {
-    const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productId}`);
+    const stockResponse = await axios.get(
+      `${API_BASE_URL}/getStockByProduct/${productId}`,
+    );
     //console.log('res', stockResponse.data)
-    return stockResponse.data; 
+    return stockResponse.data;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de la récupération du stock single product:", error);
+    console.error(
+      "Une erreur s'est produite lors de la récupération du stock single product:",
+      error,
+    );
   }
-}
+};
 
 //check des stocks par produits
 // export const checkStock = async (productIds) => {
@@ -64,7 +77,7 @@ export const checkStockForSingleProduct = async (productId) => {
 //       const stockResponse = await axios.get(`${API_BASE_URL}/getStockByProduct/${productIds[i]}`);
 //       stockByProduct.push(stockResponse.data);
 //     }
-//     return stockByProduct; 
+//     return stockByProduct;
 //   } catch (error) {
 //     console.error("Une erreur s'est produite lors de la récupération du stock :", error);
 //   }
@@ -73,45 +86,61 @@ export const checkStockForSingleProduct = async (productId) => {
 //modifier un user
 export const modifyUser = async (userId, userUpdate) => {
   try {
-    const response = await axios.patch(`${API_BASE_URL}/modifyUser/${userId}`, userUpdate);
+    const response = await axios.patch(
+      `${API_BASE_URL}/modifyUser/${userId}`,
+      userUpdate,
+    );
     return response.data;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de la mise à jour de l'utilisateur :", error);
+    console.error(
+      "Une erreur s'est produite lors de la mise à jour de l'utilisateur :",
+      error,
+    );
     throw error; // Lancer une erreur pour pouvoir la gérer dans votre composant
   }
 };
 
 //lister les produits par catégories pour les formules
-export const getProductsByCategory = async (category) => {
+export const getProductsByCategory = async category => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/getProductsofOneCategory/${category}`);
+    const response = await axios.get(
+      `${API_BASE_URL}/getProductsofOneCategory/${category}`,
+    );
     return response.data;
   } catch (error) {
-    console.error('Une erreur s\'est produite lors de la récupération des produits par catégorie:', error);
+    console.error(
+      "Une erreur s'est produite lors de la récupération des produits par catégorie:",
+      error,
+    );
     throw error;
   }
 };
 
-//recupérer un produit 
-export const fetchOneProduct = async  (id) => {
-    try {
-      const response = await axios.get(`${API_BASE_URL}/getOneProduct/${id}`);
-      //console.log('fetchOneproduct', response.data)
-      return response.data;
-    } catch (error) {
-      console.error('Une erreur s\'est produite lors de la récupération des produits par catégorie:', error);
-      throw error;
-    }
+//recupérer un produit
+export const fetchOneProduct = async id => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/getOneProduct/${id}`);
+    //console.log('fetchOneproduct', response.data)
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Une erreur s'est produite lors de la récupération des produits par catégorie:",
+      error,
+    );
+    throw error;
+  }
 };
 
-export const getFamilyProductDetails = async (id) => {
+export const getFamilyProductDetails = async id => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/getOneFamillyProduct/${id}`);
-     //console.log('res', response.data.familleProduit.nom_famille_produit)
-    return { 
-      id: response.data.familleProduit.id_famille_produit, 
-      name: response.data.familleProduit.nom_famille_produit
-  }; 
+    const response = await axios.get(
+      `${API_BASE_URL}/getOneFamillyProduct/${id}`,
+    );
+    //console.log('res', response.data.familleProduit.nom_famille_produit)
+    return {
+      id: response.data.familleProduit.id_famille_produit,
+      name: response.data.familleProduit.nom_famille_produit,
+    };
   } catch (error) {
     // console.error('Une erreur s\'est produite lors de la récupération des détails de la famille de produits:', error);
     return null;
@@ -119,23 +148,31 @@ export const getFamilyProductDetails = async (id) => {
 };
 
 //recuperer le nom du magasin
-export const getStoreById = async (id) => {
+export const getStoreById = async id => {
   try {
     const response = await axios.get(`${API_BASE_URL}/getOneStore/${id}`);
     return response.data;
   } catch (error) {
-    console.error('Une erreur s est produite lors de la récupération des données du magasin :', error);
+    console.error(
+      'Une erreur s est produite lors de la récupération des données du magasin :',
+      error,
+    );
     return null;
   }
 };
 
 //recuperer famille du produit
-export const getFamilyOfProduct = async (id) => {
+export const getFamilyOfProduct = async id => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/getFamillyOfProduct/${id}`);
+    const response = await axios.get(
+      `${API_BASE_URL}/getFamillyOfProduct/${id}`,
+    );
     return response.data;
   } catch (error) {
-    console.error('Une erreur s est produite lors de la récupération des données du magasin :', error);
+    console.error(
+      'Une erreur s est produite lors de la récupération des données du magasin :',
+      error,
+    );
     return null;
   }
 };
@@ -149,7 +186,7 @@ export const fetchDessertIds = async () => {
   } catch (error) {
     console.error('Error fetching dessert IDs:', error);
   }
-}
+};
 
 //recupérer la liste des boissons
 export const fetchBoissonIds = async () => {
@@ -160,9 +197,20 @@ export const fetchBoissonIds = async () => {
   } catch (error) {
     console.error('Error fetching boisson IDs:', error);
   }
-}
+};
 
-export const checkIfUserOrderedOffreSUNToday = async userId => {
+/**
+ *
+ * @param {number} userId
+ * @param {date} dateForDatabase
+ * @returns boolean
+ * @description verifie si une commande contient un produit type 'offreSUN' pour la baguette gratuite
+ * en teant compte de la date de la commande
+ */
+export const checkIfUserOrderedOffreSUNToday = async (
+  userId,
+  dateForDatabase,
+) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}`);
     const orders = response.data;
@@ -170,23 +218,17 @@ export const checkIfUserOrderedOffreSUNToday = async userId => {
       return false;
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const dateForDatabaseDate = new Date(dateForDatabase);
+    dateForDatabaseDate.setUTCHours(0, 0, 0, 0);
+    // console.log('date de verification', dateForDatabaseDate);
 
     for (const order of orders) {
-      const createdAt = new Date(order.createdAt);
-      createdAt.setHours(0, 0, 0, 0);
+      const orderDate = new Date(order.date);
+      orderDate.setUTCHours(0, 0, 0, 0);
 
-      if (createdAt.getTime() !== today.getTime()) {
-        continue;
-      }
-
-      const cartItems = JSON.parse(order.cartString);
-
-      for (const item of cartItems) {
-        if (item.type_produit === 'offreSUN') {
-          return true;
-        }
+      if (orderDate.getTime() === dateForDatabaseDate.getTime()) {
+        // console.log('Matching order found:', order);
+        return true;
       }
     }
 
@@ -244,13 +286,10 @@ export const updateAntigaspiStock = async item => {
 export const addStockAntigaspi = async item => {
   if (item) {
     try {
-      const response = await axios.put(
-        `${API_BASE_URL}/getAddStockAntigaspi`,
-        {
-          productId: item.productId,
-          quantityPurchased: item.qty,
-        },
-      );
+      const response = await axios.put(`${API_BASE_URL}/getAddStockAntigaspi`, {
+        productId: item.productId,
+        quantityPurchased: item.qty,
+      });
 
       if (response.status === 200) {
         console.log(
@@ -288,9 +327,7 @@ export const updateStock = async item => {
     } catch (error) {
       // Vérification spécifique pour les erreurs HTTP (status code 400)
       if (error.response && error.response.status === 400) {
-        console.error(
-          `Stock insuffisant pour le produit ${item.libelle}.`
-        );
+        console.error(`Stock insuffisant pour le produit ${item.libelle}.`);
       } else {
         // Gestion des autres types d'erreurs
         console.error(
@@ -310,14 +347,18 @@ export const addStock = async item => {
   if (item) {
     // console.log('item addstock', item)
     try {
-      const response = await axios.put(`${API_BASE_URL}/getAddStock`, {
-        productId: item.productId,
-        quantityPurchased: item.qty,
-      }, {
-        headers: {
-          'Content-Type': 'application/json', 
-        }
-      });
+      const response = await axios.put(
+        `${API_BASE_URL}/getAddStock`,
+        {
+          productId: item.productId,
+          quantityPurchased: item.qty,
+        },
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      );
       if (response.status === 200) {
         console.log(
           `Stock mis à jour avec succès(+ ${item.qty})  pour le produit id`,
@@ -335,24 +376,31 @@ export const addStock = async item => {
   }
 };
 
-
 // recuperer info prefcommande d'un user
-export const getPrefCommande = async (userId) => {
+export const getPrefCommande = async userId => {
   try {
-    const response = await axios.get(`${API_BASE_URL}/getInfoPrefCommande/${userId}`);
+    const response = await axios.get(
+      `${API_BASE_URL}/getInfoPrefCommande/${userId}`,
+    );
     return response.data;
   } catch (error) {
-    console.error('Une erreur s est produite lors de la récupération des infos du user :', error);
+    console.error(
+      'Une erreur s est produite lors de la récupération des infos du user :',
+      error,
+    );
     return null;
   }
 };
 
-export const getStatusSUN = async (userId) => {
+export const getStatusSUN = async userId => {
   try {
     const response = await axios.get(`${API_BASE_URL}/getStatusSun/${userId}`);
     return response.data.statusSUN;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de la récupération du status SUN", error);
+    console.error(
+      "Une erreur s'est produite lors de la récupération du status SUN",
+      error,
+    );
     throw error;
   }
 };
@@ -360,10 +408,16 @@ export const getStatusSUN = async (userId) => {
 // response
 export const RefusApresDemandeSun = async (idSUN, userId) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/RefusApresDemandeSun`, {idSUN, userId});
+    const response = await axios.post(`${API_BASE_URL}/RefusApresDemandeSun`, {
+      idSUN,
+      userId,
+    });
     return response.data;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de la réinitialisation du status et de l'id SUN", error);
+    console.error(
+      "Une erreur s'est produite lors de la réinitialisation du status et de l'id SUN",
+      error,
+    );
     throw error;
   }
 };
@@ -371,32 +425,48 @@ export const RefusApresDemandeSun = async (idSUN, userId) => {
 // response
 export const ConfirmationDemandeSun = async (userId, idSUN) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/ConfirmationDemandeSun`, { userId, idSUN});
+    const response = await axios.post(
+      `${API_BASE_URL}/ConfirmationDemandeSun`,
+      {userId, idSUN},
+    );
     return response.data;
   } catch (error) {
-    console.error("Une erreur s'est produite l'envoi de l'id SUN et userId", error);
+    console.error(
+      "Une erreur s'est produite l'envoi de l'id SUN et userId",
+      error,
+    );
     throw error;
   }
 };
-
 
 export const DemandeConnexionPdjToSun = async (userId, email) => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/DemandeConnexionPdjToSun`, { userId, email});
+    const response = await axios.post(
+      `${API_BASE_URL}/DemandeConnexionPdjToSun`,
+      {userId, email},
+    );
     return response.data;
   } catch (error) {
-    console.error("Une erreur s'est produite l'envoi de l userId et l'email", error);
+    console.error(
+      "Une erreur s'est produite l'envoi de l userId et l'email",
+      error,
+    );
     throw error;
   }
 };
 
-
-export const AnnulationApresErreurPdj = async (userId) => {
+export const AnnulationApresErreurPdj = async userId => {
   try {
-    const response = await axios.post(`${API_BASE_URL}/AnnulationApresErreurPdj`, { userId});
+    const response = await axios.post(
+      `${API_BASE_URL}/AnnulationApresErreurPdj`,
+      {userId},
+    );
     return response.data;
   } catch (error) {
-    console.error("Une erreur s'est produite lors de l AnnulationApresErreurPdj", error);
+    console.error(
+      "Une erreur s'est produite lors de l AnnulationApresErreurPdj",
+      error,
+    );
     throw error;
   }
 };
