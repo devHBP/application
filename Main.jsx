@@ -22,21 +22,10 @@ import Orders from './Screens/Orders';
 import Cookies from './Screens/Cookies';
 import Donnees from './Screens/Donnees';
 import Mentions from './Screens/Mentions';
-import FormuleSandwich from './Screens/Formules/FormuleSandwich';
-import FormulePoke from './Screens/Formules/FormulePoke';
-import FormuleSalade from './Screens/Formules/FormuleSalades';
-import FormulePizzas from './Screens/Formules/FormulePizzas';
-import FormuleWraps from './Screens/Formules/FormuleWraps';
-import FormulePainBagnat from './Screens/Formules/FormulePainBagnat';
-import FormuleBurger from './Screens/Formules/FormuleBurger';
-import FormuleCroques from './Screens/Formules/FormuleCroque';
-import FormulePanini from './Screens/Formules/FormulePanini';
-import FormuleQuiche from './Screens/Formules/FormuleQuiche';
 import PageSandwich from './Screens/PagesSalees/PageSandwich';
 import FormuleArtisan from './Screens/Formules/FormuleArtisan';
 import FormulePetitDejeuner from './Screens/Formules/FormulePetitDejeuner';
 import FormulePetitDejeunerGourmand from './Screens/Formules/FormulePetitDejeunerGourmand';
-import FormulePlatsChauds from './Screens/Formules/FormulePlatsChauds';
 import Offre31 from './Screens/Offre31';
 import Solanid from './Screens/Solanid';
 import PageWrap from './Screens/PagesSalees/PageWrap';
@@ -64,6 +53,7 @@ import PdjConnect from './Screens/PdjConnect';
 
 // import PageHome from './Screens/PageHome';
 import {API_BASE_URL} from './config';
+import Formule from './Screens/Formules/Formule';
 
 const Main = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -237,20 +227,7 @@ const Main = () => {
         <Stack.Screen name="maintenance" component={Maintenance} />
 
         {/*  Formules  */}
-        <Stack.Screen name="formulesandwich" component={FormuleSandwich} />
-        <Stack.Screen name="formulepoke" component={FormulePoke} />
-        <Stack.Screen name="formulesalade" component={FormuleSalade} />
-        <Stack.Screen name="formulepizza" component={FormulePizzas} />
-        <Stack.Screen name="formulewrap" component={FormuleWraps} />
-        <Stack.Screen name="formulepainbagnat" component={FormulePainBagnat} />
-        <Stack.Screen name="formuleburger" component={FormuleBurger} />
-        <Stack.Screen name="formulecroque" component={FormuleCroques} />
-        <Stack.Screen name="formulepanini" component={FormulePanini} />
-        <Stack.Screen name="formulequiche" component={FormuleQuiche} />
-        <Stack.Screen
-          name="formuleplatschauds"
-          component={FormulePlatsChauds}
-        />
+        <Stack.Screen name="formule" component={Formule} />
 
         {/* Pages salées */}
         <Stack.Screen name="sandwich" component={PageSandwich} />
@@ -263,6 +240,7 @@ const Main = () => {
         <Stack.Screen name="quiche" component={PageQuiche} />
         <Stack.Screen name="croque" component={PageCroque} />
         <Stack.Screen name="platchaud" component={PagePlatChaud} />
+
         {/* Formules petit dejeuner */}
         <Stack.Screen name="artisan" component={FormuleArtisan} />
         <Stack.Screen name="petitdej" component={FormulePetitDejeuner} />
@@ -270,6 +248,7 @@ const Main = () => {
           name="petitdejgourmand"
           component={FormulePetitDejeunerGourmand}
         />
+
         {/* Link Offres */}
         <Stack.Screen name="antigaspi" component={Antigaspi} />
         <Stack.Screen name="offre31" component={Offre31} />
@@ -287,6 +266,7 @@ const Main = () => {
         <Stack.Screen name="cookies" component={Cookies} />
         <Stack.Screen name="donnees" component={Donnees} />
         <Stack.Screen name="mentions" component={Mentions} />
+        
         {/* Page de Connexion SUN */}
         <Stack.Screen name="sunconnect" component={SunConnect} />
         <Stack.Screen name="pdjconnect" component={PdjConnect} />

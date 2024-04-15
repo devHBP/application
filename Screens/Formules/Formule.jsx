@@ -7,7 +7,6 @@ import {
   StyleSheet,
   Switch,
   TouchableHighlight,
-  Platform,
 } from 'react-native';
 import React, {useEffect, useState, useRef} from 'react';
 import {fonts, colors} from '../../styles/styles';
@@ -20,27 +19,30 @@ import {
   fetchDessertIds,
   fetchBoissonIds,
 } from '../../CallApi/api.js';
+import {checkStockForSingleProduct, updateStock} from '../../CallApi/api.js';
+import {checkProductAvailability} from '../../Fonctions/fonctions';
 import {style} from '../../styles/formules';
 import {styles} from '../../styles/home';
 import FooterProfile from '../../components/FooterProfile';
-import {checkProductAvailability} from '../../Fonctions/fonctions';
-import {checkStockForSingleProduct, updateStock} from '../../CallApi/api.js';
 import ArrowLeft from '../../SVG/ArrowLeft';
 import ProductCard from '../../components/ProductCard';
-// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import {API_BASE_URL} from '../../config';
+// import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image';
-import Check from '../../SVG/Check';
 import {getStyle} from '../../Fonctions/stylesFormule';
+import Check from '../../SVG/Check';
 import axios from 'axios';
 import {useCountdown} from '../../components/CountdownContext';
 
-const FormuleSandwich = ({navigation}) => {
+const Formule = ({route, navigation}) => {
+  // info params de FormulesSalees.jsx
+  const {categorie, imageUri, text, name} = route.params;
+
   const [products, setProducts] = useState([]);
   const [desserts, setDesserts] = useState([]);
   const [boissons, setBoissons] = useState([]);
   const [dessertSwitch, setDessertSwitch] = useState(true);
-  const [selectedSandwich, setSelectedSandwich] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [selectedDessert, setSelectedDessert] = useState(null);
   const [selectedBoisson, setSelectedBoisson] = useState(null);
   const [prix, setTotalPrice] = useState(0);
@@ -58,19 +60,22 @@ const FormuleSandwich = ({navigation}) => {
   };
 
   useEffect(() => {
-    //les sandwichs - categorie
+    //les produits principaux - categorie
     const fetchProducts = async () => {
       try {
-        // const category = 'Sandwichs';
-        // const products = await getProductsByCategory(category);
-        const products = await axios.get(
-          `${API_BASE_URL}/getAllProductsClickandCollect`,
-        );
-        const updatedProducts = products.data.filter(
-          product =>
+        const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
+        let updatedProducts;  
+    
+        if (categorie === 'Pizzas') {
+          updatedProducts = response.data.filter(product => 
+            product.clickandcollect === true && product.libelle.toLowerCase().startsWith("petite")
+          );
+        } else {
+          updatedProducts = response.data.filter(product =>
             product.clickandcollect === true &&
-            product.categorie === 'Sandwichs',
-        );
+            product.categorie === categorie
+          );
+        }
         setProducts(updatedProducts);
       } catch (error) {
         console.error(
@@ -82,6 +87,7 @@ const FormuleSandwich = ({navigation}) => {
 
     fetchProducts();
 
+    //les desserts - par id
     const getDessertDetails = async () => {
       try {
         // 1. Récupération de tous les produits
@@ -117,7 +123,6 @@ const FormuleSandwich = ({navigation}) => {
         );
       }
     };
-
     getDessertDetails();
 
     //les boissons - par id
@@ -155,7 +160,7 @@ const FormuleSandwich = ({navigation}) => {
     getBoissonDetails();
   }, []);
 
-  const handleSandwich = async product => {
+  const handleProduct = async product => {
     const isAvailable = await checkProductAvailability(
       product,
       checkStockForSingleProduct,
@@ -164,13 +169,14 @@ const FormuleSandwich = ({navigation}) => {
     if (!isAvailable) {
       return;
     }
-    if (selectedSandwich?.productId === product.productId) {
-      setSelectedSandwich(null);
+
+    if (selectedProduct?.productId === product.productId) {
+      setSelectedProduct(null);
       setProductIds(
         productIds.filter(productId => productId !== product.productId),
       );
     } else {
-      setSelectedSandwich(product);
+      setSelectedProduct(product);
       setProductIds([...productIds, product.productId]);
       setTimeout(() => {
         scrollViewRef.current?.scrollTo({y: 800, animated: true});
@@ -187,11 +193,11 @@ const FormuleSandwich = ({navigation}) => {
     if (!isAvailable) {
       return;
     }
-    if (!selectedSandwich) {
+    if (!selectedProduct) {
       Toast.show({
         type: 'error',
         text1: 'Attention',
-        text2: 'Veuillez sélectionner un sandwich',
+        text2: `Veuillez d'abord choisir votre plat principal pour continuer.`,
       });
       return;
     }
@@ -218,11 +224,12 @@ const FormuleSandwich = ({navigation}) => {
     if (!isAvailable) {
       return;
     }
-    if (!selectedSandwich) {
+
+    if (!selectedProduct) {
       Toast.show({
         type: 'error',
         text1: 'Attention',
-        text2: 'Veuillez sélectionner un sandwich',
+        text2: `Veuillez d'abord choisir votre plat principal pour continuer.`,
       });
       return;
     }
@@ -239,13 +246,13 @@ const FormuleSandwich = ({navigation}) => {
 
   useEffect(() => {
     calculateTotalPrice();
-  }, [selectedSandwich, selectedDessert, selectedBoisson, dessertSwitch]);
+  }, [selectedProduct, selectedDessert, selectedBoisson, dessertSwitch]);
 
   const calculateTotalPrice = () => {
     let prix = 0;
 
-    if (selectedSandwich) {
-      prix += parseFloat(selectedSandwich.prix_unitaire) || 0;
+    if (selectedProduct) {
+      prix += parseFloat(selectedProduct.prix_unitaire) || 0;
     }
 
     if (selectedDessert) {
@@ -260,25 +267,24 @@ const FormuleSandwich = ({navigation}) => {
   };
 
   const handleFormuleSelection = async () => {
-    const formuleKey = `${selectedSandwich?.productId ?? 'none'}-${selectedDessert?.productId ?? 'none'}-${selectedBoisson?.productId ?? 'none'}`;
+    const formuleKey = `${selectedProduct?.productId ?? 'none'}-${
+      selectedDessert?.productId ?? 'none'
+    }-${selectedBoisson?.productId ?? 'none'}`;
+    // console.log('formuleKey', formuleKey);
     const formule = {
       // id: `formule-${Date.now()}`,
       id: formuleKey,
       type: 'formule',
-      option1: selectedSandwich,
+      option1: selectedProduct,
       option2: selectedDessert ? selectedDessert : null,
       option3: selectedBoisson ? selectedBoisson : null,
       prix: prix,
-      libelle: 'Formule Sandwich',
-      formuleImage: require('../../assets/Formule36.jpg'),
+      libelle: `Formule ${name}`,
       productIds: productIds,
       qty: 1,
     };
-    // console.log(formule.option1);
     dispatch(addToCart(formule));
     resetCountdown();
-
-    // mis a jour des stocks - qty: 1 pour chaque option si presente
     const options = [formule.option1, formule.option2, formule.option3].filter(
       option => option !== null,
     );
@@ -292,15 +298,10 @@ const FormuleSandwich = ({navigation}) => {
   return (
     <View style={{flex: 1}}>
       <View style={{paddingTop: 50}}></View>
-
       <ScrollView ref={scrollViewRef}>
         <View>
-          {/* <Image
-                    source={require('../../assets/Formule36.jpg')} 
-                    style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                /> */}
           <FastImage
-            source={require('../../assets/Formule36.jpg')}
+            source={imageUri}
             style={{width: '100%', height: 330}}
             resizeMode={FastImage.resizeMode.cover}
           />
@@ -309,7 +310,6 @@ const FormuleSandwich = ({navigation}) => {
             style={{...styles.pastilleOffre31, transform: [{rotate: '0deg'}]}}
             resizeMode={FastImage.resizeMode.cover}
           />
-
           <View
             style={{
               flexDirection: 'row',
@@ -320,7 +320,7 @@ const FormuleSandwich = ({navigation}) => {
               top: 30,
               paddingHorizontal: 30,
             }}>
-            <Text style={style.titleProduct}>Formule Sandwich</Text>
+            <Text style={style.titleProduct}>Formule {name}</Text>
             <TouchableOpacity
               onPress={handleBack}
               activeOpacity={1}
@@ -330,30 +330,27 @@ const FormuleSandwich = ({navigation}) => {
           </View>
         </View>
         <View style={{padding: 30}}>
-          <Text style={style.title}>Formule Sandwich</Text>
-          <Text style={style.descriptionFormule}>
-            "Un Sandwich classique, avec une touche du Pain du Jour. Garnitures
-            généreuses et pain frais pour une satisfaction garantie."
-          </Text>
+          <Text style={style.title}>Formule {name}</Text>
+          <Text style={style.descriptionFormule}>{text}</Text>
         </View>
-        {/* choix sandwich */}
+        {/* choix produit principal */}
         <View>
-          <Text style={style.choixTitle}>Votre choix de sandwich</Text>
+          <Text style={style.choixTitle}>Votre choix de {name}</Text>
           <ScrollView horizontal={true} style={style.scrollProduct}>
             {products.map((product, index) => (
               <View
                 key={product.productId}
-                style={{flexDirection: 'row', justifyContent: 'center'}}>
+                style={{flexDirection: 'column', justifyContent: 'center'}}>
                 <TouchableOpacity
-                  activeOpacity={0.8}
                   style={{
                     gap: 10,
-                    flexDirection: 'row',
+                    flexDirection: 'column',
                     justifyContent: 'center',
                     alignItems: 'center',
+                    margin: 10,
                   }}
-                  onPress={() => handleSandwich(product)}>
-                  <View style={getStyle(selectedSandwich, product)} key={index}>
+                  onPress={() => handleProduct(product)}>
+                  <View style={getStyle(selectedProduct, product)} key={index}>
                     <ProductCard
                       libelle={product.libelle}
                       key={product.productId}
@@ -369,7 +366,7 @@ const FormuleSandwich = ({navigation}) => {
                       showPromo={false}
                       ingredients={product.ingredients}
                     />
-                    {selectedSandwich?.productId === product.productId && (
+                    {selectedProduct?.productId === product.productId && (
                       <Check color={colors.color9} />
                     )}
                   </View>
@@ -406,8 +403,7 @@ const FormuleSandwich = ({navigation}) => {
                     alignItems: 'center',
                     margin: 10,
                   }}
-                  onPress={() => handleDessert(product)}
-                  activeOpacity={0.8}>
+                  onPress={() => handleDessert(product)}>
                   <View style={getStyle(selectedDessert, product)} key={index}>
                     <ProductCard
                       libelle={product.libelle}
@@ -462,8 +458,7 @@ const FormuleSandwich = ({navigation}) => {
                     alignItems: 'center',
                     margin: 10,
                   }}
-                  onPress={() => handleBoisson(product)}
-                  activeOpacity={0.8}>
+                  onPress={() => handleBoisson(product)}>
                   <View style={getStyle(selectedBoisson, product)} key={index}>
                     <ProductCard
                       libelle={product.libelle}
@@ -497,7 +492,7 @@ const FormuleSandwich = ({navigation}) => {
             <Text style={{fontWeight: 'bold', color: colors.color1}}>
               Prix de la formule
             </Text>
-            {selectedSandwich && typeof prix === 'number' && (
+            {selectedProduct && typeof prix === 'number' && (
               <Text style={{color: colors.color1}}>{prix.toFixed(2)} €</Text>
             )}
           </View>
@@ -509,7 +504,7 @@ const FormuleSandwich = ({navigation}) => {
                 style={{width: 50, height: 20, resizeMode: 'contain'}}
               />
             </View>
-            {selectedSandwich && typeof prix === 'number' && (
+            {selectedProduct && typeof prix === 'number' && (
               <Text style={{color: colors.color2, fontWeight: 'bold'}}>
                 {(prix * 0.8).toFixed(2)} €
               </Text>
@@ -517,10 +512,10 @@ const FormuleSandwich = ({navigation}) => {
           </View>
         </View>
         <TouchableOpacity
-          style={[style.btn, !selectedSandwich ? style.disabledBtn : {}]}
+          style={[style.btn, !selectedProduct ? style.disabledBtn : {}]}
           onPress={handleFormuleSelection}
-          disabled={!selectedSandwich}
-          activeOpacity={selectedSandwich ? 0.2 : 0.8}>
+          disabled={!selectedProduct}
+          activeOpacity={selectedProduct ? 0.2 : 0.8}>
           <Text style={{color: colors.color6}}>Choisir cette formule</Text>
         </TouchableOpacity>
       </View>
@@ -528,4 +523,5 @@ const FormuleSandwich = ({navigation}) => {
     </View>
   );
 };
-export default FormuleSandwich;
+
+export default Formule;
