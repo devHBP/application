@@ -503,8 +503,6 @@ const Panier = ({navigation}) => {
 
     console.log('offre deja prise ?', checkOffreSUN)
 
-    return
-
     if (checkOffreSUN) {
       // Vérifier si le panier actuel contient le produit 'offreSUN'
       const offreSUNInCart = cart.some(
