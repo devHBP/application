@@ -63,7 +63,7 @@ const LinkOffres = () => {
 
   const navigation = useNavigation();
 
-  const [solanidProductNames, setSolanidProductNames] = useState([]);
+  // const [solanidProductNames, setSolanidProductNames] = useState([]);
   const [offre31ProductNames, setoffre31ProductNames] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalSunVisible, setIsModalSunVisible] = useState(false);
@@ -92,14 +92,14 @@ const LinkOffres = () => {
         );
         setoffre31ProductNames(productsOffreNames);
 
-        // produits solanid
-        const solanidProducts = updatedProducts.filter(
-          product => product.reference_fournisseur === 'Solanid',
-        );
-        const solanidProductNames = solanidProducts.map(
-          product => product.libelle,
-        );
-        setSolanidProductNames(solanidProductNames);
+        // // produits solanid
+        // const solanidProducts = updatedProducts.filter(
+        //   product => product.reference_fournisseur === 'Solanid',
+        // );
+        // const solanidProductNames = solanidProducts.map(
+        //   product => product.libelle,
+        // );
+        // setSolanidProductNames(solanidProductNames);
       } catch (error) {
         console.error("Une erreur s'est produite, error products :", error);
       }
@@ -188,10 +188,6 @@ const LinkOffres = () => {
   };
 
   const handleOffreSun = async () => {
-    // si dans le cart, un produit a type_produit === 'offreSUN"
-    // toasMessage erreur, return
-
-    //console.log('cart', cart)
     const isOffreSunInCart = cart.some(
       item => item.type_produit === 'offreSUN',
     );
@@ -220,9 +216,9 @@ const LinkOffres = () => {
     navigation.navigate('noel');
   };
 
-  const handleHallesSolanid = () => {
-    navigation.navigate('solanid');
-  };
+  // const handleHallesSolanid = () => {
+  //   navigation.navigate('solanid');
+  // };
 
   const handleOffre31 = () => {
     navigation.navigate('offre31');
@@ -265,14 +261,14 @@ const LinkOffres = () => {
       secondaryText: 'Gratuit',
       pastilleImage: offre31Image,
     },
-    {
-      type: 'hallesSolanid',
-      imageUri: halleSolanid,
-      mainText: 'Un repas équilibré,',
-      thirdText: 'frais et de saison avec',
-      secondaryText: 'Les Halles Solanid',
-      pastilleImage: hallesSolanidImage,
-    },
+    // {
+    //   type: 'hallesSolanid',
+    //   imageUri: halleSolanid,
+    //   mainText: 'Un repas équilibré,',
+    //   thirdText: 'frais et de saison avec',
+    //   secondaryText: 'Les Halles Solanid',
+    //   pastilleImage: hallesSolanidImage,
+    // },
     {
       type: 'sun',
       imageUri: promoSUN,
@@ -318,14 +314,14 @@ const LinkOffres = () => {
         thirdText = item.thirdText;
         pastilleImgSrc = item.pastilleImage;
         break;
-      case 'hallesSolanid':
-        handlePressFunc = handleHallesSolanid;
-        imgSrc = item.imageUri;
-        mainText = item.mainText;
-        thirdText = item.thirdText;
-        secondaryText = item.secondaryText;
-        pastilleImgSrc = item.pastilleImage;
-        break;
+      // case 'hallesSolanid':
+      //   handlePressFunc = handleHallesSolanid;
+      //   imgSrc = item.imageUri;
+      //   mainText = item.mainText;
+      //   thirdText = item.thirdText;
+      //   secondaryText = item.secondaryText;
+      //   pastilleImgSrc = item.pastilleImage;
+      //   break;
       case 'sun':
         handlePressFunc = handlePress;
         imgSrc = item.imageUri;
