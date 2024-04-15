@@ -211,33 +211,18 @@ export const checkIfUserOrderedOffreSUNToday = async (
   userId,
   dateForDatabase,
 ) => {
+
   try {
-    const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}`);
+    // Format the date to ISO string and encode it to include in the URL
+    const dateStr = encodeURIComponent(new Date(dateForDatabase).toISOString());
+    const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}?date=${dateStr}`);
     const orders = response.data;
-    if (orders.length === 0) {
-      return false;
-    }
 
-    const dateForDatabaseDate = new Date(dateForDatabase);
-    dateForDatabaseDate.setUTCHours(0, 0, 0, 0);
-    // console.log('date de verification', dateForDatabaseDate);
-
-    for (const order of orders) {
-      const orderDate = new Date(order.date);
-      orderDate.setUTCHours(0, 0, 0, 0);
-
-      if (orderDate.getTime() === dateForDatabaseDate.getTime()) {
-        // console.log('Matching order found:', order);
-        return true;
-      }
-    }
-
-    return false;
+    // Return true if there are any orders, false otherwise
+    return orders.length > 0;
   } catch (error) {
-    console.error(error);
-    throw new Error(
-      "An error occurred while trying to fetch the user's orders.",
-    );
+    console.error('Error fetching orders:', error);
+    throw new Error("An error occurred while trying to fetch the user's orders.");
   }
 };
 

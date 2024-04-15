@@ -501,7 +501,9 @@ const Panier = ({navigation}) => {
     // console.log('date pour la commande', dateForDatabase)
     const checkOffreSUN = await checkIfUserOrderedOffreSUNToday(user.userId, dateForDatabase);
 
-    // console.log('offre deja prise ?', checkOffreSUN)
+    console.log('offre deja prise ?', checkOffreSUN)
+
+    return
 
     if (checkOffreSUN) {
       // Vérifier si le panier actuel contient le produit 'offreSUN'
