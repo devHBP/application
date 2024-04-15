@@ -12,6 +12,7 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1B726F162AA0886800368DBD /* logoPDJ.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B726F152AA0886800368DBD /* logoPDJ.png */; };
+		1B8D46C22BBFE516001A7FC3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1B8D46C12BBFE516001A7FC3 /* PrivacyInfo.xcprivacy */; };
 		1B9D501E2A4C1BFC00519F43 /* Montserrat ExtraBold 800.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B9D4FFC2A4C1BFB00519F43 /* Montserrat ExtraBold 800.ttf */; };
 		1B9D501F2A4C1BFC00519F43 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B9D4FFD2A4C1BFB00519F43 /* Fontisto.ttf */; };
 		1B9D50202A4C1BFC00519F43 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B9D4FFE2A4C1BFB00519F43 /* Octicons.ttf */; };
@@ -81,6 +82,7 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MyappReactNative/main.m; sourceTree = "<group>"; };
 		15741EFFC3F198F8709693BA /* Pods-MyappReactNative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyappReactNative.debug.xcconfig"; path = "Target Support Files/Pods-MyappReactNative/Pods-MyappReactNative.debug.xcconfig"; sourceTree = "<group>"; };
 		1B726F152AA0886800368DBD /* logoPDJ.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoPDJ.png; path = ../../assets/logoPDJ.png; sourceTree = "<group>"; };
+		1B8D46C12BBFE516001A7FC3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1B9D4FFC2A4C1BFB00519F43 /* Montserrat ExtraBold 800.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat ExtraBold 800.ttf"; sourceTree = "<group>"; };
 		1B9D4FFD2A4C1BFB00519F43 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		1B9D4FFE2A4C1BFB00519F43 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
@@ -206,6 +208,7 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				1BADE7BA2B1A1B2B0023ED85 /* GoogleService-Info.plist */,
 				1BDE34702B1E278C00FB71AA /* MyappReactNativeRelease.entitlements */,
+				1B8D46C12BBFE516001A7FC3 /* PrivacyInfo.xcprivacy */,
 			);
 			name = MyappReactNative;
 			sourceTree = "<group>";
@@ -488,6 +491,7 @@
 				1B9D503F2A4C1BFC00519F43 /* Postino Italic.ttf in Resources */,
 				1B9D503B2A4C1BFC00519F43 /* SimpleLineIcons.ttf in Resources */,
 				1B9D50322A4C1BFC00519F43 /* Zocial.ttf in Resources */,
+				1B8D46C22BBFE516001A7FC3 /* PrivacyInfo.xcprivacy in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -758,7 +762,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.24;
+				MARKETING_VERSION = 2.25;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -796,7 +800,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.24;
+				MARKETING_VERSION = 2.25;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",

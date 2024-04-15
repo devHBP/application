@@ -4,8 +4,6 @@ import {
   TouchableOpacity,
   ScrollView,
   TextInput,
-  Modal,
-  StyleSheet,
   Linking,
   Image,
   Platform,
@@ -16,10 +14,7 @@ import axios from 'axios';
 import {
   updateCart,
   addToCart,
-  addFreeProductToCart,
-  updateCartTotal,
   clearCart,
-  removeFromCart,
   addPromo,
   resetPromo,
   acceptOffer,
@@ -27,7 +22,6 @@ import {
 import {
   setNumeroCommande,
   setProducts,
-  setOrderId,
 } from '../reducers/orderSlice';
 import CartItem from '../components/CardItems';
 import CardItemFormule from '../components/CardItemsFormule';
@@ -442,6 +436,9 @@ const Panier = ({navigation}) => {
 
           // vider le panier
           dispatch(clearCart());
+
+          // mets à jour la colonne freeBaguettePerDay dans la table si offre baguette gratuite
+
         } else if (status === 'unpaid') {
           // si status unpaid - retour en arriere
           navigation.navigate('cancel');
@@ -495,8 +492,16 @@ const Panier = ({navigation}) => {
       });
     }
 
-    // verif si une baguette gratuite à deja était prise aujourdhui
-    const checkOffreSUN = await checkIfUserOrderedOffreSUNToday(user.userId);
+      //formater la date chaine de caractère -> format ISO
+    // à l'heure 0:00
+    const [day, month, year] = selectedDateString.split('/').map(Number);
+    const formattedDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
+    const dateForDatabase = formattedDate.toISOString();
+    // verif si une baguette gratuite à deja était prise pour la date de la commande
+    // console.log('date pour la commande', dateForDatabase)
+    const checkOffreSUN = await checkIfUserOrderedOffreSUNToday(user.userId, dateForDatabase);
+
+    // console.log('offre deja prise ?', checkOffreSUN)
 
     if (checkOffreSUN) {
       // Vérifier si le panier actuel contient le produit 'offreSUN'
@@ -518,12 +523,7 @@ const Panier = ({navigation}) => {
 
     dispatch(setProducts(cart));
 
-    //formater la date chaine de caractère -> format ISO
-    // à l'heure 0:00
-    const [day, month, year] = selectedDateString.split('/').map(Number);
-    const formattedDate = new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
-    const dateForDatabase = formattedDate.toISOString();
-
+  
     //prix Sun si collaborateur
     // totalPrice = user.role === 'SUNcollaborateur' ? (totalPrice * 0.80).toFixed(2) : totalPrice;
 
@@ -976,7 +976,6 @@ const Panier = ({navigation}) => {
 
   useEffect(() => {
     if (countdown === 0) {
-      // removeCart();
       removeCart(cart, countdown, dispatch);
     }
     if (isCartEmpty) {
