@@ -13,7 +13,7 @@
 			<string>NSPrivacyAccessedAPICategoryFileTimestamp</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
-				<string>File Timestamp - 3B52.1: Files provided to app by user, per documentaion</string>
+				<string>3B52.1</string>
 			</array>
 		</dict>
 		<dict>
@@ -21,7 +21,7 @@
 			<string>NSPrivacyAccessedAPICategoryDiskSpace</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
-				<string>Disk Space - 7D9E.1: User-initiated bug report, per documentation</string>
+				<string>7D9E.1</string>
 			</array>
 		</dict>
 		<dict>
@@ -29,7 +29,7 @@
 			<string>NSPrivacyAccessedAPICategorySystemBootTime</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
-				<string>System Boot Time - 35F9.1: Measure time on-device, per documentaion</string>
+				<string>35F9.1</string>
 			</array>
 		</dict>
 		<dict>
@@ -37,7 +37,7 @@
 			<string>NSPrivacyAccessedAPICategoryUserDefaults</string>
 			<key>NSPrivacyAccessedAPITypeReasons</key>
 			<array>
-				<string>User Defaults - CA92.1: Access info from same app, per documentation</string>
+				<string>CA92.1</string>
 			</array>
 		</dict>
 	</array>
