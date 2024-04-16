@@ -94,7 +94,7 @@ const FormulesSalees = () => {
     {
       name: 'Croque',
       imageUri: FormuleCroque,
-      description: 'Un wrap, un dessert et une boisson',
+      description: 'Un croque, un dessert et une boisson',
       action: () =>
         navigation.navigate('formule', {
           name: 'Croque',
