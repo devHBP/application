@@ -224,11 +224,15 @@ const cartSlice = createSlice({
     // },
     removeFromCart: (state, action) => {
       const {productId, type} = action.payload;
-      // console.log('type reducer', type)
+      console.log('productId', productId)
+      console.log('type reducer', type)
       state.cart = state.cart.filter(item => {
         // Gardez tous les éléments qui ne correspondent pas exactement au productId ET au type
-        return item.productId !== productId || item.type !== type;
+        // return item.productId !== productId || item.type !== type;
+        return item.productId !== productId && item.type !== type;
+
       });
+      console.log('produit enlevé')
     },
 
     removeMultipleFromCart: (state, action) => {
