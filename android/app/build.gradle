@@ -80,8 +80,8 @@ android {
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
 
-        versionCode 37
-        versionName "2.28"
+        versionCode 38
+        versionName "2.29"
 
     }
     signingConfigs {
