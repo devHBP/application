@@ -22,7 +22,7 @@ export const CountdownProvider = ({ children }) => {
 
     const resetCountdown = () => {
         setCountdown(300);
-        // setCountdown(60);
+        // setCountdown(10);
         setIsActive(true);
     };
 

@@ -222,17 +222,22 @@ const cartSlice = createSlice({
     //   );
     //   //console.log('cart apres suppression', state.cart);
     // },
-    removeFromCart: (state, action) => {
+    removeFromCartAfterCountDown: (state, action) => {
       const {productId, type} = action.payload;
-      console.log('productId', productId)
-      console.log('type reducer', type)
       state.cart = state.cart.filter(item => {
         // Gardez tous les éléments qui ne correspondent pas exactement au productId ET au type
-        // return item.productId !== productId || item.type !== type;
         return item.productId !== productId && item.type !== type;
 
       });
-      console.log('produit enlevé')
+    },
+    removeFromCart: (state, action) => {
+      const {productId, type} = action.payload;
+      // console.log('productId', productId)
+      // console.log('type reducer', type)
+      state.cart = state.cart.filter(item => {
+        return item.productId !== productId || item.type !== type;
+
+      });
     },
 
     removeMultipleFromCart: (state, action) => {
@@ -304,5 +309,6 @@ export const {
   resetPromo,
   popLastItemOfType,
   acceptOffer,
+  removeFromCartAfterCountDown
 } = cartSlice.actions;
 export default cartSlice.reducer;

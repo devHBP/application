@@ -4,6 +4,7 @@ import {
   decrementOrRemoveFromCart,
   addFreeProductToCart,
   removeFromCart,
+  removeFromCartAfterCountDown,
   removeMultipleFromCart,
   popLastItemOfType,
   makeLastSmallPizzaFree
@@ -109,6 +110,55 @@ export const removehandler = (type, id, item, dispatch, qty  ) => {
   }
 };
 
+//after countdown
+export const removehandlerafterCountdown = (type, id, item, dispatch, qty  ) => {
+  // console.log('type', type);
+  // console.log('id', id);
+  // console.log('item', item);
+  //console.log('qty', qty);
+
+  let lastItemOffre;
+
+  // Si "item" contient une propriété "items", qui est un tableau, alors obtenez le dernier produit avec le "productId" correspondant.
+  if (item.items && Array.isArray(item.items)) {
+    const lastItem = item.items.filter(item => item.productId === id).pop();
+    if (lastItem) {
+      lastItemOffre = lastItem.offre;
+    }
+  }
+  if (type === 'formule') {
+    dispatch(removeMultipleFromCart({formuleId: id}));
+    item.productIds.forEach(productId => {
+      addStock({productId: productId, qty: qty});
+      // console.log(`je remets le stock de ${qty} pour ${productId}`)
+    });
+  } 
+
+  if (type === 'antigaspi'){
+    dispatch(removeFromCartAfterCountDown({productId: id, type}));
+    addStockAntigaspi({productId: id, qty: qty});
+    // console.log(`je remets le stock de ${qty} pour ${id}`)
+
+  }
+
+  if (type === 'product'){
+    // console.log('item', item)
+    dispatch(removeFromCartAfterCountDown({productId: id, type}));
+    addStock({productId: id, qty: qty});
+    // console.log(`je remets le stock de ${qty} pour ${id}`)
+  }
+  if (type === 'offreSUN'){
+    // console.log('item', item)
+    dispatch(removeFromCartAfterCountDown({productId: id, type}));
+  }
+  if (type === 'petitepizza'){
+    //console.log('item', item)
+    dispatch(removeFromCartAfterCountDown({productId: id, type}));
+    addStock({productId: id, qty: qty});
+    // console.log(`je remets le stock de ${qty} pour ${id}`)
+  }
+};
+
 //---STOCK---//
 
 // Vérification des stocks
@@ -173,7 +223,7 @@ async function checkProductAvailability(
 }
 
 
-export const removeCart = (cart, countdown, dispatch) => {
+export const removeCartCountDown = (cart, countdown, dispatch) => {
   // console.log('countdown', countdown);
   if (countdown === 0) {
     // console.log('cart', cart);
@@ -216,7 +266,7 @@ export const removeCart = (cart, countdown, dispatch) => {
 
       // Ici, pour les formules, l'id doit être passé correctement à removehandler
       const idForHandler = group.type === 'formule' ? group.id : group.productId;
-      removehandler(group.type, idForHandler, group, dispatch, group.qty);
+      removehandlerafterCountdown(group.type, idForHandler, group, dispatch, group.qty);
     });
   }
 };

@@ -58,7 +58,8 @@ import CartItemAntigaspi from '../components/CardItemsAntiGaspi';
 import {
   decrementhandler,
   removehandler,
-  removeCart,
+  removeCartCountDown,
+  removehandlerafterCountdown,
   handleOfferCalculation,
 } from '../Fonctions/fonctions';
 import CardPaiement from '../SVG/CardPaiement';
@@ -976,7 +977,7 @@ const Panier = ({navigation}) => {
 
   useEffect(() => {
     if (countdown === 0) {
-      removeCart(cart, countdown, dispatch);
+      removeCartCountDown(cart, countdown, dispatch);
     }
     if (isCartEmpty) {
       countDownNull();
