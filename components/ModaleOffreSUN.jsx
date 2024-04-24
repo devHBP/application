@@ -18,20 +18,8 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
   const dispatch = useDispatch();
 
   const handleAcceptOffer = () => {
-    const newProduct = {
-      productId: product.productId,
-      libelle: product.libelle,
-      image: product.image,
-      prix_unitaire: product.prix_unitaire,
-      qty: 1,
-      type: 'offreSUN',
-      type_produit:"offreSUN"
-    };
-    // console.log('newproduct', newProduct);
-    dispatch(addToCart(newProduct));
     resetCountdown();
-
-   
+    console.log('jajoute la baguette gratuite')
   };
   return (
     <Modal

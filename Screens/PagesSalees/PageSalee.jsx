@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, ScrollView, Image, TouchableOpacity } from 'react-native'
 import React, { useEffect, useState} from 'react'
 import { style } from '../../styles/formules'; 
 import { styles } from '../../styles/produits'
@@ -18,8 +18,9 @@ import FastImage from 'react-native-fast-image';
 import { getStyle } from '../../Fonctions/stylesFormule';
 
 
-const PageBurger = ({navigation}) => {
+const PageSalee = ({route, navigation}) => {
 
+    const {name, imageUri, categorie, formule, image, description, text} = route.params;
 
     const [products, setProducts] = useState([]); 
     const [selectedProduct, setSelectedProduct] = useState(null); 
@@ -85,7 +86,7 @@ const PageBurger = ({navigation}) => {
           }));
        
       
-        const products = updatedProducts.filter(product => product.categorie === "Burgers")
+        const products = updatedProducts.filter(product => product.categorie === categorie)
 
         // console.log(products)
 
@@ -99,9 +100,16 @@ const PageBurger = ({navigation}) => {
       }, []);
     
 
-    const openFormuleBurger = () => {
-      navigation.navigate('formuleburger')
-  }
+    const openFormule = () => {
+    //   navigation.navigate(formule)
+      navigation.navigate(formule, {
+        name: name,
+        categorie: categorie,
+        imageUri: imageUri,
+        text: text,
+      })
+    }
+
   const handleCart = () => {
     navigation.navigate('panier')
   }
@@ -125,10 +133,10 @@ const PageBurger = ({navigation}) => {
                     style={{ width: "100%", height: 330, resizeMode:'cover' }}
                 /> */}
              <FastImage
-              source={require('../../assets/burger.jpg')}
+              source={imageUri}
               style={{ width: "100%", height: 330, resizeMode:'cover' }}
             />
-             <Text style={styles.titleProduct}>Burger</Text>
+             <Text style={styles.titleProduct}>{name}</Text>
              <TouchableOpacity  onPress={handleBack} activeOpacity={1} style={{position:'absolute', right:20, top:20, backgroundColor:'black', borderRadius:25}}>
                     <ArrowLeft fill="white"/>
               </TouchableOpacity>
@@ -217,7 +225,7 @@ const PageBurger = ({navigation}) => {
           </View>
           <View style={{margin:30, flexDirection:'column', justifyContent:'flex-start', gap:20}}>
             <Text style={styles.texteFormule}>Choisissez une formule pour avoir un dessert et/ou une boisson</Text>
-            <TouchableOpacity style={{marginRight:10}} onPress={openFormuleBurger} activeOpacity={0.8}>
+            <TouchableOpacity style={{marginRight:10}} onPress={openFormule} activeOpacity={0.8}>
                    
             <View style={{width:320}}>
                {/* <Image
@@ -225,12 +233,12 @@ const PageBurger = ({navigation}) => {
                             style={{ resizeMode:'cover',  width: 320, height: 200, }}
                             /> */}
                             <FastImage
-              source={require('../../assets/Formule27.jpg')}
+              source={image}
               style={{ resizeMode:'cover',  width: 320, height: 200, }}
               />
                     <View style={styles.cardTitle}>
-                        <Text style={styles.titleFormule}>Formule Burger</Text>
-                        <Text style={styles.textFormule}>Un burger, un dessert et une boisson</Text>
+                        <Text style={styles.titleFormule}>Formule {name}</Text>
+                        <Text style={styles.textFormule}>{description}</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -266,4 +274,4 @@ const PageBurger = ({navigation}) => {
 }
 
 
-export default PageBurger
+export default PageSalee

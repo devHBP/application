@@ -82,31 +82,32 @@ const Home = ({navigation}) => {
   }, [status]);
 
   // produit offreSUN
-  const handleOffreSun = async () => {
-    const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
-    const offreSunProduct = allProductsClickandCollect.find(
-      product => product.type_produit === 'offreSUN',
-    );
-    // offre dans le panier déja présente ?
-    const isOffreSunInCart = cart.some(
-      item => item.type_produit === 'offreSUN',
-    );
-    // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
-    if (offreSunProduct && !isOffreSunInCart) {
-      setIsModalSunVisible(true);
-      setSelectedProduct(offreSunProduct);
-    }
-  };
+  // const handleOffreSun = async () => {
+  //   const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
+  //   const offreSunProduct = allProductsClickandCollect.find(
+  //     product => product.type_produit === 'offreSUN',
+  //   );
+  //   // offre dans le panier déja présente ?
+  //   const isOffreSunInCart = cart.some(
+  //     item => item.type_produit === 'offreSUN',
+  //   );
+  //   // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
+  //   if (offreSunProduct && !isOffreSunInCart) {
+  //     setIsModalSunVisible(true);
+  //     setSelectedProduct(offreSunProduct);
+  //   }
+  // };
   const route = useRoute();
 
-  const totalPrice = Number(
-    cart
-      .reduce((total, item) => {
-        const prix = item.prix || item.prix_unitaire;
-        return total + item.qty * prix;
-      }, 0)
-      .toFixed(2),
-  );
+  // a revoir
+  // const totalPrice = Number(
+  //   cart
+  //     .reduce((total, item) => {
+  //       const prix = item.prix || item.prix_unitaire;
+  //       return total + item.qty * prix;
+  //     }, 0)
+  //     .toFixed(2),
+  // );
 
   const dispatch = useDispatch();
   const scrollViewRef = createRef();
@@ -148,7 +149,7 @@ const Home = ({navigation}) => {
     getStatusSun();
 
     const timer = setTimeout(() => {
-      handleOffreSun();
+      // handleOffreSun();
     }, 3000);
 
     return () => {
@@ -549,7 +550,8 @@ const Home = ({navigation}) => {
                         paddingVertical: 10,
                         color: colors.color1,
                       }}>
-                      Votre total: {totalPrice}€
+                      {/* Votre total: {totalPrice}€ */}
+                      Votre total: a calculer
                     </Text>
                   </View>
                 )}
@@ -713,11 +715,11 @@ const Home = ({navigation}) => {
               </View>
             </ScrollView>
 
-            <ModaleOffreSUN
+            {/* <ModaleOffreSUN
               modalVisible={isModalSunVisible}
               setModalVisible={setIsModalSunVisible}
               product={selectedProduct}
-            />
+            /> */}
             
             <FooterProfile />
           </SafeAreaProvider>

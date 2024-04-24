@@ -23,45 +23,49 @@ const cartSlice = createSlice({
     //     state.cart.push({ ...product, qty: 1, isFree: false });
     //   }
     // },
-    addToCart: (state, action) => {
+    // addToCart: (state, action) => {
+    //   const newItem = action.payload;
+
+    //   if (newItem.type === 'formule') {
+    //     // Créez une clé unique basée sur les IDs des options de la formule.
+    //     const formuleKey = `${newItem.option1?.productId ?? 'none'}-${
+    //       newItem.option2?.productId ?? 'none'
+    //     }-${newItem.option3?.productId ?? 'none'}`;
+
+    //     // Recherchez une formule existante avec la même clé unique.
+    //     const existingFormuleIndex = state.cart.findIndex(
+    //       item => item.type === 'formule' && item.formuleKey === formuleKey,
+    //     );
+
+    //     if (existingFormuleIndex !== -1) {
+    //       // Une formule identique a été trouvée, incrémente la quantité.
+    //       state.cart[existingFormuleIndex].qty += newItem.qty;
+    //     } else {
+    //       // Aucune formule identique, ajoutez la nouvelle formule au panier.
+    //       state.cart.push({...newItem, formuleKey: formuleKey});
+    //     }
+    //   } else {
+    //     // Recherchez un produit existant avec le même productId et offre
+    //     const existingIndex = state.cart.findIndex(
+    //       item =>
+    //         item.productId === newItem.productId &&
+    //         item.offre === newItem.offre &&
+    //         item.type === newItem.type,
+    //     );
+
+    //     if (existingIndex !== -1) {
+    //       // Un article existant a été trouvé, incrémente la quantité.
+    //       // state.cart[existingIndex].qty += newItem.qty;
+    //       state.cart[existingIndex].qty += 1;
+    //     } else {
+    //       // Aucun article existant, ajoute le nouvel article.
+    //       state.cart.push(newItem);
+    //     }
+    //   }
+    // },
+    addToCartReducer: (state, action) => {
       const newItem = action.payload;
-
-      if (newItem.type === 'formule') {
-        // Créez une clé unique basée sur les IDs des options de la formule.
-        const formuleKey = `${newItem.option1?.productId ?? 'none'}-${
-          newItem.option2?.productId ?? 'none'
-        }-${newItem.option3?.productId ?? 'none'}`;
-
-        // Recherchez une formule existante avec la même clé unique.
-        const existingFormuleIndex = state.cart.findIndex(
-          item => item.type === 'formule' && item.formuleKey === formuleKey,
-        );
-
-        if (existingFormuleIndex !== -1) {
-          // Une formule identique a été trouvée, incrémente la quantité.
-          state.cart[existingFormuleIndex].qty += newItem.qty;
-        } else {
-          // Aucune formule identique, ajoutez la nouvelle formule au panier.
-          state.cart.push({...newItem, formuleKey: formuleKey});
-        }
-      } else {
-        // Recherchez un produit existant avec le même productId et offre
-        const existingIndex = state.cart.findIndex(
-          item =>
-            item.productId === newItem.productId &&
-            item.offre === newItem.offre &&
-            item.type === newItem.type,
-        );
-
-        if (existingIndex !== -1) {
-          // Un article existant a été trouvé, incrémente la quantité.
-          // state.cart[existingIndex].qty += newItem.qty;
-          state.cart[existingIndex].qty += 1;
-        } else {
-          // Aucun article existant, ajoute le nouvel article.
-          state.cart.push(newItem);
-        }
-      }
+      state.cart.push(newItem);
     },
     acceptOffer: (state, action) => {
       const {productId, offre} = action.payload;
@@ -289,6 +293,7 @@ const cartSlice = createSlice({
 
 export const {
   addToCart,
+  addToCartReducer,
   removeFromCart,
   updateCart,
   clearCart,

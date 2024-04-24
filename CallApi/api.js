@@ -59,7 +59,7 @@ export const checkStockForSingleProduct = async productId => {
     const stockResponse = await axios.get(
       `${API_BASE_URL}/getStockByProduct/${productId}`,
     );
-    //console.log('res', stockResponse.data)
+    // console.log('res', stockResponse.data)
     return stockResponse.data;
   } catch (error) {
     console.error(
@@ -296,12 +296,13 @@ export const addStockAntigaspi = async item => {
 // j'enleve du stock
 export const updateStock = async item => {
   if (item) {
+    console.log('item stock', item)
     try {
       const response = await axios.put(`${API_BASE_URL}/getUpdateStock`, {
         productId: item.productId,
         quantityPurchased: item.qty,
       });
-      // console.log('response', response.data)
+      console.log('response', response.data)
 
       if (response.status === 200) {
         console.log(
@@ -453,5 +454,42 @@ export const AnnulationApresErreurPdj = async userId => {
       error,
     );
     throw error;
+  }
+};
+
+export const getCart = async userId => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/getCart/${userId}`,
+    );
+    if (response.data.message && response.data.message === "No active cart found") {
+      // console.log("No active cart available for this user.");
+      return null;
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Une erreur s est produite lors de la récupération du panier du user :',
+      error,
+    );
+    return null;
+  }
+};
+
+export const getCartItemId = async (userId, productId, type) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/getCartItemId/`, {
+        params: { userId, productId, type }
+      }
+    );
+    return response.data.cartItemId;
+  } catch (error) {
+    console.error(
+      'Une erreur s est produite lors de la récupération du cartItemId du produit :',
+      error,
+    );
+    return null;
   }
 };

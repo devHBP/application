@@ -26,6 +26,7 @@ import {getStyle} from '../Fonctions/stylesFormule';
 import FastImage from 'react-native-fast-image';
 import Check from '../SVG/Check';
 import {useCountdown} from '../components/CountdownContext';
+import { fetchProductsOffre31 } from '../Fonctions/fonctions';
 
 const Offre31 = ({navigation}) => {
   const [offre31Products, setOffre31ProductNames] = useState([]);
@@ -45,51 +46,7 @@ const Offre31 = ({navigation}) => {
   };
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(
-          `${API_BASE_URL}/getAllProductsClickandCollect`,
-        );
-
-        const updatedProducts = response.data.map(product => ({
-          ...product,
-          qty: 0,
-        }));
-
-        //on conserve cette logique pour filtrer avec "vente a distance"
-        const productsOffre = updatedProducts.filter(
-          product =>
-            product.offre &&
-            product.offre.startsWith('offre31_') &&
-            product.vente_a_distance === true,
-        );
-        // const productsOffre = updatedProducts.filter(product =>
-        //   product.offre &&
-        //   product.offre.startsWith("offre31_") &&
-        //   !product.offre.toLowerCase().includes("pizza")
-        //   );
-
-        //trie par catégorie
-        const productsByCategory = productsOffre.reduce((acc, product) => {
-          const {categorie} = product;
-          if (!acc[categorie]) {
-            acc[categorie] = [];
-          }
-          acc[categorie].push(product);
-          return acc;
-        }, {});
-
-        setOffre31ProductsByCategory(productsByCategory);
-        // setOffre31ProductNames(productsOffre);
-      } catch (error) {
-        console.error(
-          "Une erreur s'est produite lors de la récupération des produits:",
-          error,
-        );
-      }
-    };
-
-    fetchData();
+    fetchProductsOffre31(setOffre31ProductsByCategory);
   }, []);
 
   useEffect(() => {
@@ -108,57 +65,8 @@ const Offre31 = ({navigation}) => {
   };
 
   const handleAcceptOffer = async () => {
-    //verifier le stock
-    try {
-      const productStock = await checkStockForSingleProduct(
-        selectedProduct.productId,
-      );
-      console.log(productStock)
-      // LOG  [{"productId": 6, "quantite": 10937}]
-
-      const qtProductOffre = 4
-      // si stock
-       if (productStock[0].quantite - qtProductOffre >= 0) {
-        // Ajoutez le produit trois fois
-        for (let i = 0; i < 3; i++) {
-
-          const newProduct = {
-            productId: selectedProduct.productId,
-            libelle: selectedProduct.libelle,
-            image: selectedProduct.image,
-            prix_unitaire: selectedProduct.prix_unitaire,
-            qty: 1,
-            offre: selectedProduct.offre,
-            type: 'product',
-          };
-          // console.log('newproduct', newProduct)
-
-          dispatch(addToCart(newProduct));
-          
-        }
-        resetCountdown();
-        //le produit gratuit
-        dispatch(acceptOffer({productId: selectedProduct.productId, offre: selectedProduct.offre}))
-        updateStock({...selectedProduct, qty: 4});
-
-        Toast.show({
-          type: 'success',
-          text1: 'Offre 3+1 ajouté au panier',
-        });
-      } else {
-        Toast.show({
-          type: 'error',
-          position: 'bottom',
-          text1: 'Victime de son succès',
-          text2: `Quantité maximale: ${productStock[0].quantite}`,
-        });
-      }
-    } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de la vérification du stock :",
-        error,
-      );
-    }
+    // ajouter la logique d'ajout des 4 produits 
+    console.log('jajoute loffre 3+1')
   };
 
   const handleCart = () => {
@@ -171,10 +79,6 @@ const Offre31 = ({navigation}) => {
 
       <ScrollView>
         <View>
-          {/* <Image
-                    source={require('../assets/Croissant_offre31.jpg')} 
-                    style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                /> */}
           <FastImage
             source={require('../assets/Croissant_offre31.jpg')}
             style={{width: '100%', height: 330, resizeMode: 'cover'}}

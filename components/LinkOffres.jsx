@@ -19,13 +19,9 @@ import FastImage from 'react-native-fast-image';
 import baguetteSUN from '../assets/offreSUNbaguette.jpg';
 import antigaspiImage2 from '../assets/anti2.jpg';
 import offre31 from '../assets/Croissant_offre31.jpg';
-import offreNoel from '../assets/offreNoel.jpg';
-import gift from '../assets/gift.png';
 import pastilleAntigaspi from '../assets/pastille_antigaspi.png';
 import offre31Image from '../assets/offre31.jpg';
-import hallesSolanidImage from '../assets/halles_solanid.jpg';
 import startUnionImage from '../assets/start_union.jpg';
-import halleSolanid from '../assets/fond_halles.jpg';
 import popupSUN from '../assets/popupSUN.jpg';
 import promoSUN from '../assets/promo_sun.jpg';
 import badgeSUN from '../assets/badge_sun.jpg';
@@ -37,6 +33,7 @@ import {fetchAllProductsClickAndCollect} from '../CallApi/api';
 import ModaleOffreSUN from './ModaleOffreSUN';
 
 const LinkOffres = () => {
+  
   const openLink = url => {
     if (Platform.OS === 'android') {
       Linking.openURL(url)
@@ -92,14 +89,6 @@ const LinkOffres = () => {
         );
         setoffre31ProductNames(productsOffreNames);
 
-        // // produits solanid
-        // const solanidProducts = updatedProducts.filter(
-        //   product => product.reference_fournisseur === 'Solanid',
-        // );
-        // const solanidProductNames = solanidProducts.map(
-        //   product => product.libelle,
-        // );
-        // setSolanidProductNames(solanidProductNames);
       } catch (error) {
         console.error("Une erreur s'est produite, error products :", error);
       }
@@ -167,7 +156,6 @@ const LinkOffres = () => {
   const handleAntiGaspi = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/checkAntiGaspi`);
-      console.log(response.data)
       if (response.data.accessible === true) {
         navigation.navigate('antigaspi');
       } else {
@@ -216,10 +204,6 @@ const LinkOffres = () => {
     navigation.navigate('noel');
   };
 
-  // const handleHallesSolanid = () => {
-  //   navigation.navigate('solanid');
-  // };
-
   const handleOffre31 = () => {
     navigation.navigate('offre31');
   };
@@ -247,13 +231,6 @@ const LinkOffres = () => {
       secondaryText: 'Gratuite      ',
       pastilleImage: badgeSUN,
     },
-    // {
-    //   type: 'custom',
-    //   imageUri: offreNoel,
-    //   mainText: 'Nouveautés pour       ',
-    //   secondaryText: 'Les fêtes      ',
-    //   pastilleImage: gift,
-    // },
     {
       type: 'offre31',
       imageUri: offre31,
@@ -261,14 +238,6 @@ const LinkOffres = () => {
       secondaryText: 'Gratuit',
       pastilleImage: offre31Image,
     },
-    // {
-    //   type: 'hallesSolanid',
-    //   imageUri: halleSolanid,
-    //   mainText: 'Un repas équilibré,',
-    //   thirdText: 'frais et de saison avec',
-    //   secondaryText: 'Les Halles Solanid',
-    //   pastilleImage: hallesSolanidImage,
-    // },
     {
       type: 'sun',
       imageUri: promoSUN,
@@ -314,14 +283,6 @@ const LinkOffres = () => {
         thirdText = item.thirdText;
         pastilleImgSrc = item.pastilleImage;
         break;
-      // case 'hallesSolanid':
-      //   handlePressFunc = handleHallesSolanid;
-      //   imgSrc = item.imageUri;
-      //   mainText = item.mainText;
-      //   thirdText = item.thirdText;
-      //   secondaryText = item.secondaryText;
-      //   pastilleImgSrc = item.pastilleImage;
-      //   break;
       case 'sun':
         handlePressFunc = handlePress;
         imgSrc = item.imageUri;

@@ -15,7 +15,7 @@ export const styles = StyleSheet.create({
         fontSize:20,
         fontWeight: "600",
         fontFamily:fonts.font2,
-        color:colors.color1
+        color:colors.color1, 
     },
     descriptionProduit:{
       marginHorizontal:10,
@@ -31,7 +31,8 @@ export const styles = StyleSheet.create({
         fontFamily: fonts.font2,
         fontWeight: "400",
         paddingVertical:10, 
-        color:colors.colors1
+        color:colors.color1,
+        marginLeft:10,
     },
     sousTexte:{
         // fontFamily:fonts.font2,

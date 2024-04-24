@@ -36,8 +36,8 @@ const FooterProfile = () => {
   const intervalId = useRef();
 
   const user = useSelector(state => state.auth.user);
-  const cart = useSelector(state => state.cart.cart);
-  const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
+  // const cart = useSelector(state => state.cart.cart);
+  // const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
 
 
     const openLink = (url) => {
@@ -99,9 +99,9 @@ const FooterProfile = () => {
       </View>
 
       <View style={style.badgeContainer}>
-        <Badge visible={cart.length > 0} size={18} style={style.badgeCart}>
+        {/* <Badge visible={cart.length > 0} size={18} style={style.badgeCart}>
           {totalQuantity}
-        </Badge>
+        </Badge> */}
         <TouchableOpacity onPress={openCart}>
           <Cart />
         </TouchableOpacity>
