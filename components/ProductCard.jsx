@@ -16,7 +16,13 @@ import FastImage from 'react-native-fast-image';
 import {useCountdown} from './CountdownContext';
 
 //call API
-import {checkStockForSingleProduct, updateStock, getCartItemId} from '../CallApi/api.js';
+import {
+  checkStockForSingleProduct,
+  updateStock,
+  getCartItemId,
+  addStock,
+  getCart,
+} from '../CallApi/api.js';
 //fonctions
 import {
   incrementhandler,
@@ -45,17 +51,32 @@ const ProductCard = ({
   allergenes,
   category,
   overlayStyle,
-  type = 'simple', 
-  item
+  type,
+  item,
 }) => {
   // Déclaration de l'état du stock
   const [currentStock, setCurrentStock] = useState(stock);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleIngredients, setModalVisibleIngredients] = useState(false);
+  const [cart, setCart] = useState(null);
+  const [totalQuantity, setTotalQuantity] = useState(0);
 
   const {resetCountdown} = useCountdown();
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
+
+  useEffect(() => {
+    const fetchCart = async () => {
+      const cart = await getCart(user.userId);
+      setCart(cart.ProductsCarts);
+    };
+
+    if (user.userId) {
+      fetchCart();
+    }
+  }, [user.userId]);
+
+  useEffect(() => {}, [cart]);
 
   const handleIngredients = () => {
     setModalVisibleIngredients(true);
@@ -74,60 +95,153 @@ const ProductCard = ({
     width: showPriceSun ? '60%' : '100%',
   };
 
+  const handleAcceptOffer = async () => {
+    // dispatch(acceptOffer({productId: item.productId, offre: item.offre}));
+    // ajout du produit gratuit
+    incrementhandler(
+      user.userId,
+      item.productId,
+      1,
+      0,
+      'offre31',
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      item.categorie,
+      null,
+    );
+    updateStock({...item, qty: 1});
+  };
+
   const addToCart = async () => {
-    console.log('item', item)
-    console.log('type', type)
-    try {
-      //1- Verif du stock
-      const checkstock = await checkStockForSingleProduct(id);
-      const stock = checkstock[0].quantite;
-      //2- si dispo 
-      if (stock > 0) {
-        console.log('stock dispo');
-            //2-a ajout du produit dans le panier
-            incrementhandler(user.userId, item.productId, 1, item.prix_unitaire, type, false, null, null, null, null, null);
+    let localType =
+      item.offre && item.offre.startsWith('offre31') ? 'offre31' : 'simple';
 
-            //2-b  mise a jour du stock
-            await updateStock({...item, qty: 1});
+    // Mettre à jour le panier et la quantité après chaque modification.
+    const updateCartAndQuantity = async () => {
+      const updatedCart = await getCart(user.userId);
+      setCart(updatedCart.ProductsCarts);
+      calculateTotalQuantity(updatedCart.ProductsCarts);
+    };
 
+    // Quantité totale de produits payants et gratuits pour l'offre 3+1.
+    const calculateTotalQuantity = async cart => {
+      const produitsPayants = cart
+        .filter(
+          product =>
+            product.productId === item.productId &&
+            product.type === 'offre31' &&
+            !product.isFree,
+        )
+        .reduce((total, product) => total + product.quantity, 0);
+      const produitsGratuits = cart
+        .filter(
+          product =>
+            product.productId === item.productId &&
+            product.type === 'offre31' &&
+            product.isFree,
+        )
+        .reduce((total, product) => total + product.quantity, 0);
+
+      // console.log(
+      //   `Produits payants: ${produitsPayants}, Produits gratuits: ${produitsGratuits}`,
+      // );
+
+      if (
+        produitsPayants % 3 === 0 &&
+        produitsGratuits < Math.floor(produitsPayants / 3)
+      ) {
+        setModalVisible(true);
       } else {
-        //3- si stock indispo - toast message
+        incrementhandler(
+          user.userId,
+          item.productId,
+          1,
+          item.prix_unitaire,
+          localType,
+          false, // Commence par ajouter le produit comme payant
+          null,
+          null,
+          null,
+          null,
+          null,
+          item.categorie,
+          null,
+        );
+      }
+    };
+
+    try {
+      const stockCheck = await checkStockForSingleProduct(id);
+      if (stockCheck[0].quantite > 0) {
+        if (item.offre && item.offre.startsWith('offre31')) {
+          // Calculer la quantité totale des produits avec le même productId et type 'offre31' dans le panier
+          updateCartAndQuantity();
+        } else {
+          // Ajout classique pour les types non 'offre31'
+          incrementhandler(
+            user.userId,
+            item.productId,
+            1,
+            item.prix_unitaire,
+            localType,
+            false,
+            null,
+            null,
+            null,
+            null,
+            null,
+            item.categorie,
+            null,
+          );
+          updateCartAndQuantity();
+        }
+        await updateStock({...item, qty: 1});
+      } else {
         Toast.show({
           type: 'error',
-          text1: `Victime de son succès`,
-          text2: `Plus de stock disponible`,
+          text1: 'Victime de son succès',
+          text2: 'Plus de stock disponible',
         });
       }
     } catch (error) {
-      console.error(
-        "Une erreur s'est produite lors de l ajout du produit : ",
-        error,
-      );
+      console.error("Erreur lors de l'ajout au panier:", error);
     }
   };
 
   const removeToCart = async () => {
-    console.log('item', item)
-    console.log('type', type)
-    const cartItemId = await getCartItemId(user.userId, item.productId, type);
-    console.log(cartItemId)
+    console.log('item', item);
+    let localType =
+      item.offre && item.offre.startsWith('offre31') ? 'offre31' : 'simple';
+    console.log('type', localType);
+    const cartItemId = await getCartItemId(
+      user.userId,
+      item.productId,
+      localType,
+    );
 
     try {
-      // si panier vide (si pas de cartItems)
-      // ne rien faire 
-
-      //1- si existant dans le panier 
-      // revoir ici le if item
-      if (cartItemId) {
-            //2-a on enleve le produit dans le panier
-            decrementhandler(user.userId, item.productId, 1, type, cartItemId);
-
-            //2-b  mise a jour du stock
-            // await updateStock({...item, qty: 1});
-
+      if (item.offre && item.offre.startsWith('offre31')) {
+        console.log('produit avec offre 3+1 renseigné');
       } else {
-        console.log('pas dans le panier')
-        // gerer l'erreur 404 - pas de cartItemId correspondant 
+        if (cartItemId) {
+          console.log('produit sans offre 3+1 renseigné');
+
+          //2-a on enleve le produit dans le panier
+          decrementhandler(
+            user.userId,
+            item.productId,
+            1,
+            localType,
+            cartItemId,
+            null,
+          );
+        }
+        //2-b  mise a jour du stock
+        await addStock({...item, qty: 1});
       }
     } catch (error) {
       console.error(
@@ -239,11 +353,11 @@ const ProductCard = ({
         ) : null}
       </View>
 
-      {/* <ModaleOffre31
+      <ModaleOffre31
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
         handleAcceptOffer={handleAcceptOffer}
-      /> */}
+      />
       <ModaleIngredients
         modalVisibleIngredients={modalVisibleIngredients}
         setModalVisibleIngredients={setModalVisibleIngredients}
