@@ -22,6 +22,9 @@ import Bug from '../SVG/Bug';
 import LoginInvite from '../SVG/LoginInvite';
 import ModaleInvite from './ModalInvite';
 import FastImage from 'react-native-fast-image';
+import {
+  getCart,
+} from '../CallApi/api.js';
 
 
 const FooterProfile = () => {
@@ -31,6 +34,9 @@ const FooterProfile = () => {
 
   const [isBadgeVisible, setIsBadgeVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [cart, setCart] = useState([]);
+  const [totalQuantity, setTotalQuantity] = useState(0);
+
   // const [preferenceCommande, setPreferenceCommande] = useState(null);
 
   const intervalId = useRef();
@@ -38,7 +44,24 @@ const FooterProfile = () => {
   const user = useSelector(state => state.auth.user);
   // const cart = useSelector(state => state.cart.cart);
   // const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
+  useEffect(() => {
+    const fetchCart = async () => {
+      const cart = await getCart(user.userId);
+      setCart(cart.ProductsCarts);
+    };
+    fetchCart();
+  }, [cart]);
 
+  useEffect(() => {
+    const quantity = cart.reduce((total, cartItem) => {
+      if (cartItem.productId === cartItem.productId && cartItem.type !== 'antigaspi') {
+        return total + cartItem.quantity; // Assurez-vous d'utiliser `quantity` si c'est la clé correcte dans votre objet cartItem
+      }
+      return total;
+    }, 0);
+  
+    setTotalQuantity(quantity);
+  }, [cart]);
 
     const openLink = (url) => {
       if (Platform.OS === 'android') {
@@ -99,9 +122,9 @@ const FooterProfile = () => {
       </View>
 
       <View style={style.badgeContainer}>
-        {/* <Badge visible={cart.length > 0} size={18} style={style.badgeCart}>
+        <Badge visible={cart.length > 0} size={18} style={style.badgeCart}>
           {totalQuantity}
-        </Badge> */}
+        </Badge>
         <TouchableOpacity onPress={openCart}>
           <Cart />
         </TouchableOpacity>
