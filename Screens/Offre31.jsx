@@ -26,7 +26,7 @@ import {getStyle} from '../Fonctions/stylesFormule';
 import FastImage from 'react-native-fast-image';
 import Check from '../SVG/Check';
 import {useCountdown} from '../components/CountdownContext';
-import { fetchProductsOffre31 } from '../Fonctions/fonctions';
+import { fetchProductsOffre31, incrementhandler } from '../Fonctions/fonctions';
 
 const Offre31 = ({navigation}) => {
   const [offre31Products, setOffre31ProductNames] = useState([]);
@@ -39,6 +39,7 @@ const Offre31 = ({navigation}) => {
 
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart.cart);
+  const user = useSelector(state => state.auth.user);
   const {resetCountdown} = useCountdown();
 
   const handleBack = () => {
@@ -66,7 +67,44 @@ const Offre31 = ({navigation}) => {
 
   const handleAcceptOffer = async () => {
     // ajouter la logique d'ajout des 4 produits 
-    console.log('jajoute loffre 3+1')
+    // j'ajoute 3 produits payants
+    incrementhandler(
+      user.userId,
+      selectedProduct.productId,
+      3,
+      selectedProduct.prix_unitaire,
+      'offre31',
+      false,
+      null,
+      null,
+      null,
+      null,
+      null,
+      selectedProduct.categorie,
+      null,
+    );
+    // j'ajoute 1 produit gratuit
+    incrementhandler(
+      user.userId,
+      selectedProduct.productId,
+      1,
+      0,
+      'offre31',
+      true,
+      null,
+      null,
+      null,
+      null,
+      null,
+      selectedProduct.categorie,
+      null,
+    );
+    updateStock({...selectedProduct, qty: 4});
+    Toast.show({
+      type: 'success',
+      text1: 'Offre 3+1 ajouté au panier',
+    });
+    navigation.navigate('panier')
   };
 
   const handleCart = () => {
