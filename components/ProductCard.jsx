@@ -22,6 +22,7 @@ import {
   getCartItemId,
   addStock,
   getCart,
+  getItemsOffre31,
 } from '../CallApi/api.js';
 //fonctions
 import {
@@ -58,7 +59,7 @@ const ProductCard = ({
   const [currentStock, setCurrentStock] = useState(stock);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleIngredients, setModalVisibleIngredients] = useState(false);
-  const [cart, setCart] = useState(null);
+  const [cart, setCart] = useState([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
 
   const {resetCountdown} = useCountdown();
@@ -70,13 +71,8 @@ const ProductCard = ({
       const cart = await getCart(user.userId);
       setCart(cart.ProductsCarts);
     };
-
-    if (user.userId) {
-      fetchCart();
-    }
-  }, [user.userId]);
-
-  useEffect(() => {}, [cart]);
+    fetchCart();
+  }, [cart]);
 
   const handleIngredients = () => {
     setModalVisibleIngredients(true);
@@ -95,9 +91,19 @@ const ProductCard = ({
     width: showPriceSun ? '60%' : '100%',
   };
 
+  useEffect(() => {
+    const quantity = cart.reduce((total, cartItem) => {
+      if (cartItem.productId === item.productId && cartItem.type !== 'antigaspi') {
+        return total + cartItem.quantity; // Assurez-vous d'utiliser `quantity` si c'est la clé correcte dans votre objet cartItem
+      }
+      return total;
+    }, 0);
+  
+    setTotalQuantity(quantity);
+  }, [cart, item.productId]);
+
   const handleAcceptOffer = async () => {
-    // dispatch(acceptOffer({productId: item.productId, offre: item.offre}));
-    // ajout du produit gratuit
+    //  offre accpetée: ajout du produit gratuit
     incrementhandler(
       user.userId,
       item.productId,
@@ -197,7 +203,7 @@ const ProductCard = ({
             item.categorie,
             null,
           );
-          updateCartAndQuantity();
+          // updateCartAndQuantity();
         }
         await updateStock({...item, qty: 1});
       } else {
@@ -213,39 +219,42 @@ const ProductCard = ({
   };
 
   const removeToCart = async () => {
-    console.log('item', item);
-    let localType =
-      item.offre && item.offre.startsWith('offre31') ? 'offre31' : 'simple';
-    console.log('type', localType);
-    const cartItemId = await getCartItemId(
-      user.userId,
-      item.productId,
-      localType,
-    );
-
     try {
-      if (item.offre && item.offre.startsWith('offre31')) {
-        console.log('produit avec offre 3+1 renseigné');
+      let localType =
+        item.offre && item.offre.startsWith('offre31') ? 'offre31' : 'simple';
+      if (localType === 'offre31') {
+        const items = await getItemsOffre31(item.productId);
+        // console.log(items[0].cartItemId)
+        decrementhandler(
+          user.userId,
+          item.productId,
+          1,
+          localType,
+          items[0].cartItemId,
+          null,
+        );
       } else {
-        if (cartItemId) {
-          console.log('produit sans offre 3+1 renseigné');
-
-          //2-a on enleve le produit dans le panier
-          decrementhandler(
-            user.userId,
-            item.productId,
-            1,
-            localType,
-            cartItemId,
-            null,
-          );
-        }
-        //2-b  mise a jour du stock
-        await addStock({...item, qty: 1});
+        const cartItemId = await getCartItemId(
+          user.userId,
+          item.productId,
+          localType,
+        );
+        //2-a on enleve le produit dans le panier un produit classique
+        decrementhandler(
+          user.userId,
+          item.productId,
+          1,
+          localType,
+          cartItemId[0],
+          null,
+        );
       }
+
+      //2-b  mise a jour du stock
+      await addStock({...item, qty: 1});
     } catch (error) {
       console.error(
-        "Une erreur s'est produite lors de l ajout du produit : ",
+        "Une erreur s'est produite lors du retrait du produit du panier: ",
         error,
       );
     }
@@ -299,7 +308,7 @@ const ProductCard = ({
                 ? style.qtyText
                 : {...style.qtyText, opacity: 0, height: 0, width: 0}
             }>
-            <Text style={style.text}>{/* {productQuantity} */}</Text>
+            <Text style={style.text}>{totalQuantity}</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
