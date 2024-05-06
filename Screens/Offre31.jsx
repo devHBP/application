@@ -26,7 +26,7 @@ import {getStyle} from '../Fonctions/stylesFormule';
 import FastImage from 'react-native-fast-image';
 import Check from '../SVG/Check';
 import {useCountdown} from '../components/CountdownContext';
-import { fetchProductsOffre31, incrementhandler } from '../Fonctions/fonctions';
+import { fetchProductsOffre31, incrementhandler, checkProductAvailability } from '../Fonctions/fonctions';
 
 const Offre31 = ({navigation}) => {
   const [offre31Products, setOffre31ProductNames] = useState([]);
@@ -56,7 +56,15 @@ const Offre31 = ({navigation}) => {
     }
   }, [selectedProduct]);
 
-  const handleProduct = product => {
+  const handleProduct = async product => {
+    const isAvailable = await checkProductAvailability(
+      product,
+      checkStockForSingleProduct,
+      cart,
+    );
+    if (!isAvailable) {
+      return;
+    }
     if (selectedProduct?.productId === product.productId) {
       setSelectedProduct(null);
       setTotalPrice(0);
@@ -68,7 +76,7 @@ const Offre31 = ({navigation}) => {
   const handleAcceptOffer = async () => {
     // ajouter la logique d'ajout des 4 produits 
     // j'ajoute 3 produits payants
-    incrementhandler(
+    await incrementhandler(
       user.userId,
       selectedProduct.productId,
       3,
@@ -82,9 +90,10 @@ const Offre31 = ({navigation}) => {
       null,
       selectedProduct.categorie,
       null,
+      selectedProduct.libelle,
     );
     // j'ajoute 1 produit gratuit
-    incrementhandler(
+    await incrementhandler(
       user.userId,
       selectedProduct.productId,
       1,
@@ -98,6 +107,7 @@ const Offre31 = ({navigation}) => {
       null,
       selectedProduct.categorie,
       null,
+      selectedProduct.libelle,
     );
     updateStock({...selectedProduct, qty: 4});
     Toast.show({
