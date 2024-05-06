@@ -11,9 +11,9 @@ import {colors} from '../styles/styles';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import {Badge} from 'react-native-paper';
-import { useDispatch, useSelector } from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 // import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
-import { API_BASE_URL } from '../config';
+import {API_BASE_URL} from '../config';
 import Home from '../SVG/Home';
 import Orders from '../SVG/Orders';
 import Cart from '../SVG/Cart';
@@ -22,10 +22,8 @@ import Bug from '../SVG/Bug';
 import LoginInvite from '../SVG/LoginInvite';
 import ModaleInvite from './ModalInvite';
 import FastImage from 'react-native-fast-image';
-import {
-  getCart,
-} from '../CallApi/api.js';
-
+import {getCart} from '../CallApi/api.js';
+import {fetchCart, getTotalCart} from '../reducers/cartSlice';
 
 const FooterProfile = () => {
   //on utilise ici useNavigation et non pas navigation car le footer n'est pas dans la pile de screens
@@ -35,59 +33,43 @@ const FooterProfile = () => {
   const [isBadgeVisible, setIsBadgeVisible] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [cart, setCart] = useState([]);
-  const [totalQuantity, setTotalQuantity] = useState(0);
-
-  // const [preferenceCommande, setPreferenceCommande] = useState(null);
 
   const intervalId = useRef();
 
   const user = useSelector(state => state.auth.user);
-  // const cart = useSelector(state => state.cart.cart);
-  // const totalQuantity = cart.reduce((total, item) => total + item.qty, 0);
+  const totalQuantity = useSelector(state => state.cart.cartTotal);
+
   useEffect(() => {
-    const fetchCart = async () => {
-      const cart = await getCart(user.userId);
-      setCart(cart.ProductsCarts);
+    const loadCart = async () => {
+      dispatch(getTotalCart(user.userId));
+      console.log('boucle footer');
     };
-    fetchCart();
-  }, [cart]);
+    loadCart();
+  }, [user.userId, dispatch]);
 
-  useEffect(() => {
-    const quantity = cart.reduce((total, cartItem) => {
-      if (cartItem.productId === cartItem.productId && cartItem.type !== 'antigaspi') {
-        return total + cartItem.quantity; // Assurez-vous d'utiliser `quantity` si c'est la clé correcte dans votre objet cartItem
-      }
-      return total;
-    }, 0);
-  
-    setTotalQuantity(quantity);
-  }, [cart]);
-
-    const openLink = (url) => {
-      if (Platform.OS === 'android') {
-          Linking.openURL(url)
-            .then((supported) => {
-              if (!supported) {
-                console.log("Can't handle URL: " + url);
-              } else {
-                return Linking.openURL(url);
-              }
-            })
-            .catch((err) => console.error('An error occurred', err));
-      } else if (Platform.OS === 'ios') {
-          Linking.canOpenURL(url)
-            .then((supported) => {
-              if (!supported) {
-                console.log("Can't handle URL: " + url);
-              } else {
-                return Linking.openURL(url);
-              }
-            })
-            .catch((err) => console.error('An error occurred', err));
-      }
-  }
-
-  
+  const openLink = url => {
+    if (Platform.OS === 'android') {
+      Linking.openURL(url)
+        .then(supported => {
+          if (!supported) {
+            console.log("Can't handle URL: " + url);
+          } else {
+            return Linking.openURL(url);
+          }
+        })
+        .catch(err => console.error('An error occurred', err));
+    } else if (Platform.OS === 'ios') {
+      Linking.canOpenURL(url)
+        .then(supported => {
+          if (!supported) {
+            console.log("Can't handle URL: " + url);
+          } else {
+            return Linking.openURL(url);
+          }
+        })
+        .catch(err => console.error('An error occurred', err));
+    }
+  };
 
   const openHome = () => {
     //retour en position page haute
@@ -106,7 +88,6 @@ const FooterProfile = () => {
   const openPopupInvite = () => {
     setIsModalVisible(true);
   };
- 
 
   return (
     <View style={style.profile}>
@@ -122,30 +103,33 @@ const FooterProfile = () => {
       </View>
 
       <View style={style.badgeContainer}>
-        <Badge visible={cart.length > 0} size={18} style={style.badgeCart}>
-          {totalQuantity}
+        <Badge
+          visible={totalQuantity && totalQuantity.totalQuantity > 0}
+          size={18}
+          style={style.badgeCart}>
+          {totalQuantity && totalQuantity.totalQuantity}
         </Badge>
         <TouchableOpacity onPress={openCart}>
           <Cart />
         </TouchableOpacity>
       </View>
 
-      {user.role !== 'invite' && (  
+      {user.role !== 'invite' && (
         <TouchableOpacity onPress={openProfile}>
-          <Profile color={colors.color4}/>
+          <Profile color={colors.color4} />
         </TouchableOpacity>
       )}
       {/* icone BUG */}
-      {
-          user.role !== 'invite' &&
-              <TouchableOpacity onPress={() => openLink('https://www.help.lepaindujour.io/')}>
-                {/* <Bug color={colors.color6}/> */}
-                <FastImage
-                    source={require('../assets/Question.jpg')}
-                     style={{ width: 30, height: 30, resizeMode:'cover' }}
-                    />
-              </TouchableOpacity>
-        }
+      {user.role !== 'invite' && (
+        <TouchableOpacity
+          onPress={() => openLink('https://www.help.lepaindujour.io/')}>
+          {/* <Bug color={colors.color6}/> */}
+          <FastImage
+            source={require('../assets/Question.jpg')}
+            style={{width: 30, height: 30, resizeMode: 'cover'}}
+          />
+        </TouchableOpacity>
+      )}
 
       {user.role == 'invite' && (
         <TouchableOpacity onPress={openPopupInvite}>
