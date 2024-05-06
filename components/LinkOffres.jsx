@@ -28,12 +28,12 @@ import badgeSUN from '../assets/badge_sun.jpg';
 import ScrollIndicators from './ScrollIndicators.';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Compteur from '../SVG/Compteur';
-import {useSelector} from 'react-redux';
-import {fetchAllProductsClickAndCollect} from '../CallApi/api';
+import {useSelector, useDispatch} from 'react-redux';
+import {fetchAllProductsClickAndCollect, } from '../CallApi/api';
 import ModaleOffreSUN from './ModaleOffreSUN';
+import {getCart} from '../reducers/cartSlice';
 
 const LinkOffres = () => {
-  
   const openLink = url => {
     if (Platform.OS === 'android') {
       Linking.openURL(url)
@@ -67,6 +67,18 @@ const LinkOffres = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const cart = useSelector(state => state.cart.cart);
+  const user = useSelector(state => state.auth.user);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    const loadCart = async () => {
+      // appel du panier via redux
+      dispatch(getCart(user.userId));
+      console.log('boucle linkoffres');
+    };
+
+    loadCart();
+  }, [user.userId, dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -88,7 +100,6 @@ const LinkOffres = () => {
           product => product.libelle,
         );
         setoffre31ProductNames(productsOffreNames);
-
       } catch (error) {
         console.error("Une erreur s'est produite, error products :", error);
       }
@@ -167,7 +178,10 @@ const LinkOffres = () => {
         });
       }
     } catch (error) {
-      console.error("Erreur lors de la vérification de l'accès à l'antigaspi", error);
+      console.error(
+        "Erreur lors de la vérification de l'accès à l'antigaspi",
+        error,
+      );
       Toast.show({
         type: 'error',
         text1: 'Erreur de communication avec le serveur',
@@ -176,9 +190,11 @@ const LinkOffres = () => {
   };
 
   const handleOffreSun = async () => {
-    const isOffreSunInCart = cart.some(
-      item => item.type_produit === 'offreSUN',
+    const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
+    const offreSunProduct = allProductsClickandCollect.find(
+      product => product.type_produit === 'offreSUN',
     );
+    const isOffreSunInCart = cart.some(item => item.typeProduit === 'offreSUN');
     if (isOffreSunInCart) {
       Toast.show({
         type: 'error',
@@ -187,11 +203,6 @@ const LinkOffres = () => {
       });
       return;
     }
-
-    const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
-    const offreSunProduct = allProductsClickandCollect.find(
-      product => product.type_produit === 'offreSUN',
-    );
 
     // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
     if (offreSunProduct) {

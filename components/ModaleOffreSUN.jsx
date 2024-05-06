@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 import {colors} from '../styles/styles';
 import {useDispatch, useSelector} from 'react-redux';
-import {addToCart} from '../reducers/cartSlice';
 import logoSun from '../assets/logoSUNPremium.jpg';
 import {useCountdown} from '../components/CountdownContext';
 import {incrementhandler} from '../Fonctions/fonctions';
@@ -19,6 +18,7 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
   const {resetCountdown} = useCountdown();
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
+  const cart = useSelector(state => state.cart.cart);
 
   useEffect(() => {
     const loadCart = async () => {
@@ -33,7 +33,7 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
 
   const handleAcceptOffer = async () => {
     resetCountdown();
-    incrementhandler(
+    await incrementhandler(
       user.userId,
       product.productId,
       1,
@@ -51,6 +51,8 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
     );
     await dispatch(getCart(user.userId));
     await dispatch(getTotalCart(user.userId));
+    setModalVisible(!modalVisible);
+
   };
   return (
     <Modal
@@ -82,7 +84,6 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
             <TouchableOpacity
               onPress={() => {
                 handleAcceptOffer();
-                setModalVisible(!modalVisible);
               }}
               style={styles.btn}>
               <Text style={styles.colorTextBtn}>Confirmer</Text>
