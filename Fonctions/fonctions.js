@@ -20,6 +20,10 @@ import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_BASE_URL} from '../config.js';
+import {
+  Linking,
+  Platform,
+} from 'react-native';
 
 const configureAxiosHeaders = async () => {
   const token = await AsyncStorage.getItem('userToken');
@@ -29,8 +33,23 @@ const configureAxiosHeaders = async () => {
   axios.defaults.headers.common['x-access-header'] = 'hbpclickandcollect';
 };
 
-export const incrementhandler = async (userId, id, quantity = 1, unitPrice, type, isFree = false, option1ProductId, option2ProductId, option3ProductId, offerId, typeProduit) => {
-  console.log('j\'incremente');
+
+export const incrementhandler = async (
+  userId,
+  id,
+  quantity,
+  unitPrice,
+  type,
+  isFree = false,
+  option1ProductId,
+  option2ProductId,
+  option3ProductId,
+  offerId,
+  typeProduit,
+  libelle,
+  key,
+  product,
+) => {
   const payload = {
     userId: userId,
     productId: id,
@@ -43,12 +62,17 @@ export const incrementhandler = async (userId, id, quantity = 1, unitPrice, type
     option3ProductId: option3ProductId,
     offerId: offerId,
     typeProduit: typeProduit,
+    libelle: libelle,
+    key: key,
+    product: product
   };
+  // console.log('payload', payload)
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/addOrUpdateCartItem`, payload
+      `${API_BASE_URL}/addOrUpdateCartItem`,
+      payload,
     );
-    // console.log('j\'ajoute response', response);
+    // console.log('j\'ajoute response', response.data);
   } catch (error) {
     console.error(
       "Une erreur s'est produite lors de l'ajout du produit",
@@ -57,19 +81,28 @@ export const incrementhandler = async (userId, id, quantity = 1, unitPrice, type
   }
 };
 
-export const decrementhandler = async (userId, id, quantity = 1, type, cartItemId = 19) => {
-  console.log('je decremente ');
+export const decrementhandler = async (
+  userId,
+  id,
+  quantity = 1,
+  type,
+  cartItemId,
+  key
+) => {
+  // console.log('je decremente ');
   const payload = {
     userId: userId,
     productId: id,
     quantity: quantity,
     type: type,
-    cartItemId: cartItemId
+    cartItemId: cartItemId,
+    key:key
   };
-  console.log(payload)
+  // console.log('payload', payload);
   try {
     const response = await axios.post(
-      `${API_BASE_URL}/removeOrUpdateCartItem`, payload
+      `${API_BASE_URL}/removeOrUpdateCartItem`,
+      payload,
     );
     // console.log('j\'ajoute response', response.data);
   } catch (error) {
@@ -79,6 +112,7 @@ export const decrementhandler = async (userId, id, quantity = 1, type, cartItemI
     );
   }
 };
+
 
 export const removehandler = (type, id, item, dispatch, qty) => {
   // console.log('type', type);
@@ -109,7 +143,7 @@ export const removehandler = (type, id, item, dispatch, qty) => {
     // console.log(`je remets le stock de ${qty} pour ${id}`)
   }
 
-  if (type === 'product') {
+  if (type === 'product' ) {
     // console.log('item', item)
     dispatch(removeFromCart({productId: id, type}));
     addStock({productId: id, qty: qty});
@@ -310,6 +344,7 @@ export const handleOfferCalculation = (cart, dispatch) => {
     dispatch(makeLastSmallPizzaFree());
   }
 };
+
 export const getDessertDetails = async setDesserts => {
   try {
     // 1. Récupération de tous les produits
@@ -456,7 +491,7 @@ export const createOrder = async orderData => {
   }
 };
 
-export const openStripe = async orderInfo => {
+export const openStripe = async (orderInfo, setSessionId, setCheckoutSession) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/checkout_session`, {
       orderInfo,
@@ -476,7 +511,7 @@ export const openStripe = async orderInfo => {
   }
 };
 
-export const checkPaymentStatus = async sessionId => {
+export const checkPaymentStatus = async (sessionId, navigation, dispatch, countDownNull, resetCountdown) => {
   const intervalId = setInterval(async () => {
     try {
       const response = await axios.get(
@@ -492,10 +527,7 @@ export const checkPaymentStatus = async sessionId => {
         navigation.navigate('success');
         clearInterval(intervalId);
 
-        // vider le panier
-        dispatch(clearCart());
 
-        // mets à jour la colonne freeBaguettePerDay dans la table si offre baguette gratuite
       } else if (status === 'unpaid') {
         // si status unpaid - retour en arriere
         navigation.navigate('cancel');
