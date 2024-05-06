@@ -277,21 +277,20 @@ const Panier = ({navigation}) => {
   };
 
   const removeProduct = async item => {
-    console.log(item);
+    // console.log(item);
     if (
       item.type === 'formule' ||
       item.type === 'simple' ||
       item.type === 'offreSUN' ||
       item.type === 'antigaspi'
     ) {
-      console.log('decremente formule');
       const cartItemId = await getCartItemId(
         user.userId,
         item.productId,
         item.type,
         item.key,
       );
-      console.log(cartItemId);
+      // console.log(cartItemId);
       await decrementhandler(
         user.userId,
         item.productId,
