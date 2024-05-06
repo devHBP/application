@@ -20,7 +20,7 @@ import {
   acceptOffer,
   setCart,
   getCart,
-  getTotalCart
+  getTotalCart,
 } from '../reducers/cartSlice';
 import {setNumeroCommande, setProducts} from '../reducers/orderSlice';
 import CartItem from '../components/CardItems';
@@ -38,7 +38,7 @@ import {
   updateStock,
   getPrefCommande,
   getCartItemId,
-  getItemsOffre31
+  getItemsOffre31,
   //getCart,
 } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
@@ -156,14 +156,13 @@ const Panier = ({navigation}) => {
     : 0;
 
   const addProduct = async item => {
-
     if (item.type === 'offre31') {
       if (
         item.qtyPaid % 3 === 0 &&
         item.qtyFree < Math.floor(item.qtyPaid / 3)
       ) {
         setModalVisible(true);
-        setCurrentItem(item); 
+        setCurrentItem(item);
       } else {
         await incrementhandler(
           user.userId,
@@ -221,15 +220,12 @@ const Panier = ({navigation}) => {
         item.libelle,
       );
       await dispatch(getCart(user.userId));
-
-      }
+    }
     dispatch(getTotalCart(user.userId));
-
-
   };
 
   const reduceProduct = async item => {
-    if (item.type === 'simple'){
+    if (item.type === 'simple') {
       const cartItemId = await getCartItemId(
         user.userId,
         item.productId,
@@ -242,13 +238,11 @@ const Panier = ({navigation}) => {
         1,
         item.type,
         cartItemId[0],
-        item.key
-      )
+        item.key,
+      );
       await dispatch(getCart(user.userId));
-
     }
-    if (item.type === 'offre31'){
-     
+    if (item.type === 'offre31') {
       const items = await getItemsOffre31(item.productId);
       // console.log('items', items)
       decrementhandler(
@@ -260,25 +254,23 @@ const Panier = ({navigation}) => {
         null,
       );
       await dispatch(getCart(user.userId));
-
     }
-    if (item.type === 'formule'){
-      console.log('decremente formule')
+    if (item.type === 'formule') {
       const cartItemId = await getCartItemId(
         user.userId,
         item.productId,
         item.type,
-        item.key
+        item.key,
       );
-      console.log(cartItemId)
+      // console.log(cartItemId)
       await decrementhandler(
         user.userId,
         item.productId,
         1,
         item.type,
         cartItemId[0],
-        item.key
-      )
+        item.key,
+      );
       await dispatch(getCart(user.userId));
     }
     dispatch(getTotalCart(user.userId));
@@ -286,29 +278,41 @@ const Panier = ({navigation}) => {
 
   const removeProduct = async item => {
     console.log(item);
-    if (item.type === 'formule' || item.type === 'simple' || item.type === 'offreSUN' || item.type === 'antigaspi' ){
-      console.log('decremente formule')
+    if (
+      item.type === 'formule' ||
+      item.type === 'simple' ||
+      item.type === 'offreSUN' ||
+      item.type === 'antigaspi'
+    ) {
+      console.log('decremente formule');
       const cartItemId = await getCartItemId(
         user.userId,
         item.productId,
         item.type,
-        item.key
+        item.key,
       );
-      console.log(cartItemId)
+      console.log(cartItemId);
       await decrementhandler(
         user.userId,
         item.productId,
         item.totalQuantity,
         item.type,
         cartItemId[0],
-        item.key
-      )
+        item.key,
+      );
       await dispatch(getCart(user.userId));
     }
-    if (item.type === 'offre31'){
+    if (item.type === 'offre31') {
       const items = await getItemsOffre31(item.productId);
       for (const item of items) {
-        await decrementhandler(user.userId, item.productId, item.quantity, item.type, item.cartItemId, item.key); 
+        await decrementhandler(
+          user.userId,
+          item.productId,
+          item.quantity,
+          item.type,
+          item.cartItemId,
+          item.key,
+        );
       }
       dispatch(getCart(user.userId));
     }
@@ -336,7 +340,7 @@ const Panier = ({navigation}) => {
             option1: item.option1ProductId,
             option2: item.option2ProductId,
             option3: item.option3ProductId,
-            key:item.key
+            key: item.key,
           };
         } else {
           // Ajoute à la quantité existante
@@ -368,7 +372,7 @@ const Panier = ({navigation}) => {
   }, {});
 
   /** offre 3+1 */
-  const handleAcceptOffer = async (item) => {
+  const handleAcceptOffer = async item => {
     await incrementhandler(
       user.userId,
       currentItem.productId,
@@ -383,11 +387,10 @@ const Panier = ({navigation}) => {
       null,
       currentItem.categorie,
       null,
-      currentItem.libelle
+      currentItem.libelle,
     );
     updateStock({...currentItem, qty: 1});
     dispatch(getCart(user.userId));
-
   };
 
   const handlePress = async () => {
@@ -416,10 +419,9 @@ const Panier = ({navigation}) => {
   //va chercher le store à chaque changement dans le store picker
   useEffect(() => {
     const fetchFamilies = async () => {
-
       if (!cart || cart.length === 0) {
         console.log('Le panier est vide ou non défini.');
-        setProductFamilies({});  // Reset des familles si le panier est vide
+        setProductFamilies({}); // Reset des familles si le panier est vide
         return; // Stop l'exécution si le panier est vide
       }
 
@@ -890,7 +892,7 @@ const Panier = ({navigation}) => {
                 modalVisible={modalVisible}
                 setModalVisible={setModalVisible}
                 handleAcceptOffer={() => handleAcceptOffer(currentItem)}
-                />
+              />
 
               <ModaleOffreSUN
                 modalVisible={isModalSunVisible}
