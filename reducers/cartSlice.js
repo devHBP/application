@@ -1,4 +1,89 @@
-import {createSlice} from '@reduxjs/toolkit';
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import axios from 'axios';
+import { API_BASE_URL } from '../config';
+
+// Thunk pour la mise à jour du panier en backend
+export const getCart = createAsyncThunk(
+  'cart/getCart',
+  async (_, { getState, rejectWithValue }) => {
+    const userId = getState().auth.user.userId;  // Assurez-vous que le chemin d'accès est correct
+    // console.log('je mets à jour mon panier')
+    try {
+      const response = await axios.get(`${API_BASE_URL}/getCart/${userId}`);
+      if (response.status === 200) {
+        // console.log(' reducer getCArt', response.data);
+        // return response.data.ProductsCarts; 
+        return response.data.ProductsCarts || []; // Gérer un panier vide
+      } else {
+        throw new Error('Failed to fetch the cart');
+      }
+    } catch (error) {
+      // Ici, vous pouvez aussi passer plus d'informations d'erreur si nécessaire
+      return rejectWithValue(error.response ? error.response.data : 'Unknown error');
+    }
+  }
+);
+
+
+
+export const addToCart = createAsyncThunk(
+  'cart/addToCart',
+  async (productDetails) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/addOrUpdateCartItem`, productDetails);
+      if (response.status === 200) {
+        // console.log('mise a jour backend ok')
+        // console.log('response addTocart', response.data)
+        return response.data;
+      } else {
+        throw new Error('Failed to update the cart');
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      throw error;
+    }
+  }
+);
+
+
+export const getTotalCart = createAsyncThunk(
+  'cart/getTotalCart',
+  async (_, { getState }) => {
+    const userId = getState().auth.user.userId;
+    try {
+      const response = await axios.get(`${API_BASE_URL}/getCartTotalQuantity/${userId}`);
+      if (response.status === 200) {
+        // console.log('response totalpanier', response.data.totalQuantity)
+        return response.data;
+      } else {
+        throw new Error('Failed to update the cart');
+      }
+    } catch (error) {
+      console.error("Error adding to cart:", error);
+      throw error;
+    }
+  }
+);
+
+
+ // await dispatch(
+      //   addToCart({
+      //     userId: user.userId,
+      //     productId: item.productId,
+      //     quantity: 1,
+      //     unitPrice: item.unitPrice,
+      //     type: item.type,
+      //     isFree: false,
+      //     option1ProductId: null,
+      //     option2ProductId: null,
+      //     option3ProductId: null,
+      //     offerId: null,
+      //     libelle: item.libelle,
+      //     key: null,
+      //     product: item.product,
+      //   }),
+      // );
+
 
 const initialState = {
   cart: [],
@@ -9,7 +94,10 @@ const initialState = {
 const cartSlice = createSlice({
   name: 'cart',
   initialState,
-  reducers: {
+    reducers: {
+      setCart: (state, action) => {
+        state.cart = action.payload;  
+      },
     // addToCart: (state, action) => {
     //   const product = action.payload;
 
@@ -288,11 +376,35 @@ const cartSlice = createSlice({
     resetPromo: state => {
       state.promotionId = null;
     },
+
   },
+  extraReducers: (builder) => {
+    builder
+      .addCase(getCart.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(getCart.fulfilled, (state, action) => {
+        state.cart = action.payload;
+        state.loading = false;
+      })
+      .addCase(getCart.rejected, (state) => {
+        state.loading = false;
+        // Vous pourriez aussi vouloir gérer les erreurs ici
+      })
+      .addCase(getTotalCart.pending, (state) => {
+        // Gérer l'état pendant la requête en cours si nécessaire
+      })
+      .addCase(getTotalCart.fulfilled, (state, action) => {
+        state.cartTotal = action.payload; // Met à jour l'état avec le total du panier
+      })
+      .addCase(getTotalCart.rejected, (state, action) => {
+        // Gérer l'état en cas d'échec de la requête si nécessaire
+      });
+  }
 });
 
 export const {
-  addToCart,
+  setCart, 
   addToCartReducer,
   removeFromCart,
   updateCart,
