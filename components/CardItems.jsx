@@ -14,10 +14,11 @@ const CartItem = ({
   isFree,
   freeCount,
   removehandler,
-  
+  type,
+  item,
+  qtyPaid,
+  qtyFree,
 }) => {
-
- 
   return (
     <View style={styles.container}>
       <View
@@ -79,30 +80,30 @@ const CartItem = ({
       </View>
 
       <View style={{marginVertical: 10}}>
-        {freeCount > 0 && (
+        {qtyFree > 0 && (
           <Text style={{color: colors.color1, fontWeight: 'bold'}}>
-            {freeCount}x Promotion 3+1
+            {qtyFree}x Promotion 3+1
           </Text>
         )}
+     
 
         <View style={styles.content}>
-          
-          <Text numberOfLines={2} style={styles.details}>
-            {qty - freeCount}x {libelle}
+        <Text numberOfLines={2} style={styles.details}>
+            {qtyPaid}x {libelle}
           </Text>
           <Text style={styles.price}>
             {' '}
-            {qty - freeCount}x {prix_unitaire.toFixed(2)}€ 
+            {qtyPaid}x {item.unitPrice}€
             
           </Text>
         </View>
 
         <View style={styles.content}>
           {
-            (isFree = 'true' && freeCount > 0 && (
+            (qtyFree > 0 && (
               <>
                 <Text style={{...styles.details, color: colors.color9}}>
-                  {`${freeCount} x ${libelle}`}
+                  {`${qtyFree} x ${libelle}`}
                 </Text>
                 <Text style={{color: colors.color9}}>+0€</Text>
               </>
