@@ -670,6 +670,7 @@ const Panier = ({navigation}) => {
             dispatch,
             countDownNull,
             resetCountdown,
+            user
           );
         }
       }

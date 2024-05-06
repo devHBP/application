@@ -517,3 +517,18 @@ export const getItemsOffre31 = async productId => {
     throw error;
   }
 };
+
+export const clearUserCart = async userId => {
+  try {
+    const response = await axios.delete(
+      `${API_BASE_URL}/clearUserCart/${userId}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Une erreur s'est produite lors de la suppression du panier",
+      error,
+    );
+    throw error;
+  }
+};

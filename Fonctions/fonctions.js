@@ -5,6 +5,7 @@ import {
   fetchBoissonIds,
   fetchOneProduct,
   fetchDessertIds,
+  clearUserCart
 } from '../CallApi/api.js';
 import {
   addToCart,
@@ -15,6 +16,7 @@ import {
   removeMultipleFromCart,
   popLastItemOfType,
   makeLastSmallPizzaFree,
+  getTotalCart
 } from '../reducers/cartSlice.js';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
@@ -511,7 +513,7 @@ export const openStripe = async (orderInfo, setSessionId, setCheckoutSession) =>
   }
 };
 
-export const checkPaymentStatus = async (sessionId, navigation, dispatch, countDownNull, resetCountdown) => {
+export const checkPaymentStatus = async (sessionId, navigation, dispatch, countDownNull, resetCountdown, user) => {
   const intervalId = setInterval(async () => {
     try {
       const response = await axios.get(
@@ -526,8 +528,9 @@ export const checkPaymentStatus = async (sessionId, navigation, dispatch, countD
         countDownNull();
         navigation.navigate('success');
         clearInterval(intervalId);
-
-
+        // supprimer le panier et son contenu
+        await clearUserCart(user.userId)
+        dispatch(getTotalCart(user.userId));
       } else if (status === 'unpaid') {
         // si status unpaid - retour en arriere
         navigation.navigate('cancel');
