@@ -219,7 +219,7 @@ const Orders = ({navigation}) => {
 
     // console.log('item commandes antérieures', JSON.parse(item.cartString));
     const cart = JSON.parse(item.cartString);
-    console.log('cart commandes anterieurs', cart);
+    // console.log('cart commandes anterieurs', cart);
     return (
       <View style={lastOrder ? style.lastOrderContainer : style.backOldOrder}>
         <TouchableOpacity
@@ -417,7 +417,7 @@ const Orders = ({navigation}) => {
   const renderLastOrder = (item, index) => {
     const parsedItem = JSON.parse(item.cartString);
     //console.log('parsedItem', parsedItem[0].type);
-    console.log('item derniere commande', parsedItem);
+    // console.log('item derniere commande', parsedItem);
 
     let prixUnitaires;
 
