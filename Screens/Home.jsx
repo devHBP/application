@@ -18,6 +18,8 @@ import React, {
 } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {linkFromSUN, updateUser} from '../reducers/authSlice';
+import {getCart} from '../reducers/cartSlice';
+
 import axios from 'axios';
 import FooterProfile from '../components/FooterProfile';
 import FormulesSalees from '../components/FormulesSalees';
@@ -43,11 +45,10 @@ import {
   fetchAllProductsClickAndCollect,
   getPrefCommande,
   getStatusSUN,
-} from '../CallApi/api';
+  } from '../CallApi/api';
 import ModaleOffreSUN from '../components/ModaleOffreSUN';
 import ModaleModifProfile from '../components/ModaleModifProfile';
 import FastImage from 'react-native-fast-image';
-import {Badge} from 'react-native-paper';
 
 
 const Home = ({navigation}) => {
@@ -72,9 +73,18 @@ const Home = ({navigation}) => {
   const [readyOrders, setReadyOrders] = useState([]);
 
   const user = useSelector(state => state.auth.user);
-  // const userId = user.userId;
-  // const idSUN = user.idSUN;
   const cart = useSelector(state => state.cart.cart);
+// console.log('cart', cart)
+  useEffect(() => {
+    const loadCart = async () => {
+      // appel du panier via redux
+      dispatch(getCart(user.userId));
+      console.log('boucle home');
+    };
+
+    loadCart();
+  }, [user.userId, dispatch]);
+
   const status = useSelector(state => state.auth.user.statusSUN);
 
   useEffect(() => {
@@ -82,32 +92,32 @@ const Home = ({navigation}) => {
   }, [status]);
 
   // produit offreSUN
-  // const handleOffreSun = async () => {
-  //   const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
-  //   const offreSunProduct = allProductsClickandCollect.find(
-  //     product => product.type_produit === 'offreSUN',
-  //   );
-  //   // offre dans le panier déja présente ?
-  //   const isOffreSunInCart = cart.some(
-  //     item => item.type_produit === 'offreSUN',
-  //   );
-  //   // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
-  //   if (offreSunProduct && !isOffreSunInCart) {
-  //     setIsModalSunVisible(true);
-  //     setSelectedProduct(offreSunProduct);
-  //   }
-  // };
+  const handleOffreSun = async () => {
+    const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
+    const offreSunProduct = allProductsClickandCollect.find(
+      product => product.type_produit === 'offreSUN',
+    );
+    // offre dans le panier déja présente ?
+    const isOffreSunInCart = cart.some(
+      item => item.typeProduit === 'offreSUN', // table ProductsCart:  typeProduit
+    );
+    // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
+    if (offreSunProduct && !isOffreSunInCart) {
+      setIsModalSunVisible(true);
+      setSelectedProduct(offreSunProduct);
+    }
+  };
   const route = useRoute();
 
   // a revoir
-  // const totalPrice = Number(
-  //   cart
-  //     .reduce((total, item) => {
-  //       const prix = item.prix || item.prix_unitaire;
-  //       return total + item.qty * prix;
-  //     }, 0)
-  //     .toFixed(2),
-  // );
+  const totalPrice = Number(
+    cart
+      .reduce((total, item) => {
+        const prix = item.unitPrice;
+        return total + item.quantity * prix;
+      }, 0)
+      .toFixed(2),
+  );
 
   const dispatch = useDispatch();
   const scrollViewRef = createRef();
@@ -149,7 +159,7 @@ const Home = ({navigation}) => {
     getStatusSun();
 
     const timer = setTimeout(() => {
-      // handleOffreSun();
+      handleOffreSun();
     }, 3000);
 
     return () => {
@@ -538,9 +548,9 @@ const Home = ({navigation}) => {
                     </Text>
                     {cart.map((item, index) => (
                       <View key={index} style={{paddingLeft: 20}}>
-                        <Text style={{color: colors.color1}}>
+                        <Text style={{color: colors.color1, fontSize:12}}>
                           {' '}
-                          {item.qty} x {item.libelle}
+                          {item.quantity} x {item.product || item.libelle} à {item.unitPrice}€
                         </Text>
                       </View>
                     ))}
@@ -550,8 +560,7 @@ const Home = ({navigation}) => {
                         paddingVertical: 10,
                         color: colors.color1,
                       }}>
-                      {/* Votre total: {totalPrice}€ */}
-                      Votre total: a calculer
+                      Votre total: {totalPrice}€
                     </Text>
                   </View>
                 )}
@@ -715,11 +724,11 @@ const Home = ({navigation}) => {
               </View>
             </ScrollView>
 
-            {/* <ModaleOffreSUN
+            <ModaleOffreSUN
               modalVisible={isModalSunVisible}
               setModalVisible={setIsModalSunVisible}
               product={selectedProduct}
-            /> */}
+            />
             
             <FooterProfile />
           </SafeAreaProvider>
