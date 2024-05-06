@@ -1,7 +1,7 @@
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import TextTicker from 'react-native-text-ticker';
-import React, {useState, useEffect} from 'react';
-import {addToCart, acceptOffer, addToCartReducer} from '../reducers/cartSlice';
+import React, {useState, useEffect, useCallback} from 'react';
+import {addToCart, acceptOffer, addToCartReducer, getTotalCart, getCart} from '../reducers/cartSlice';
 import {useSelector, useDispatch} from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {fonts, colors} from '../styles/styles';
@@ -21,7 +21,7 @@ import {
   updateStock,
   getCartItemId,
   addStock,
-  getCart,
+  //getCart,
   getItemsOffre31,
 } from '../CallApi/api.js';
 //fonctions
@@ -59,20 +59,34 @@ const ProductCard = ({
   const [currentStock, setCurrentStock] = useState(stock);
   const [modalVisible, setModalVisible] = useState(false);
   const [modalVisibleIngredients, setModalVisibleIngredients] = useState(false);
-  const [cart, setCart] = useState([]);
+  // const [cart, setCart] = useState([]);
   const [totalQuantity, setTotalQuantity] = useState(0);
 
   const {resetCountdown} = useCountdown();
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
+  const cart = useSelector(state => state.cart.cart);
+
+  // const updateCart = useCallback(async () => {
+  //   const updatedCart = await getCart(user.userId);
+  //   setCart(updatedCart.ProductsCarts);
+  //   // console.log('cart prod', cart)
+  // }, [cart]); // Dépend uniquement de userId pour récupérer le panier
+  //  useEffect(() => {
+  //   updateCart(); // Appel initial pour charger le panier
+  //   // console.log('console')
+  // }, [updateCart]);
 
   useEffect(() => {
-    const fetchCart = async () => {
-      const cart = await getCart(user.userId);
-      setCart(cart.ProductsCarts);
+    const loadCart = async () => {
+      // appel du panier via redux
+      dispatch(getCart(user.userId));
+      dispatch(getTotalCart(user.userId));
+      console.log('boucle productdetails');
     };
-    fetchCart();
-  }, [cart]);
+
+    loadCart();
+  }, [user.userId, dispatch]);
 
   const handleIngredients = () => {
     setModalVisibleIngredients(true);
@@ -91,16 +105,25 @@ const ProductCard = ({
     width: showPriceSun ? '60%' : '100%',
   };
 
-  useEffect(() => {
+useEffect(() => {
+  const calculateQuantity = () => {
     const quantity = cart.reduce((total, cartItem) => {
-      if (cartItem.productId === item.productId && cartItem.type !== 'antigaspi') {
-        return total + cartItem.quantity; // Assurez-vous d'utiliser `quantity` si c'est la clé correcte dans votre objet cartItem
+      if (cartItem.productId === item?.productId && cartItem.type !== 'antigaspi') {
+        return total + cartItem.quantity;
       }
       return total;
     }, 0);
-  
+
     setTotalQuantity(quantity);
-  }, [cart, item.productId]);
+  };
+
+  if (cart && item) {
+    calculateQuantity();
+  }
+  // console.log(`quantite ${item.libelle}`, totalQuantity)
+}, [cart, item]); // This only recalculates when `cart` or `item` changes
+
+  
 
   const handleAcceptOffer = async () => {
     //  offre accpetée: ajout du produit gratuit
@@ -118,8 +141,11 @@ const ProductCard = ({
       null,
       item.categorie,
       null,
+      item.libelle
     );
-    updateStock({...item, qty: 1});
+    await updateStock({...item, qty: 1});
+    await dispatch(getCart(user.userId));
+    await dispatch(getTotalCart(user.userId));
   };
 
   const addToCart = async () => {
@@ -128,13 +154,12 @@ const ProductCard = ({
 
     // Mettre à jour le panier et la quantité après chaque modification.
     const updateCartAndQuantity = async () => {
-      const updatedCart = await getCart(user.userId);
-      setCart(updatedCart.ProductsCarts);
-      calculateTotalQuantity(updatedCart.ProductsCarts);
+      const updatedCart = cart;
+      calculateTotalQuantity(updatedCart);
     };
-
     // Quantité totale de produits payants et gratuits pour l'offre 3+1.
     const calculateTotalQuantity = async cart => {
+
       const produitsPayants = cart
         .filter(
           product =>
@@ -152,9 +177,9 @@ const ProductCard = ({
         )
         .reduce((total, product) => total + product.quantity, 0);
 
-      // console.log(
-      //   `Produits payants: ${produitsPayants}, Produits gratuits: ${produitsGratuits}`,
-      // );
+      console.log(
+        `Produits payants: ${produitsPayants}, Produits gratuits: ${produitsGratuits}`,
+      );
 
       if (
         produitsPayants % 3 === 0 &&
@@ -176,8 +201,13 @@ const ProductCard = ({
           null,
           item.categorie,
           null,
+          item.libelle
         );
+
       }
+      // updateCart();
+      await dispatch(getCart(user.userId));
+      await dispatch(getTotalCart(user.userId));
     };
 
     try {
@@ -186,8 +216,11 @@ const ProductCard = ({
         if (item.offre && item.offre.startsWith('offre31')) {
           // Calculer la quantité totale des produits avec le même productId et type 'offre31' dans le panier
           updateCartAndQuantity();
+
         } else {
           // Ajout classique pour les types non 'offre31'
+          console.log('ajout classqiue')
+
           incrementhandler(
             user.userId,
             item.productId,
@@ -202,10 +235,13 @@ const ProductCard = ({
             null,
             item.categorie,
             null,
+            item.libelle
           );
           // updateCartAndQuantity();
         }
         await updateStock({...item, qty: 1});
+        await dispatch(getCart(user.userId));
+        await dispatch(getTotalCart(user.userId));
       } else {
         Toast.show({
           type: 'error',
@@ -252,6 +288,8 @@ const ProductCard = ({
 
       //2-b  mise a jour du stock
       await addStock({...item, qty: 1});
+      await dispatch(getCart(user.userId));
+      await dispatch(getTotalCart(user.userId));
     } catch (error) {
       console.error(
         "Une erreur s'est produite lors du retrait du produit du panier: ",
@@ -259,6 +297,7 @@ const ProductCard = ({
       );
     }
   };
+  
   return (
     <View style={style.card_container}>
       <View style={style.image_container}>
