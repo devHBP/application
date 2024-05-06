@@ -12,7 +12,7 @@ import React, {useEffect, useState} from 'react';
 import {fonts, colors} from '../styles/styles';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {Button, RadioButton} from 'react-native-paper';
-import {addToCart} from '../reducers/cartSlice';
+import {addToCart, getCart, getTotalCart} from '../reducers/cartSlice';
 import {useSelector, useDispatch} from 'react-redux';
 import {style} from '../styles/formules';
 import {styles} from '../styles/home';
@@ -32,6 +32,7 @@ import Cloche from '../SVG/Cloche';
 import FastImage from 'react-native-fast-image';
 import Check from '../SVG/Check';
 import {useCountdown} from '../components/CountdownContext';
+import {incrementhandler} from '../Fonctions/fonctions';
 
 const Antigaspi = ({navigation}) => {
   const [clickProducts, setclickProducts] = useState([]);
@@ -45,6 +46,7 @@ const Antigaspi = ({navigation}) => {
 
   const dispatch = useDispatch();
   const cart = useSelector(state => state.cart.cart);
+  const user = useSelector(state => state.auth.user);
 
   const {countdown, resetCountdown} = useCountdown();
 
@@ -73,14 +75,11 @@ const Antigaspi = ({navigation}) => {
 
       // console.log(clickProductPrices)
 
-
-      //ici modifier le prix_unitaire (70% de reduction et le placer dans le champ "option1" dans la table Details products
       //stock sup ou egale à 1
       const updatedStockProducts = clickProducts.filter(
         product => product.stockantigaspi >= 1,
       );
       setclickProducts(updatedStockProducts);
-
     } catch (error) {
       console.error(
         "Une erreur s'est produite lors de la récupération des produits:",
@@ -90,7 +89,6 @@ const Antigaspi = ({navigation}) => {
   };
 
   useEffect(() => {
-
     fetchData();
   }, []);
 
@@ -127,32 +125,33 @@ const Antigaspi = ({navigation}) => {
     }
   };
 
-
-  //verifier le stock ?
   const handleCart = async () => {
     try {
-      // Remplacez 'URL_API' par l'URL de votre serveur et assurez-vous que la route est correcte
       const response = await axios.get(
         `${API_BASE_URL}/verifStockAntiGaspi/${selectedProduct.productId}`,
       );
       const stockAntigaspi = response.data.stockantigaspi;
-      //console.log('response stock', stockAntigaspi)
+      // console.log('response stock', stockAntigaspi);
 
       if (stockAntigaspi > 0) {
-        const newProduct = { 
-          productId: selectedProduct.productId,
-          libelle: selectedProduct.libelle,
-          image: selectedProduct.image,
-          prix_unitaire: selectedProduct.prix_unitaire * 0.3,
-          qty: 1, 
-          offre: selectedProduct.offre,
-          antigaspi: true,
-          type:'antigaspi'
-        };
-        dispatch(addToCart(newProduct));
-        // console.log('selectproduct ajouté', newProduct)
-        await updateAntigaspiStock({...newProduct, qty: 1});
-        // Nouveau stock
+        incrementhandler(
+          user.userId,
+          selectedProduct.productId,
+          1,
+          selectedProduct.prix_unitaire * 0.3,
+          'antigaspi',
+          false,
+          null,
+          null,
+          null,
+          null,
+          null,
+          selectedProduct.categorie,
+          null,
+          selectedProduct.libelle,
+        );
+        await updateAntigaspiStock({...selectedProduct, qty: 1});
+         // Nouveau stock
         setclickProducts(
           currentProducts =>
             currentProducts
@@ -171,16 +170,14 @@ const Antigaspi = ({navigation}) => {
           type: 'success',
           text1: 'Produit ajouté au panier',
         });
+
+       await  dispatch(getTotalCart(user.userId));
       } else {
         // Plus de stock
         Toast.show({
           type: 'error',
           text1: "Ce produit n'est plus en stock",
         });
-
-        //console.log(stockAntigaspi);
-        await fetchData();
-
       }
     } catch (error) {
       console.error('Erreur lors de la vérification du stock:', error);
@@ -192,7 +189,7 @@ const Antigaspi = ({navigation}) => {
       });
     }
   };
-  
+
   return (
     <View style={{flex: 1}}>
       <View style={{paddingTop: 50}}></View>
@@ -296,9 +293,7 @@ const Antigaspi = ({navigation}) => {
                               showButtons={false}
                               ingredients={product.ingredients}
                               showPriceSun={false}
-
                               overlayStyle={{backgroundColor: 'transparent'}} //pas d'effet overlay sur les produits antigaspi (stock different)
-
                             />
                             {selectedProduct?.productId ===
                               product.productId && (
@@ -341,7 +336,6 @@ const Antigaspi = ({navigation}) => {
             </View>
          <Text style={{color:colors.color2, fontWeight:"bold"}}>{selectedProduct ?  Number(selectedProduct.prix_remise_collaborateur) : 0} €</Text>
           </View>*/}
-
         </View>
         <Button
           style={style.btn}
