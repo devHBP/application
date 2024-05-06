@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,18 +8,49 @@ import {
   Image,
 } from 'react-native';
 import {colors} from '../styles/styles';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import {addToCart} from '../reducers/cartSlice';
 import logoSun from '../assets/logoSUNPremium.jpg';
 import {useCountdown} from '../components/CountdownContext';
+import {incrementhandler} from '../Fonctions/fonctions';
+import { getCart, getTotalCart} from '../reducers/cartSlice';
 
 const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
   const {resetCountdown} = useCountdown();
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
 
-  const handleAcceptOffer = () => {
+  useEffect(() => {
+    const loadCart = async () => {
+      // appel du panier via redux
+      dispatch(getCart(user.userId));
+      dispatch(getTotalCart(user.userId));
+      console.log('boucle modale offre sun');
+    };
+
+    loadCart();
+  }, [user.userId, dispatch]);
+
+  const handleAcceptOffer = async () => {
     resetCountdown();
-    console.log('jajoute la baguette gratuite')
+    incrementhandler(
+      user.userId,
+      product.productId,
+      1,
+      product.prix_unitaire,
+      'offreSUN',
+      true,
+      null,
+      null,
+      null,
+      null,
+      product.type_produit,
+      product.categorie,
+      null,
+      product.libelle
+    );
+    await dispatch(getCart(user.userId));
+    await dispatch(getTotalCart(user.userId));
   };
   return (
     <Modal
