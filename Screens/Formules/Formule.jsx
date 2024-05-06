@@ -19,6 +19,8 @@ import {
   getBoissonDetails,
   getDessertDetails,
   fetchProducts,
+  incrementhandler,
+  decrementhandler,
 } from '../../Fonctions/fonctions';
 import {style} from '../../styles/formules';
 import {styles} from '../../styles/home';
@@ -53,6 +55,7 @@ const Formule = ({route, navigation}) => {
   const scrollViewRef = useRef(null);
 
   const cart = useSelector(state => state.cart.cart);
+  const user = useSelector(state => state.auth.user);
 
   const handleBack = () => {
     navigation.navigate('home');
@@ -151,7 +154,6 @@ const Formule = ({route, navigation}) => {
     }
   };
 
-
   // calcul dynamique de la formule avec les options 1 - 2 - 3
   useEffect(() => {
     calculateTotalPrice();
@@ -176,13 +178,43 @@ const Formule = ({route, navigation}) => {
   };
 
   const handleFormuleSelection = async () => {
+
+    const optionIds = [
+      selectedProduct?.productId,
+      selectedDessert?.productId,
+      selectedBoisson?.productId,
+    ].filter(Boolean); // Éliminez les valeurs nulles ou non définies
+    console.log(optionIds)
+
     const formuleKey = `${selectedProduct?.productId ?? 'none'}-${
       selectedDessert?.productId ?? 'none'
     }-${selectedBoisson?.productId ?? 'none'}`;
     console.log('formuleKey', formuleKey);
-    
+
     resetCountdown();
-   
+
+    incrementhandler(
+      user.userId,
+      null,
+      1,
+      prix,
+      'formule',
+      false,
+      selectedProduct.productId,
+      selectedDessert ? selectedDessert.productId : null,
+      selectedBoisson ? selectedBoisson.productId : null,
+      null,
+      null,
+      `Formule ${name}`,
+      formuleKey,
+    );
+
+    // Mise à jour du stock pour chaque option de la formule
+    for (const optionId of optionIds) {
+      await updateStock({productId: optionId, qty: 1});
+    }
+    navigation.navigate('panier');
+
   };
 
   return (
@@ -200,8 +232,7 @@ const Formule = ({route, navigation}) => {
             style={{...styles.pastilleOffre31, transform: [{rotate: '0deg'}]}}
             resizeMode={FastImage.resizeMode.cover}
           />
-          <View
-            style={style.contentTitleFormule}>
+          <View style={style.contentTitleFormule}>
             <Text style={style.titleProduct}>Formule {name}</Text>
             <TouchableOpacity
               onPress={handleBack}
@@ -241,6 +272,7 @@ const Formule = ({route, navigation}) => {
                       showButtons={false}
                       showPromo={false}
                       ingredients={product.ingredients}
+                      type="formule"
                     />
                     {selectedProduct?.productId === product.productId && (
                       <Check color={colors.color9} />
