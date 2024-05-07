@@ -21,6 +21,7 @@ import {
   setCart,
   getCart,
   getTotalCart,
+  removeFromCartAfterCountDown,
 } from '../reducers/cartSlice';
 import {setNumeroCommande, setProducts} from '../reducers/orderSlice';
 import CartItem from '../components/CardItems';
@@ -41,6 +42,7 @@ import {
   getItemsOffre31,
   addStock,
   addStockAntigaspi,
+  clearUserCart,
   //getCart,
 } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
@@ -80,6 +82,7 @@ import {
   formatToDateISO,
   handleApplyDiscount,
   handleRemoveDiscount,
+  countdownStock,
 } from '../Fonctions/fonctions';
 import LogoSun from '../SVG/LogoSun';
 import InputPromo from '../components/InputPromo';
@@ -107,7 +110,6 @@ const Panier = ({navigation}) => {
   const [currentItem, setCurrentItem] = useState(null);
 
   const cart = useSelector(state => state.cart.cart);
-  // const [cart, setCart] = useState([]);
   const promotionId = useSelector(state => state.cart.promotionId);
   const user = useSelector(state => state.auth.user);
   const cartTotal = useSelector(state => state.cart.cartTotal);
@@ -137,7 +139,7 @@ const Panier = ({navigation}) => {
       dispatch(getTotalCart(user.userId));
 
       setLoading(false);
-      console.log('boucle ici');
+      // console.log('boucle ici');
     };
 
     loadCart();
@@ -161,21 +163,21 @@ const Panier = ({navigation}) => {
     // verif du stock
     let productIds = [];
     if (item.type === 'formule') {
-        productIds = [item.option1, item.option2, item.option3].filter(Boolean);
+      productIds = [item.option1, item.option2, item.option3].filter(Boolean);
     } else {
-        productIds = [item.productId];
+      productIds = [item.productId];
     }
     for (const productId of productIds) {
-        const stockCheck = await checkStockForSingleProduct(productId);
-        console.log('stock', stockCheck);
+      const stockCheck = await checkStockForSingleProduct(productId);
+      // console.log('stock', stockCheck);
 
-        if (stockCheck[0].quantite <= 0) {
-            return Toast.show({
-                type: 'error',
-                text1: 'Victime de son succès',
-                text2: 'Plus de stock disponible'
-            });
-        }
+      if (stockCheck[0].quantite <= 0) {
+        return Toast.show({
+          type: 'error',
+          text1: 'Victime de son succès',
+          text2: 'Plus de stock disponible',
+        });
+      }
     }
 
     if (item.type === 'offre31') {
@@ -241,18 +243,17 @@ const Panier = ({navigation}) => {
         item.key,
         item.libelle,
       );
-      const optionIds = [
-        item.option1,
-        item.option2,
-        item.option3,
-      ].filter(Boolean);
-      console.log(optionIds)
+      const optionIds = [item.option1, item.option2, item.option3].filter(
+        Boolean,
+      );
+      // console.log(optionIds);
       for (const optionId of optionIds) {
         await updateStock({productId: optionId, qty: 1});
       }
     }
     await dispatch(getCart(user.userId));
     await dispatch(getTotalCart(user.userId));
+    resetCountdown();
   };
 
   const reduceProduct = async item => {
@@ -307,7 +308,7 @@ const Panier = ({navigation}) => {
       const optionIds = [item.option1, item.option2, item.option3].filter(
         Boolean,
       );
-      console.log(optionIds);
+      // console.log(optionIds);
       for (const optionId of optionIds) {
         await addStock({productId: optionId, qty: 1});
       }
@@ -317,7 +318,6 @@ const Panier = ({navigation}) => {
   };
 
   const removeProduct = async item => {
-    console.log(item);
     if (
       item.type === 'formule' ||
       item.type === 'simple' ||
@@ -330,7 +330,6 @@ const Panier = ({navigation}) => {
         item.type,
         item.key,
       );
-      // console.log(cartItemId);
       await decrementhandler(
         user.userId,
         item.productId,
@@ -355,7 +354,6 @@ const Panier = ({navigation}) => {
       }
       dispatch(getCart(user.userId));
     }
-    dispatch(getTotalCart(user.userId));
     // remise du stock
     if (item.type === 'antigaspi') {
       await addStockAntigaspi({
@@ -367,7 +365,6 @@ const Panier = ({navigation}) => {
       const optionIds = [item.option1, item.option2, item.option3].filter(
         Boolean,
       );
-      console.log(optionIds);
       for (const optionId of optionIds) {
         await addStock({productId: optionId, qty: item.totalQuantity});
       }
@@ -379,6 +376,7 @@ const Panier = ({navigation}) => {
       const total = item.qtyFree + item.qtyPaid;
       await addStock({productId: item.productId, qty: total});
     }
+    dispatch(getTotalCart(user.userId));
   };
 
   // Construire un objet agrégé qui a des productId comme clés
@@ -451,8 +449,10 @@ const Panier = ({navigation}) => {
       null,
       currentItem.libelle,
     );
-    updateStock({...currentItem, qty: 1});
-    dispatch(getCart(user.userId));
+    await updateStock({...currentItem, qty: 1});
+    await dispatch(getCart(user.userId));
+    await dispatch(getTotalCart(user.userId));
+
   };
 
   const handlePress = async () => {
@@ -482,9 +482,9 @@ const Panier = ({navigation}) => {
   useEffect(() => {
     const fetchFamilies = async () => {
       if (!cart || cart.length === 0) {
-        console.log('Le panier est vide ou non défini.');
+        // console.log('Le panier est vide ou non défini.');
         setProductFamilies({}); // Reset des familles si le panier est vide
-        return; // Stop l'exécution si le panier est vide
+        return; 
       }
 
       const productIds = cart
@@ -576,8 +576,6 @@ const Panier = ({navigation}) => {
 
     setPaiement(newPaiement);
     dispatch(setProducts(cart));
-
-    console.log('je commande en ligne');
 
     // creation de la commande
     const orderData = {
@@ -746,17 +744,16 @@ const Panier = ({navigation}) => {
     navigation.navigate('signup');
   };
 
-  // useEffect(() => {
-  //   if (countdown === 0) {
-  //     // removeCartCountDown(cart, countdown, dispatch);
-  //     console.log(
-  //       'jeleve les produits et je remets en stock a lexpiration du compteur',
-  //     );
-  //   }
-  //   if (isCartEmpty) {
-  //     countDownNull();
-  //   }
-  // }, [countdown, cart]);
+  useEffect(() => {
+    async function handleCartActions() {
+      if (countdown === 0) {
+        // Appel de la fonction pour traiter les actions de fin de compte à rebours
+        countdownStock(cart, user, dispatch);
+      }
+    }
+
+    handleCartActions(); 
+  }, [countdown]);
 
   //transforme le countdown en minutes
   const formatCountdown = seconds => {

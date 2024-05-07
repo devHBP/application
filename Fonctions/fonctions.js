@@ -5,7 +5,9 @@ import {
   fetchBoissonIds,
   fetchOneProduct,
   fetchDessertIds,
-  clearUserCart
+  clearUserCart,
+  getCartItemId,
+  getItemsOffre31,
 } from '../CallApi/api.js';
 import {
   addToCart,
@@ -16,16 +18,14 @@ import {
   removeMultipleFromCart,
   popLastItemOfType,
   makeLastSmallPizzaFree,
-  getTotalCart
+  getTotalCart,
+  getCart,
 } from '../reducers/cartSlice.js';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {API_BASE_URL} from '../config.js';
-import {
-  Linking,
-  Platform,
-} from 'react-native';
+import {Linking, Platform} from 'react-native';
 
 const configureAxiosHeaders = async () => {
   const token = await AsyncStorage.getItem('userToken');
@@ -34,7 +34,6 @@ const configureAxiosHeaders = async () => {
   }
   axios.defaults.headers.common['x-access-header'] = 'hbpclickandcollect';
 };
-
 
 export const incrementhandler = async (
   userId,
@@ -66,7 +65,7 @@ export const incrementhandler = async (
     typeProduit: typeProduit,
     libelle: libelle,
     key: key,
-    product: product
+    product: product,
   };
   // console.log('payload', payload)
   try {
@@ -89,16 +88,16 @@ export const decrementhandler = async (
   quantity = 1,
   type,
   cartItemId,
-  key
+  key,
 ) => {
-  // console.log('je decremente ');
+  //console.log('je decremente ');
   const payload = {
     userId: userId,
     productId: id,
     quantity: quantity,
     type: type,
     cartItemId: cartItemId,
-    key:key
+    key: key,
   };
   // console.log('payload', payload);
   try {
@@ -114,7 +113,6 @@ export const decrementhandler = async (
     );
   }
 };
-
 
 export const removehandler = (type, id, item, dispatch, qty) => {
   // console.log('type', type);
@@ -145,7 +143,7 @@ export const removehandler = (type, id, item, dispatch, qty) => {
     // console.log(`je remets le stock de ${qty} pour ${id}`)
   }
 
-  if (type === 'product' ) {
+  if (type === 'product') {
     // console.log('item', item)
     dispatch(removeFromCart({productId: id, type}));
     addStock({productId: id, qty: qty});
@@ -294,7 +292,7 @@ export const removeCartCountDown = (cart, countdown, dispatch) => {
         key = `${formuleId}-${type}`; // Utilisez formuleId pour les formules
       } else if (item.type && item.type === 'petitepizza') {
         type = 'petitepizza';
-        key = `${item.productId}-${type}`; // Utilisez formuleId pour les formules
+        key = `${item.productId}-${type}`; //
       } else {
         key = `${item.productId}-${type}`; // Utilisez productId pour les produits standards
       }
@@ -493,7 +491,11 @@ export const createOrder = async orderData => {
   }
 };
 
-export const openStripe = async (orderInfo, setSessionId, setCheckoutSession) => {
+export const openStripe = async (
+  orderInfo,
+  setSessionId,
+  setCheckoutSession,
+) => {
   try {
     const response = await axios.post(`${API_BASE_URL}/checkout_session`, {
       orderInfo,
@@ -513,7 +515,14 @@ export const openStripe = async (orderInfo, setSessionId, setCheckoutSession) =>
   }
 };
 
-export const checkPaymentStatus = async (sessionId, navigation, dispatch, countDownNull, resetCountdown, user) => {
+export const checkPaymentStatus = async (
+  sessionId,
+  navigation,
+  dispatch,
+  countDownNull,
+  resetCountdown,
+  user,
+) => {
   const intervalId = setInterval(async () => {
     try {
       const response = await axios.get(
@@ -529,7 +538,7 @@ export const checkPaymentStatus = async (sessionId, navigation, dispatch, countD
         navigation.navigate('success');
         clearInterval(intervalId);
         // supprimer le panier et son contenu
-        await clearUserCart(user.userId)
+        await clearUserCart(user.userId);
         dispatch(getTotalCart(user.userId));
       } else if (status === 'unpaid') {
         // si status unpaid - retour en arriere
@@ -621,6 +630,131 @@ export const handleRemoveDiscount = () => {
   dispatch(resetPromo());
 };
 
+export const countdownStock = async (cart, user, dispatch) => {
+  // console.log(cart);
+  if (!cart || !cart.length) {
+    // console.log('Le panier est vide ou non défini.');
+    return;
+  }
+
+  // remise en stock des articles
+  for (const item of cart) {
+    if (item.type === 'simple') {
+      const cartItemId = await getCartItemId(
+        user.userId,
+        item.productId,
+        item.type,
+        item.key,
+        item.cartItemId,
+      );
+      await decrementhandler(
+        user.userId,
+        item.productId,
+        item.quantity,
+        item.type,
+        cartItemId[0],
+        item.key,
+      );
+      await addStock({productId: item.productId, qty: item.quantity});
+    }
+    if (item.type === 'offre31') {
+      const items = await getItemsOffre31(item.productId);
+      for (const item of items) {
+        await decrementhandler(
+          user.userId,
+          item.productId,
+          item.quantity,
+          item.type,
+          item.cartItemId,
+          item.key,
+        );
+      }
+      await addStock({productId: item.productId, qty: item.quantity});
+    }
+
+    if (item.type === 'antigaspi') {
+      const cartItemId = await getCartItemId(
+        user.userId,
+        item.productId,
+        item.type,
+        item.key,
+      );
+      await decrementhandler(
+        user.userId,
+        item.productId,
+        item.quantity,
+        item.type,
+        cartItemId[0],
+        item.key,
+      );
+      await addStockAntigaspi({productId: item.productId, qty: item.quantity});
+    }
+    if (item.type === 'offreSUN') {
+      const cartItemId = await getCartItemId(
+        user.userId,
+        item.productId,
+        item.type,
+        item.key,
+      );
+      await decrementhandler(
+        user.userId,
+        item.productId,
+        item.quantity,
+        item.type,
+        cartItemId[0],
+        item.key,
+      );
+    }
+    if (item.type === 'formule') {
+      const optionIds = [
+        item.option1ProductId,
+        item.option2ProductId,
+        item.option3ProductId,
+      ].filter(Boolean);
+
+      // Log des IDs des produits
+      // optionIds.forEach(optionId => {
+      //   console.log('productId', optionId);
+      //   console.log('quantity', item.quantity);
+      // });
+
+      // Ajout du stock pour chaque option
+      await Promise.all(
+        optionIds.map(optionId =>
+          addStock({productId: optionId, qty: item.quantity}),
+        ),
+      );
+
+      // Obtention du cartItemId après ajout du stock pour éviter des erreurs
+      const cartItemId = await getCartItemId(
+        user.userId,
+        item.productId,
+        item.type,
+        item.key,
+      );
+
+      // Vérification si cartItemId est non null
+      if (cartItemId) {
+        await decrementhandler(
+          user.userId,
+          item.productId,
+          item.quantity,
+          item.type,
+          cartItemId[0],
+          item.key,
+        );
+      } else {
+        console.error(
+          'Erreur lors de la récupération du cartItemId:',
+          cartItemId,
+        );
+      }
+    }
+    //supprimer le panier et son contenu
+    await dispatch(getCart(user.userId)); // Mise à jour du panier dans le store Redux
+    await dispatch(getTotalCart(user.userId)); // Mise à jour du total du panier dans le store Redux
+  }
+};
 /** Fin page Panier */
 
 export {

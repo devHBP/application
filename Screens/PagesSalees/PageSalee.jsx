@@ -38,11 +38,10 @@ const PageSalee = ({route, navigation}) => {
     const loadCart = async () => {
       // appel du panier via redux
       dispatch(getCart(user.userId));
-      console.log('boucle page salee');
+      // console.log('boucle page salee');
     };
 
     loadCart();
-    console.log('products', products)
   }, [user.userId, dispatch]);
 
 
@@ -101,8 +100,6 @@ useEffect(() => {
           product => product.categorie === categorie,
         );
 
-        // console.log(products)
-
         setProducts(products);
       } catch (error) {
         console.error("Une erreur s'est produite, error products :", error);
@@ -112,7 +109,6 @@ useEffect(() => {
   }, []);
 
   const openFormule = () => {
-    //   navigation.navigate(formule)
     navigation.navigate(formule, {
       name: name,
       categorie: categorie,

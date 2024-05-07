@@ -1,7 +1,13 @@
 import {View, Text, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import TextTicker from 'react-native-text-ticker';
 import React, {useState, useEffect, useCallback} from 'react';
-import {addToCart, acceptOffer, addToCartReducer, getTotalCart, getCart} from '../reducers/cartSlice';
+import {
+  addToCart,
+  acceptOffer,
+  addToCartReducer,
+  getTotalCart,
+  getCart,
+} from '../reducers/cartSlice';
 import {useSelector, useDispatch} from 'react-redux';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {fonts, colors} from '../styles/styles';
@@ -72,7 +78,7 @@ const ProductCard = ({
       // appel du panier via redux
       dispatch(getCart(user.userId));
       dispatch(getTotalCart(user.userId));
-      console.log('boucle productdetails');
+      // console.log('boucle product');
     };
 
     loadCart();
@@ -95,25 +101,26 @@ const ProductCard = ({
     width: showPriceSun ? '60%' : '100%',
   };
 
-useEffect(() => {
-  const calculateQuantity = () => {
-    const quantity = cart.reduce((total, cartItem) => {
-      if (cartItem.productId === item?.productId && cartItem.type !== 'antigaspi') {
-        return total + cartItem.quantity;
-      }
-      return total;
-    }, 0);
+  useEffect(() => {
+    const calculateQuantity = () => {
+      const quantity = cart.reduce((total, cartItem) => {
+        if (
+          cartItem.productId === item?.productId &&
+          cartItem.type !== 'antigaspi'
+        ) {
+          return total + cartItem.quantity;
+        }
+        return total;
+      }, 0);
 
-    setTotalQuantity(quantity);
-  };
+      setTotalQuantity(quantity);
+    };
 
-  if (cart && item) {
-    calculateQuantity();
-  }
-  // console.log(`quantite ${item.libelle}`, totalQuantity)
-}, [cart, item]); // This only recalculates when `cart` or `item` changes
-
-  
+    if (cart && item) {
+      calculateQuantity();
+    }
+    // console.log(`quantite ${item.libelle}`, totalQuantity)
+  }, [cart, item]); // This only recalculates when `cart` or `item` changes
 
   const handleAcceptOffer = async () => {
     //  offre accpetée: ajout du produit gratuit
@@ -131,7 +138,7 @@ useEffect(() => {
       null,
       item.categorie,
       null,
-      item.libelle
+      item.libelle,
     );
     await updateStock({...item, qty: 1});
     await dispatch(getCart(user.userId));
@@ -139,9 +146,16 @@ useEffect(() => {
   };
 
   const addToCart = async () => {
-    let localType =
-      item.offre && item.offre.startsWith('offre31') ? 'offre31' : 'simple';
+    // console.log('item', item);
+    let localType = 'simple'; // Valeur par défaut
 
+    if (item.offre && item.offre.startsWith('offre31')) {
+      // Vérifie si 'offre31' contient le mot 'pizza'
+      if (!item.offre.toLowerCase().includes('pizza')) {
+        localType = 'offre31';
+      }
+    }
+    // console.log('localType', localType)
     // Mettre à jour le panier et la quantité après chaque modification.
     const updateCartAndQuantity = async () => {
       const updatedCart = cart;
@@ -149,7 +163,6 @@ useEffect(() => {
     };
     // Quantité totale de produits payants et gratuits pour l'offre 3+1.
     const calculateTotalQuantity = async cart => {
-
       const produitsPayants = cart
         .filter(
           product =>
@@ -167,9 +180,9 @@ useEffect(() => {
         )
         .reduce((total, product) => total + product.quantity, 0);
 
-      console.log(
-        `Produits payants: ${produitsPayants}, Produits gratuits: ${produitsGratuits}`,
-      );
+      // console.log(
+      //   `Produits payants: ${produitsPayants}, Produits gratuits: ${produitsGratuits}`,
+      // );
 
       if (
         produitsPayants % 3 === 0 &&
@@ -191,14 +204,11 @@ useEffect(() => {
           null,
           item.categorie,
           null,
-          item.libelle
+          item.libelle,
         );
-
       }
-      // updateCart();
       await dispatch(getCart(user.userId));
       await dispatch(getTotalCart(user.userId));
-      resetCountdown();
     };
 
     try {
@@ -207,11 +217,8 @@ useEffect(() => {
         if (item.offre && item.offre.startsWith('offre31')) {
           // Calculer la quantité totale des produits avec le même productId et type 'offre31' dans le panier
           updateCartAndQuantity();
-
         } else {
           // Ajout classique pour les types non 'offre31'
-          console.log('ajout classqiue')
-
           incrementhandler(
             user.userId,
             item.productId,
@@ -226,13 +233,14 @@ useEffect(() => {
             null,
             item.categorie,
             null,
-            item.libelle
+            item.libelle,
           );
           // updateCartAndQuantity();
         }
         await updateStock({...item, qty: 1});
         await dispatch(getCart(user.userId));
         await dispatch(getTotalCart(user.userId));
+        resetCountdown();
       } else {
         Toast.show({
           type: 'error',
@@ -288,7 +296,7 @@ useEffect(() => {
       );
     }
   };
-  
+
   return (
     <View style={style.card_container}>
       <View style={style.image_container}>
