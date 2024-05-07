@@ -12,7 +12,6 @@ import React, {useState, useEffect, useRef, useCallback} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import axios from 'axios';
 import {
-  updateCart,
   addToCart,
   clearCart,
   addPromo,
@@ -22,6 +21,7 @@ import {
   getCart,
   getTotalCart,
   removeFromCartAfterCountDown,
+  updateCart
 } from '../reducers/cartSlice';
 import {setNumeroCommande, setProducts} from '../reducers/orderSlice';
 import CartItem from '../components/CardItems';
@@ -452,7 +452,6 @@ const Panier = ({navigation}) => {
     await updateStock({...currentItem, qty: 1});
     await dispatch(getCart(user.userId));
     await dispatch(getTotalCart(user.userId));
-
   };
 
   const handlePress = async () => {
@@ -484,7 +483,7 @@ const Panier = ({navigation}) => {
       if (!cart || cart.length === 0) {
         // console.log('Le panier est vide ou non défini.');
         setProductFamilies({}); // Reset des familles si le panier est vide
-        return; 
+        return;
       }
 
       const productIds = cart
@@ -752,7 +751,7 @@ const Panier = ({navigation}) => {
       }
     }
 
-    handleCartActions(); 
+    handleCartActions();
   }, [countdown]);
 
   //transforme le countdown en minutes
@@ -763,6 +762,51 @@ const Panier = ({navigation}) => {
       remainingSeconds < 10 ? '0' : ''
     }${remainingSeconds}`;
   };
+
+  // const handleApplyDiscount = async () => {
+  //   if (currentPromoCode) {
+  //     alert('Un code promo est déjà appliqué à cette commande.');
+  //     return;
+  //   }
+  //   try {
+  //     const response = await axios.post(`${API_BASE_URL}/handleApplyDiscount`, {
+  //       promoCode,
+  //       cartItems: cart,
+  //     });
+  //     const updatedCart = response.data;
+
+  //     console.log('updatedCart', updatedCart)
+  //     dispatch(updateCart(updatedCart));
+  //     setPromoCode('');
+  //     // Déterminer le type de réduction et la stocker
+  //     const updatedCartItems = response.data;
+  //     const promoInfo = updatedCartItems[0].promo;
+  
+  //     let promoType, promoValue;
+  //     if (promoInfo && promoInfo.percentage != null) {
+  //       promoType = 'percentage';
+  //       promoValue = promoInfo.percentage;
+  //     } else if (promoInfo && promoInfo.fixedAmount != null) {
+  //       promoType = 'fixedAmount';
+  //       promoValue = promoInfo.fixedAmount;
+  //     }
+  //     // ajout du promotionId dans le store redux
+  //     dispatch(addPromo(promoInfo.promotionId));
+  
+  //     setAppliedPromo({code: promoCode, type: promoType, value: promoValue});
+  //     setCurrentPromoCode(promoCode);
+  //   } catch (error) {
+  //     if (error.response && error.response.status === 400) {
+  //       // console.log(error.response.data.message);
+  //       return Toast.show({
+  //         type: 'error',
+  //         text1: error.response.data.message,
+  //       });
+  //     } else {
+  //       console.error("Erreur lors de l'application du code promo:", error);
+  //     }
+  //   }
+  // };
 
   return (
     <>
@@ -868,6 +912,80 @@ const Panier = ({navigation}) => {
                     })}
                   </View>
                 ))}
+
+                {/* code promo  */}
+                {/* <View
+                  style={{
+                    width: '100%',
+                    marginVertical: 15,
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      gap: 10,
+                      justifyContent: 'center',
+                      marginVertical: 10,
+                    }}>
+                    
+                    <TextInput
+                      value={promoCode}
+                      onChangeText={value => setPromoCode(value)}
+                      placeholder="Code promo"
+                      style={{
+                        width: 150,
+                        borderWidth: 1,
+                        borderColor: colors.color3,
+                        paddingHorizontal: 20,
+                        paddingVertical: 10,
+                        borderRadius: 5,
+                        color: colors.color1,
+                        fontWeight: 'bold',
+                        fontSize: 14,
+                        textAlignVertical: 'center',
+                        backgroundColor: colors.color6,
+                      }}
+                    />
+                    <TouchableOpacity
+                      onPress={() => handleApplyDiscount()}
+                      disabled={isCartEmpty}>
+                      <ApplyCode
+                        color={isCartEmpty ? colors.color3 : colors.color9}
+                      />
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => handleRemoveDiscount(cart, dispatch)}
+                      disabled={isCartEmpty}>
+                      <DeleteCode
+                        color={isCartEmpty ? colors.color3 : colors.color5}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                  {appliedPromo && !isCartEmpty && (
+                    <Text style={{color: colors.color2, fontSize: 12}}>
+                      Réduction de{' '}
+                      {appliedPromo.type === 'percentage'
+                        ? `${appliedPromo.value}%`
+                        : `${appliedPromo.value}€`}{' '}
+                      sur votre panier
+                    </Text>
+                  )}
+                  <View>
+                    {erreurCodePromo && promoCode && (
+                      <Text style={{color: colors.color8}}>
+                        Code promo non valide !
+                      </Text>
+                    )}
+                    {erreurCodePromoUsed && promoCode && (
+                      <Text style={{color: colors.color8}}>
+                        Code promo déja utilisé !{' '}
+                      </Text>
+                    )}
+                  </View>
+                </View> */}
               </ScrollView>
 
               {!isCartEmpty && (
@@ -888,8 +1006,6 @@ const Panier = ({navigation}) => {
                 <View style={styles.contentTotalMenu}>
                   <View>
                     <Text style={styles.boldText}>Votre total</Text>
-                    {/* {cart.length !== 1 || antigaspiProductsCount !== 1 ?  */}
-                    {/* ( */}
                     <Text style={{color: colors.color2}}>
                       Total Avec
                       <Image
@@ -897,20 +1013,14 @@ const Panier = ({navigation}) => {
                         style={{width: 50, height: 20, resizeMode: 'contain'}}
                       />
                     </Text>
-                    {/* ) */}
-                    {/* : null} */}
                   </View>
                   <View style={styles.contentTotalPrice}>
                     <Text style={{color: colors.color1}}>
                       {totalSum.toFixed(2)} €
                     </Text>
-                    {/* {cart.length !== 1 || antigaspiProductsCount !== 1 ?  */}
-                    {/* ( */}
                     <Text style={styles.orangeBoldText}>
                       {totalSumForCollabAndAntigaspi.toFixed(2)} €
                     </Text>
-                    {/* )  */}
-                    {/* : null} */}
                   </View>
                 </View>
                 <View>

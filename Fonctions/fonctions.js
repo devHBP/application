@@ -20,6 +20,7 @@ import {
   makeLastSmallPizzaFree,
   getTotalCart,
   getCart,
+  updateCart
 } from '../reducers/cartSlice.js';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
@@ -616,7 +617,7 @@ export const handleApplyDiscount = async () => {
 };
 
 // Restaurer le prix d'origine
-export const handleRemoveDiscount = () => {
+export const handleRemoveDiscount = (cart, dispatch) => {
   const restoredCart = cart.map(item => ({
     ...item,
     prix_unitaire: item.originalPrice || item.prix_unitaire,
