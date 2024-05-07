@@ -25,7 +25,7 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
       // appel du panier via redux
       dispatch(getCart(user.userId));
       dispatch(getTotalCart(user.userId));
-      console.log('boucle modale offre sun');
+      // console.log('boucle modale offre sun');
     };
 
     loadCart();

@@ -70,7 +70,7 @@ const ProductDetails = ({navigation, route}) => {
       // appel du panier via redux
       dispatch(getCart(user.userId));
       dispatch(getTotalCart(user.userId));
-      console.log('boucle productdetails');
+      // console.log('boucle productdetails');
     };
 
     loadCart();

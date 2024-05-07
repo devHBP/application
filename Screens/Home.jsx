@@ -79,7 +79,7 @@ const Home = ({navigation}) => {
     const loadCart = async () => {
       // appel du panier via redux
       dispatch(getCart(user.userId));
-      console.log('boucle home');
+      // console.log('boucle home');
     };
 
     loadCart();

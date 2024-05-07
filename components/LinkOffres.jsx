@@ -74,7 +74,7 @@ const LinkOffres = () => {
     const loadCart = async () => {
       // appel du panier via redux
       dispatch(getCart(user.userId));
-      console.log('boucle linkoffres');
+      // console.log('boucle linkoffres');
     };
 
     loadCart();

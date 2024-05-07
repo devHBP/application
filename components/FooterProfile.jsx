@@ -42,7 +42,7 @@ const FooterProfile = () => {
   useEffect(() => {
     const loadCart = async () => {
       dispatch(getTotalCart(user.userId));
-      console.log('boucle footer');
+      // console.log('boucle footer');
     };
     loadCart();
   }, [user.userId, dispatch]);
