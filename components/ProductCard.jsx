@@ -67,16 +67,6 @@ const ProductCard = ({
   const user = useSelector(state => state.auth.user);
   const cart = useSelector(state => state.cart.cart);
 
-  // const updateCart = useCallback(async () => {
-  //   const updatedCart = await getCart(user.userId);
-  //   setCart(updatedCart.ProductsCarts);
-  //   // console.log('cart prod', cart)
-  // }, [cart]); // Dépend uniquement de userId pour récupérer le panier
-  //  useEffect(() => {
-  //   updateCart(); // Appel initial pour charger le panier
-  //   // console.log('console')
-  // }, [updateCart]);
-
   useEffect(() => {
     const loadCart = async () => {
       // appel du panier via redux
@@ -208,6 +198,7 @@ useEffect(() => {
       // updateCart();
       await dispatch(getCart(user.userId));
       await dispatch(getTotalCart(user.userId));
+      resetCountdown();
     };
 
     try {

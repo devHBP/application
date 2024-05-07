@@ -114,6 +114,7 @@ const Offre31 = ({navigation}) => {
       type: 'success',
       text1: 'Offre 3+1 ajouté au panier',
     });
+    resetCountdown();
     navigation.navigate('panier')
   };
 

@@ -39,6 +39,8 @@ import {
   getPrefCommande,
   getCartItemId,
   getItemsOffre31,
+  addStock,
+  addStockAntigaspi,
   //getCart,
 } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
@@ -117,7 +119,7 @@ const Panier = ({navigation}) => {
     useCountdown();
 
   // panier vide
-  // const isCartEmpty = cart.length === 0;
+  const isCartEmpty = cart.length === 0;
 
   let userRole = user.role;
   const emailConfirmOrder = user.email;
@@ -156,6 +158,26 @@ const Panier = ({navigation}) => {
     : 0;
 
   const addProduct = async item => {
+    // verif du stock
+    let productIds = [];
+    if (item.type === 'formule') {
+        productIds = [item.option1, item.option2, item.option3].filter(Boolean);
+    } else {
+        productIds = [item.productId];
+    }
+    for (const productId of productIds) {
+        const stockCheck = await checkStockForSingleProduct(productId);
+        console.log('stock', stockCheck);
+
+        if (stockCheck[0].quantite <= 0) {
+            return Toast.show({
+                type: 'error',
+                text1: 'Victime de son succès',
+                text2: 'Plus de stock disponible'
+            });
+        }
+    }
+
     if (item.type === 'offre31') {
       if (
         item.qtyPaid % 3 === 0 &&
@@ -180,7 +202,7 @@ const Panier = ({navigation}) => {
           null,
           item.libelle,
         );
-        await dispatch(getCart(user.userId));
+        await updateStock({...item, qty: 1});
       }
     }
     if (item.type === 'simple') {
@@ -200,7 +222,7 @@ const Panier = ({navigation}) => {
         null,
         item.product,
       );
-      await dispatch(getCart(user.userId));
+      await updateStock({...item, qty: 1});
     }
     if (item.type === 'formule') {
       await incrementhandler(
@@ -219,9 +241,18 @@ const Panier = ({navigation}) => {
         item.key,
         item.libelle,
       );
-      await dispatch(getCart(user.userId));
+      const optionIds = [
+        item.option1,
+        item.option2,
+        item.option3,
+      ].filter(Boolean);
+      console.log(optionIds)
+      for (const optionId of optionIds) {
+        await updateStock({productId: optionId, qty: 1});
+      }
     }
-    dispatch(getTotalCart(user.userId));
+    await dispatch(getCart(user.userId));
+    await dispatch(getTotalCart(user.userId));
   };
 
   const reduceProduct = async item => {
@@ -240,6 +271,7 @@ const Panier = ({navigation}) => {
         cartItemId[0],
         item.key,
       );
+      await addStock({...item, qty: 1});
       await dispatch(getCart(user.userId));
     }
     if (item.type === 'offre31') {
@@ -253,6 +285,7 @@ const Panier = ({navigation}) => {
         items[0].cartItemId,
         null,
       );
+      await addStock({...item, qty: 1});
       await dispatch(getCart(user.userId));
     }
     if (item.type === 'formule') {
@@ -271,13 +304,20 @@ const Panier = ({navigation}) => {
         cartItemId[0],
         item.key,
       );
+      const optionIds = [item.option1, item.option2, item.option3].filter(
+        Boolean,
+      );
+      console.log(optionIds);
+      for (const optionId of optionIds) {
+        await addStock({productId: optionId, qty: 1});
+      }
       await dispatch(getCart(user.userId));
     }
     dispatch(getTotalCart(user.userId));
   };
 
   const removeProduct = async item => {
-    // console.log(item);
+    console.log(item);
     if (
       item.type === 'formule' ||
       item.type === 'simple' ||
@@ -316,6 +356,29 @@ const Panier = ({navigation}) => {
       dispatch(getCart(user.userId));
     }
     dispatch(getTotalCart(user.userId));
+    // remise du stock
+    if (item.type === 'antigaspi') {
+      await addStockAntigaspi({
+        productId: item.productId,
+        qty: item.totalQuantity,
+      });
+    }
+    if (item.type === 'formule') {
+      const optionIds = [item.option1, item.option2, item.option3].filter(
+        Boolean,
+      );
+      console.log(optionIds);
+      for (const optionId of optionIds) {
+        await addStock({productId: optionId, qty: item.totalQuantity});
+      }
+    }
+    if (item.type === 'simple') {
+      await addStock({productId: item.productId, qty: item.totalQuantity});
+    }
+    if (item.type === 'offre31') {
+      const total = item.qtyFree + item.qtyPaid;
+      await addStock({productId: item.productId, qty: total});
+    }
   };
 
   // Construire un objet agrégé qui a des productId comme clés
@@ -670,7 +733,7 @@ const Panier = ({navigation}) => {
             dispatch,
             countDownNull,
             resetCountdown,
-            user
+            user,
           );
         }
       }
@@ -810,7 +873,7 @@ const Panier = ({navigation}) => {
                 ))}
               </ScrollView>
 
-              {/* {!isCartEmpty && (
+              {!isCartEmpty && (
                 <View style={style.contentGlobal}>
                   <View style={style.contentCountDown}>
                     <Text style={style.countDown}>
@@ -818,7 +881,7 @@ const Panier = ({navigation}) => {
                     </Text>
                   </View>
                 </View>
-              )} */}
+              )}
 
               <View
                 style={[

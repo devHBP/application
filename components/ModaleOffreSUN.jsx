@@ -32,7 +32,6 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
   }, [user.userId, dispatch]);
 
   const handleAcceptOffer = async () => {
-    resetCountdown();
     await incrementhandler(
       user.userId,
       product.productId,
@@ -52,6 +51,7 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
     await dispatch(getCart(user.userId));
     await dispatch(getTotalCart(user.userId));
     setModalVisible(!modalVisible);
+    resetCountdown();
 
   };
   return (
