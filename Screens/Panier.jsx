@@ -21,7 +21,7 @@ import {
   getCart,
   getTotalCart,
   removeFromCartAfterCountDown,
-  updateCart
+  updateCart,
 } from '../reducers/cartSlice';
 import {setNumeroCommande, setProducts} from '../reducers/orderSlice';
 import CartItem from '../components/CardItems';
@@ -35,15 +35,13 @@ import {
   getFamilyOfProduct,
   checkIfUserOrderedOffreSUNToday,
   fetchAllProductsClickAndCollect,
-  updateAntigaspiStock,
   updateStock,
   getPrefCommande,
   getCartItemId,
   getItemsOffre31,
   addStock,
   addStockAntigaspi,
-  clearUserCart,
-  //getCart,
+  clearUserCart
 } from '../CallApi/api';
 import FooterProfile from '../components/FooterProfile';
 import ModaleOffre31 from '../components/ModaleOffre31';
@@ -61,8 +59,6 @@ import {ApplyCode} from '../SVG/ApplyCode';
 import CardPaiement from '../SVG/CardPaiement';
 import LottieView from 'lottie-react-native';
 import {API_BASE_URL} from '../config';
-// import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
-import Svg, {Path} from 'react-native-svg';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import {useCountdown} from '../components/CountdownContext';
 import ModaleOffreSUN from '../components/ModaleOffreSUN';
@@ -72,27 +68,19 @@ import ModaleModifProfile from '../components/ModaleModifProfile';
 import {
   decrementhandler,
   incrementhandler,
-  removehandler,
-  removeCartCountDown,
-  removehandlerafterCountdown,
-  handleOfferCalculation,
   createOrder,
   openStripe,
   checkPaymentStatus,
   formatToDateISO,
-  handleApplyDiscount,
   handleRemoveDiscount,
   countdownStock,
 } from '../Fonctions/fonctions';
-import LogoSun from '../SVG/LogoSun';
-import InputPromo from '../components/InputPromo';
 
 const Panier = ({navigation}) => {
   const dispatch = useDispatch();
   const webViewRef = useRef(null);
   const [promoCode, setPromoCode] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
-  const [orderInfo, setOrderInfo] = useState(null);
   const [checkoutSession, setCheckoutSession] = useState(null);
   const [sessionId, setSessionId] = useState(null);
   const [productFamilies, setProductFamilies] = useState({});
@@ -102,7 +90,6 @@ const Panier = ({navigation}) => {
   const [isModalSunVisible, setIsModalSunVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [erreurCodePromo, setErreurCodePromo] = useState(false);
-  const [usedPromoCodes, setUsedPromoCodes] = useState([]);
   const [erreurCodePromoUsed, setErreurCodePromoUsed] = useState(false);
   const [modalProfile, setModalProfile] = useState(false);
   const [appliedPromo, setAppliedPromo] = useState(null);
@@ -137,11 +124,8 @@ const Panier = ({navigation}) => {
       // appel du panier via redux
       dispatch(getCart(user.userId));
       dispatch(getTotalCart(user.userId));
-
       setLoading(false);
-      // console.log('boucle ici');
     };
-
     loadCart();
   }, [user.userId, dispatch]);
 
@@ -169,7 +153,7 @@ const Panier = ({navigation}) => {
     }
     for (const productId of productIds) {
       const stockCheck = await checkStockForSingleProduct(productId);
-      // console.log('stock', stockCheck);
+      console.log('stock', stockCheck);
 
       if (stockCheck[0].quantite <= 0) {
         return Toast.show({
@@ -417,7 +401,6 @@ const Panier = ({navigation}) => {
     : 0;
   // Convertissez l'objet regroupé en tableau pour le rendu.
   const groupedItemsArray = Object.values(groupedItems);
-  // console.log('groupedItemsArray', groupedItemsArray);
 
   const groupedByLibelle = groupedItemsArray.reduce((acc, item) => {
     // Créer une clé unique pour chaque groupe
@@ -552,8 +535,7 @@ const Panier = ({navigation}) => {
     : 0;
   // une offre sun dans la journée
 
-  // console.log('hasOffreSUN', hasOffreSUN)
-  // 1. je clicque sur le bouton "En ligne"
+  // 1. je clique sur le bouton "En ligne"
   const handleConfirm = async newPaiement => {
     // verif si presence de la date
     if (!selectedDateString) {
@@ -588,7 +570,7 @@ const Panier = ({navigation}) => {
       userId: user.userId,
       storeId: selectStore,
       slotId: null,
-      promotionId: null,
+      promotionId: promotionId,
       products: (() => {
         let products = [];
         let processedProductIds = []; // Pour garder une trace des IDs de produits déjà traités
@@ -647,7 +629,6 @@ const Panier = ({navigation}) => {
       const offreSUNInCart = cart.some(item => item.typeProduit === 'offreSUN');
 
       if (offreSUNInCart) {
-        // L'utilisateur a déjà commandé 'offreSUN' aujourd'hui et tente de le commander à nouveau
         return Toast.show({
           type: 'error',
           text1: 'Baguette gratuite déja commandée ...',
@@ -655,7 +636,7 @@ const Panier = ({navigation}) => {
         });
       }
     }
-    //si montant inférieur à 0 avec la baguette gratuite
+    //si montant inférieur à 0 avec la baguette gratuite - autorise la commande
     if (hasOffreSUN && totalSumForCollabAndAntigaspi == 0) {
       const createorder = await createOrder(orderData);
 
@@ -675,6 +656,8 @@ const Panier = ({navigation}) => {
       setLoading(true);
 
       // vider panier
+      await clearUserCart(user.userId);
+      dispatch(getTotalCart(user.userId));
 
       setTimeout(() => {
         navigation.navigate('success');
@@ -683,7 +666,6 @@ const Panier = ({navigation}) => {
 
       return;
       // si montant inférieur à 50centimes sans la baguette gratuite
-      // toast message
     } else if (totalSumForCollabAndAntigaspi < 0.5) {
       return Toast.show({
         type: 'error',
@@ -717,6 +699,9 @@ const Panier = ({navigation}) => {
         numero_commande,
       };
       // console.log('info', info)
+      // j'allonge le temps à 20min
+      resetForPaiementCountdown();
+
       if (paiement === 'online') {
         const sessionId = await openStripe(
           info,
@@ -734,8 +719,6 @@ const Panier = ({navigation}) => {
           );
         }
       }
-
-      // vider panier
     }
   };
 
@@ -746,11 +729,14 @@ const Panier = ({navigation}) => {
   useEffect(() => {
     async function handleCartActions() {
       if (countdown === 0) {
-        // Appel de la fonction pour traiter les actions de fin de compte à rebours
+        // fin de compte à rebours
         countdownStock(cart, user, dispatch);
+        setAppliedPromo(null);
+        setCurrentPromoCode(null);
+        setPromoCode('');
+        dispatch(resetPromo());
       }
     }
-
     handleCartActions();
   }, [countdown]);
 
@@ -763,50 +749,48 @@ const Panier = ({navigation}) => {
     }${remainingSeconds}`;
   };
 
-  // const handleApplyDiscount = async () => {
-  //   if (currentPromoCode) {
-  //     alert('Un code promo est déjà appliqué à cette commande.');
-  //     return;
-  //   }
-  //   try {
-  //     const response = await axios.post(`${API_BASE_URL}/handleApplyDiscount`, {
-  //       promoCode,
-  //       cartItems: cart,
-  //     });
-  //     const updatedCart = response.data;
+  // application code promo
+  const handleApplyDiscount = async () => {
+    if (currentPromoCode) {
+      alert('Un code promo est déjà appliqué à cette commande.');
+      return;
+    }
+    try {
+      const response = await axios.post(`${API_BASE_URL}/handleApplyDiscount`, {
+        promoCode,
+        cartItems: cart,
+      });
+      const updatedCart = response.data;
+      dispatch(updateCart(updatedCart));
+      setPromoCode('');
+      // Déterminer le type de réduction et la stocker
+      const updatedCartItems = response.data;
+      const promoInfo = updatedCartItems[0].promo;
 
-  //     console.log('updatedCart', updatedCart)
-  //     dispatch(updateCart(updatedCart));
-  //     setPromoCode('');
-  //     // Déterminer le type de réduction et la stocker
-  //     const updatedCartItems = response.data;
-  //     const promoInfo = updatedCartItems[0].promo;
-  
-  //     let promoType, promoValue;
-  //     if (promoInfo && promoInfo.percentage != null) {
-  //       promoType = 'percentage';
-  //       promoValue = promoInfo.percentage;
-  //     } else if (promoInfo && promoInfo.fixedAmount != null) {
-  //       promoType = 'fixedAmount';
-  //       promoValue = promoInfo.fixedAmount;
-  //     }
-  //     // ajout du promotionId dans le store redux
-  //     dispatch(addPromo(promoInfo.promotionId));
-  
-  //     setAppliedPromo({code: promoCode, type: promoType, value: promoValue});
-  //     setCurrentPromoCode(promoCode);
-  //   } catch (error) {
-  //     if (error.response && error.response.status === 400) {
-  //       // console.log(error.response.data.message);
-  //       return Toast.show({
-  //         type: 'error',
-  //         text1: error.response.data.message,
-  //       });
-  //     } else {
-  //       console.error("Erreur lors de l'application du code promo:", error);
-  //     }
-  //   }
-  // };
+      let promoType, promoValue;
+      if (promoInfo && promoInfo.percentage != null) {
+        promoType = 'percentage';
+        promoValue = promoInfo.percentage;
+      } else if (promoInfo && promoInfo.fixedAmount != null) {
+        promoType = 'fixedAmount';
+        promoValue = promoInfo.fixedAmount;
+      }
+      // ajout du promotionId dans le store redux
+      dispatch(addPromo(promoInfo.promotionId));
+      setAppliedPromo({code: promoCode, type: promoType, value: promoValue});
+      setCurrentPromoCode(promoCode);
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        // console.log(error.response.data.message);
+        return Toast.show({
+          type: 'error',
+          text1: error.response.data.message,
+        });
+      } else {
+        console.error("Erreur lors de l'application du code promo:", error);
+      }
+    }
+  };
 
   return (
     <>
@@ -914,7 +898,7 @@ const Panier = ({navigation}) => {
                 ))}
 
                 {/* code promo  */}
-                {/* <View
+                <View
                   style={{
                     width: '100%',
                     marginVertical: 15,
@@ -929,7 +913,6 @@ const Panier = ({navigation}) => {
                       justifyContent: 'center',
                       marginVertical: 10,
                     }}>
-                    
                     <TextInput
                       value={promoCode}
                       onChangeText={value => setPromoCode(value)}
@@ -957,7 +940,15 @@ const Panier = ({navigation}) => {
                     </TouchableOpacity>
 
                     <TouchableOpacity
-                      onPress={() => handleRemoveDiscount(cart, dispatch)}
+                      onPress={() =>
+                        handleRemoveDiscount(
+                          cart,
+                          dispatch,
+                          setAppliedPromo,
+                          setCurrentPromoCode,
+                          setPromoCode,
+                        )
+                      }
                       disabled={isCartEmpty}>
                       <DeleteCode
                         color={isCartEmpty ? colors.color3 : colors.color5}
@@ -985,7 +976,7 @@ const Panier = ({navigation}) => {
                       </Text>
                     )}
                   </View>
-                </View> */}
+                </View>
               </ScrollView>
 
               {!isCartEmpty && (
