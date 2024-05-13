@@ -20,7 +20,8 @@ import {
   makeLastSmallPizzaFree,
   getTotalCart,
   getCart,
-  updateCart
+  updateCart,
+  resetPromo
 } from '../reducers/cartSlice.js';
 import Toast from 'react-native-toast-message';
 import axios from 'axios';
@@ -541,6 +542,8 @@ export const checkPaymentStatus = async (
         // supprimer le panier et son contenu
         await clearUserCart(user.userId);
         dispatch(getTotalCart(user.userId));
+        // vider le code promo
+        dispatch(resetPromo());
       } else if (status === 'unpaid') {
         // si status unpaid - retour en arriere
         navigation.navigate('cancel');
@@ -572,58 +575,13 @@ export const formatToDateISO = selectedDateString => {
   return dateForDatabase;
 };
 
-// Test avec montant fixe et pourcentage
-export const handleApplyDiscount = async () => {
-  if (currentPromoCode) {
-    alert('Un code promo est déjà appliqué à cette commande.');
-    return;
-  }
-  try {
-    const response = await axios.post(`${API_BASE_URL}/handleApplyDiscount`, {
-      promoCode,
-      cartItems: cart,
-    });
-    const updatedCart = response.data;
-    dispatch(updateCart(updatedCart));
-    setPromoCode('');
-    // Déterminer le type de réduction et la stocker
-    const updatedCartItems = response.data;
-    const promoInfo = updatedCartItems[0].promo;
-
-    let promoType, promoValue;
-    if (promoInfo && promoInfo.percentage != null) {
-      promoType = 'percentage';
-      promoValue = promoInfo.percentage;
-    } else if (promoInfo && promoInfo.fixedAmount != null) {
-      promoType = 'fixedAmount';
-      promoValue = promoInfo.fixedAmount;
-    }
-    // ajout du promotionId dans le store redux
-    dispatch(addPromo(promoInfo.promotionId));
-
-    setAppliedPromo({code: promoCode, type: promoType, value: promoValue});
-    setCurrentPromoCode(promoCode);
-  } catch (error) {
-    if (error.response && error.response.status === 400) {
-      // console.log(error.response.data.message);
-      return Toast.show({
-        type: 'error',
-        text1: error.response.data.message,
-      });
-    } else {
-      console.error("Erreur lors de l'application du code promo:", error);
-    }
-  }
-};
-
-// Restaurer le prix d'origine
-export const handleRemoveDiscount = (cart, dispatch) => {
+ // Restaurer le prix d'origine
+export const handleRemoveDiscount = (cart, dispatch, setAppliedPromo, setCurrentPromoCode, setPromoCode) => {
   const restoredCart = cart.map(item => ({
     ...item,
-    prix_unitaire: item.originalPrice || item.prix_unitaire,
+    unitPrice: item.originalPrice,
   }));
-
-  dispatch(updateCart(restoredCart));
+  dispatch(getCart(restoredCart));
   setAppliedPromo(null);
   setCurrentPromoCode(null);
   setPromoCode('');
