@@ -131,33 +131,6 @@ const Orders = ({navigation}) => {
     navigation.navigate('home');
   };
 
-  // const handleCancel = async orderId => {
-  //   try {
-  //     const response = await axios.post(`${API_BASE_URL}/cancelOrder`, {
-  //       orderId,
-  //     });
-  //     setCancelledOrder(orderId);
-  //   } catch (error) {
-  //     console.error(
-  //       'An error occurred while updating the order status:',
-  //       error,
-  //     );
-  //   }
-  // };
-  // const handleReorder = () => {
-  //   if (isDisabled) {
-  //     return;
-  //   }
-  //   console.log('reorder');
-  // };
-
-  //mise à jour des commandes si commande annulée
-  // useEffect(() => {
-  //   if (cancelledOrder !== null) {
-  //     allMyOrders();
-  //   }
-  // }, [cancelledOrder]);
-
   const allMyOrders = async () => {
     try {
       const response = await axios.get(
@@ -219,7 +192,7 @@ const Orders = ({navigation}) => {
 
     // console.log('item commandes antérieures', JSON.parse(item.cartString));
     const cart = JSON.parse(item.cartString);
-    console.log('cart commandes anterieurs', item);
+    // console.log('cart commandes anterieurs', item);
     return (
       <View style={lastOrder ? style.lastOrderContainer : style.backOldOrder}>
         <TouchableOpacity
