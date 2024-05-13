@@ -219,7 +219,7 @@ const Orders = ({navigation}) => {
 
     // console.log('item commandes antérieures', JSON.parse(item.cartString));
     const cart = JSON.parse(item.cartString);
-    // console.log('cart commandes anterieurs', cart);
+    console.log('cart commandes anterieurs', item);
     return (
       <View style={lastOrder ? style.lastOrderContainer : style.backOldOrder}>
         <TouchableOpacity
@@ -256,12 +256,12 @@ const Orders = ({navigation}) => {
             </View>
             <View style={style.flexStart}>
               <Text style={style.newPrice}>{item.prix_total}€</Text>
-              <Text style={style.detailsArticles}>
-                {item.productIds.split(',').length}x{' '}
+              {/* <Text style={style.detailsArticles}>
+              {item.productIds.split(',').length}x{' '}
                 {item.productIds.split(',').length === 1
                   ? `Article`
                   : `Articles`}
-              </Text>
+              </Text> */}
             </View>
             <View style={style.backArrow}>
               <ArrowDown />
