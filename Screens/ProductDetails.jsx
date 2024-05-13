@@ -204,7 +204,6 @@ const ProductDetails = ({navigation, route}) => {
           updateCartAndQuantity();
         } else {
           // Ajout classique pour les types non 'offre31'
-          console.log('ajout classqiue')
           incrementhandler(
             user.userId,
             product.productId,
@@ -246,7 +245,6 @@ const ProductDetails = ({navigation, route}) => {
           ? 'offre31'
           : 'simple';
 
-      console.log('type page productDEtails', localType);
       if (localType === 'offre31') {
         const items = await getItemsOffre31(product.productId);
         // console.log('items', items);

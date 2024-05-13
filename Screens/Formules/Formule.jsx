@@ -184,12 +184,12 @@ const Formule = ({route, navigation}) => {
       selectedDessert?.productId,
       selectedBoisson?.productId,
     ].filter(Boolean); // Éliminez les valeurs nulles ou non définies
-    console.log(optionIds)
+    // console.log(optionIds)
 
     const formuleKey = `${selectedProduct?.productId ?? 'none'}-${
       selectedDessert?.productId ?? 'none'
     }-${selectedBoisson?.productId ?? 'none'}`;
-    console.log('formuleKey', formuleKey);
+    // console.log('formuleKey', formuleKey);
 
     resetCountdown();
 

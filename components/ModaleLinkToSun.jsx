@@ -42,7 +42,7 @@ const ModaleLinkToSUN = ({modalVisible, setModalVisible, user}) => {
      catch (error) {
       // comment bien géré l'erreu coté front si le mail n'est pas trouvé coté SUN
       console.error("Une erreur s'est produite, côté envoi demande de connexion :", error);
-      console.log('email non trouvé')      
+      // console.log('email non trouvé')      
     }
   };
 

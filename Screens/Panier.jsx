@@ -153,7 +153,7 @@ const Panier = ({navigation}) => {
     }
     for (const productId of productIds) {
       const stockCheck = await checkStockForSingleProduct(productId);
-      console.log('stock', stockCheck);
+      // console.log('stock', stockCheck);
 
       if (stockCheck[0].quantite <= 0) {
         return Toast.show({

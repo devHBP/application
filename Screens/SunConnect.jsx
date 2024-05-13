@@ -33,7 +33,7 @@ const SunConnect = ({navigation}) => {
       try {
         const statusSUN = await getStatusSUN(user.userId);
         dispatch(linkFromSUN(statusSUN));
-        console.log('status page sun connect', statusSUN);
+        // console.log('status page sun connect', statusSUN);
         setStatusSun(statusSUN);
       } catch (error) {
         console.error("Une erreur s'est produite, coté  statusSUn :", error);
