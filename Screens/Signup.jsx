@@ -506,7 +506,6 @@ const style = StyleSheet.create({
     // marginLeft:20,
     marginTop: 10,
     color: colors.color2,
-    fontWeight: fonts.font2,
     fontWeight: '700',
   },
   radioButtonOut: {

@@ -39,7 +39,6 @@ export const stylesInvite = StyleSheet.create({
       btn_cookies: {
         backgroundColor: colors.color4,
         margin: 1,
-        paddingHorizontal: 2,
         borderRadius:6,
         borderColor:colors.color5,
         borderWidth:1,
