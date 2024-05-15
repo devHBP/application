@@ -32,6 +32,7 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
   }, [user.userId, dispatch]);
 
   const handleAcceptOffer = async () => {
+    setModalVisible(!modalVisible);
     await incrementhandler(
       user.userId,
       product.productId,
@@ -50,13 +51,12 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
     );
     await dispatch(getCart(user.userId));
     await dispatch(getTotalCart(user.userId));
-    setModalVisible(!modalVisible);
     resetCountdown();
 
   };
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    //backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     backgroundColor: colors.color6,

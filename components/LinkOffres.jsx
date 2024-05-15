@@ -2,7 +2,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
   Modal,
   Image,
   Linking,
@@ -13,7 +12,6 @@ import React, {useState, useEffect} from 'react';
 import {styles} from '../styles/home';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
-// import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import {API_BASE_URL} from '../config';
 import FastImage from 'react-native-fast-image';
 import baguetteSUN from '../assets/offreSUNbaguette.jpg';
@@ -29,9 +27,8 @@ import ScrollIndicators from './ScrollIndicators.';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Compteur from '../SVG/Compteur';
 import {useSelector, useDispatch} from 'react-redux';
-import {fetchAllProductsClickAndCollect, } from '../CallApi/api';
+import {fetchAllProductsClickAndCollect} from '../CallApi/api';
 import ModaleOffreSUN from './ModaleOffreSUN';
-import {getCart} from '../reducers/cartSlice';
 
 const LinkOffres = () => {
   const openLink = url => {
@@ -60,7 +57,6 @@ const LinkOffres = () => {
 
   const navigation = useNavigation();
 
-  // const [solanidProductNames, setSolanidProductNames] = useState([]);
   const [offre31ProductNames, setoffre31ProductNames] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalSunVisible, setIsModalSunVisible] = useState(false);
@@ -69,16 +65,6 @@ const LinkOffres = () => {
   const cart = useSelector(state => state.cart.cart);
   const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const loadCart = async () => {
-      // appel du panier via redux
-      dispatch(getCart(user.userId));
-      // console.log('boucle linkoffres');
-    };
-
-    loadCart();
-  }, [user.userId, dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -118,12 +104,56 @@ const LinkOffres = () => {
   const [timeRemaining, setTimeRemaining] = useState('');
   const [showCountdown, setShowCountdown] = useState(true);
 
+  // useEffect(() => {
+  //   const updateCountdown = () => {
+  //     const now = new Date();
+  //     let endTime = new Date();
+
+  //     // Fin du compteur à 20h59m59s
+  //     endTime.setHours(20, 59, 59, 999);
+
+  //     if (now.getHours() >= 21) {
+  //       endTime.setDate(now.getDate() + 1);
+  //     }
+
+  //     const difference = endTime - now;
+
+  //     if (difference > 0) {
+  //       const hours = Math.floor(difference / (1000 * 60 * 60));
+  //       const minutes = Math.floor(
+  //         (difference % (1000 * 60 * 60)) / (1000 * 60),
+  //       );
+  //       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+  //       setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
+  //     } else {
+  //       setTimeRemaining('');
+  //     }
+  //   };
+
+  //   const updateCountdownVisibility = () => {
+  //     const now = new Date();
+  //     const hours = now.getHours();
+  //     const minutes = now.getMinutes();
+
+  //     // Afficher le compteur en dehors de 21h à minuit
+  //     setShowCountdown(!(hours >= 21 && hours < 24));
+  //   };
+
+  //   const update = () => {
+  //     updateCountdown();
+  //     updateCountdownVisibility();
+  //   };
+
+  //   // Mettre à jour toutes les secondes
+  //   const intervalId = setInterval(update, 1000);
+
+  //   return () => clearInterval(intervalId);
+  // }, [cart]);
+
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
       let endTime = new Date();
-
-      // Fin du compteur à 20h59m59s
       endTime.setHours(20, 59, 59, 999);
 
       if (now.getHours() >= 21) {
@@ -133,12 +163,8 @@ const LinkOffres = () => {
       const difference = endTime - now;
 
       if (difference > 0) {
-        const hours = Math.floor(difference / (1000 * 60 * 60));
-        const minutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60),
-        );
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-        setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
+        const timeString = new Date(difference).toISOString().substr(11, 8);
+        setTimeRemaining(timeString);
       } else {
         setTimeRemaining('');
       }
@@ -146,23 +172,18 @@ const LinkOffres = () => {
 
     const updateCountdownVisibility = () => {
       const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-
-      // Afficher le compteur en dehors de 21h à minuit
-      setShowCountdown(!(hours >= 21 && hours < 24));
+      setShowCountdown(!(now.getHours() >= 21 && now.getHours() < 24));
     };
 
-    const update = () => {
+    const intervalId = setInterval(() => {
       updateCountdown();
       updateCountdownVisibility();
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
     };
-
-    // Mettre à jour toutes les secondes
-    const intervalId = setInterval(update, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [cart]);
+  }, []);
 
   const handleAntiGaspi = async () => {
     try {

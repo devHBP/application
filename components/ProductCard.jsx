@@ -73,16 +73,16 @@ const ProductCard = ({
   const user = useSelector(state => state.auth.user);
   const cart = useSelector(state => state.cart.cart);
 
-  useEffect(() => {
-    const loadCart = async () => {
-      // appel du panier via redux
-      dispatch(getCart(user.userId));
-      dispatch(getTotalCart(user.userId));
-      // console.log('boucle product');
-    };
+  // useEffect(() => {
+  //   const loadCart = async () => {
+  //     // appel du panier via redux
+  //     dispatch(getCart(user.userId));
+  //     dispatch(getTotalCart(user.userId));
+  //     // console.log('boucle product');
+  //   };
 
-    loadCart();
-  }, [user.userId, dispatch]);
+  //   loadCart();
+  // }, [user.userId, dispatch]);
 
   const handleIngredients = () => {
     setModalVisibleIngredients(true);
