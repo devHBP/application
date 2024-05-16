@@ -22,24 +22,14 @@ import Orders from './Screens/Orders';
 import Cookies from './Screens/Cookies';
 import Donnees from './Screens/Donnees';
 import Mentions from './Screens/Mentions';
-import PageSandwich from './Screens/PagesSalees/PageSandwich';
 import FormuleArtisan from './Screens/Formules/FormuleArtisan';
 import FormulePetitDejeuner from './Screens/Formules/FormulePetitDejeuner';
 import FormulePetitDejeunerGourmand from './Screens/Formules/FormulePetitDejeunerGourmand';
 import Offre31 from './Screens/Offre31';
 import Solanid from './Screens/Solanid';
-import PageWrap from './Screens/PagesSalees/PageWrap';
-import PageSalade from './Screens/PagesSalees/PageSalade';
-import PageBurger from './Screens/PagesSalees/PageBurger';
-import PagePanini from './Screens/PagesSalees/PagePanini';
-import PagePainBagnat from './Screens/PagesSalees/PagePainBagnat';
-import PageQuiche from './Screens/PagesSalees/PageQuiche';
-import PageCroque from './Screens/PagesSalees/PageCroque';
 import Pwd from './Screens/Pwd';
 import LoaderHome from './Screens/LoaderHome';
-import PagePizza from './Screens/PagesSalees/PagePizza';
 import Antigaspi from './Screens/Antigaspi';
-import PagePlatChaud from './Screens/PagesSalees/PagePlatChaud';
 export const navigationRef = createNavigationContainerRef();
 import axios from 'axios';
 import OffreNoel from './Screens/OffreNoel';
@@ -54,6 +44,7 @@ import PdjConnect from './Screens/PdjConnect';
 // import PageHome from './Screens/PageHome';
 import {API_BASE_URL} from './config';
 import Formule from './Screens/Formules/Formule';
+import PageSalee from './Screens/PagesSalees/PageSalee';
 
 const Main = () => {
   const [isLoading, setIsLoading] = useState(true);
@@ -230,16 +221,7 @@ const Main = () => {
         <Stack.Screen name="formule" component={Formule} />
 
         {/* Pages salées */}
-        <Stack.Screen name="sandwich" component={PageSandwich} />
-        <Stack.Screen name="pizza" component={PagePizza} />
-        <Stack.Screen name="wrap" component={PageWrap} />
-        <Stack.Screen name="salade" component={PageSalade} />
-        <Stack.Screen name="burger" component={PageBurger} />
-        <Stack.Screen name="panini" component={PagePanini} />
-        <Stack.Screen name="painbagnat" component={PagePainBagnat} />
-        <Stack.Screen name="quiche" component={PageQuiche} />
-        <Stack.Screen name="croque" component={PageCroque} />
-        <Stack.Screen name="platchaud" component={PagePlatChaud} />
+        <Stack.Screen name="enviesalee" component={PageSalee} />
 
         {/* Formules petit dejeuner */}
         <Stack.Screen name="artisan" component={FormuleArtisan} />

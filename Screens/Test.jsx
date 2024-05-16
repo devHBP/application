@@ -121,7 +121,7 @@ const checkStockAntiGaspi = async () => {
     cart.forEach(item => {
       if (item.antigaspi) {
         const stockDisponible = response.data[item.productId];
-        console.log('stock', stockDisponible);
+        // console.log('stock', stockDisponible);
         if (stockDisponible !== undefined) {
           if (item.qty <= stockDisponible) {
             // console.log(

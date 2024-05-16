@@ -13,14 +13,15 @@ import {fonts, colors} from '../../styles/styles';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import {addToCart} from '../../reducers/cartSlice';
 import {useSelector, useDispatch} from 'react-redux';
-import {
-  getProductsByCategory,
-  fetchOneProduct,
-  fetchDessertIds,
-  fetchBoissonIds,
-} from '../../CallApi/api.js';
 import {checkStockForSingleProduct, updateStock} from '../../CallApi/api.js';
-import {checkProductAvailability} from '../../Fonctions/fonctions';
+import {
+  checkProductAvailability,
+  getBoissonDetails,
+  getDessertDetails,
+  fetchProducts,
+  incrementhandler,
+  decrementhandler,
+} from '../../Fonctions/fonctions';
 import {style} from '../../styles/formules';
 import {styles} from '../../styles/home';
 import FooterProfile from '../../components/FooterProfile';
@@ -54,6 +55,7 @@ const Formule = ({route, navigation}) => {
   const scrollViewRef = useRef(null);
 
   const cart = useSelector(state => state.cart.cart);
+  const user = useSelector(state => state.auth.user);
 
   const handleBack = () => {
     navigation.navigate('home');
@@ -61,103 +63,12 @@ const Formule = ({route, navigation}) => {
 
   useEffect(() => {
     //les produits principaux - categorie
-    const fetchProducts = async () => {
-      try {
-        const response = await axios.get(`${API_BASE_URL}/getAllProductsClickandCollect`);
-        let updatedProducts;  
-    
-        if (categorie === 'Pizzas') {
-          updatedProducts = response.data.filter(product => 
-            product.clickandcollect === true && product.libelle.toLowerCase().startsWith("petite")
-          );
-        } else {
-          updatedProducts = response.data.filter(product =>
-            product.clickandcollect === true &&
-            product.categorie === categorie
-          );
-        }
-        setProducts(updatedProducts);
-      } catch (error) {
-        console.error(
-          "Une erreur s'est produite lors de la récupération des produits principaux:",
-          error,
-        );
-      }
-    };
-
-    fetchProducts();
-
+    fetchProducts(categorie, setProducts);
     //les desserts - par id
-    const getDessertDetails = async () => {
-      try {
-        // 1. Récupération de tous les produits
-        const response = await axios.get(
-          `${API_BASE_URL}/getAllProductsClickandCollect`,
-        );
-        let allProducts = response.data; 
-
-        // 2. Filtrer les produits avec fetchDessertIds
-        const dessertIds = await fetchDessertIds();
-        let filteredProducts = allProducts.filter(product =>
-          dessertIds.includes(product.productId),
-        );
-
-        // 3. Obtenir les détails pour chaque ID filtré
-        const productPromises = filteredProducts.map(product =>
-          fetchOneProduct(product.productId),
-        );
-        const desserts = await Promise.all(productPromises);
-        const updtatedDesserts = desserts.filter(
-          product => product.clickandcollect === true,
-        );
-
-        // updtatedDesserts.forEach((product) => {
-        //     console.log('product: ', product.libelle + '  ingredients:', product.ingredients);
-        // });
-
-        setDesserts(updtatedDesserts);
-      } catch (error) {
-        console.error(
-          "Une erreur s'est produite lors de la récupération des desserts:",
-          error,
-        );
-      }
-    };
-    getDessertDetails();
-
+    getDessertDetails(setDesserts);
     //les boissons - par id
-    const getBoissonDetails = async () => {
-      try {
-        // 1. Récupération de tous les produits
-        const response = await axios.get(
-          `${API_BASE_URL}/getAllProductsClickandCollect`,
-        );
-        let allProducts = response.data; 
-        // 2. Filtrer les produits avec fetchDessertIds
-        const boissonIds = await fetchBoissonIds();
-        let filteredProducts = allProducts.filter(product =>
-          boissonIds.includes(product.productId),
-        );
-        // 3. Obtenir les détails pour chaque ID filtré
-        const productPromises = filteredProducts.map(product =>
-          fetchOneProduct(product.productId),
-        );
-        const boissons = await Promise.all(productPromises);
-
-        const updatedBoissons = boissons.filter(
-          product => product.clickandcollect === true,
-        );
-
-        setBoissons(updatedBoissons);
-      } catch (error) {
-        console.error(
-          "Une erreur s'est produite lors de la récupération des boissons:",
-          error,
-        );
-      }
-    };
-    getBoissonDetails();
-  }, []);
+    getBoissonDetails(setBoissons);
+  }, [categorie]);
 
   const handleProduct = async product => {
     const isAvailable = await checkProductAvailability(
@@ -243,6 +154,7 @@ const Formule = ({route, navigation}) => {
     }
   };
 
+  // calcul dynamique de la formule avec les options 1 - 2 - 3
   useEffect(() => {
     calculateTotalPrice();
   }, [selectedProduct, selectedDessert, selectedBoisson, dessertSwitch]);
@@ -266,32 +178,43 @@ const Formule = ({route, navigation}) => {
   };
 
   const handleFormuleSelection = async () => {
+
+    const optionIds = [
+      selectedProduct?.productId,
+      selectedDessert?.productId,
+      selectedBoisson?.productId,
+    ].filter(Boolean); // Éliminez les valeurs nulles ou non définies
+    // console.log(optionIds)
+
     const formuleKey = `${selectedProduct?.productId ?? 'none'}-${
       selectedDessert?.productId ?? 'none'
     }-${selectedBoisson?.productId ?? 'none'}`;
     // console.log('formuleKey', formuleKey);
-    const formule = {
-      // id: `formule-${Date.now()}`,
-      id: formuleKey,
-      type: 'formule',
-      option1: selectedProduct,
-      option2: selectedDessert ? selectedDessert : null,
-      option3: selectedBoisson ? selectedBoisson : null,
-      prix: prix,
-      libelle: `Formule ${name}`,
-      productIds: productIds,
-      qty: 1,
-    };
-    dispatch(addToCart(formule));
+
     resetCountdown();
-    const options = [formule.option1, formule.option2, formule.option3].filter(
-      option => option !== null,
+
+    incrementhandler(
+      user.userId,
+      null,
+      1,
+      prix,
+      'formule',
+      false,
+      selectedProduct.productId,
+      selectedDessert ? selectedDessert.productId : null,
+      selectedBoisson ? selectedBoisson.productId : null,
+      null,
+      null,
+      `Formule ${name}`,
+      formuleKey,
     );
 
-    for (const option of options) {
-      await updateStock({productId: option.productId, qty: 1});
+    // Mise à jour du stock pour chaque option de la formule
+    for (const optionId of optionIds) {
+      await updateStock({productId: optionId, qty: 1});
     }
     navigation.navigate('panier');
+
   };
 
   return (
@@ -309,16 +232,7 @@ const Formule = ({route, navigation}) => {
             style={{...styles.pastilleOffre31, transform: [{rotate: '0deg'}]}}
             resizeMode={FastImage.resizeMode.cover}
           />
-          <View
-            style={{
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              width: '100%',
-              alignItems: 'center',
-              position: 'absolute',
-              top: 30,
-              paddingHorizontal: 30,
-            }}>
+          <View style={style.contentTitleFormule}>
             <Text style={style.titleProduct}>Formule {name}</Text>
             <TouchableOpacity
               onPress={handleBack}
@@ -341,13 +255,7 @@ const Formule = ({route, navigation}) => {
                 key={product.productId}
                 style={{flexDirection: 'column', justifyContent: 'center'}}>
                 <TouchableOpacity
-                  style={{
-                    gap: 10,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    margin: 10,
-                  }}
+                  style={style.contentProductCardFormule}
                   onPress={() => handleProduct(product)}>
                   <View style={getStyle(selectedProduct, product)} key={index}>
                     <ProductCard
@@ -364,6 +272,7 @@ const Formule = ({route, navigation}) => {
                       showButtons={false}
                       showPromo={false}
                       ingredients={product.ingredients}
+                      type="formule"
                     />
                     {selectedProduct?.productId === product.productId && (
                       <Check color={colors.color9} />
@@ -376,14 +285,7 @@ const Formule = ({route, navigation}) => {
         </View>
         {/* choix desserts */}
         <View>
-          <View
-            style={{
-              ...style.choixTitle,
-              flexDirection: 'row',
-              gap: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+          <View style={style.contentChoixTitle}>
             <Text style={style.choixTitle}>Les desserts </Text>
             <Text style={{fontSize: 12, color: colors.color1}}>
               (pour 2€ en +)
@@ -395,13 +297,7 @@ const Formule = ({route, navigation}) => {
                 key={product.productId}
                 style={{flexDirection: 'column', justifyContent: 'center'}}>
                 <TouchableOpacity
-                  style={{
-                    gap: 10,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    margin: 10,
-                  }}
+                  style={style.contentProductCardFormule}
                   onPress={() => handleDessert(product)}>
                   <View style={getStyle(selectedDessert, product)} key={index}>
                     <ProductCard
@@ -431,14 +327,7 @@ const Formule = ({route, navigation}) => {
 
         {/* choix boissons */}
         <View>
-          <View
-            style={{
-              ...style.choixTitle,
-              flexDirection: 'row',
-              gap: 10,
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+          <View style={style.contentChoixTitle}>
             <Text style={style.choixTitle}>Les boissons </Text>
             <Text style={{fontSize: 12, color: colors.color1}}>
               (pour 2€ en +)
@@ -450,13 +339,7 @@ const Formule = ({route, navigation}) => {
                 key={product.productId}
                 style={{flexDirection: 'column', justifyContent: 'center'}}>
                 <TouchableOpacity
-                  style={{
-                    gap: 10,
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center',
-                    margin: 10,
-                  }}
+                  style={style.contentProductCardFormule}
                   onPress={() => handleBoisson(product)}>
                   <View style={getStyle(selectedBoisson, product)} key={index}>
                     <ProductCard

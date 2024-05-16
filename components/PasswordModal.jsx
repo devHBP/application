@@ -156,7 +156,6 @@ const PasswordModal = ({ isVisible, onClose, onChangePassword }) => {
     button:{
       backgroundColor: colors.color8,
       borderRadius:6,
-      borderColor:colors.color5,
       borderWidth:1,
       borderStyle:'solid',
       marginVertical:10,

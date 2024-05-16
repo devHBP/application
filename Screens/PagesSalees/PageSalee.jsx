@@ -1,11 +1,4 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  Image,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
+import {View, Text, ScrollView, Image, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {style} from '../../styles/formules';
 import {styles} from '../../styles/produits';
@@ -14,7 +7,7 @@ import {fonts, colors} from '../../styles/styles';
 import {Button} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import FooterProfile from '../../components/FooterProfile';
-import {addToCart, decrementOrRemoveFromCart} from '../../reducers/cartSlice';
+import {addToCart, decrementOrRemoveFromCart, getCart} from '../../reducers/cartSlice';
 import ArrowLeft from '../../SVG/ArrowLeft';
 //call API
 import {checkStockForSingleProduct} from '../../CallApi/api.js';
@@ -23,50 +16,35 @@ import {API_BASE_URL} from '../../config';
 // import {  API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS } from '@env';
 import FastImage from 'react-native-fast-image';
 import {getStyle} from '../../Fonctions/stylesFormule';
-import ModalePizza from '../../components/ModalePizzas';
 
-const PagePizza = ({navigation}) => {
+const PageSalee = ({route, navigation}) => {
+  const {name, imageUri, categorie, formule, image, description, text} =
+    route.params;
+
+
   const [products, setProducts] = useState([]);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [stock, setStock] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [productCount, setProductCount] = useState(0);
-  const [selectedButton, setSelectedButton] = useState('petites');
-  const [isModalSunVisible, setIsModalSunVisible] = useState(false);
-  const [displayedProducts, setDisplayedProducts] = useState([]);
+  const [totalQuantity, setTotalQuantity] = useState(0);
 
   const dispatch = useDispatch();
 
   const cart = useSelector(state => state.cart.cart);
+  const user = useSelector(state => state.auth.user);
 
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsModalSunVisible(true);
-    }, 500);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [products]);
-  useEffect(() => {
-    //je filtre sur les produits "Pizza"
-    const shouldIncludeProduct = product => {
-      return product.libelle.includes('Pizza');
+    const loadCart = async () => {
+      // appel du panier via redux
+      dispatch(getCart(user.userId));
+      // console.log('boucle page salee');
     };
 
-    // Filtrez d'abord les produits du panier
-    const relevantProducts = cart.filter(shouldIncludeProduct);
+    loadCart();
+  }, [user.userId, dispatch]);
 
-    // Puis calculez le prix total pour ces produits
-    const totalPrice = relevantProducts.reduce((acc, product) => {
-      if (product.isFree) {
-        return acc;
-      }
-      return acc + product.qty * parseFloat(product.prix_unitaire);
-    }, 0);
 
-    setTotalPrice(totalPrice);
-  }, [products, cart]);
 
   useEffect(() => {
     const fetchStock = async () => {
@@ -90,6 +68,24 @@ const PagePizza = ({navigation}) => {
     }
   }, [products]);
 
+  const getProductQtyInCart = (productId) => {
+    const productInCart = cart.find(item => item.productId === productId);
+    return productInCart ? productInCart.quantity : 0;
+  };
+
+useEffect(() => {
+    const totalPrice = products.reduce((acc, product) => {
+      const qtyInCart = getProductQtyInCart(product.productId); 
+      return acc + (qtyInCart * product.prix_unitaire);
+    }, 0);
+    setTotalPrice(totalPrice);
+  }, [products, cart]);
+  
+  useEffect(() => {
+    const totalCount = cart.reduce((acc, product) => acc + product.qty, 0);
+    setProductCount(totalCount);
+  }, [cart]);
+
   const handleBack = () => {
     navigation.navigate('home');
   };
@@ -100,20 +96,11 @@ const PagePizza = ({navigation}) => {
           `${API_BASE_URL}/getAllProductsClickandCollect`,
         );
 
-        const updatedProducts = response.data.map(product => ({
-          ...product,
-          qty: 0,
-        }));
-
-        const products = updatedProducts.filter(
-          product => product.categorie === 'Pizzas',
+        const products = response.data.filter(
+          product => product.categorie === categorie,
         );
+
         setProducts(products);
-
-        const petitesProducts = products.filter(product =>
-          product.libelle.toLowerCase().startsWith('petite'),
-        );
-        setDisplayedProducts(petitesProducts);
       } catch (error) {
         console.error("Une erreur s'est produite, error products :", error);
       }
@@ -121,9 +108,15 @@ const PagePizza = ({navigation}) => {
     fetchData();
   }, []);
 
-  const openFormuleBurger = () => {
-    navigation.navigate('formulepizza');
+  const openFormule = () => {
+    navigation.navigate(formule, {
+      name: name,
+      categorie: categorie,
+      imageUri: imageUri,
+      text: text,
+    });
   };
+
   const handleCart = () => {
     navigation.navigate('panier');
   };
@@ -136,37 +129,16 @@ const PagePizza = ({navigation}) => {
     return ingredients.split(', ').map(capitalizeFirstLetter).join(',  ');
   };
 
-  //filtre petites - grandes pizzas
-  const filterGrandes = () => {
-    const grandesProducts = products.filter(product =>
-      product.libelle.toLowerCase().startsWith('grande'),
-    );
-    setDisplayedProducts(grandesProducts);
-    setSelectedButton('grandes');
-  };
-
-  const filterPetites = () => {
-    const petitesProducts = products.filter(product =>
-      product.libelle.toLowerCase().startsWith('petite'),
-    );
-    setDisplayedProducts(petitesProducts);
-    setSelectedButton('petites');
-  };
-
   return (
     <View style={{flex: 1}}>
       <View style={{paddingTop: 50}}></View>
       <ScrollView>
         <View>
-          {/* <Image
-                    source={require('../../assets/pizza.jpg')} 
-                    style={{ width: "100%", height: 330, resizeMode:'cover' }}
-                /> */}
           <FastImage
-            source={require('../../assets/pizza.jpg')}
+            source={imageUri}
             style={{width: '100%', height: 330, resizeMode: 'cover'}}
           />
-          <Text style={styles.titleProduct}>Pizza</Text>
+          <Text style={styles.titleProduct}>{name}</Text>
           <TouchableOpacity
             onPress={handleBack}
             activeOpacity={1}
@@ -179,97 +151,41 @@ const PagePizza = ({navigation}) => {
             }}>
             <ArrowLeft fill="white" />
           </TouchableOpacity>
-
-          <View
-            style={{
-              ...styles.ingredients,
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              marginHorizontal: 40,
-              marginBottom: 10,
-            }}>
-            <Text style={{textAlign: 'center', color: colors.color1}}>
-              Offre sur nos <Text style={{fontWeight: 'bold'}}>Petites</Text>{' '}
-              Pizzas{' '}
-            </Text>
-            <Text style={{textAlign: 'center', color: colors.color1}}>
-              Choisissez 4 Pizzas, Payez-en que 3 !{' '}
-            </Text>
-          </View>
         </View>
 
         {/* les options */}
         <View style={{marginHorizontal: 30, marginVertical: 20}}>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 15,
-            }}>
-            <TouchableOpacity
-              style={[
-                styles.touchable,
-                selectedButton === 'grandes'
-                  ? {backgroundColor: colors.color2}
-                  : {},
-              ]}
-              onPress={filterGrandes}>
-              <Text
-                style={
-                  selectedButton === 'grandes'
-                    ? {color: colors.color6}
-                    : {color: colors.color1}
-                }>
-                Grandes (40cm)
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[
-                styles.touchable,
-                selectedButton === 'petites'
-                  ? {backgroundColor: colors.color2}
-                  : {},
-              ]}
-              onPress={filterPetites}>
-              <Text
-                style={
-                  selectedButton === 'petites'
-                    ? {color: colors.color6}
-                    : {color: colors.color1}
-                }>
-                Petites (20cm)
-              </Text>
-            </TouchableOpacity>
-          </View>
-
+          <Text style={styles.titleOptions}>Les options</Text>
           <ScrollView horizontal={true} style={{marginVertical: 20}}>
-            {displayedProducts.map((product, index) => (
-              <TouchableOpacity
-                key={index}
-                onPress={() => setSelectedProduct(product)}
-                style={{marginVertical: 10}}>
-                <View style={getStyle(selectedProduct, product)} key={index}>
-                  <ProductCard
-                    libelle={product.libelle}
-                    key={product.productId}
-                    id={product.productId}
-                    index={index}
-                    image={product.image}
-                    prix={product.prix_unitaire}
-                    prixSUN={product.prix_remise_collaborateur}
-                    qty={product.qty}
-                    stock={product.stock}
-                    offre={product.offre}
-                    showPromo={false}
-                    showButtons={true}
-                    ingredients={product.ingredients}
-                  />
-                </View>
-              </TouchableOpacity>
-            ))}
+            {products &&
+              products.map((product, index) => {
+                // console.log('products', products)
+                return (
+                <TouchableOpacity
+                  key={index}
+                  onPress={() => setSelectedProduct(product)}
+                  style={{marginVertical: 10}}>
+                  <View style={getStyle(selectedProduct, product)} key={index}>
+                    <ProductCard
+                      libelle={product.libelle}
+                      key={product.productId}
+                      id={product.productId}
+                      index={index}
+                      image={product.image}
+                      prix={product.prix_unitaire}
+                      prixSUN={product.prix_remise_collaborateur}
+                      qty={product.qty}
+                      stock={product.stock}
+                      offre={product.offre}
+                      showPromo={false}
+                      showButtons={true}
+                      ingredients={product.ingredients}
+                      item={product}
+                    />
+                  </View>
+                </TouchableOpacity>
+                )
+})}
           </ScrollView>
           <Text style={styles.descriptionProduit}>
             {selectedProduct
@@ -338,22 +254,20 @@ const PagePizza = ({navigation}) => {
             </Text>
             <TouchableOpacity
               style={{marginRight: 10}}
-              onPress={openFormuleBurger}
+              onPress={openFormule}
               activeOpacity={0.8}>
               <View style={{width: 320}}>
                 {/* <Image
-                            source={require('../../assets/pizza.jpg')} 
+                            source={require('../../assets/burger.jpg')} 
                             style={{ resizeMode:'cover',  width: 320, height: 200, }}
                             /> */}
                 <FastImage
-                  source={require('../../assets/Formule2.jpg')}
+                  source={image}
                   style={{resizeMode: 'cover', width: 320, height: 200}}
                 />
                 <View style={styles.cardTitle}>
-                  <Text style={styles.titleFormule}>Formule Pizza</Text>
-                  <Text style={styles.textFormule}>
-                    Une pizza, un dessert et une boisson
-                  </Text>
+                  <Text style={styles.titleFormule}>Formule {name}</Text>
+                  <Text style={styles.textFormule}>{description}</Text>
                 </View>
               </View>
             </TouchableOpacity>
@@ -366,10 +280,12 @@ const PagePizza = ({navigation}) => {
         <View>
           <View style={style.bandeauFormule}>
             <Text style={{fontWeight: 'bold', color: colors.color1}}>
-              {productCount < 2 ? 'Prix du produit' : 'Prix des produits'}
+              {/* {productCount < 2 ? 'Prix du produit' : 'Prix des produits'} */}
+              Prix
             </Text>
             <Text style={{color: colors.color1}}>
               {totalPrice.toFixed(2)} €
+
             </Text>
           </View>
           <View style={style.bandeauFormule}>
@@ -393,14 +309,9 @@ const PagePizza = ({navigation}) => {
           Allez au panier
         </Button>
       </View>
-      {/* appel modale pizza */}
-      <ModalePizza
-        modalVisible={isModalSunVisible}
-        setModalVisible={setIsModalSunVisible}
-      />
       <FooterProfile />
     </View>
   );
 };
 
-export default PagePizza;
+export default PageSalee;

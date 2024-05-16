@@ -59,7 +59,7 @@ export const checkStockForSingleProduct = async productId => {
     const stockResponse = await axios.get(
       `${API_BASE_URL}/getStockByProduct/${productId}`,
     );
-    //console.log('res', stockResponse.data)
+    // console.log('res', stockResponse.data)
     return stockResponse.data;
   } catch (error) {
     console.error(
@@ -215,6 +215,7 @@ export const checkIfUserOrderedOffreSUNToday = async (
   try {
     // Format the date to ISO string and encode it to include in the URL
     const dateStr = encodeURIComponent(new Date(dateForDatabase).toISOString());
+
     const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}?date=${dateStr}`);
     const orders = response.data;
 
@@ -296,6 +297,7 @@ export const addStockAntigaspi = async item => {
 // j'enleve du stock
 export const updateStock = async item => {
   if (item) {
+    // console.log('item stock', item)
     try {
       const response = await axios.put(`${API_BASE_URL}/getUpdateStock`, {
         productId: item.productId,
@@ -304,10 +306,10 @@ export const updateStock = async item => {
       // console.log('response', response.data)
 
       if (response.status === 200) {
-        console.log(
-          `Stock mis à jour avec succès(- ${item.qty})  pour le produit`,
-          item.productId,
-        );
+        // console.log(
+        //   `Stock mis à jour avec succès(- ${item.qty})  pour le produit`,
+        //   item.productId,
+        // );
       }
     } catch (error) {
       // Vérification spécifique pour les erreurs HTTP (status code 400)
@@ -345,10 +347,10 @@ export const addStock = async item => {
         },
       );
       if (response.status === 200) {
-        console.log(
-          `Stock mis à jour avec succès(+ ${item.qty})  pour le produit id`,
-          item.productId,
-        );
+        // console.log(
+        //   `Stock mis à jour avec succès(+ ${item.qty})  pour le produit id`,
+        //   item.productId,
+        // );
       }
     } catch (error) {
       console.error(
@@ -450,6 +452,81 @@ export const AnnulationApresErreurPdj = async userId => {
   } catch (error) {
     console.error(
       "Une erreur s'est produite lors de l AnnulationApresErreurPdj",
+      error,
+    );
+    throw error;
+  }
+};
+
+export const getCart = async userId => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/getCart/${userId}`,
+    );
+    if (response.data.message && response.data.message === "No active cart found") {
+      // console.log("No active cart available for this user.");
+       return null;
+      // return { ProductsCarts: [] };
+    }
+
+    return response.data;
+  } catch (error) {
+    console.error(
+      'Une erreur s est produite lors de la récupération du panier du user :',
+      error,
+    );
+    return null;
+  }
+};
+
+export const getCartItemId = async (userId, productId, type, key) => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/getCartItemId/`, {
+        params: { userId, productId, type , key}
+      }
+    );
+    // console.log('response', response)
+    if (response.data.status === 404) {
+      console.log('ce produit nest pas dans le panier')
+      // console.log("No active cart available for this user.");
+      // return null;
+      return { cartItemIds: [] };
+    }
+    return response.data.cartItemIds;
+  } catch (error) {
+    console.error(
+      'Une erreur s est produite lors de la récupération du cartItemId du produit :',
+      error,
+    );
+    return null;
+  }
+};
+
+export const getItemsOffre31 = async productId => {
+  try {
+    const response = await axios.get(
+      `${API_BASE_URL}/getOffer31ItemsGroupedByOfferId/${productId}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Une erreur s'est produite lors de la recup des produits offre31 du panier",
+      error,
+    );
+    throw error;
+  }
+};
+
+export const clearUserCart = async userId => {
+  try {
+    const response = await axios.delete(
+      `${API_BASE_URL}/clearUserCart/${userId}`,
+    );
+    return response.data;
+  } catch (error) {
+    console.error(
+      "Une erreur s'est produite lors de la suppression du panier",
       error,
     );
     throw error;

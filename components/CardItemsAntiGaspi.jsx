@@ -9,7 +9,7 @@ import {AntiGaspi} from '../SVG/AntiGaspi';
 const CartItemAntigaspi = ({
   libelle,
   prix,
-  image,
+  item,
   qty,
   prix_unitaire,
   isFree,
@@ -65,7 +65,7 @@ const CartItemAntigaspi = ({
           </View>
 
           <Text style={styles.price}>
-            {qty} x {prix || prix_unitaire}€
+            {qty} x {item.unitPrice}€
           </Text>
         </View>
 

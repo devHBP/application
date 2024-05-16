@@ -40,6 +40,8 @@ const ProductFlatList = ({ category, products, handleProductPress }) => {
                 allergenes={item.allergenes}
                 category={item.categorie}
                 type_produit={item.type_produit}
+                type={item.type}
+                item={item}
               />
             </TouchableOpacity>
           </View>

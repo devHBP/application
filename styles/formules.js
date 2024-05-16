@@ -12,12 +12,32 @@ const style = StyleSheet.create({
     descriptionFormule:{
       color:colors.color1
     },
+    contentTitleFormule: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      width: '100%',
+      alignItems: 'center',
+      position: 'absolute',
+      top: 30,
+      paddingHorizontal: 30,
+    },
     choixTitle:{
         textAlign:'center',
         fontSize:20,
         padding:10,
         backgroundColor:colors.color3,
         color:colors.color1
+    },
+    contentChoixTitle: {
+      textAlign:'center',
+      fontSize:20,
+      padding:10,
+      backgroundColor:colors.color3,
+      color:colors.color1,
+      flexDirection: 'row',
+      gap: 10,
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     scrollProduct:{
         height:280,
@@ -163,6 +183,13 @@ const style = StyleSheet.create({
     countDown:{
       color:colors.color6,
       fontSize:12,
+    },
+    contentProductCardFormule: {
+      gap: 10,
+      flexDirection: 'column',
+      justifyContent: 'center',
+      alignItems: 'center',
+      margin: 10,
     }
   }
 )

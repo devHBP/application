@@ -2,7 +2,6 @@ import {
   View,
   Text,
   TouchableOpacity,
-  ScrollView,
   Modal,
   Image,
   Linking,
@@ -13,26 +12,21 @@ import React, {useState, useEffect} from 'react';
 import {styles} from '../styles/home';
 import axios from 'axios';
 import {useNavigation} from '@react-navigation/native';
-// import {API_BASE_URL, API_BASE_URL_ANDROID, API_BASE_URL_IOS} from '@env';
 import {API_BASE_URL} from '../config';
 import FastImage from 'react-native-fast-image';
 import baguetteSUN from '../assets/offreSUNbaguette.jpg';
 import antigaspiImage2 from '../assets/anti2.jpg';
 import offre31 from '../assets/Croissant_offre31.jpg';
-import offreNoel from '../assets/offreNoel.jpg';
-import gift from '../assets/gift.png';
 import pastilleAntigaspi from '../assets/pastille_antigaspi.png';
 import offre31Image from '../assets/offre31.jpg';
-import hallesSolanidImage from '../assets/halles_solanid.jpg';
 import startUnionImage from '../assets/start_union.jpg';
-import halleSolanid from '../assets/fond_halles.jpg';
 import popupSUN from '../assets/popupSUN.jpg';
 import promoSUN from '../assets/promo_sun.jpg';
 import badgeSUN from '../assets/badge_sun.jpg';
 import ScrollIndicators from './ScrollIndicators.';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Compteur from '../SVG/Compteur';
-import {useSelector} from 'react-redux';
+import {useSelector, useDispatch} from 'react-redux';
 import {fetchAllProductsClickAndCollect} from '../CallApi/api';
 import ModaleOffreSUN from './ModaleOffreSUN';
 
@@ -63,13 +57,14 @@ const LinkOffres = () => {
 
   const navigation = useNavigation();
 
-  // const [solanidProductNames, setSolanidProductNames] = useState([]);
   const [offre31ProductNames, setoffre31ProductNames] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isModalSunVisible, setIsModalSunVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
 
   const cart = useSelector(state => state.cart.cart);
+  const user = useSelector(state => state.auth.user);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -91,15 +86,6 @@ const LinkOffres = () => {
           product => product.libelle,
         );
         setoffre31ProductNames(productsOffreNames);
-
-        // // produits solanid
-        // const solanidProducts = updatedProducts.filter(
-        //   product => product.reference_fournisseur === 'Solanid',
-        // );
-        // const solanidProductNames = solanidProducts.map(
-        //   product => product.libelle,
-        // );
-        // setSolanidProductNames(solanidProductNames);
       } catch (error) {
         console.error("Une erreur s'est produite, error products :", error);
       }
@@ -118,12 +104,56 @@ const LinkOffres = () => {
   const [timeRemaining, setTimeRemaining] = useState('');
   const [showCountdown, setShowCountdown] = useState(true);
 
+  // useEffect(() => {
+  //   const updateCountdown = () => {
+  //     const now = new Date();
+  //     let endTime = new Date();
+
+  //     // Fin du compteur à 20h59m59s
+  //     endTime.setHours(20, 59, 59, 999);
+
+  //     if (now.getHours() >= 21) {
+  //       endTime.setDate(now.getDate() + 1);
+  //     }
+
+  //     const difference = endTime - now;
+
+  //     if (difference > 0) {
+  //       const hours = Math.floor(difference / (1000 * 60 * 60));
+  //       const minutes = Math.floor(
+  //         (difference % (1000 * 60 * 60)) / (1000 * 60),
+  //       );
+  //       const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+  //       setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
+  //     } else {
+  //       setTimeRemaining('');
+  //     }
+  //   };
+
+  //   const updateCountdownVisibility = () => {
+  //     const now = new Date();
+  //     const hours = now.getHours();
+  //     const minutes = now.getMinutes();
+
+  //     // Afficher le compteur en dehors de 21h à minuit
+  //     setShowCountdown(!(hours >= 21 && hours < 24));
+  //   };
+
+  //   const update = () => {
+  //     updateCountdown();
+  //     updateCountdownVisibility();
+  //   };
+
+  //   // Mettre à jour toutes les secondes
+  //   const intervalId = setInterval(update, 1000);
+
+  //   return () => clearInterval(intervalId);
+  // }, [cart]);
+
   useEffect(() => {
     const updateCountdown = () => {
       const now = new Date();
       let endTime = new Date();
-
-      // Fin du compteur à 20h59m59s
       endTime.setHours(20, 59, 59, 999);
 
       if (now.getHours() >= 21) {
@@ -133,12 +163,8 @@ const LinkOffres = () => {
       const difference = endTime - now;
 
       if (difference > 0) {
-        const hours = Math.floor(difference / (1000 * 60 * 60));
-        const minutes = Math.floor(
-          (difference % (1000 * 60 * 60)) / (1000 * 60),
-        );
-        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-        setTimeRemaining(`${hours}h ${minutes}m ${seconds}s`);
+        const timeString = new Date(difference).toISOString().substr(11, 8);
+        setTimeRemaining(timeString);
       } else {
         setTimeRemaining('');
       }
@@ -146,28 +172,22 @@ const LinkOffres = () => {
 
     const updateCountdownVisibility = () => {
       const now = new Date();
-      const hours = now.getHours();
-      const minutes = now.getMinutes();
-
-      // Afficher le compteur en dehors de 21h à minuit
-      setShowCountdown(!(hours >= 21 && hours < 24));
+      setShowCountdown(!(now.getHours() >= 21 && now.getHours() < 24));
     };
 
-    const update = () => {
+    const intervalId = setInterval(() => {
       updateCountdown();
       updateCountdownVisibility();
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
     };
-
-    // Mettre à jour toutes les secondes
-    const intervalId = setInterval(update, 1000);
-
-    return () => clearInterval(intervalId);
-  }, [cart]);
+  }, []);
 
   const handleAntiGaspi = async () => {
     try {
       const response = await axios.get(`${API_BASE_URL}/checkAntiGaspi`);
-      console.log(response.data)
       if (response.data.accessible === true) {
         navigation.navigate('antigaspi');
       } else {
@@ -179,7 +199,10 @@ const LinkOffres = () => {
         });
       }
     } catch (error) {
-      console.error("Erreur lors de la vérification de l'accès à l'antigaspi", error);
+      console.error(
+        "Erreur lors de la vérification de l'accès à l'antigaspi",
+        error,
+      );
       Toast.show({
         type: 'error',
         text1: 'Erreur de communication avec le serveur',
@@ -188,9 +211,11 @@ const LinkOffres = () => {
   };
 
   const handleOffreSun = async () => {
-    const isOffreSunInCart = cart.some(
-      item => item.type_produit === 'offreSUN',
+    const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
+    const offreSunProduct = allProductsClickandCollect.find(
+      product => product.type_produit === 'offreSUN',
     );
+    const isOffreSunInCart = cart.some(item => item.typeProduit === 'offreSUN');
     if (isOffreSunInCart) {
       Toast.show({
         type: 'error',
@@ -199,11 +224,6 @@ const LinkOffres = () => {
       });
       return;
     }
-
-    const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
-    const offreSunProduct = allProductsClickandCollect.find(
-      product => product.type_produit === 'offreSUN',
-    );
 
     // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
     if (offreSunProduct) {
@@ -215,10 +235,6 @@ const LinkOffres = () => {
   const handleOffreNoel = () => {
     navigation.navigate('noel');
   };
-
-  // const handleHallesSolanid = () => {
-  //   navigation.navigate('solanid');
-  // };
 
   const handleOffre31 = () => {
     navigation.navigate('offre31');
@@ -247,13 +263,6 @@ const LinkOffres = () => {
       secondaryText: 'Gratuite      ',
       pastilleImage: badgeSUN,
     },
-    // {
-    //   type: 'custom',
-    //   imageUri: offreNoel,
-    //   mainText: 'Nouveautés pour       ',
-    //   secondaryText: 'Les fêtes      ',
-    //   pastilleImage: gift,
-    // },
     {
       type: 'offre31',
       imageUri: offre31,
@@ -261,14 +270,6 @@ const LinkOffres = () => {
       secondaryText: 'Gratuit',
       pastilleImage: offre31Image,
     },
-    // {
-    //   type: 'hallesSolanid',
-    //   imageUri: halleSolanid,
-    //   mainText: 'Un repas équilibré,',
-    //   thirdText: 'frais et de saison avec',
-    //   secondaryText: 'Les Halles Solanid',
-    //   pastilleImage: hallesSolanidImage,
-    // },
     {
       type: 'sun',
       imageUri: promoSUN,
@@ -314,14 +315,6 @@ const LinkOffres = () => {
         thirdText = item.thirdText;
         pastilleImgSrc = item.pastilleImage;
         break;
-      // case 'hallesSolanid':
-      //   handlePressFunc = handleHallesSolanid;
-      //   imgSrc = item.imageUri;
-      //   mainText = item.mainText;
-      //   thirdText = item.thirdText;
-      //   secondaryText = item.secondaryText;
-      //   pastilleImgSrc = item.pastilleImage;
-      //   break;
       case 'sun':
         handlePressFunc = handlePress;
         imgSrc = item.imageUri;

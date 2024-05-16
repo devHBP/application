@@ -131,33 +131,6 @@ const Orders = ({navigation}) => {
     navigation.navigate('home');
   };
 
-  // const handleCancel = async orderId => {
-  //   try {
-  //     const response = await axios.post(`${API_BASE_URL}/cancelOrder`, {
-  //       orderId,
-  //     });
-  //     setCancelledOrder(orderId);
-  //   } catch (error) {
-  //     console.error(
-  //       'An error occurred while updating the order status:',
-  //       error,
-  //     );
-  //   }
-  // };
-  // const handleReorder = () => {
-  //   if (isDisabled) {
-  //     return;
-  //   }
-  //   console.log('reorder');
-  // };
-
-  //mise à jour des commandes si commande annulée
-  // useEffect(() => {
-  //   if (cancelledOrder !== null) {
-  //     allMyOrders();
-  //   }
-  // }, [cancelledOrder]);
-
   const allMyOrders = async () => {
     try {
       const response = await axios.get(
@@ -219,7 +192,7 @@ const Orders = ({navigation}) => {
 
     // console.log('item commandes antérieures', JSON.parse(item.cartString));
     const cart = JSON.parse(item.cartString);
-    // console.log('cart commandes anterieurs', cart);
+    // console.log('cart commandes anterieurs', item);
     return (
       <View style={lastOrder ? style.lastOrderContainer : style.backOldOrder}>
         <TouchableOpacity
@@ -256,12 +229,12 @@ const Orders = ({navigation}) => {
             </View>
             <View style={style.flexStart}>
               <Text style={style.newPrice}>{item.prix_total}€</Text>
-              <Text style={style.detailsArticles}>
-                {item.productIds.split(',').length}x{' '}
+              {/* <Text style={style.detailsArticles}>
+              {item.productIds.split(',').length}x{' '}
                 {item.productIds.split(',').length === 1
                   ? `Article`
                   : `Articles`}
-              </Text>
+              </Text> */}
             </View>
             <View style={style.backArrow}>
               <ArrowDown />
@@ -294,7 +267,7 @@ const Orders = ({navigation}) => {
                       <View key={key}>
                         <View style={style.orderFormule}>
                           <View>
-                            <Text style={style.title}>{product.qty } x {libelle}</Text>
+                            <Text style={style.title}>{product.quantity } x {libelle}</Text>
                             {option1 && (
                               <View style={style.optionStyle}>
                                 <Text style={style.text}>
@@ -328,48 +301,48 @@ const Orders = ({navigation}) => {
                           </View>
                           <View style={style.orderPrices}>
                             <Text style={style.oldPrice}>
-                              {prix.toFixed(2)}€
+                              {product.unitPrice}€
                             </Text>
                             <Text style={style.newPrice}>
-                           {(prix * 0.8 * product.qty).toFixed(2)}€
+                           {(product.unitPrice * 0.8 * product.quantity).toFixed(2)}€
                             </Text>
                           </View>
                         </View>
                       </View>
                     );
-                  } else if (antigaspi) {
+                  } else if (type === 'antigaspi') {
                     // si produit antigaspi
                     return (
                       <View key={key}>
                         <View style={style.orderDetails}>
                           <Text style={style.textWidth}>
-                            <AntiGaspi color={colors.color8} /> {qty}x {libelle}
+                            <AntiGaspi color={colors.color8} /> {product.quantity}x {product.product}
                           </Text>
                           <View style={style.orderPrices}>
-                            <Text style={style.oldPrice}>
-                              {(prix_unitaire / 0.3).toFixed(2)}€
+                            <Text style={style.newPrice}>
+                              {(product.unitPrice)}€
                             </Text>
                             <Text style={style.newPrice}>
-                              {prix_unitaire.toFixed(2)}€
+                              {/* {product.unitPrice}€ */}
                             </Text>
                           </View>
                         </View>
                       </View>
                     );
-                  } else if (type_produit === 'offreSUN') {
+                  } else if (type === 'offreSUN') {
                     // si baguette offreSUN
                     return (
                       <View key={key}>
                         <View style={style.orderDetails}>
                           <Text style={style.textWidth}>
-                            <OffreSun /> {qty}x {libelle}
+                            <OffreSun /> {product.quantity}x {libelle}
                           </Text>
                           <View style={style.orderPrices}>
-                            <Text style={style.oldPrice}>
-                              {(prix_unitaire / 0.3).toFixed(2)}€
+                            <Text style={style.newPrice}>
+                            {(product.unitPrice)}€
                             </Text>
                             <Text style={style.newPrice}>
-                              {prix_unitaire.toFixed(2)}€
+                            {/* {product.unitPrice}€ */}
                             </Text>
                           </View>
                         </View>
@@ -381,14 +354,14 @@ const Orders = ({navigation}) => {
                       <View key={key}>
                         <View style={style.orderDetails}>
                           <Text style={style.textWidth}>
-                            {qty}x {libelle}
+                            {product.quantity}x {product.product}
                           </Text>
                           <View style={style.orderPrices}>
                             <Text style={style.oldPrice}>
-                              {prix_unitaire * qty}€
+                              {product.unitPrice * product.quantity}€
                             </Text>
                             <Text style={style.newPrice}>
-                              {(prix_unitaire * qty * 0.8).toFixed(2)}€
+                              {(product.unitPrice * product.quantity * 0.8).toFixed(2)}€
                             </Text>
                           </View>
                         </View>
@@ -417,7 +390,7 @@ const Orders = ({navigation}) => {
   const renderLastOrder = (item, index) => {
     const parsedItem = JSON.parse(item.cartString);
     //console.log('parsedItem', parsedItem[0].type);
-    //console.log('item derniere commande', parsedItem);
+    // console.log('item derniere commande', parsedItem);
 
     let prixUnitaires;
 
@@ -516,8 +489,8 @@ const Orders = ({navigation}) => {
                             <View style={style.orderFormule}>
                               <View>
                                 <Text
-                                  style={{...style.text, fontWeight: 'bold'}}>
-                                  {product.qty } x {libelle}
+                                  style={{...style.text}}>
+                                  {product.quantity } x {libelle}
                                 </Text>
                                 {option1 && (
                                   <View style={style.optionStyle}>
@@ -532,7 +505,7 @@ const Orders = ({navigation}) => {
                                 {option2 && (
                                   <View style={style.optionStyle}>
                                     <Text style={style.text}>
-                                    {product.qty } x {option2.libelle}
+                                    {product.quantity } x {option2.libelle}
                                     </Text>
                                     {/* <Text style={style.optionFormule}>
                                     {option2.prix_formule}€
@@ -542,7 +515,7 @@ const Orders = ({navigation}) => {
                                 {option3 && (
                                   <View style={style.optionStyle}>
                                     <Text style={style.text}>
-                                    {product.qty } x {option3.libelle}
+                                    {product.quantity } x {option3.libelle}
                                     </Text>
                                     {/* <Text style={style.optionFormule}>
                                     {option3.prix_formule}€
@@ -551,48 +524,47 @@ const Orders = ({navigation}) => {
                                 )}
                               </View>
                               <View style={style.orderPrices}>
-                                <Text style={style.oldPrice}>{prix} €</Text>
+                                <Text style={style.oldPrice}>{product.unitPrice} €</Text>
                                 <Text style={style.newPrice}>
-                                {(prix * 0.8 * product.qty).toFixed(2)}€
+                                {(product.unitPrice * 0.8 * product.quantity).toFixed(2)}€
                                 </Text>
                               </View>
                             </View>
                           </View>
                         );
-                      } else if (antigaspi) {
+                      } else if (type === 'antigaspi') {
                         // si on a un produit antigaspi
                         return (
                           <View key={key}>
                             <View style={style.orderDetails}>
                               <Text style={style.textWidth}>
-                                <AntiGaspi color={colors.color8} /> {qty}x{' '}
-                                {libelle}
+                                <AntiGaspi color={colors.color8} /> {product.quantity}x{' '}
+                                {product.product}
                               </Text>
                               <View style={style.orderPrices}>
-                                <Text style={style.oldPrice}>
-                                  {(prix_unitaire / 0.3).toFixed(2)}€
+                                <Text style={style.newPrice}>
+                                  {(product.unitPrice )}€
                                 </Text>
                                 <Text style={style.newPrice}>
-                                  {prix_unitaire.toFixed(2)}€
+                                {/* {(product.unitPrice )}€ */}
                                 </Text>
                               </View>
                             </View>
                           </View>
                         );
-                      } else if (type_produit === 'offreSUN') {
+                      } else if (type === 'offreSUN') {
                         // si baguette gratuite
                         return (
                           <View key={key}>
                             <View style={style.orderDetails}>
                               <Text style={style.textWidth}>
-                                <OffreSun /> {qty}x {libelle}
+                                <OffreSun /> {product.quantity}x {product.product}
                               </Text>
                               <View style={style.orderPrices}>
-                                <Text style={style.oldPrice}>
-                                  {(prix_unitaire / 0.3).toFixed(2)}€
+                                <Text style={style.newPrice}>
+                                  {(product.unitPrice)}€
                                 </Text>
                                 <Text style={style.newPrice}>
-                                  {prix_unitaire.toFixed(2)}€
                                 </Text>
                               </View>
                             </View>
@@ -604,14 +576,14 @@ const Orders = ({navigation}) => {
                           <View key={key}>
                             <View style={style.orderDetails}>
                               <Text style={style.textWidth}>
-                                {qty}x {libelle}
+                                {product.quantity}x {product.product}
                               </Text>
                               <View style={style.orderPrices}>
                                 <Text style={style.oldPrice}>
-                                  {(prix_unitaire * qty).toFixed(2)}€
+                                  {(product.unitPrice * product.quantity).toFixed(2)}€
                                 </Text>
                                 <Text style={style.newPrice}>
-                                  {(prix_unitaire * qty * 0.8).toFixed(2)}€
+                                  {(product.unitPrice  * product.quantity * 0.8).toFixed(2)}€
                                 </Text>
                               </View>
                             </View>

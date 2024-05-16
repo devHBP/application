@@ -6,6 +6,7 @@ import {
   TouchableOpacity,
   Image,
   Dimensions,
+  StyleSheet,
 } from 'react-native';
 import {fonts, colors} from '../styles/styles';
 import {styles} from '../styles/home';
@@ -18,6 +19,8 @@ import React, {
 } from 'react';
 import {useSelector, useDispatch} from 'react-redux';
 import {linkFromSUN, updateUser} from '../reducers/authSlice';
+import {getCart} from '../reducers/cartSlice';
+
 import axios from 'axios';
 import FooterProfile from '../components/FooterProfile';
 import FormulesSalees from '../components/FormulesSalees';
@@ -47,8 +50,10 @@ import {
 import ModaleOffreSUN from '../components/ModaleOffreSUN';
 import ModaleModifProfile from '../components/ModaleModifProfile';
 import FastImage from 'react-native-fast-image';
-import {Badge} from 'react-native-paper';
+import Location from '../SVG/Location';
 
+import Picker from 'react-native-picker-select';
+import SelectDropdown from 'react-native-select-dropdown';
 
 const Home = ({navigation}) => {
   // console.log('lancement de la page home')
@@ -70,16 +75,87 @@ const Home = ({navigation}) => {
   const [isPref, setIsPref] = useState(null);
   const [orders, setOrders] = useState([]);
   const [readyOrders, setReadyOrders] = useState([]);
+  const [selectedStoreDetails, setSelectedStoreDetails] = useState({});
 
   const user = useSelector(state => state.auth.user);
-  // const userId = user.userId;
-  // const idSUN = user.idSUN;
   const cart = useSelector(state => state.cart.cart);
-  const status = useSelector(state => state.auth.user.statusSUN);
 
   useEffect(() => {
-    // console.log("Le status SUN a changé:", status);
-  }, [status]);
+    const loadInitialData = async () => {
+      setIsLoading(true); // Activer le loader au début
+
+      try {
+        // Définir les promesses pour les différentes données à charger
+        const productsPromise = fetchAllProductsClickandCollect();
+        const cartPromise = dispatch(getCart(user.userId));
+        const storesPromise = getAllStores();
+
+        const delayPromise = new Promise(resolve => setTimeout(resolve, 5000));
+
+        // Attendre que toutes les données soient chargées en parallèle
+        const [products, stores] = await Promise.all([
+          productsPromise,
+          storesPromise,
+          cartPromise,
+          delayPromise,
+        ]);
+
+        const updatedProducts = products.map(product => ({
+          ...product,
+          qty: 0,
+        }));
+
+        setProducts(updatedProducts);
+        setCategories([
+          ...new Set(updatedProducts.map(product => product.categorie)),
+          'Tous',
+        ]);
+        setStores(stores);
+      } catch (error) {
+        console.error(
+          'Erreur lors du chargement des données initiales:',
+          error,
+        );
+      }
+
+      setIsLoading(false);
+      const timer = setTimeout(() => {
+        handleOffreSun(); // Gérer les offres SUN après un délai
+      }, 1000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    };
+
+    loadInitialData();
+  }, [dispatch, user.userId]);
+
+  useEffect(() => {
+    if (user && user.role) {
+      axios
+        .post(`${API_BASE_URL}/getStore`, {
+          role: user.role,
+          storeId: user.storeId,
+        })
+        .then(response => {
+          if (response.data.stores) {
+            setStores(response.data.stores);
+          }
+          if (response.data.selectedStore) {
+            setSelectedStoreDetails(response.data.selectedStore);
+          }
+        })
+        .catch(error => {
+          console.error('Erreur lors de la récupération des données :', error);
+        });
+    }
+  }, [user.role, user.storeId]);
+
+  // const status = useSelector(state => state.auth.user.statusSUN);
+  // useEffect(() => {
+  //   // console.log("Le status SUN a changé:", status);
+  // }, [status]);
 
   // produit offreSUN
   const handleOffreSun = async () => {
@@ -89,7 +165,7 @@ const Home = ({navigation}) => {
     );
     // offre dans le panier déja présente ?
     const isOffreSunInCart = cart.some(
-      item => item.type_produit === 'offreSUN',
+      item => item.typeProduit === 'offreSUN', // table ProductsCart:  typeProduit
     );
     // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
     if (offreSunProduct && !isOffreSunInCart) {
@@ -99,11 +175,12 @@ const Home = ({navigation}) => {
   };
   const route = useRoute();
 
+  // a revoir
   const totalPrice = Number(
     cart
       .reduce((total, item) => {
-        const prix = item.prix || item.prix_unitaire;
-        return total + item.qty * prix;
+        const prix = item.unitPrice;
+        return total + item.quantity * prix;
       }, 0)
       .toFixed(2),
   );
@@ -125,38 +202,6 @@ const Home = ({navigation}) => {
   );
 
   useEffect(() => {
-    const fetchStores = async () => {
-      try {
-        const fetchedStores = await getAllStores();
-        setStores(fetchedStores);
-        setFilteredProducts(products);
-      } catch (error) {
-        console.error("Une erreur s'est produite, erreur stores :", error);
-      }
-    };
-
-    const getStatusSun = async () => {
-      try {
-        const statusSUN = await getStatusSUN(user.userId);
-        dispatch(linkFromSUN(statusSUN));
-      } catch (error) {
-        console.error("Une erreur s'est produite, coté  statusSUn :", error);
-      }
-    };
-
-    fetchStores();
-    getStatusSun();
-
-    const timer = setTimeout(() => {
-      handleOffreSun();
-    }, 3000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [products, status]);
-
-  useEffect(() => {
     axios
       .get(`${API_BASE_URL}/getOne/${user.userId}`)
       .then(response => {
@@ -170,33 +215,6 @@ const Home = ({navigation}) => {
           error,
         );
       });
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      setIsLoading(true);
-      try {
-        const products = await fetchAllProductsClickandCollect();
-        const updatedProducts = products.map(product => ({
-          ...product,
-          qty: 0,
-        }));
-
-        setProducts(updatedProducts);
-        setCategories([
-          ...new Set(updatedProducts.map(product => product.categorie)),
-          'Tous',
-        ]);
-
-        setTimeout(() => {
-          setIsLoading(false);
-        }, 5000);
-      } catch (error) {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
   }, []);
 
   //redirection vers la page de détails
@@ -369,23 +387,6 @@ const Home = ({navigation}) => {
     );
   };
 
-
-  // // Déterminer le style en fonction du statusSUN
-  let badgeStyle;
-
-  switch (status) {
-    case 'en attente sun':
-      badgeStyle = styles.linkPendingFromSun;
-      break;
-    case 'confirmé':
-      badgeStyle = styles.linkConfirmFromSun;
-      break;
-    default:
-      badgeStyle = null; 
-  }
-
-
-
   return (
     <>
       <View style={{flex: 1}}>
@@ -503,7 +504,178 @@ const Home = ({navigation}) => {
                   {/* <View style={{ flexDirection:'row', alignItems:'center',justifyContent:'center', width:"100%"}}> */}
 
                   <View>
-                    <StorePicker />
+                    {/* <StorePicker /> */}
+                    <View
+                      style={{
+                        width: 160,
+                        height: 80,
+                        backgroundColor: 'white',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <View style={{flexDirection: 'column'}}>
+                        {user.role == 'SUNcollaborateur' && (
+                          <View
+                            style={{
+                              flexDirection: 'row',
+                              gap: 5,
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              paddingBottom: Platform.OS === 'ios' ? 8 : 0,
+                            }}>
+                            <Location />
+                            <Text
+                              style={{
+                                ...styles.textPickerDate,
+                                textAlign: 'center',
+                              }}>
+                              Livraison
+                            </Text>
+                          </View>
+                        )}
+                        {Platform.OS === 'android' ? (
+                          <SelectDropdown
+                            key={selectedStoreDetails.nom_magasin}
+                            data={stores.map(store => store.nom_magasin)}
+                            onSelect={(selectedItem, index) => {
+                              const selected = stores.find(
+                                store => store.nom_magasin === selectedItem,
+                              );
+                              if (selected) {
+                                dispatch(
+                                  updateUser({
+                                    ...user,
+                                    storeId: selected.storeId,
+                                  }),
+                                );
+                                // dispatch(updateSelectedStore(selected));
+                                setSelectedStoreDetails(selected);
+                                axios
+                                  .put(
+                                    `${API_BASE_URL}/updateOneUser/${user.userId}`,
+                                    {storeId: selected.storeId},
+                                  )
+                                  .then(response => {
+                                    // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
+                                  })
+                                  .catch(error => {
+                                    console.error(
+                                      'Erreur lors de la mise à jour du choix du magasin dans la base de données - erreur ici:',
+                                      error,
+                                    );
+                                  });
+                              } else {
+                                console.log(
+                                  'pas de magasin sélectionné encore',
+                                );
+                              }
+                            }}
+                            buttonTextAfterSelection={(selectedItem, index) => {
+                              // text represented after item is selected
+                              // if data array is an array of objects then return selectedItem.property to render after item is selected
+                              return selectedItem;
+                            }}
+                            rowTextForSelection={(item, index) => {
+                              // text represented for each item in dropdown
+                              // if data array is an array of objects then return item.property to represent item in dropdown
+                              return item;
+                            }}
+                            buttonStyle={{
+                              backgroundColor: 'transparent',
+                              width: 160,
+                              height: 30,
+                              padding: 0,
+                            }}
+                            buttonTextStyle={{
+                              fontSize: 10,
+                              fontWeight: 700,
+                              color: colors.color2,
+                              padding: 0,
+                            }}
+                            // defaultButtonText={selectedStore.nom_magasin}
+                            defaultButtonText={
+                              selectedStoreDetails
+                                ? selectedStoreDetails.nom_magasin
+                                : 'faites votre choix'
+                            }
+                            rowTextStyle={{fontSize: 10}}
+                            // rowStyle={{width:20}}
+                          />
+                        ) : (
+                          <Picker
+                            placeholder={{
+                              label: 'Choisissez un magasin',
+                            }}
+                            value={selectedStoreDetails.nom_magasin}
+                            // value={selectedStore.nom_magasin}
+                            onValueChange={value => {
+                              const selected = stores.find(
+                                store => store.nom_magasin === value,
+                              );
+
+                              if (selected) {
+                                // dispatch(updateSelectedStore(selected));
+                                dispatch(
+                                  updateUser({
+                                    ...user,
+                                    storeId: selected.storeId,
+                                  }),
+                                );
+                                setSelectedStoreDetails(selected);
+                                axios
+                                  .put(
+                                    `${API_BASE_URL}/updateOneUser/${user.userId}`,
+                                    {storeId: selected.storeId},
+                                  )
+                                  .then(response => {
+                                    // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
+                                  })
+                                  .catch(error => {
+                                    console.error(
+                                      'Erreur lors de la mise à jour du choix du magasin dans la base de données (ici) - erreur ici:',
+                                      error,
+                                    );
+                                  });
+                              } else {
+                                // console.log('pas de magasin selectionné encore')
+                              }
+                            }}
+                            items={stores.map(store => ({
+                              label: store.nom_magasin,
+                              value: store.nom_magasin,
+                            }))}
+                            style={pickerSelectStyles}
+                            doneText="OK"
+                          />
+                        )}
+
+                        {user.role == 'client' ||
+                          (user.role == 'invite' && (
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'center',
+                              }}>
+                              <View>
+                                <Text
+                                  style={{
+                                    fontSize: 10,
+                                    color: colors.color1,
+                                    width: 130,
+                                  }}>
+                                  {selectedStoreDetails.adresse_magasin}
+                                </Text>
+                                <Text
+                                  style={{fontSize: 10, color: colors.color1}}>
+                                  {selectedStoreDetails.cp_magasin}{' '}
+                                  {selectedStoreDetails.ville_magasin}
+                                </Text>
+                              </View>
+                            </View>
+                          ))}
+                      </View>
+                    </View>
                   </View>
 
                   <View>
@@ -537,9 +709,10 @@ const Home = ({navigation}) => {
                     </Text>
                     {cart.map((item, index) => (
                       <View key={index} style={{paddingLeft: 20}}>
-                        <Text style={{color: colors.color1}}>
+                        <Text style={{color: colors.color1, fontSize: 12}}>
                           {' '}
-                          {item.qty} x {item.libelle}
+                          {item.quantity} x {item.product || item.libelle} à{' '}
+                          {item.unitPrice}€
                         </Text>
                       </View>
                     ))}
@@ -713,12 +886,14 @@ const Home = ({navigation}) => {
               </View>
             </ScrollView>
 
-            <ModaleOffreSUN
-              modalVisible={isModalSunVisible}
-              setModalVisible={setIsModalSunVisible}
-              product={selectedProduct}
-            />
-            
+            {user.role != 'invite' && (
+              <ModaleOffreSUN
+                modalVisible={isModalSunVisible}
+                setModalVisible={setIsModalSunVisible}
+                product={selectedProduct}
+              />
+            )}
+
             <FooterProfile />
           </SafeAreaProvider>
         )}
@@ -726,4 +901,26 @@ const Home = ({navigation}) => {
     </>
   );
 };
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 12,
+    color: colors.color2,
+    textAlign: 'center',
+    marginVertical: 2,
+  },
+  inputAndroid: {
+    fontSize: 18,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderRadius: 8,
+    color: colors.color1,
+  },
+});
+
+const pickerStyles = Platform.select({
+  ios: pickerSelectStyles.inputIOS, // Styles pour iOS
+  android: pickerSelectStyles.inputAndroid, // Styles pour Android
+});
 export default Home;

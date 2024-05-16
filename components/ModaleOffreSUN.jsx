@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,34 +8,55 @@ import {
   Image,
 } from 'react-native';
 import {colors} from '../styles/styles';
-import {useDispatch} from 'react-redux';
-import {addToCart} from '../reducers/cartSlice';
+import {useDispatch, useSelector} from 'react-redux';
 import logoSun from '../assets/logoSUNPremium.jpg';
 import {useCountdown} from '../components/CountdownContext';
+import {incrementhandler} from '../Fonctions/fonctions';
+import { getCart, getTotalCart} from '../reducers/cartSlice';
 
 const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
   const {resetCountdown} = useCountdown();
   const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
+  const cart = useSelector(state => state.cart.cart);
 
-  const handleAcceptOffer = () => {
-    const newProduct = {
-      productId: product.productId,
-      libelle: product.libelle,
-      image: product.image,
-      prix_unitaire: product.prix_unitaire,
-      qty: 1,
-      type: 'offreSUN',
-      type_produit:"offreSUN"
+  useEffect(() => {
+    const loadCart = async () => {
+      // appel du panier via redux
+      dispatch(getCart(user.userId));
+      dispatch(getTotalCart(user.userId));
+      // console.log('boucle modale offre sun');
     };
-    // console.log('newproduct', newProduct);
-    dispatch(addToCart(newProduct));
+
+    loadCart();
+  }, [user.userId, dispatch]);
+
+  const handleAcceptOffer = async () => {
+    setModalVisible(!modalVisible);
+    await incrementhandler(
+      user.userId,
+      product.productId,
+      1,
+      product.prix_unitaire,
+      'offreSUN',
+      true,
+      null,
+      null,
+      null,
+      null,
+      product.type_produit,
+      product.categorie,
+      null,
+      product.libelle
+    );
+    await dispatch(getCart(user.userId));
+    await dispatch(getTotalCart(user.userId));
     resetCountdown();
 
-   
   };
   return (
     <Modal
-      animationType="slide"
+      animationType="fade"
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
@@ -63,7 +84,6 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
             <TouchableOpacity
               onPress={() => {
                 handleAcceptOffer();
-                setModalVisible(!modalVisible);
               }}
               style={styles.btn}>
               <Text style={styles.colorTextBtn}>Confirmer</Text>
@@ -80,7 +100,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    //backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContent: {
     backgroundColor: colors.color6,
