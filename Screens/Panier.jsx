@@ -164,6 +164,7 @@ const Panier = ({navigation}) => {
     ? cart.reduce((sum, item) => sum + Number(item.totalPrice), 0)
     : 0;
 
+  //TODO Ici aussi il me semble, que la logique est encore en dur alors que nous possédons dans l'objet product le prix_remise_collaborateur
   const totalSumForCollabAndAntigaspi = Array.isArray(cart)
     ? cart.reduce((total, product) => {
         let adjustedPrice = product.totalPrice;

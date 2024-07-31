@@ -393,7 +393,8 @@ const ProductCard = ({
             <View style={style.viewLogoSunSvg}>
               <LogoSun />
               <Text numberOfLines={1} style={style.viewPrice}>
-                {(prix * 0.8).toFixed(2)}€
+                {/* Ici petit changement, {(prix*0.8).toFixed(2)}*/}
+                {prixSUN}€
               </Text>
             </View>
           </>
