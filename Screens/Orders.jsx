@@ -304,6 +304,7 @@ const Orders = ({navigation}) => {
                               {product.unitPrice}€
                             </Text>
                             <Text style={style.newPrice}>
+                            {/* TODO Modif à prévoir ici, utiliser le prix_remise_collaborateur */}
                            {(product.unitPrice * 0.8 * product.quantity).toFixed(2)}€
                             </Text>
                           </View>
@@ -361,6 +362,7 @@ const Orders = ({navigation}) => {
                               {product.unitPrice * product.quantity}€
                             </Text>
                             <Text style={style.newPrice}>
+                              {/* TODO : Idem modifier la remise en dur contre utilisation de prix_remise_collaborateur */}
                               {(product.unitPrice * product.quantity * 0.8).toFixed(2)}€
                             </Text>
                           </View>

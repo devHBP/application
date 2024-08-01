@@ -300,6 +300,7 @@ const ProductDetails = ({navigation, route}) => {
     productsSunPrice = ( fullGroups * 3 + remainingProducts ) * product.prix_remise_collaborateur;
   } else {
     productsPrice = totalQuantity * product.prix_unitaire;
+    productsSunPrice = totalQuantity * product.prix_remise_collaborateur;
   }
 
   return (
