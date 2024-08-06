@@ -12,7 +12,6 @@
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
 		1B726F162AA0886800368DBD /* logoPDJ.png in Resources */ = {isa = PBXBuildFile; fileRef = 1B726F152AA0886800368DBD /* logoPDJ.png */; };
-		1B8D46C22BBFE516001A7FC3 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1B8D46C12BBFE516001A7FC3 /* PrivacyInfo.xcprivacy */; };
 		1B9D501F2A4C1BFC00519F43 /* Fontisto.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B9D4FFD2A4C1BFB00519F43 /* Fontisto.ttf */; };
 		1B9D50202A4C1BFC00519F43 /* Octicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B9D4FFE2A4C1BFB00519F43 /* Octicons.ttf */; };
 		1B9D50222A4C1BFC00519F43 /* Feather.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B9D50002A4C1BFC00519F43 /* Feather.ttf */; };
@@ -31,6 +30,7 @@
 		1B9D503E2A4C1BFC00519F43 /* MaterialIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1B9D501C2A4C1BFC00519F43 /* MaterialIcons.ttf */; };
 		1BADE7BB2B1A1B2C0023ED85 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 1BADE7BA2B1A1B2B0023ED85 /* GoogleService-Info.plist */; };
 		1BDE34712B1E278C00FB71AA /* MyappReactNativeRelease.entitlements in Resources */ = {isa = PBXBuildFile; fileRef = 1BDE34702B1E278C00FB71AA /* MyappReactNativeRelease.entitlements */; };
+		6132EF182BDFF13200BBE14D /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
 		B0C155978BD1E5F2E4A1DF5A /* Pods_MyappReactNative_MyappReactNativeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DE23F11C4A7405AEEB934AE9 /* Pods_MyappReactNative_MyappReactNativeTests.framework */; };
 		F6127B1633B6D19470217F36 /* Pods_MyappReactNative.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B333CA0998AE5AD375397428 /* Pods_MyappReactNative.framework */; };
@@ -64,7 +64,6 @@
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = MyappReactNative/main.m; sourceTree = "<group>"; };
 		15741EFFC3F198F8709693BA /* Pods-MyappReactNative.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MyappReactNative.debug.xcconfig"; path = "Target Support Files/Pods-MyappReactNative/Pods-MyappReactNative.debug.xcconfig"; sourceTree = "<group>"; };
 		1B726F152AA0886800368DBD /* logoPDJ.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = logoPDJ.png; path = ../../assets/logoPDJ.png; sourceTree = "<group>"; };
-		1B8D46C12BBFE516001A7FC3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1B9D4FFC2A4C1BFB00519F43 /* Montserrat ExtraBold 800.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Montserrat ExtraBold 800.ttf"; sourceTree = "<group>"; };
 		1B9D4FFD2A4C1BFB00519F43 /* Fontisto.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Fontisto.ttf; sourceTree = "<group>"; };
 		1B9D4FFE2A4C1BFB00519F43 /* Octicons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Octicons.ttf; sourceTree = "<group>"; };
@@ -111,6 +110,7 @@
 		525D208F758C407CBF1CC768 /* Foundation.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Foundation.ttf; path = ../assets/fonts/Foundation.ttf; sourceTree = "<group>"; };
 		55061023866543F48350433D /* Octicons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = Octicons.ttf; path = ../assets/fonts/Octicons.ttf; sourceTree = "<group>"; };
 		5F52A0B657574729815194B7 /* Montserrat Black 900.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat Black 900.ttf"; path = "../assets/fonts/Montserrat Black 900.ttf"; sourceTree = "<group>"; };
+		6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; name = PrivacyInfo.xcprivacy; path = MyappReactNative/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		6192ABDCFA3F4BF7B68810DD /* Postino Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Postino Italic.ttf"; path = "../assets/fonts/Postino Italic.ttf"; sourceTree = "<group>"; };
 		6D73C0E014C64147A56AF1D7 /* EvilIcons.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = EvilIcons.ttf; path = ../assets/fonts/EvilIcons.ttf; sourceTree = "<group>"; };
 		6D8AC666EA254ED88C05D13F /* Montserrat Black Italic 900.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "Montserrat Black Italic 900.ttf"; path = "../assets/fonts/Montserrat Black Italic 900.ttf"; sourceTree = "<group>"; };
@@ -190,7 +190,7 @@
 				13B07FB71A68108700A75B9A /* main.m */,
 				1BADE7BA2B1A1B2B0023ED85 /* GoogleService-Info.plist */,
 				1BDE34702B1E278C00FB71AA /* MyappReactNativeRelease.entitlements */,
-				1B8D46C12BBFE516001A7FC3 /* PrivacyInfo.xcprivacy */,
+				6132EF172BDFF13200BBE14D /* PrivacyInfo.xcprivacy */,
 			);
 			name = MyappReactNative;
 			sourceTree = "<group>";
@@ -458,7 +458,7 @@
 				1B9D502D2A4C1BFC00519F43 /* FontAwesome5_Solid.ttf in Resources */,
 				1B9D503B2A4C1BFC00519F43 /* SimpleLineIcons.ttf in Resources */,
 				1B9D50322A4C1BFC00519F43 /* Zocial.ttf in Resources */,
-				1B8D46C22BBFE516001A7FC3 /* PrivacyInfo.xcprivacy in Resources */,
+				6132EF182BDFF13200BBE14D /* PrivacyInfo.xcprivacy in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -828,6 +828,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -862,6 +863,10 @@
 					"-DFOLLY_NO_CONFIG",
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
@@ -904,6 +909,10 @@
 				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = i386;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					_LIBCPP_ENABLE_CXX17_REMOVED_UNARY_BINARY_FUNCTION,
+				);
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -935,6 +944,10 @@
 					"-DFOLLY_NO_CONFIG",
 					"-DFOLLY_MOBILE=1",
 					"-DFOLLY_USE_LIBCPP=1",
+				);
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					" ",
 				);
 				REACT_NATIVE_PATH = "${PODS_ROOT}/../../node_modules/react-native";
 				SDKROOT = iphoneos;
