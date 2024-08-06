@@ -81,6 +81,7 @@ import {
   formatToDateISO,
   handleRemoveDiscount,
   countdownStock,
+  calculateFormulePrice,
 } from '../Fonctions/fonctions';
 
 const Panier = ({navigation}) => {
@@ -161,15 +162,43 @@ const Panier = ({navigation}) => {
   }, [user.role, user.storeId]);
 
   const totalSum = Array.isArray(cart)
-    ? cart.reduce((sum, item) => sum + Number(item.totalPrice), 0)
+    ? cart.reduce((sum, item) => {
+      let totalPrice = item.totalPrice;
+      /* Correctif Bug affichage, le prix affiché n'était pas correct */
+      if(item.type === "formule"){
+        totalPrice = item.quantity * item.unitPrice;
+      }
+      return sum + Number(totalPrice)
+    }, 0)
     : 0;
 
   //TODO Ici aussi il me semble, que la logique est encore en dur alors que nous possédons dans l'objet product le prix_remise_collaborateur
   const totalSumForCollabAndAntigaspi = Array.isArray(cart)
-    ? cart.reduce((total, product) => {
+    ? cart.reduce((total, product) => {  
         let adjustedPrice = product.totalPrice;
         if (userRole === 'SUNcollaborateur' && product.type !== 'antigaspi') {
-          adjustedPrice *= 0.8;
+          /* Correctif Bug affichage */
+          if(product.type === 'formule'){
+            // Switch de adjustedPrice 
+            adjustedPrice = product.unitPrice;
+            // On check si la formule contient l'option2 et l'option3
+            if(product.option2ProductId && product.option3ProductId){
+              adjustedPrice = calculateFormulePrice(4, adjustedPrice, 0.8)
+            }
+            // Sinon si elle à option2 ou option3
+            else if(product.option2ProductId || product.option3ProductId){
+              adjustedPrice = calculateFormulePrice(2, adjustedPrice, 0.8)
+            }
+            // Sinon c'est un sandwich seul
+            else{
+              adjustedPrice *= 0.8;
+            }
+            // On ajuste le prix par la quantitée 
+            adjustedPrice *= product.quantity;
+          }
+          else{
+            adjustedPrice *= 0.8;
+          }
         }
         return total + Number(adjustedPrice);
       }, 0)
@@ -1209,7 +1238,7 @@ const Panier = ({navigation}) => {
                   </View>
                   <View style={styles.contentTotalPrice}>
                     <Text style={{color: colors.color1}}>
-                      {totalSum.toFixed(2)} €
+                      {totalSum.toFixed(2)}€
                     </Text>
                     <Text style={styles.orangeBoldText}>
                       {totalSumForCollabAndAntigaspi.toFixed(2)} €

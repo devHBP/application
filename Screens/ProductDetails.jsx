@@ -297,10 +297,10 @@ const ProductDetails = ({navigation, route}) => {
     let fullGroups = Math.floor(totalQuantity / 4); // Nombre complet de groupes de 4
     let remainingProducts = totalQuantity % 4; // Produits restants hors des groupes complets
     productsPrice = (fullGroups * 3 + remainingProducts) * product.prix_unitaire; // 3 payés dans chaque groupe complet + les restants payés séparément
-    productsSunPrice = ( fullGroups * 3 + remainingProducts ) * product.prix_remise_collaborateur;
+    productsSunPrice = (fullGroups * 3 + remainingProducts) * parseFloat(product.prix_remise_collaborateur).toFixed(2);
   } else {
-    productsPrice = totalQuantity * product.prix_unitaire;
-    productsSunPrice = totalQuantity * product.prix_remise_collaborateur;
+    productsPrice = totalQuantity * parseFloat(product.prix_unitaire).toFixed(2);
+    productsSunPrice = totalQuantity * parseFloat(product.prix_remise_collaborateur).toFixed(2);
   }
 
   return (

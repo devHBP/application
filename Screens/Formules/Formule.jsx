@@ -179,7 +179,6 @@ const Formule = ({route, navigation}) => {
   };
 
   //! TEST calcul dynamique de la formule SUN avec les options 1 - 2 - 3
-  //! Bug persistant, les pain bagnats, croques et wrap et panini restent buggés Oo"
   useEffect(() => {
     calculateTotalSunPrice();
   }, [selectedProduct, selectedDessert, selectedBoisson, dessertSwitch]);

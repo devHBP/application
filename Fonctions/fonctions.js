@@ -69,7 +69,7 @@ export const incrementhandler = async (
     key: key,
     product: product,
   };
-  // console.log('payload', payload)
+  console.log('payload', payload)
   try {
     const response = await axios.post(
       `${API_BASE_URL}/addOrUpdateCartItem`,
@@ -716,9 +716,26 @@ export const countdownStock = async (cart, user, dispatch) => {
 };
 /** Fin page Panier */
 
+//* Ajout correctif bug affichage, lié aux formules prix remisé SUN
+/**
+ * Pour le calcul de la formule prix SUN, sandwich remisé + 2€/options supplémentaire, requis dans Screen/Panier.jsx
+ * @param {int} optionsCoefficient en fonction de une ou deux option de formule ( 2 ou 4 ).
+ * @param {props} priceToAdjust le prix unitaire d'une formule ( product.unitPrice ) par exemple.
+ * @param {float} discountCoeff le pourcentage de remise effectué, ( 0.8 );
+ * @returns le prix final de la formule avec uniquelent le tarif du sandwich remisé.
+ */
+const calculateFormulePrice = ( optionsCoefficient, priceToAdjust , discountCoeff) => {
+  let option1Price;
+  option1Price = priceToAdjust - optionsCoefficient;
+  option1Price *= discountCoeff;
+  priceToAdjust = option1Price + optionsCoefficient;
+  return priceToAdjust;
+}
+
 export {
   checkProductStock,
   getProductQtyInCart,
   checkProductAvailability,
   configureAxiosHeaders,
+  calculateFormulePrice,
 };
