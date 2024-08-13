@@ -374,7 +374,7 @@ const ProductCard = ({
           </TextTicker>
           <View style={{flexDirection: 'row'}}>
             <Text numberOfLines={1} style={[style.priceCard, standardPrice]}>
-              {prix}€
+              {parseFloat(prix).toFixed(2)}€
             </Text>
             {showPromo ? (
               <Text
@@ -393,7 +393,8 @@ const ProductCard = ({
             <View style={style.viewLogoSunSvg}>
               <LogoSun />
               <Text numberOfLines={1} style={style.viewPrice}>
-                {(prix * 0.8).toFixed(2)}€
+                {/* Ici petit changement, {(prix*0.8).toFixed(2)}*/}
+                {parseFloat(prixSUN).toFixed(2)}€
               </Text>
             </View>
           </>

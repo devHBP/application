@@ -1,12 +1,51 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
-require Pod::Executable.execute_command('node', ['-p',
-  'require.resolve(
-    "react-native/scripts/react_native_pods.rb",
+# Resolve react_native_pods.rb with node to allow for hoisting --Retrait suite au passage à react-native 0.72.15
+#require Pod::Executable.execute_command('node', ['-p',
+# 'require.resolve(
+#   "react-native/scripts/react_native_pods.rb",
+#   {paths: [process.argv[1]]},
+# )', __dir__]).strip
+
+# --Ajout, suite au passage à react-native 0.72.15
+def node_require(script)
+  # Resolve script with node to allow for hoisting
+  require Pod::Executable.execute_command('node', ['-p',
+  "require.resolve(
+    '#{script}',
     {paths: [process.argv[1]]},
-  )', __dir__]).strip
+  )", __dir__]).strip
+end
+
+# Use it to require both react-native's and this package's scripts:
+node_require('react-native/scripts/react_native_pods.rb')
+node_require('react-native-permissions/scripts/setup.rb')
 
 platform :ios, min_ios_version_supported
 prepare_react_native_project!
+
+# --Ajout, suite au passage à react-native 0.72.15
+# ⬇️ uncomment the permissions you need
+setup_permissions([
+  # 'AppTrackingTransparency',
+  # 'Bluetooth',
+  # 'Calendars',
+  # 'CalendarsWriteOnly',
+  # 'Camera',
+  # 'Contacts',
+  # 'FaceID',
+  # 'LocationAccuracy',
+  # 'LocationAlways',
+  # 'LocationWhenInUse',
+  # 'MediaLibrary',
+  # 'Microphone',
+  # 'Motion',
+  'Notifications',
+  # 'PhotoLibrary',
+  # 'PhotoLibraryAddOnly',
+  # 'Reminders',
+  # 'Siri',
+  # 'SpeechRecognition',
+  # 'StoreKit',
+])
 
 # If you are using a `react-native-flipper` your iOS build will fail when `NO_FLIPPER=1` is set.
 # because `react-native-flipper` depends on (FlipperKit,...) that will be excluded
@@ -31,16 +70,11 @@ target 'MyappReactNative' do
   pod 'Firebase/Messaging'
   config = use_native_modules!
 
-  # Flags change depending on the env values.
-  flags = get_default_flags()
   use_frameworks! :linkage => :static
   $RNFirebaseAsStaticFramework = true
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # Hermes is now enabled by default. Disable by setting this flag to false.
-    :hermes_enabled => flags[:hermes_enabled],
-    :fabric_enabled => flags[:fabric_enabled],
     # Enables Flipper.
     #
     # Note that if you have use_frameworks! enabled, Flipper will not work and
@@ -64,6 +98,6 @@ target 'MyappReactNative' do
       config[:reactNativePath],
       :mac_catalyst_enabled => false
     )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+    
   end
 end

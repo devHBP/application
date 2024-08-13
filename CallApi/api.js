@@ -486,7 +486,7 @@ export const getCartItemId = async (userId, productId, type, key) => {
         params: { userId, productId, type , key}
       }
     );
-    // console.log('response', response)
+    //console.log('response', response)
     if (response.data.status === 404) {
       console.log('ce produit nest pas dans le panier')
       // console.log("No active cart available for this user.");

@@ -47,6 +47,7 @@ const Formule = ({route, navigation}) => {
   const [selectedDessert, setSelectedDessert] = useState(null);
   const [selectedBoisson, setSelectedBoisson] = useState(null);
   const [prix, setTotalPrice] = useState(0);
+  const [prixSun, setTotalPrixSun] = useState(0);
   const [productIds, setProductIds] = useState([]);
 
   const {resetCountdown} = useCountdown();
@@ -177,6 +178,26 @@ const Formule = ({route, navigation}) => {
     setTotalPrice(prix);
   };
 
+  //! TEST calcul dynamique de la formule SUN avec les options 1 - 2 - 3
+  useEffect(() => {
+    calculateTotalSunPrice();
+  }, [selectedProduct, selectedDessert, selectedBoisson, dessertSwitch]);
+
+  const calculateTotalSunPrice = () => {
+    let prixSun = 0;
+
+    if(selectedProduct){
+      prixSun += parseFloat(selectedProduct.prix_remise_collaborateur) || 0 ;
+    }
+    if(selectedDessert){
+      prixSun += parseFloat(selectedDessert.prix_formule) || 0 ;
+    }
+    if(selectedBoisson){
+      prixSun += parseFloat(selectedBoisson.prix_formule) || 0 ;
+    }
+    setTotalPrixSun(prixSun);
+  }
+
   const handleFormuleSelection = async () => {
 
     const optionIds = [
@@ -189,7 +210,7 @@ const Formule = ({route, navigation}) => {
     const formuleKey = `${selectedProduct?.productId ?? 'none'}-${
       selectedDessert?.productId ?? 'none'
     }-${selectedBoisson?.productId ?? 'none'}`;
-    // console.log('formuleKey', formuleKey);
+    //console.log('formuleKey', formuleKey);
 
     resetCountdown();
 
@@ -306,8 +327,11 @@ const Formule = ({route, navigation}) => {
                       id={product.productId}
                       index={index}
                       image={product.image}
-                      prix={product.prix_unitaire}
-                      prixSUN={product.prix_remise_collaborateur}
+                      //prix={product.prix_unitaire}
+                      //prixSUN={product.prix_remise_collaborateur}
+                      prix={'2'}
+                      //prixSUN={false}
+                      showPriceSun={false}
                       qty={product.qty}
                       stock={product.stock}
                       offre={product.offre}
@@ -348,8 +372,11 @@ const Formule = ({route, navigation}) => {
                       id={product.productId}
                       index={index}
                       image={product.image}
-                      prix={product.prix_unitaire}
-                      prixSUN={product.prix_remise_collaborateur}
+                      //prix={product.prix_unitaire}
+                      //prixSUN={product.prix_remise_collaborateur}
+                      prix={'2'}
+                      //prixSUN={false}
+                      showPriceSun={false}
                       qty={product.qty}
                       stock={product.stock}
                       offre={product.offre}
@@ -388,7 +415,12 @@ const Formule = ({route, navigation}) => {
             </View>
             {selectedProduct && typeof prix === 'number' && (
               <Text style={{color: colors.color2, fontWeight: 'bold'}}>
-                {(prix * 0.8).toFixed(2)} €
+                {/* 
+                    Ok, le but ce serait de se dire, on veux le prix SUN du produit , et 
+                    les 2€/produits supplémentaire ( boissons et/ou dessert ).
+                    Modification de la methode de calcul de "prix" ?
+                */}
+                {(prixSun).toFixed(2)} €
               </Text>
             )}
           </View>

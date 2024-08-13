@@ -292,12 +292,15 @@ const ProductDetails = ({navigation, route}) => {
   // calcul des prix (en tenant compte de l'offre 3+1)
 
   let productsPrice;
+  let productsSunPrice;
   if (localType === 'offre31') {
     let fullGroups = Math.floor(totalQuantity / 4); // Nombre complet de groupes de 4
     let remainingProducts = totalQuantity % 4; // Produits restants hors des groupes complets
     productsPrice = (fullGroups * 3 + remainingProducts) * product.prix_unitaire; // 3 payés dans chaque groupe complet + les restants payés séparément
+    productsSunPrice = (fullGroups * 3 + remainingProducts) * parseFloat(product.prix_remise_collaborateur).toFixed(2);
   } else {
-    productsPrice = totalQuantity * product.prix_unitaire;
+    productsPrice = totalQuantity * parseFloat(product.prix_unitaire).toFixed(2);
+    productsSunPrice = totalQuantity * parseFloat(product.prix_remise_collaborateur).toFixed(2);
   }
 
   return (
@@ -360,7 +363,7 @@ const ProductDetails = ({navigation, route}) => {
             <View style={{flexDirection: 'column', justifyContent: 'flex-end'}}>
               <LogoSun />
               <Text style={styles.prixSun}>
-                {(product.prix_unitaire * 0.8).toFixed(2)}€
+                {(product.prix_remise_collaborateur)}€
               </Text>
             </View>
           </View>
@@ -428,7 +431,7 @@ const ProductDetails = ({navigation, route}) => {
                   />
                 </View>
                 <Text style={{color: colors.color2, fontWeight: 'bold'}}>
-                {(productsPrice * 0.8).toFixed(2)} €
+                {(productsSunPrice)} €
                 </Text>
               </View>
             </View>

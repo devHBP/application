@@ -26,6 +26,8 @@ const PageSalee = ({route, navigation}) => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [stock, setStock] = useState([]);
   const [totalPrice, setTotalPrice] = useState(0);
+  // Add 31/07
+  const [totalSunPrice, setTotalSunPrice] = useState(0);
   const [productCount, setProductCount] = useState(0);
   const [totalQuantity, setTotalQuantity] = useState(0);
 
@@ -75,9 +77,14 @@ const PageSalee = ({route, navigation}) => {
 
 useEffect(() => {
     const totalPrice = products.reduce((acc, product) => {
-      const qtyInCart = getProductQtyInCart(product.productId); 
+      const qtyInCart = getProductQtyInCart(product.productId);
       return acc + (qtyInCart * product.prix_unitaire);
     }, 0);
+    const totalSunPrice = products.reduce((acc, product) => {
+      const qtyInCart = getProductQtyInCart(product.productId);
+      return acc + (qtyInCart * product.prix_remise_collaborateur)
+    }, 0);
+    setTotalSunPrice(totalSunPrice);
     setTotalPrice(totalPrice);
   }, [products, cart]);
   
@@ -297,7 +304,7 @@ useEffect(() => {
               />
             </View>
             <Text style={{color: colors.color2, fontWeight: 'bold'}}>
-              {(totalPrice * 0.8).toFixed(2)}€
+              {(totalSunPrice).toFixed(2)}€
             </Text>
           </View>
         </View>
