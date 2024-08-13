@@ -759,7 +759,7 @@ const Panier = ({navigation}) => {
         orderId,
         numero_commande,
       };
-      // console.log('info', info)
+      console.log('info', info)
       // j'allonge le temps à 20min
       resetForPaiementCountdown();
 

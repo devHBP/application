@@ -210,7 +210,7 @@ const Formule = ({route, navigation}) => {
     const formuleKey = `${selectedProduct?.productId ?? 'none'}-${
       selectedDessert?.productId ?? 'none'
     }-${selectedBoisson?.productId ?? 'none'}`;
-    // console.log('formuleKey', formuleKey);
+    //console.log('formuleKey', formuleKey);
 
     resetCountdown();
 
