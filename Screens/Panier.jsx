@@ -96,6 +96,7 @@ const Panier = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [selectStore, setSelectStore] = useState('');
   const [isModalSunVisible, setIsModalSunVisible] = useState(false);
+  const [isOffreSunInCart, setIsOffreSunInCart] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [erreurCodePromo, setErreurCodePromo] = useState(false);
   const [erreurCodePromoUsed, setErreurCodePromoUsed] = useState(false);
@@ -115,9 +116,15 @@ const Panier = ({navigation}) => {
   const {countDownNull, countdown, resetCountdown, resetForPaiementCountdown} =
     useCountdown();
 
+  // Ajout pour le controle du PulseAnimation offreSUN
+  const getTomorrowISODate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // J+1
+    return tomorrow.toISOString().split('T')[0]; // On prend juste la date sans l'heure
+  };
+
   // panier vide
   const isCartEmpty = cart.length === 0;
-
   let userRole = user.role;
   const emailConfirmOrder = user.email;
   const firstnameConfirmOrder = user.firstname;
@@ -132,6 +139,10 @@ const Panier = ({navigation}) => {
       // Appel du panier via redux
       await dispatch(getCart(user.userId));
       await dispatch(getTotalCart(user.userId));
+      // En gros je tente de setter direcetement au chargement du panier la condition
+      // Si l'user à déjà commandé nous serons à true 
+      setIsOffreSunInCart(await checkIfUserOrderedOffreSUNToday(user.userId, getTomorrowISODate()))
+      console.log("l'utilisateur a déja commandé")
       setLoading(false); 
     };
     loadCart();
@@ -683,7 +694,7 @@ const Panier = ({navigation}) => {
       user.userId,
       formatToDateISO(selectedDateString),
     );
-
+    
     // offre SUn deja prise aujourdhui ?
     if (checkOffreSUN) {
       // Vérifier si le panier actuel contient le produit 'offreSUN'
@@ -1278,7 +1289,7 @@ const Panier = ({navigation}) => {
                 )}
               </View>
 
-              <PulseAnimation onPress={handlePress} />
+              { !isOffreSunInCart && <PulseAnimation onPress={handlePress} />}
 
               <ModaleOffre31
                 modalVisible={modalVisible}
