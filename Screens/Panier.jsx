@@ -97,6 +97,7 @@ const Panier = ({navigation}) => {
   const [selectStore, setSelectStore] = useState('');
   const [isModalSunVisible, setIsModalSunVisible] = useState(false);
   const [isOffreSunInCart, setIsOffreSunInCart] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [erreurCodePromo, setErreurCodePromo] = useState(false);
   const [erreurCodePromoUsed, setErreurCodePromoUsed] = useState(false);
@@ -116,13 +117,6 @@ const Panier = ({navigation}) => {
   const {countDownNull, countdown, resetCountdown, resetForPaiementCountdown} =
     useCountdown();
 
-  // Ajout pour le controle du PulseAnimation offreSUN
-  const getTomorrowISODate = () => {
-    const tomorrow = new Date();
-    tomorrow.setDate(tomorrow.getDate() + 1); // J+1
-    return tomorrow.toISOString().split('T')[0]; // On prend juste la date sans l'heure
-  };
-
   // panier vide
   const isCartEmpty = cart.length === 0;
   let userRole = user.role;
@@ -139,10 +133,6 @@ const Panier = ({navigation}) => {
       // Appel du panier via redux
       await dispatch(getCart(user.userId));
       await dispatch(getTotalCart(user.userId));
-      // En gros je tente de setter direcetement au chargement du panier la condition
-      // Si l'user à déjà commandé nous serons à true 
-      setIsOffreSunInCart(await checkIfUserOrderedOffreSUNToday(user.userId, getTomorrowISODate()))
-      console.log("l'utilisateur a déja commandé")
       setLoading(false); 
     };
     loadCart();
@@ -607,6 +597,26 @@ const Panier = ({navigation}) => {
     : 0;
   // une offre sun dans la journée
 
+  // Logique d'affichage du macaron offreSUN en fonction de la date pickée
+  const checkIfOrderExistsForDate = async (userId, date) => {
+    const orderSunExists = await checkIfUserOrderedOffreSUNToday(userId, date);
+    return orderSunExists;
+  };
+  useEffect(() => {
+    const checkOrder = async () => {
+      if(selectedDateString){
+        const dateStringFromRedux = selectedDateString;
+        const [day, month, year] = dateStringFromRedux.split('/');
+        const formatedDate = `${year}-${month}-${day}`;
+        const orderSunExists = await checkIfOrderExistsForDate(user.userId, formatedDate)
+        setIsOffreSunInCart(orderSunExists);
+      }
+    };
+    console.log(selectedDateString, isOffreSunInCart);
+    checkOrder();
+  }, [selectedDateString]);
+
+
   // 1. je clique sur le bouton "En ligne"
   const handleConfirm = async newPaiement => {
     // verif si presence de la date
@@ -1062,7 +1072,12 @@ const Panier = ({navigation}) => {
                   </View>
                 </View>
                 <View>
-                  <CustomDatePicker />
+                  <CustomDatePicker 
+                    // value={selectedDateString}
+                    // onChange={(newDate) => {
+                    //   setSelectedDate(newDate);
+                    // }}
+                  />
                 </View>
               </View>
 
