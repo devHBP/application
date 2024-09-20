@@ -610,8 +610,8 @@ const Panier = ({navigation}) => {
         const formatedDate = `${year}-${month}-${day}`;
         const orderSunExists = await checkIfOrderExistsForDate(user.userId, formatedDate)
         setIsOffreSunInCart(orderSunExists);
-      }
-    };
+        }
+      };
     console.log(selectedDateString, isOffreSunInCart);
     checkOrder();
   }, [selectedDateString]);
