@@ -27,10 +27,11 @@ import ScrollIndicators from './ScrollIndicators.';
 import {Toast} from 'react-native-toast-message/lib/src/Toast';
 import Compteur from '../SVG/Compteur';
 import {useSelector, useDispatch} from 'react-redux';
-import {fetchAllProductsClickAndCollect} from '../CallApi/api';
+import {fetchAllProductsClickAndCollect, checkIfUserOrderedOffreSUNToday} from '../CallApi/api';
 import ModaleOffreSUN from './ModaleOffreSUN';
+import { formatToDateISO } from '../Fonctions/fonctions';
 
-const LinkOffres = () => {
+const LinkOffres = ({hasOrderedOffreSun}) => {
   const openLink = url => {
     if (Platform.OS === 'android') {
       Linking.openURL(url)
@@ -65,6 +66,12 @@ const LinkOffres = () => {
   const cart = useSelector(state => state.cart.cart);
   const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
+
+  const getTomorrowISODate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // J+1
+    return tomorrow.toISOString().split('T')[0]; // On prend juste la date sans l'heure
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -225,6 +232,19 @@ const LinkOffres = () => {
       return;
     }
 
+    const checkFreeOffer = await checkIfUserOrderedOffreSUNToday(
+      user.userId,
+      getTomorrowISODate(),
+    );
+    if(checkFreeOffer){
+      Toast.show({
+        type: 'error',
+        text1: 'Offre déja consommée',
+        text2: `Vous avez déjà une commandé une baguette pour le ${getTomorrowISODate()}`,
+      });
+      return;
+    }
+
     // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
     if (offreSunProduct) {
       setIsModalSunVisible(true);
@@ -279,8 +299,9 @@ const LinkOffres = () => {
     },
   ];
 
+  // Ajout du isDisabled pour la vignette baguetteSUN de manière à ce qu'il soit le seul encart désactivé si la commande à été passée
   const renderItem = ({item, index}) => {
-    let handlePressFunc, imgSrc, mainText, secondaryText, pastilleImgSrc;
+    let handlePressFunc, imgSrc, mainText, secondaryText, pastilleImgSrc, isDisabled;
 
     switch (item.type) {
       case 'antigaspi':
@@ -290,14 +311,16 @@ const LinkOffres = () => {
         secondaryText = item.secondaryText;
         thirdText = item.thirdText;
         pastilleImgSrc = item.pastilleImage;
+        isDisabled = false;
         break;
       case 'baguetteSUN':
-        handlePressFunc = handleOffreSun;
+        handlePressFunc = handleOffreSun ;
         imgSrc = item.imageUri;
         mainText = item.mainText;
         secondaryText = item.secondaryText;
         thirdText = item.thirdText;
         pastilleImgSrc = item.pastilleImage;
+        isDisabled = hasOrderedOffreSun;
         break;
       case 'custom':
         handlePressFunc = handleOffreNoel;
@@ -306,6 +329,7 @@ const LinkOffres = () => {
         secondaryText = item.secondaryText;
         thirdText = item.thirdText;
         pastilleImgSrc = item.pastilleImage;
+        isDisabled = false;
         break;
       case 'offre31':
         handlePressFunc = handleOffre31;
@@ -314,6 +338,7 @@ const LinkOffres = () => {
         secondaryText = item.secondaryText;
         thirdText = item.thirdText;
         pastilleImgSrc = item.pastilleImage;
+        isDisabled = false;
         break;
       case 'sun':
         handlePressFunc = handlePress;
@@ -322,6 +347,7 @@ const LinkOffres = () => {
         secondaryText = item.secondaryText;
         thirdText = item.thirdText;
         pastilleImgSrc = item.pastilleImage;
+        isDisabled = false;
         break;
       default:
         break;
@@ -329,9 +355,13 @@ const LinkOffres = () => {
 
     return (
       <TouchableOpacity
-        style={{marginRight: 10}}
+        style={[
+          {marginRight: 10},
+          isDisabled && { opacity: 0.5 }
+        ]}
         activeOpacity={0.8}
-        onPress={handlePressFunc}>
+        onPress={handlePressFunc}
+      >
         <View style={styles.offerContainer}>
           {index === 0 && timeRemaining && showCountdown && (
             <View style={styles.overlayContainer}>

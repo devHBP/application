@@ -46,6 +46,7 @@ import {
   fetchAllProductsClickAndCollect,
   getPrefCommande,
   getStatusSUN,
+  checkIfUserOrderedOffreSUNToday,
 } from '../CallApi/api';
 import ModaleOffreSUN from '../components/ModaleOffreSUN';
 import ModaleModifProfile from '../components/ModaleModifProfile';
@@ -54,6 +55,7 @@ import Location from '../SVG/Location';
 
 import Picker from 'react-native-picker-select';
 import SelectDropdown from 'react-native-select-dropdown';
+import { formatToDateISO } from '../Fonctions/fonctions';
 
 const Home = ({navigation}) => {
   // console.log('lancement de la page home')
@@ -70,6 +72,9 @@ const Home = ({navigation}) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isManualScrolling, setIsManualScrolling] = useState(false);
   const [isModalSunVisible, setIsModalSunVisible] = useState(false);
+  const [cartLoaded, setCartLoaded] = useState(false); // Flag pour indiquer que le panier est chargé
+  const [hasSeenOffer, setHasSeenOffer] = useState(false); // Flag pour éviter les réaffichages
+  const [hasOrderedOffreSun, setHasOrderedOffreSun] = useState(false);
   const [isModalProfileVisible, setIsModalProfileVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isPref, setIsPref] = useState(null);
@@ -79,6 +84,15 @@ const Home = ({navigation}) => {
 
   const user = useSelector(state => state.auth.user);
   const cart = useSelector(state => state.cart.cart);
+  const dispatch = useDispatch();
+
+  // Chargement de la date du lendemain pour vérifier les commande passées
+  const getTomorrowISODate = () => {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1); // J+1
+    return tomorrow.toISOString().split('T')[0]; // On prend juste la date sans l'heure
+  };
+  
 
   useEffect(() => {
     const loadInitialData = async () => {
@@ -87,18 +101,16 @@ const Home = ({navigation}) => {
       try {
         // Définir les promesses pour les différentes données à charger
         const productsPromise = fetchAllProductsClickandCollect();
-        const cartPromise = dispatch(getCart(user.userId));
         const storesPromise = getAllStores();
 
-        const delayPromise = new Promise(resolve => setTimeout(resolve, 5000));
+        // Chargement du panier
+        await dispatch(getCart(user.userId));
+        setCartLoaded(true);
+
+        //const delayPromise = new Promise(resolve => setTimeout(resolve, 5000));
 
         // Attendre que toutes les données soient chargées en parallèle
-        const [products, stores] = await Promise.all([
-          productsPromise,
-          storesPromise,
-          cartPromise,
-          delayPromise,
-        ]);
+        const [products, stores] = await Promise.all([productsPromise, storesPromise]);
 
         const updatedProducts = products.map(product => ({
           ...product,
@@ -118,10 +130,10 @@ const Home = ({navigation}) => {
         );
       }
 
-      setIsLoading(false);
+      const delay = 3000;
       const timer = setTimeout(() => {
-        handleOffreSun(); // Gérer les offres SUN après un délai
-      }, 1000);
+        setIsLoading(false);
+      }, delay);
 
       return () => {
         clearTimeout(timer);
@@ -152,27 +164,35 @@ const Home = ({navigation}) => {
     }
   }, [user.role, user.storeId]);
 
-  // const status = useSelector(state => state.auth.user.statusSUN);
-  // useEffect(() => {
-  //   // console.log("Le status SUN a changé:", status);
-  // }, [status]);
+  useEffect(()=>{
+    const checkOffreSun = async () => {
 
-  // produit offreSUN
-  const handleOffreSun = async () => {
-    const allProductsClickandCollect = await fetchAllProductsClickAndCollect();
-    const offreSunProduct = allProductsClickandCollect.find(
-      product => product.type_produit === 'offreSUN',
-    );
-    // offre dans le panier déja présente ?
-    const isOffreSunInCart = cart.some(
-      item => item.typeProduit === 'offreSUN', // table ProductsCart:  typeProduit
-    );
-    // je veux ajouter le produit : offreSunProduct si pas encore présent dans le panier
-    if (offreSunProduct && !isOffreSunInCart) {
-      setIsModalSunVisible(true);
-      setSelectedProduct(offreSunProduct);
-    }
-  };
+      // Verification de la consommation de l'offre SUN avant presentation de la modale
+      const checkFreeOrderToday = await checkIfUserOrderedOffreSUNToday(
+        user.userId,
+        getTomorrowISODate()
+      );
+
+      // on vient setter le state en fonction de si oui ou non l'utilisateur à déja utilisé l'offre SUN
+      setHasOrderedOffreSun(checkFreeOrderToday);
+      
+      if(!cartLoaded || hasSeenOffer || checkFreeOrderToday) return; // on affiche pas l'offre si le panier n'est pas chargé
+
+      const isOffreSunInCart = cart.some((item) => item.typeProduit === "offreSUN" );
+
+      if(!isOffreSunInCart){
+        const allProductClickandCollect = await fetchAllProductsClickAndCollect();
+        const offreSunProduct = allProductClickandCollect.find(
+          (product) => product.type_produit === "offreSUN"
+        );
+        setSelectedProduct(offreSunProduct);
+        setIsModalSunVisible(true)
+      }
+      setHasSeenOffer(true);
+    };
+    checkOffreSun();
+  }, [cartLoaded, cart, hasSeenOffer]);
+
   const route = useRoute();
 
   // a revoir
@@ -185,7 +205,6 @@ const Home = ({navigation}) => {
       .toFixed(2),
   );
 
-  const dispatch = useDispatch();
   const scrollViewRef = createRef();
   const horizontalScrollViewRef = useRef(null);
 
@@ -836,7 +855,7 @@ const Home = ({navigation}) => {
               <View
                 onLayout={handleLayout('Promos')}
                 style={styles.paddingProduct}>
-                <LinkOffres />
+                <LinkOffres hasOrderedOffreSun={hasOrderedOffreSun}/>
               </View>
 
               {renderCategoryProducts('Baguettes')}

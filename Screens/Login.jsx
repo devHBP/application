@@ -106,6 +106,7 @@ const Login = ({navigation}) => {
       const token = res.data.token;
 
       await AsyncStorage.setItem('userToken', token);
+      console.log(token);
 
       const selectedStoreId = user.storeId;
 

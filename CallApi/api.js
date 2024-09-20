@@ -218,7 +218,7 @@ export const checkIfUserOrderedOffreSUNToday = async (
 
     const response = await axios.get(`${API_BASE_URL}/ordersOfUser/${userId}?date=${dateStr}`);
     const orders = response.data;
-
+    console.log(response.data);
     // Return true if there are any orders, false otherwise
     return orders.length > 0;
   } catch (error) {

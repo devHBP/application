@@ -82,7 +82,7 @@ const StorePicker = ({onStoreUpdate}) => {
                     storeId: selected.storeId,
                   })
                   .then(response => {
-                    // console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
+                    //console.log('Le choix du magasin a été mis à jour avec succès dans la base de données');
                   })
                   .catch(error => {
                     console.error(

@@ -87,7 +87,6 @@ const Stores = ({navigation}) => {
 
   const handleStoreSelection = (store) => {
     setSelectedStore(store);
-    //console.log('store button selectionné:', store)
     dispatch(updateSelectedStore(store));
   };
 

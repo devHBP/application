@@ -20,19 +20,18 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
   const user = useSelector(state => state.auth.user);
   const cart = useSelector(state => state.cart.cart);
 
-  useEffect(() => {
-    const loadCart = async () => {
-      // appel du panier via redux
-      dispatch(getCart(user.userId));
-      dispatch(getTotalCart(user.userId));
-      // console.log('boucle modale offre sun');
-    };
 
+  useEffect(() => {
+    const loadCart = async() => {
+      await dispatch(getCart(user.userId));
+      await dispatch(getTotalCart(user.userId));
+    };
     loadCart();
+
   }, [user.userId, dispatch]);
 
   const handleAcceptOffer = async () => {
-    setModalVisible(!modalVisible);
+    setModalVisible(false);
     await incrementhandler(
       user.userId,
       product.productId,
@@ -60,7 +59,7 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
       transparent={true}
       visible={modalVisible}
       onRequestClose={() => {
-        setModalVisible(!modalVisible);
+        setModalVisible(false);
       }}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
@@ -76,7 +75,7 @@ const ModaleOffreSUN = ({modalVisible, setModalVisible, product}) => {
           <View style={styles.contentBtns}>
             <TouchableOpacity
               onPress={() => {
-                setModalVisible(!modalVisible);
+                setModalVisible(false);
               }}
               style={{...styles.btn, backgroundColor: colors.color8}}>
               <Text style={styles.colorTextBtn}>Refuser</Text>

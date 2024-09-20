@@ -96,6 +96,8 @@ const Panier = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [selectStore, setSelectStore] = useState('');
   const [isModalSunVisible, setIsModalSunVisible] = useState(false);
+  const [isOffreSunInCart, setIsOffreSunInCart] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [erreurCodePromo, setErreurCodePromo] = useState(false);
   const [erreurCodePromoUsed, setErreurCodePromoUsed] = useState(false);
@@ -117,7 +119,6 @@ const Panier = ({navigation}) => {
 
   // panier vide
   const isCartEmpty = cart.length === 0;
-
   let userRole = user.role;
   const emailConfirmOrder = user.email;
   const firstnameConfirmOrder = user.firstname;
@@ -596,6 +597,26 @@ const Panier = ({navigation}) => {
     : 0;
   // une offre sun dans la journée
 
+  // Logique d'affichage du macaron offreSUN en fonction de la date pickée
+  const checkIfOrderExistsForDate = async (userId, date) => {
+    const orderSunExists = await checkIfUserOrderedOffreSUNToday(userId, date);
+    return orderSunExists;
+  };
+  useEffect(() => {
+    const checkOrder = async () => {
+      if(selectedDateString){
+        const dateStringFromRedux = selectedDateString;
+        const [day, month, year] = dateStringFromRedux.split('/');
+        const formatedDate = `${year}-${month}-${day}`;
+        const orderSunExists = await checkIfOrderExistsForDate(user.userId, formatedDate)
+        setIsOffreSunInCart(orderSunExists);
+        }
+      };
+    console.log(selectedDateString, isOffreSunInCart);
+    checkOrder();
+  }, [selectedDateString]);
+
+
   // 1. je clique sur le bouton "En ligne"
   const handleConfirm = async newPaiement => {
     // verif si presence de la date
@@ -683,7 +704,7 @@ const Panier = ({navigation}) => {
       user.userId,
       formatToDateISO(selectedDateString),
     );
-
+    
     // offre SUn deja prise aujourdhui ?
     if (checkOffreSUN) {
       // Vérifier si le panier actuel contient le produit 'offreSUN'
@@ -1051,7 +1072,12 @@ const Panier = ({navigation}) => {
                   </View>
                 </View>
                 <View>
-                  <CustomDatePicker />
+                  <CustomDatePicker 
+                    // value={selectedDateString}
+                    // onChange={(newDate) => {
+                    //   setSelectedDate(newDate);
+                    // }}
+                  />
                 </View>
               </View>
 
@@ -1278,7 +1304,7 @@ const Panier = ({navigation}) => {
                 )}
               </View>
 
-              <PulseAnimation onPress={handlePress} />
+              { !isOffreSunInCart && <PulseAnimation onPress={handlePress} />}
 
               <ModaleOffre31
                 modalVisible={modalVisible}
