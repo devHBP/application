@@ -268,6 +268,7 @@ const Home = ({navigation}) => {
 
   const sortedCategories = Object.keys(groupedAndSortedProducts).sort();
 
+
   //scrolltop
   const scrollToTop = () => {
     if (scrollViewRef.current) {
@@ -290,6 +291,7 @@ const Home = ({navigation}) => {
     Viennoiseries: useRef(null),
     Formules: useRef(null),
     'Produits Salés': useRef(null),
+    'Plats Chauds': useRef(null),
     Pâtisseries: useRef(null),
     'Boules et Pains Spéciaux': useRef(null),
     'Petits déjeuners': useRef(null),
@@ -365,6 +367,7 @@ const Home = ({navigation}) => {
   //fin scroll onglets
 
   //appel des produits categories
+  
   const renderCategoryProducts = categoryName => {
     const categoryProducts = groupedAndSortedProducts[categoryName];
     let sortedProducts = categoryProducts;
@@ -877,6 +880,8 @@ const Home = ({navigation}) => {
                 <EnvieSalee />
                 {/* <TestEnvieSalee /> */}
               </View>
+              {/* Ajout du 18/10 , potentiellement Maj 3.31 */ }
+              {renderCategoryProducts('Plats Chauds')}
 
               {renderCategoryProducts('Pâtisseries')}
               {renderCategoryProducts('Boules et Pains Spéciaux')}

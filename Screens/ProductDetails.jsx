@@ -42,6 +42,7 @@ import ModaleIngredients from '../components/ModaleIngredients';
 import LogoSun from '../SVG/LogoSun';
 import Decrement from '../SVG/Decrement';
 import Increment from '../SVG/Increment';
+import { color } from 'react-native-elements/dist/helpers/index.js';
 
 const ProductDetails = ({navigation, route}) => {
   const {product} = route.params;
@@ -329,7 +330,14 @@ const ProductDetails = ({navigation, route}) => {
                 </TouchableOpacity>
               )}
             <View style={styles.contentTitle}>
-              <Text style={styles.titleProduct}>{product.libelle}</Text>
+              <Text style={[
+                  styles.titleProduct,
+                  product.categorie === "Plats Chauds" ? {color: colors.color1} : {color: colors.color3}
+
+                ]}
+              >
+                { product.libelle }
+              </Text>
               <TouchableOpacity
                 onPress={handleBack}
                 activeOpacity={1}
