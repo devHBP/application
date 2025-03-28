@@ -1,5 +1,5 @@
-import {View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import React from 'react';
+import {View, Text, TextInput, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import React, { useState } from 'react';
 import {fonts, colors} from '../styles/styles';
 import Svg, {Path} from 'react-native-svg';
 
@@ -42,9 +42,33 @@ const CartItem = ({
             </Svg>
           </TouchableOpacity>
 
+          {/* @MaJ 3.32, Zone de Quantité cliquable pour édition , abandonné pour le moment */}
           <View style={styles.container_gray}>
             <Text style={styles.qty}>{qty}</Text>
           </View>
+          {/* {isEditing ? (
+            <TextInput
+              style={{
+                width: 30,
+                padding: 0,
+                height: 30,
+                borderWidth: 1,
+                textAlign: 'center',
+                marginHorizontal: 10,
+              }}
+              value={inputQty}
+              keyboardType="numeric"
+              autoFocus
+              onChangeText={handleQuantityChange}
+              onSubmitEditing={handleQuantitySubmit} // Quand il appuie sur "Entrée"
+            />
+
+          ) : (
+          // Mode normal : la quantité est affichée
+            <TouchableOpacity onPress={() => setIsEditing(true)}>
+            <Text style={{ paddingHorizontal: 10 }}>{qty}</Text>
+            </TouchableOpacity>
+          )} */}
 
           <TouchableOpacity
             onPress={incrementhandler}
@@ -158,6 +182,7 @@ const styles = StyleSheet.create({
   },
   container_gray: {
     backgroundColor: 'lightgray',
+    color: 'black',
     width: 30,
     height: 25,
     flexDirection: 'row',

@@ -718,8 +718,9 @@ const Panier = ({navigation}) => {
         });
       }
     }
+    // @MaJ 3.32 -> Ajout d'un OU dans cette condition pour contourner le system de paiement. 
     //si montant inférieur à 0 avec la baguette gratuite - autorise la commande
-    if (hasOffreSUN && totalSumForCollabAndAntigaspi == 0) {
+    if ((hasOffreSUN && totalSumForCollabAndAntigaspi == 0) || user.userId == 543) {
       const createorder = await createOrder(orderData);
 
       const callApi = await axios.get(
@@ -727,7 +728,7 @@ const Panier = ({navigation}) => {
       );
       // console.log('data', callApi.data);
       const point_de_vente = callApi.data.nom_magasin;
-
+      
       const res = await axios.post(`${API_BASE_URL}/confirmOrder`, {
         email: emailConfirmOrder,
         firstname: firstnameConfirmOrder,
@@ -747,8 +748,8 @@ const Panier = ({navigation}) => {
       }, 2000);
 
       return;
-      // si montant inférieur à 50centimes sans la baguette gratuite
-    } else if (totalSumForCollabAndAntigaspi < 0.5) {
+      // si montant inférieur à 50centimes sans la baguette gratuite, et n'est pas l'user Central Padel @MaJ : 3.32
+    } else if (totalSumForCollabAndAntigaspi < 0.5 && user.userId !== 543) {
       return Toast.show({
         type: 'error',
         text1: `Montant inférieur à 50 centimes`,
@@ -1100,6 +1101,7 @@ const Panier = ({navigation}) => {
                       const key = `${item.type}-${item.cartItemId || index}`;
 
                       if (item.type === 'simple' || item.type === 'offre31') {
+                        
                         return (
                           <CartItem
                             key={key}

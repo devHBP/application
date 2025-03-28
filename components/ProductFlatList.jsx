@@ -5,7 +5,6 @@ import ProductCard from '../components/ProductCard';
 import { styles } from '../styles/home'; 
 
 const ProductFlatList = ({ category, products, handleProductPress }) => {
-  //console.log(category);
   return (
     <View>
       <Text style={styles.categoryTitle}>{category}</Text>

@@ -266,8 +266,9 @@ const Home = ({navigation}) => {
     return acc;
   }, {});
 
-  const sortedCategories = Object.keys(groupedAndSortedProducts).sort();
 
+
+  const sortedCategories = Object.keys(groupedAndSortedProducts).sort();
 
   //scrolltop
   const scrollToTop = () => {
@@ -284,6 +285,8 @@ const Home = ({navigation}) => {
     setVisible(!visible);
   };
 
+  const hasPlatsChaud = products.some(product => product.categorie === "Plats Chauds");
+
   //liste d'onglets differents si collab ou non
   const refs = {
     Promos: useRef(null),
@@ -291,7 +294,7 @@ const Home = ({navigation}) => {
     Viennoiseries: useRef(null),
     Formules: useRef(null),
     'Produits Salés': useRef(null),
-    'Plats Chauds': useRef(null),
+    ...(hasPlatsChaud && {'Plats Chauds': useRef(null)}),
     Pâtisseries: useRef(null),
     'Boules et Pains Spéciaux': useRef(null),
     'Petits déjeuners': useRef(null),
@@ -313,7 +316,6 @@ const Home = ({navigation}) => {
   const ongletButtonHandler = onglet => {
     setIsManualScrolling(true);
     setSelectedOnglet(onglet);
-
     const positionY = positionsY[onglet];
     if (scrollViewRef.current && positionY !== undefined) {
       scrollViewRef.current.scrollTo({x: 0, y: positionY, animated: true});
